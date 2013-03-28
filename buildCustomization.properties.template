@@ -1,0 +1,8 @@
+# Here we define the location of the project in the workspace and directories are generated .jar depersonalizing
+adempiere.trunk=D:/MAD/trunc/zerde_adempiere2
+adempiere.home=D:/Adempiere
+adempiere.zkCustomLibDir=D:/Adempiere/lib
+adempiere.zkCustomJarFile=zkcustomization_zerde2.jar
+adempiere.customLibDir=D:/Adempiere/lib
+adempiere.customJarFile=customization_zerde2.jar
+adempiere.developer = Ibraev E.A.

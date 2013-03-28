@@ -1,0 +1,21 @@
+syntax: glob
+build
+buildJava
+?
+?.bat
+*.log
+*.xls
+*.xlsx
+temp
+temp.*
+Thumbs.db
+buildCustomization.properties
+*.INF
+
+.settings/org.eclipse.core.resources.prefs
+ADempiere.properties
+.settings/org.eclipse.ltk.core.refactoring.prefs
+.classpath.orig
+syntax: regexp
+
+^zkwebui/WEB-INF/classes$
