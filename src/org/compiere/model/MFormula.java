@@ -4,6 +4,7 @@ package org.compiere.model;
  */
 
 import java.math.BigDecimal;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,8 +22,27 @@ public class MFormula extends X_BSC_Formula {
 	 * 
 	 */
 	private static final long serialVersionUID = -5300225632681322857L;
+
 	private HashMap arguments = null;
 	private Set<String> variables = null;
+
+	/**
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
+	public MFormula(Properties ctx, ResultSet rs, String trxName) {
+		super(ctx, rs, trxName);
+		// TODO Auto-generated constructor stub
+	}
+
+	/**
+	 * @param ctx
+	 */
+	public MFormula(Properties ctx) {
+		super(ctx);
+		// TODO Auto-generated constructor stub
+	}
 
 	public MFormula(Properties ctx, int BSC_Formula_ID, String trxName) {
 		super(ctx, BSC_Formula_ID, trxName);
@@ -117,6 +137,9 @@ public class MFormula extends X_BSC_Formula {
 	        MAIN_MATH_OPERATIONS.add("|");
 	        MAIN_MATH_OPERATIONS.add("&");
 	        MAIN_MATH_OPERATIONS.add("%");
+	        MAIN_MATH_OPERATIONS.add("<");
+	        MAIN_MATH_OPERATIONS.add(">");
+	        MAIN_MATH_OPERATIONS.add("=");
 			setExpression(expression);
 			variables = new HashSet<String>();
 		}

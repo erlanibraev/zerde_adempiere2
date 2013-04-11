@@ -4,6 +4,11 @@
 package org.compiere.process;
 
 import java.math.BigDecimal;
+import java.util.logging.Level;
+
+import org.compiere.model.MBSCCardLine;
+import org.compiere.model.MParameterLine;
+import org.compiere.util.Env;
 
 /**
  * @author Y.Ibrayev
@@ -11,15 +16,25 @@ import java.math.BigDecimal;
  */
 public class CalcCardLine extends SvrProcess {
 
-	private BigDecimal BSC_CardLine_ID = null;
+	private int BSC_CardLine_ID = 0;
 	
 	/* (non-Javadoc)
 	 * @see org.compiere.process.SvrProcess#prepare()
 	 */
 	@Override
 	protected void prepare() {
-		// TODO Auto-generated method stub
-		
+		ProcessInfoParameter[] para = getParameter();
+		for(int i=0; i < para.length; i++) {
+			String name = para[i].getParameterName();
+			if(para[i].getParameter() == null ) {
+				;
+			} else if(name.equals("BSC_CardLine_ID")) {
+				BigDecimal tmp = (BigDecimal) para[i].getParameter();
+				BSC_CardLine_ID = tmp.intValue() ;
+			} else {
+				log.log(Level.SEVERE,"CalcCardLine: Unknown parameter - "+name);
+			}
+		}
 	}
 
 	/* (non-Javadoc)
@@ -27,7 +42,14 @@ public class CalcCardLine extends SvrProcess {
 	 */
 	@Override
 	protected String doIt() throws Exception {
-		// TODO Auto-generated method stub
+		log.log(Level.INFO,"CalcCardLine: BSC_CardLine_ID - "+BSC_CardLine_ID);
+		if (BSC_CardLine_ID > 0) {
+			MBSCCardLine cardLine = new MBSCCardLine(Env.getCtx(),BSC_CardLine_ID,null);
+			BigDecimal result = cardLine.calculate();
+			log.log(Level.INFO,"CalcCardLine: result - "+result.toString());
+			cardLine.setValueNumber(result);
+			cardLine.save();
+		}
 		return null;
 	}
 

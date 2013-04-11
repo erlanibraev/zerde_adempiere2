@@ -67,7 +67,7 @@ public class CalloutParameterLine extends CalloutEngine {
 	 */
 	private void fill(int BSC_ParameterLine_ID, Set<String> variables) {
 		HashMap<String, MVariable> currentVariable = getCurrentVariable(BSC_ParameterLine_ID);
-		// Добавляем не существующие пперменные
+		// Добавляем не существующие переменные
 		for(String var: variables) {
 			boolean b = false;
 			for(String key: currentVariable.keySet()) {

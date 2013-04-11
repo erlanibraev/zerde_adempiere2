@@ -35,12 +35,13 @@ public class MParameter extends X_BSC_Parameter {
 	private BigDecimal C_BPartner_ID = null;
 
 	public BigDecimal getC_BPartner_ID() {
-		String sql = "SELECT C_BPartner_ID FROM BSC_BPartner_Parameter WHERE BSC_Parameter_ID = ?";
+		String sql = "SELECT C_BPartner_ID FROM BSC_BPartner_Parameter WHERE BSC_Parameter_ID = ? and C_Period_ID = ?";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;		
 		try {
 			pstmt = DB.prepareStatement(sql,null);
 			pstmt.setInt (1, getBSC_Parameter_ID());
+			pstmt.setInt (2, getPeriod().getC_Period_ID());
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
 				C_BPartner_ID = rs.getBigDecimal(COLUMNNAME_C_BPartner_ID);
@@ -60,15 +61,15 @@ public class MParameter extends X_BSC_Parameter {
 
 	public void setC_BPartner_ID(BigDecimal c_Bpartner_ID) {
 		if (getC_BPartner_ID() != null && !getC_BPartner_ID().equals(c_Bpartner_ID)) {
-			deleteC_BPartner_ID();
-			insertC_BPartner_ID(c_Bpartner_ID);
+			deleteC_BPartner_ID(c_Bpartner_ID.intValue(),getPeriod().getC_Period_ID());
+			insertC_BPartner_ID(c_Bpartner_ID,getPeriod().getC_Period_ID());
 		} else if(getC_BPartner_ID() == null && c_Bpartner_ID != null) {
-			insertC_BPartner_ID(c_Bpartner_ID);
+			insertC_BPartner_ID(c_Bpartner_ID,getPeriod().getC_Period_ID());
 		}
 	}
 
-	protected void insertC_BPartner_ID (BigDecimal c_Bpartner_ID) {
-		String sql = "INSERT INTO BSC_BPartner_Parameter (C_BPartner_ID,BSC_Parameter_ID) VALUE (?,?)";
+	protected void insertC_BPartner_ID (BigDecimal c_Bpartner_ID, int c_Period_ID) {
+		String sql = "INSERT INTO BSC_BPartner_Parameter (C_BPartner_ID,BSC_Parameter_ID, C_Period_ID) VALUE (?,?,?)";
 		PreparedStatement pstmt = null;
 		BigDecimal C_BPartner_ID_old = c_Bpartner_ID;
 		int rs = 0;		
@@ -76,6 +77,7 @@ public class MParameter extends X_BSC_Parameter {
 			pstmt = DB.prepareStatement(sql,null);
 			pstmt.setInt (1, getBSC_Parameter_ID());
 			pstmt.setInt (2, c_Bpartner_ID.intValue());
+			pstmt.setInt (3, c_Period_ID);
 			rs = pstmt.executeUpdate();
 			if (rs > 0) {
 				C_BPartner_ID = c_Bpartner_ID;
@@ -94,14 +96,16 @@ public class MParameter extends X_BSC_Parameter {
 
 	}
 	
-	protected void deleteC_BPartner_ID() {
-		String sql = "DELETE BSC_BPartner_Parameter WHERE BSC_Parameter_ID = ?";
+	protected void deleteC_BPartner_ID(int c_BPartner_ID, int c_Period_ID) {
+		String sql = "DELETE BSC_BPartner_Parameter WHERE BSC_Parameter_ID = ? and C_BPartner_ID = ? and C_Period_ID = ?";
 		PreparedStatement pstmt = null;
 		BigDecimal C_BPartner_ID_old = getC_BPartner_ID();
 		int rs = 0;		
 		try {
 			pstmt = DB.prepareStatement(sql,null);
 			pstmt.setInt (1, getBSC_Parameter_ID());
+			pstmt.setInt (2, c_BPartner_ID);
+			pstmt.setInt (3, c_Period_ID);
 			rs = pstmt.executeUpdate();
 			if (rs > 0) {
 				C_BPartner_ID = null;
@@ -255,7 +259,7 @@ public class MParameter extends X_BSC_Parameter {
 	
 	protected void loadParameterLine() {
 		parameterLine.clear();
-		String sql = "SELECT * FROM BSC_ParameterLine WHERE BSC_Parameter_ID = ?";
+		String sql = "SELECT * FROM BSC_ParameterLine WHERE BSC_Parameter_ID = ? and isActive = 'Y'";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;		
 		try {
@@ -300,6 +304,76 @@ public class MParameter extends X_BSC_Parameter {
 		} else {
 			result = parameter.getParameterLine(period).getValueNumber();
 		}
+		return result;
+	}
+	
+	protected void addParameterLine(int c_Period_ID) {
+		if(getParameterLine(new MPeriod(Env.getCtx(),c_Period_ID,get_TrxName())) == null) {
+			// ToDo Добавить Линию параметра на основе предыдущего периода.
+			int mp = getMaxPeriodInLine();
+			MParameterLine pl_prev = getParameterLine(new MPeriod(Env.getCtx(),mp,get_TrxName()));
+			MParameterLine pl = new MParameterLine(Env.getCtx(),0,get_TrxName());
+			pl.setC_Period_ID(c_Period_ID);
+			pl.setBSC_Parameter_ID(getBSC_Parameter_ID());
+			pl.setBSC_Formula_ID(pl_prev.getBSC_Formula_ID());
+			pl.setGoal(pl_prev.isGoal());
+			pl.setValueMin(pl_prev.getValueMin());
+			pl.setValueMax(pl_prev.getValueMax());
+			pl.setIsFormula(pl_prev.isFormula());
+			pl.save();
+			if (pl.isFormula()) {
+				pl.addVariables(pl_prev);
+			}
+			loadParameterLine();
+		}
+	}
+
+	/**
+	 * @return
+	 */
+	private int getMaxPeriodInLine() {
+		int result = 0;
+		String sql = " with t1 as ( \n"
+                    +" select pl.* \n"
+                    +"      , p.periodno \n" 
+                    +" from BSC_ParameterLine pl \n"
+                    +" join C_Period p "
+                    +"   on p.C_Period_ID = pl.C_Period_ID \n"
+                    +" ), t2 as ( \n"
+                    +" select BSC_Parameter_ID \n"
+                    +"      , max(periodno) as periodno \n"
+                    +" from t1 \n"     
+                    +" group by BSC_Parameter_ID \n"
+                    +" ), t3 ( \n"
+                    +" select t1.* \n" 
+                    +" from t1 \n"
+                    +" right join t2 \n" 
+                    +"         on t1.BSC_Parameter_ID = t2.BSC_Parameter_ID \n"
+                    +"        and t1.periodno = t2.periodno \n"
+                    +" order by t1.BSC_ParameterLine_ID \n" 
+                    +" ) \n"
+                    +" select C_Period_ID from t3 \n"
+                    +" where BSC_Period_ID = ? \n";
+		
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;		
+		try {
+			pstmt = DB.prepareStatement(sql,null);
+			pstmt.setInt (1, getBSC_Parameter_ID());
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				result = rs.getInt(0);
+			}
+		}
+		catch (SQLException e)
+		{
+			log.log(Level.SEVERE, "product", e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
+		}	
 		return result;
 	}
 	

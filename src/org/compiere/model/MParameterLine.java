@@ -61,7 +61,7 @@ public class MParameterLine extends X_BSC_ParameterLine {
 				par.setPeriod((MPeriod)this.getC_Period());
 				result.put(key,par.getValueNumber());
 			} else {
-				
+				//ToDo если в БД не найдена переменная. Что делать?
 			}
 		}
 		return result;
@@ -86,13 +86,9 @@ public class MParameterLine extends X_BSC_ParameterLine {
 					String key = var.getName();
 					variables.put(key, var);
 				}
-			}
-			catch (SQLException e)
-			{
-				log.log(Level.SEVERE, "product", e);
-			}
-			finally
-			{
+			} catch (SQLException e) {
+				log.log(Level.SEVERE, "MParameterLine: ", e);
+			} finally {
 				DB.close(rs, pstmt);
 				rs = null; pstmt = null;
 			}	
@@ -100,5 +96,39 @@ public class MParameterLine extends X_BSC_ParameterLine {
 		}
 	}
 	
+	protected void addVariables(MParameterLine prev) {
+		deleteVariables();
+		for(String key: prev.getVariables().keySet()) {
+			MVariable var_prev = prev.getVariables().get(key);
+			MVariable var = new MVariable(Env.getCtx(),0,get_TrxName());
+			var.setAD_Client_ID(var_prev.getAD_Client_ID());
+			var.setAD_Org_ID(var_prev.getAD_Org_ID());
+			var.setBSC_Parameter_ID(var_prev.getBSC_Parameter_ID());
+			var.setBSC_ParameterLine_ID(getBSC_ParameterLine_ID());
+			var.setName(var_prev.getName());
+			var.setDescription(var_prev.getDescription());
+			var.save();
+			if (var.getParameter().IsFormula()) {
+				var.getParameter().addParameterLine(getC_Period_ID());
+			}
+			getVariables().put(key, var);
+		}
+	}
 	
+	protected void deleteVariables() {
+		String sql = "DELETE BSC_Variable WHERE BSC_ParameterLine_ID = ?";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;		
+		try {
+			pstmt = DB.prepareStatement(sql,null);
+			pstmt.setInt (1, getBSC_ParameterLine_ID());
+			rs = pstmt.executeQuery();
+			getVariables().clear();
+		} catch (SQLException e) {
+			log.log(Level.SEVERE, "MParameterLine: ", e);
+		} finally {
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
+		}	
+	}
 }
