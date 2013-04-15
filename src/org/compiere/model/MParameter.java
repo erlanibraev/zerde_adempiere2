@@ -46,13 +46,9 @@ public class MParameter extends X_BSC_Parameter {
 			while (rs.next()) {
 				C_BPartner_ID = rs.getBigDecimal(COLUMNNAME_C_BPartner_ID);
 			}
-		}
-		catch (SQLException e)
-		{
+		} catch (SQLException e) {
 			log.log(Level.SEVERE, "product", e);
-		}
-		finally
-		{
+		} finally {
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}	
@@ -83,13 +79,9 @@ public class MParameter extends X_BSC_Parameter {
 				C_BPartner_ID = c_Bpartner_ID;
 				log.log(Level.INFO,"inserted BSC_Parameter_ID = " + Integer.toString(getBSC_Parameter_ID()).toString()+" and C_BPartner_ID = " + (C_BPartner_ID_old == null? " NULL": C_BPartner_ID_old.toString()));
 			}
-		}
-		catch (SQLException e)
-		{
+		} catch (SQLException e) {
 			log.log(Level.SEVERE, "inserted BSC_BPartner_Parameter", e);
-		}
-		finally
-		{
+		} finally {
 			DB.close(pstmt);
 			pstmt = null;
 		}	
@@ -111,13 +103,9 @@ public class MParameter extends X_BSC_Parameter {
 				C_BPartner_ID = null;
 				log.log(Level.INFO,"deleted in BSC_Parameter_ID = " + Integer.toString(getBSC_Parameter_ID()).toString()+" C_BPartner_ID = " + (C_BPartner_ID_old == null? " NULL": C_BPartner_ID_old.toString()));
 			}
-		}
-		catch (SQLException e)
-		{
+		} catch (SQLException e) {
 			log.log(Level.SEVERE, "deleted  BSC_BPartner_Parameter", e);
-		}
-		finally
-		{
+		} finally {
 			DB.close(pstmt);
 			pstmt = null;
 		}	
@@ -270,13 +258,9 @@ public class MParameter extends X_BSC_Parameter {
 				MParameterLine al = new MParameterLine(Env.getCtx(),rs,this.get_TrxName());
 				parameterLine.add(al);
 			}
-		}
-		catch (SQLException e)
-		{
+		} catch (SQLException e) {
 			log.log(Level.SEVERE, "product", e);
-		}
-		finally
-		{
+		} finally {
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}	
@@ -294,7 +278,7 @@ public class MParameter extends X_BSC_Parameter {
 				MVariable var = variable.get(key);
 				MParameter param = new MParameter(Env.getCtx(),var.getBSC_Parameter_ID(),null);
 				if( !forCycle.add(param.getBSC_Parameter_ID())) {
-					// Здесь вызвать исключение
+					// Здесь вызваем исключение, что найден цикл!
 					throw new Exception("MParameter: detected cycle in "+parameter.getName()+"; ID - "+parameter.getBSC_Parameter_ID()+". "+param.getName()+" ID - "+param.getBSC_Parameter_ID()+" parameter exists");
 				}
 				BigDecimal value = runCalc(param, period, forCycle);
@@ -309,7 +293,6 @@ public class MParameter extends X_BSC_Parameter {
 	
 	protected void addParameterLine(int c_Period_ID) {
 		if(getParameterLine(new MPeriod(Env.getCtx(),c_Period_ID,get_TrxName())) == null) {
-			// ToDo Добавить Линию параметра на основе предыдущего периода.
 			int mp = getMaxPeriodInLine();
 			MParameterLine pl_prev = getParameterLine(new MPeriod(Env.getCtx(),mp,get_TrxName()));
 			MParameterLine pl = new MParameterLine(Env.getCtx(),0,get_TrxName());
@@ -321,7 +304,8 @@ public class MParameter extends X_BSC_Parameter {
 			pl.setValueMax(pl_prev.getValueMax());
 			pl.setIsFormula(pl_prev.isFormula());
 			pl.save();
-			if (pl.isFormula()) {
+			if (pl.isFormula()) { // Здесь идет рекурсия по дереву!
+				// ToDo отсечь циклы!
 				pl.addVariables(pl_prev);
 			}
 			loadParameterLine();
@@ -329,7 +313,8 @@ public class MParameter extends X_BSC_Parameter {
 	}
 
 	/**
-	 * @return
+	 * @return 
+	 * Возвращает существующий максимальный период в БД для данного параметра
 	 */
 	private int getMaxPeriodInLine() {
 		int result = 0;
@@ -364,9 +349,7 @@ public class MParameter extends X_BSC_Parameter {
 			while (rs.next()) {
 				result = rs.getInt(0);
 			}
-		}
-		catch (SQLException e)
-		{
+		} catch (SQLException e) {
 			log.log(Level.SEVERE, "product", e);
 		}
 		finally

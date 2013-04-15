@@ -44,18 +44,24 @@ public class CalloutParameterLine extends CalloutEngine {
 	 */
 	public String fillVariables(Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value) {
 		String result = null;
-		BigDecimal BSC_Formula_ID = new BigDecimal(value.toString());
-		if (isCalloutActive() || BSC_Formula_ID == null || BSC_Formula_ID.intValue() == 0) {
-			result = "";
-		} else {
-			try {
-				int BSC_ParameterLine_ID = (Integer) mTab.getValue("BSC_ParameterLine_ID");
-				MFormula formula = new MFormula(Env.getCtx(),BSC_Formula_ID.intValue(),getTrxName());
-				Set variables = formula.getVariables();
-				fill(BSC_ParameterLine_ID,variables);
-			} catch(Exception e) {
-				result = e.getMessage();
-				log.log(Level.SEVERE,"CalloutParameterLine: ",e);
+		if (value != null) {
+			BigDecimal BSC_Formula_ID = new BigDecimal(value.toString());
+			if (isCalloutActive() || BSC_Formula_ID == null || BSC_Formula_ID.intValue() == 0) {
+				result = "";
+			} else {
+				try {
+					mTab.dataSave(true);
+					int BSC_ParameterLine_ID = mTab.getRecord_ID(); 
+					if (mTab.getValue("BSC_ParameterLine_ID") != null) {
+						BSC_ParameterLine_ID = (Integer) mTab.getValue("BSC_ParameterLine_ID");
+					}
+					MFormula formula = new MFormula(Env.getCtx(),BSC_Formula_ID.intValue(),getTrxName());
+					Set<String> variables = formula.getVariables();
+					fill(BSC_ParameterLine_ID,variables);
+				} catch(Exception e) {
+					result = e.getMessage();
+					log.log(Level.SEVERE,"CalloutParameterLine: ",e);
+				}
 			}
 		}
 		return result;

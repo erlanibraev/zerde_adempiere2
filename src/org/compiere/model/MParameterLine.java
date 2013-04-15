@@ -108,7 +108,8 @@ public class MParameterLine extends X_BSC_ParameterLine {
 			var.setName(var_prev.getName());
 			var.setDescription(var_prev.getDescription());
 			var.save();
-			if (var.getParameter().IsFormula()) {
+			if (var.getParameter().IsFormula()) { // Здесь идет рекурсия по дереву! 
+			// ToDo отсечь циклы!
 				var.getParameter().addParameterLine(getC_Period_ID());
 			}
 			getVariables().put(key, var);
