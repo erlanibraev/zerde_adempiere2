@@ -14,6 +14,10 @@ import org.compiere.util.Env;
  */
 public class MBSCCard extends X_BSC_Card {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3366362516386767291L;
 	MPeriod period = null;
 	
 	public MPeriod getPeriod() {

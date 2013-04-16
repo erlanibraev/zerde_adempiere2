@@ -8,6 +8,11 @@ import org.compiere.util.Env;
 
 public class MVariable extends X_BSC_Variable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1887080855954028737L;
+	
 	private MParameter parameter = null;
 	private MParameterLine parameterLine = null;
 	

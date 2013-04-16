@@ -16,6 +16,10 @@ import org.compiere.util.Env;
  */
 public class MBSCCoefficent extends X_BSC_Coefficient {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4959171876051879722L;
 	private MFormula formula = null;
 
 	/**
@@ -77,7 +81,7 @@ public class MBSCCoefficent extends X_BSC_Coefficient {
 		 */
 		BigDecimal result = null;
 		if (getFormula() != null) {
-			HashMap map = new HashMap();
+			HashMap<String,Object> map = new HashMap<String,Object>();
 			map.put("Value", value); // Magic name variable
 			map.put("Max", max); // Magic name variable
 			map.put("Min", min); // Magic name variable

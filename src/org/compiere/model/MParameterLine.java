@@ -4,13 +4,10 @@ import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
-
-import org.compiere.model.MFormula.MVariables;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 
@@ -52,8 +49,8 @@ public class MParameterLine extends X_BSC_ParameterLine {
 		return result;
 	}
 	
-	public HashMap getArguments() {
-		HashMap result = new HashMap();
+	public HashMap<String,Object> getArguments() {
+		HashMap<String,Object> result = new HashMap<String,Object>();
 		for(String key:getVariables().keySet()) {
 			MVariable var = getVariables().get(key);
 			if(var != null) {

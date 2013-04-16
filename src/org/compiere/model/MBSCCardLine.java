@@ -8,13 +8,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
-
 import org.compiere.util.DB;
 import org.compiere.util.Env;
-import org.zkoss.util.logging.Log;
+
 
 /**
  * @author Y.Ibrayev
@@ -22,6 +20,10 @@ import org.zkoss.util.logging.Log;
  */
 public class MBSCCardLine extends X_BSC_CardLine {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5442201269292225823L;
 	private MFormula formula = null;
 	private HashMap<String, Object> arguments = new HashMap<String,Object>();
 	private MBSCCoefficent coefficient = null;
@@ -91,7 +93,7 @@ public class MBSCCardLine extends X_BSC_CardLine {
 		this.formula = formula;
 	}
 
-	public HashMap getArguments() {
+	public HashMap<String,Object> getArguments() {
 		if (arguments.size() == 0) {
 			// ToDo: Add arguments
 			for (String varName: getFormula().getVariables()) {
@@ -105,7 +107,7 @@ public class MBSCCardLine extends X_BSC_CardLine {
 		return arguments;
 	}
 
-	public void setArguments(HashMap arguments) {
+	public void setArguments(HashMap<String,Object> arguments) {
 		this.arguments = arguments;
 	}
 

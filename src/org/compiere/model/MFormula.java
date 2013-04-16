@@ -5,10 +5,8 @@ package org.compiere.model;
 
 import java.math.BigDecimal;
 import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import org.apache.commons.jexl2.Expression;
@@ -23,7 +21,7 @@ public class MFormula extends X_BSC_Formula {
 	 */
 	private static final long serialVersionUID = -5300225632681322857L;
 
-	private HashMap arguments = null;
+	private HashMap<String,Object> arguments = null;
 	private Set<String> variables = null;
 
 	/**
@@ -49,11 +47,11 @@ public class MFormula extends X_BSC_Formula {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public HashMap getArguments() {
+	public HashMap<String,Object> getArguments() {
 		return arguments;
 	}
 
-	public void setArguments(HashMap arguments) {
+	public void setArguments(HashMap<String,Object> arguments) {
 		this.arguments = arguments;
 	}
 
@@ -79,7 +77,7 @@ public class MFormula extends X_BSC_Formula {
 	 * @param args - Input arguments in a hash table 
 	 * @return String - The result of calculation or null 
 	 */
-	public static String calc(String exp, HashMap<String,BigDecimal> args) {
+	public static String calc(String exp, HashMap<String,Object> args) {
 		String result = null;
 		try {
 			JexlEngine jexl = new JexlEngine();
