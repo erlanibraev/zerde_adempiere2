@@ -1,82 +1,118 @@
-<project name="smj" default="dist" basedir=".">
-    <description>
-        Creacion de personalizacion smj : www.smartjsp.com
-    </description>
-  <!-- define propiesdades para este build -->
-  <property file="buildCustomization.properties"/>
-  <property name="src" location="src"/>
-  <property name="srcWeb" location="zkwebui"/>
-  <property name="srcZk" location="srcZk"/>
-  <property name="buildWeb" location="build/WEB-INF/classes"/>	
-  <property name="build" location="build"/>
-  <property name="buildJava" location="buildJava"/>
-  
-
-  <path id="lib.class.path">
-     <fileset dir="${adempiere.home}/lib">
-        <include name="*.jar"/>
-     </fileset>
-  </path>
-  <target name="clean"
+<project name="custom" default="dist" basedir=".">
+	<description>
+		Settings from Vladimir Sokolov
+	</description>
+	<!-- define properties for this build -->
+	<property file="buildCustomization.properties"/>
+	<property name="src" location="src"/>
+	<property name="srcWeb" location="zkwebui"/>
+	<property name="srcZk" location="srczk"/>
+	<property name="buildWeb" location="build/WEB-INF/classes"/>	
+	<property name="build" location="build"/>
+	<property name="buildJava" location="buildJava"/>
+	<!-- Mercurial Revision -->
+	<property name="mr" value="REVISION.INF"/>
+	
+	<path id="lib.class.path">
+	   <fileset dir="${adempiere.home}/lib">
+	      <include name="*.jar"/>
+	   </fileset>
+	</path>
+	<target name="clean"
 	        description="clean up" >
-	    <!-- Delete the ${build} and ${dist} directory trees -->
+		    <!-- Delete the ${build} and ${dist} directory trees -->
 	    <delete dir="${build}"/>
-  	    <delete dir="${buildJava}"/>
-  	<!-- <delete dir="${adempiere.zkCustomLibDir}"/>
-  	    <delete dir="${adempiere.customLibDir}"/>  -->
-  </target>
-  <target name="init" depends="clean" description="inicializa">
-    <echo message="Inicializando proyecto ..."/>
-    <echo message="Trunk PATH: ${adempiere.trunk}"/>
-    <echo message="ADempiere home: ${adempiere.home}"/>
-  	<echo message="ZK Deploy dir: ${adempiere.zkCustomLibDir}"/>
-  	<echo message="Zk Jar file dir: ${adempiere.zkCustomLibDir}/${adempiere.zkCustomJarFile}"/>
-  	<echo message="Deploy dir Java: ${adempiere.customLibDir}"/>
-  	<echo message="Jar file dir: ${adempiere.customLibDir}/${adempiere.customJarFile}"/>
-    <!-- Crea the time stamp -->
-    <tstamp/>
-  	<!-- Crea el directorio del build -->
-  	    <mkdir dir="${buildJava}"/>
-    <!-- Crea el directorio del build para Web-->
-    <mkdir dir="${build}"/>
-  	<copy todir="${buildJava}">
-  	  	     	<fileset dir="${src}">
-  	  	  	       <include name="**/*.png"/>
-  	  	     	   <exclude name="**/*.java"/>
-  	  	  		 </fileset>
-  	  	</copy>
-  	<copy todir="${build}">
-  	     	<fileset dir="${srcWeb}">
-  	  	       <include name="**/*"/>
-  	  		 </fileset>
-  	</copy>
-  	<mkdir dir="${build}/WEB-INF/classes"/>
-  </target>
-
-  <target name="compile" depends="init" description="compilando codigo fuente ">
-       <!-- Compila el codigo java (base) desde ${src} a ${build_java}  -->
-    <javac srcdir="${src}" destdir="${buildJava}">
-      <classpath refid="lib.class.path"/>
-    </javac>
-    
-  	<!-- Compila el codigo java (de ZK) desde ${srcZk} a ${buildWeb)-->
-  	    <javac srcdir="${srcZk}" destdir="${buildWeb}">
-  	      <classpath refid="lib.class.path"/>
-  	    </javac>
-  </target>
-
-  <target name="dist" depends="compile" description="genera el jar final" >
-    <!-- Crea directorio para despligue del jar -->
-  	<mkdir dir="${adempiere.customLibDir}"/>
-  	<!-- Crea directorio para despligue del jar de ZK -->
-    <mkdir dir="${adempiere.zkCustomLibDir}"/>
-  	
-  	<!-- crea archivo .jar file de solo java  -->
-  	<jar jarfile="${adempiere.customLibDir}/${adempiere.customJarFile}" basedir="${buildJava}"/>
-  	 <!-- crea archivo .jar file de zk-->
-    <jar jarfile="${adempiere.zkCustomLibDir}/${adempiere.zkCustomJarFile}" basedir="${build}"/>
-  	
-  </target>
-
-
+		<delete dir="${buildJava}"/>
+	</target>
+	<target name="init" depends="clean" description="initializes">
+	  <echo message="Initialize project ..."/>
+	  <echo message="Trunk PATH: ${adempiere.trunk}"/>
+	  <echo message="ADempiere home: ${adempiere.home}"/>
+		<echo message="ZK Deploy dir: ${adempiere.zkCustomLibDir}"/>
+		<echo message="Zk Jar file dir: ${adempiere.zkCustomLibDir}/${adempiere.zkCustomJarFile}"/>
+		<echo message="Deploy dir Java: ${adempiere.customLibDir}"/>
+		<echo message="Jar file dir: ${adempiere.customLibDir}/${adempiere.customJarFile}"/>
+		<!-- Create the timestamp -->
+	  <tstamp/>
+		<!-- Create directory del build -->
+		    <mkdir dir="${buildJava}"/>
+		<!-- Create directory del build para Web-->
+	  <mkdir dir="${build}"/>
+		<copy todir="${buildJava}">
+		  	     	<fileset dir="${src}">
+		  	  	       <include name="**/*.png"/>
+		  	     	   <exclude name="**/*.java"/>
+		  	  		 </fileset>
+		  	</copy>
+		<mkdir dir="${build}/WEB-INF/classes"/>
+	</target>
+	
+	<target name="compile" depends="init" description="compiling source code ">
+		<!-- Compile the java code (base) from ${src} to ${build_java}  -->  	
+	  <javac srcdir="${src}" destdir="${buildJava}" includeantruntime="false" encoding="UTF-8" debug="true">
+	    <classpath refid="lib.class.path"/>
+	  	<compilerarg value="-Xlint"/>
+	  </javac>
+	  
+	<!-- Compile the java code (ZK) from ${srcZk} to ${buildWeb)-->
+		    <javac srcdir="${srcWeb}" destdir="${buildWeb}" includeantruntime="false" encoding="UTF-8" debug="true">
+		      <classpath refid="lib.class.path"/>
+		    	<compilerarg value="-Xlint"/>
+		    </javac>
+	</target>
+	
+	<target name="InitOS">
+		<condition property="isWindows">
+		<os family="windows" />
+	</condition>
+	</target>
+		
+	<!-- Get information about local revision -->
+	<target name="RunMRWin" depends="InitOS" if="isWindows" >
+		<exec dir="${basedir}" executable="RunMR.bat" 
+			spawn="false" resolveexecutable="true">
+		</exec>
+	</target>
+	
+	<target name="RunMRNonWin" depends="InitOS" unless="isWindows" >
+		<chmod dir="${basedir}" perm="ugo+rx" includes="RunMR.sh"/>
+			<exec dir="${basedir}" executable="RunMR.sh" 
+				spawn="false" resolveexecutable="true">
+			</exec>
+	</target>
+	
+	<target name="runSetup">
+		<antcall target="RunMRWin"></antcall>
+		<antcall target="RunMRNonWin"></antcall>
+	</target>
+		
+	<target name="dist" depends="compile,runSetup" description="generates the jar end" >
+		<!-- Create directory for deploying the jar -->
+		<mkdir dir="${adempiere.customLibDir}"/>
+		<!-- Create directory for deploying the jar of ZK -->
+	  <mkdir dir="${adempiere.zkCustomLibDir}"/>
+		
+		<!-- create file. jar file java-only  -->
+		<jar jarfile="${adempiere.customLibDir}/${adempiere.customJarFile}" basedir="${buildJava}">
+			<zipfileset dir="${basedir}" includes="REVISION*" prefix="META-INF"/>
+			<manifest>
+			<attribute name="Developer" value="${adempiere.developer}"/>
+				<attribute name="Created" value="${TODAY} - time: ${TSTAMP}"/>
+			</manifest>	
+		</jar>
+		<!-- create file. jar file of zk-->
+	  <jar jarfile="${adempiere.zkCustomLibDir}/${adempiere.zkCustomJarFile}" basedir="${build}">
+	  	<zipfileset dir="${basedir}" includes="REVISION*" prefix="META-INF"/>
+	  	<manifest>
+	  		<attribute name="Developer" value="${adempiere.developer}"/>
+	  	  	<attribute name="Created" value="${TODAY} - time: ${TSTAMP}"/>
+	  	</manifest>	
+	 	</jar>
+		
+		<delete>
+		   <fileset dir="${basedir}" includes="REVISION*"/>
+		</delete>
+		
+	</target>
+		
 </project>
