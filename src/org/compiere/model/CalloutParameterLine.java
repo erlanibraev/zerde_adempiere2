@@ -7,14 +7,10 @@ import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
-
-import org.compiere.model.MFormula.MVariables;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 
@@ -122,13 +118,9 @@ public class CalloutParameterLine extends CalloutEngine {
 				MVariable var = new MVariable(Env.getCtx(),rs,this.getTrxName());
 				currentVariable.put(var.getName(), var);
 			}
-		}
-		catch (SQLException e)
-		{
+		} catch (SQLException e) {
 			log.log(Level.SEVERE, "CalloutParameterLine: ", e);
-		}
-		finally
-		{
+		} finally {
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}	

@@ -158,6 +158,45 @@ public interface I_BSC_Card
 	  */
 	public int getCreatedBy();
 
+    /** Column name DateAcct */
+    public static final String COLUMNNAME_DateAcct = "DateAcct";
+
+	/** Set Account Date.
+	  * Accounting Date
+	  */
+	public void setDateAcct (Timestamp DateAcct);
+
+	/** Get Account Date.
+	  * Accounting Date
+	  */
+	public Timestamp getDateAcct();
+
+    /** Column name DateFrom */
+    public static final String COLUMNNAME_DateFrom = "DateFrom";
+
+	/** Set Date From.
+	  * Starting date for a range
+	  */
+	public void setDateFrom (Timestamp DateFrom);
+
+	/** Get Date From.
+	  * Starting date for a range
+	  */
+	public Timestamp getDateFrom();
+
+    /** Column name DateTo */
+    public static final String COLUMNNAME_DateTo = "DateTo";
+
+	/** Set Date To.
+	  * End date of a date range
+	  */
+	public void setDateTo (Timestamp DateTo);
+
+	/** Get Date To.
+	  * End date of a date range
+	  */
+	public Timestamp getDateTo();
+
     /** Column name Description */
     public static final String COLUMNNAME_Description = "Description";
 
@@ -236,6 +275,19 @@ public interface I_BSC_Card
 	  */
 	public String getName();
 
+    /** Column name Posted */
+    public static final String COLUMNNAME_Posted = "Posted";
+
+	/** Set Posted.
+	  * Posting status
+	  */
+	public void setPosted (boolean Posted);
+
+	/** Get Posted.
+	  * Posting status
+	  */
+	public boolean isPosted();
+
     /** Column name Processed */
     public static final String COLUMNNAME_Processed = "Processed";
 
@@ -248,6 +300,19 @@ public interface I_BSC_Card
 	  * The document has been processed
 	  */
 	public boolean isProcessed();
+
+    /** Column name ProcessedOn */
+    public static final String COLUMNNAME_ProcessedOn = "ProcessedOn";
+
+	/** Set Processed On.
+	  * The date+time (expressed in decimal format) when the document has been processed
+	  */
+	public void setProcessedOn (BigDecimal ProcessedOn);
+
+	/** Get Processed On.
+	  * The date+time (expressed in decimal format) when the document has been processed
+	  */
+	public BigDecimal getProcessedOn();
 
     /** Column name Processing */
     public static final String COLUMNNAME_Processing = "Processing";

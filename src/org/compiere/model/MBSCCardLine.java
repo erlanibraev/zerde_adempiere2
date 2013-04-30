@@ -10,6 +10,8 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Properties;
 import java.util.logging.Level;
+
+import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 
@@ -19,6 +21,8 @@ import org.compiere.util.Env;
  *
  */
 public class MBSCCardLine extends X_BSC_CardLine {
+	
+	protected static CLogger sLog = CLogger.getCLogger ("MBSCCardLine"); 
 	
 	/**
 	 * 
@@ -184,7 +188,8 @@ public class MBSCCardLine extends X_BSC_CardLine {
 	}
 	
 	private MFormula getFormulaByUnit() {
-		MFormula result = null;
+		MFormula result = getFormulaByUnit(getUnit());
+/*		
 		String sql = "SELECT * FROM BSC_Formula WHERE BSC_Formula_ID in (SELECT BSC_Formula_ID FROM BSC_UnitFormula WHERE Unit = ?)";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;		
@@ -195,16 +200,13 @@ public class MBSCCardLine extends X_BSC_CardLine {
 			if (rs.next()) {
 				result = new MFormula(Env.getCtx(), rs, get_TrxName());
 			}
-		}
-		catch (SQLException e)
-		{
+		} catch (SQLException e) {
 			log.log(Level.SEVERE, "product", e);
-		}
-		finally
-		{
+		} finally {
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
-		}	
+		}
+*/			
 		return result;
 	}
 	
@@ -218,4 +220,27 @@ public class MBSCCardLine extends X_BSC_CardLine {
 	public void setParameter(MParameter parameter) {
 		this.parameter = parameter;
 	}
+	
+	public static MFormula getFormulaByUnit(String unit) {
+		MFormula result = null;
+		String sql = "SELECT * FROM BSC_Formula WHERE BSC_Formula_ID in (SELECT BSC_Formula_ID FROM BSC_UnitFormula WHERE Unit = ?)";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;		
+		try {
+			pstmt = DB.prepareStatement(sql,null);
+			pstmt.setString (1, unit);
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				result = new MFormula(Env.getCtx(), rs, null);
+			}
+		} catch (SQLException e) {
+			sLog.log(Level.SEVERE, "product", e);
+		} finally {
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
+		}	
+		return result;
+	}
+	
+	
 }

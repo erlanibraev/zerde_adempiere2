@@ -17,8 +17,11 @@
 /** Generated Model - DO NOT CHANGE */
 package org.compiere.model;
 
+import java.math.BigDecimal;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.Properties;
+import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for BSC_Card
@@ -30,7 +33,7 @@ public class X_BSC_Card extends PO implements I_BSC_Card, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130408L;
+	private static final long serialVersionUID = 20130426L;
 
     /** the default Constructor */
     public X_BSC_Card(Properties ctx)
@@ -233,6 +236,57 @@ public class X_BSC_Card extends PO implements I_BSC_Card, I_Persistent
 		return ii.intValue();
 	}
 
+	/** Set Account Date.
+		@param DateAcct 
+		Accounting Date
+	  */
+	public void setDateAcct (Timestamp DateAcct)
+	{
+		set_Value (COLUMNNAME_DateAcct, DateAcct);
+	}
+
+	/** Get Account Date.
+		@return Accounting Date
+	  */
+	public Timestamp getDateAcct () 
+	{
+		return (Timestamp)get_Value(COLUMNNAME_DateAcct);
+	}
+
+	/** Set Date From.
+		@param DateFrom 
+		Starting date for a range
+	  */
+	public void setDateFrom (Timestamp DateFrom)
+	{
+		set_Value (COLUMNNAME_DateFrom, DateFrom);
+	}
+
+	/** Get Date From.
+		@return Starting date for a range
+	  */
+	public Timestamp getDateFrom () 
+	{
+		return (Timestamp)get_Value(COLUMNNAME_DateFrom);
+	}
+
+	/** Set Date To.
+		@param DateTo 
+		End date of a date range
+	  */
+	public void setDateTo (Timestamp DateTo)
+	{
+		set_Value (COLUMNNAME_DateTo, DateTo);
+	}
+
+	/** Get Date To.
+		@return End date of a date range
+	  */
+	public Timestamp getDateTo () 
+	{
+		return (Timestamp)get_Value(COLUMNNAME_DateTo);
+	}
+
 	/** Set Description.
 		@param Description 
 		Optional short description of the record
@@ -250,12 +304,39 @@ public class X_BSC_Card extends PO implements I_BSC_Card, I_Persistent
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
+	/** DocAction AD_Reference_ID=131 */
+	public static final int DOCACTION_AD_Reference_ID=131;
+	/** Drafted = DR */
+	public static final String DOCACTION_Drafted = "DR";
+	/** Completed = CO */
+	public static final String DOCACTION_Completed = "CO";
+	/** Approved = AP */
+	public static final String DOCACTION_Approved = "AP";
+	/** Not Approved = NA */
+	public static final String DOCACTION_NotApproved = "NA";
+	/** Voided = VO */
+	public static final String DOCACTION_Voided = "VO";
+	/** Invalid = IN */
+	public static final String DOCACTION_Invalid = "IN";
+	/** Reversed = RE */
+	public static final String DOCACTION_Reversed = "RE";
+	/** Closed = CL */
+	public static final String DOCACTION_Closed = "CL";
+	/** Unknown = ?? */
+	public static final String DOCACTION_Unknown = "??";
+	/** In Progress = IP */
+	public static final String DOCACTION_InProgress = "IP";
+	/** Waiting Payment = WP */
+	public static final String DOCACTION_WaitingPayment = "WP";
+	/** Waiting Confirmation = WC */
+	public static final String DOCACTION_WaitingConfirmation = "WC";
 	/** Set Document Action.
 		@param DocAction 
 		The targeted status of the document
 	  */
 	public void setDocAction (String DocAction)
 	{
+
 		set_Value (COLUMNNAME_DocAction, DocAction);
 	}
 
@@ -311,12 +392,39 @@ public class X_BSC_Card extends PO implements I_BSC_Card, I_Persistent
 		return (String)get_Value(COLUMNNAME_DocStatus);
 	}
 
+	/** DocumentNo AD_Reference_ID=131 */
+	public static final int DOCUMENTNO_AD_Reference_ID=131;
+	/** Drafted = DR */
+	public static final String DOCUMENTNO_Drafted = "DR";
+	/** Completed = CO */
+	public static final String DOCUMENTNO_Completed = "CO";
+	/** Approved = AP */
+	public static final String DOCUMENTNO_Approved = "AP";
+	/** Not Approved = NA */
+	public static final String DOCUMENTNO_NotApproved = "NA";
+	/** Voided = VO */
+	public static final String DOCUMENTNO_Voided = "VO";
+	/** Invalid = IN */
+	public static final String DOCUMENTNO_Invalid = "IN";
+	/** Reversed = RE */
+	public static final String DOCUMENTNO_Reversed = "RE";
+	/** Closed = CL */
+	public static final String DOCUMENTNO_Closed = "CL";
+	/** Unknown = ?? */
+	public static final String DOCUMENTNO_Unknown = "??";
+	/** In Progress = IP */
+	public static final String DOCUMENTNO_InProgress = "IP";
+	/** Waiting Payment = WP */
+	public static final String DOCUMENTNO_WaitingPayment = "WP";
+	/** Waiting Confirmation = WC */
+	public static final String DOCUMENTNO_WaitingConfirmation = "WC";
 	/** Set Document No.
 		@param DocumentNo 
 		Document sequence number of the document
 	  */
 	public void setDocumentNo (String DocumentNo)
 	{
+
 		set_Value (COLUMNNAME_DocumentNo, DocumentNo);
 	}
 
@@ -353,6 +461,30 @@ public class X_BSC_Card extends PO implements I_BSC_Card, I_Persistent
         return new KeyNamePair(get_ID(), getName());
     }
 
+	/** Set Posted.
+		@param Posted 
+		Posting status
+	  */
+	public void setPosted (boolean Posted)
+	{
+		set_Value (COLUMNNAME_Posted, Boolean.valueOf(Posted));
+	}
+
+	/** Get Posted.
+		@return Posting status
+	  */
+	public boolean isPosted () 
+	{
+		Object oo = get_Value(COLUMNNAME_Posted);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
 	/** Set Processed.
 		@param Processed 
 		The document has been processed
@@ -375,6 +507,26 @@ public class X_BSC_Card extends PO implements I_BSC_Card, I_Persistent
 			return "Y".equals(oo);
 		}
 		return false;
+	}
+
+	/** Set Processed On.
+		@param ProcessedOn 
+		The date+time (expressed in decimal format) when the document has been processed
+	  */
+	public void setProcessedOn (BigDecimal ProcessedOn)
+	{
+		set_Value (COLUMNNAME_ProcessedOn, ProcessedOn);
+	}
+
+	/** Get Processed On.
+		@return The date+time (expressed in decimal format) when the document has been processed
+	  */
+	public BigDecimal getProcessedOn () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_ProcessedOn);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
 	}
 
 	/** Set Process Now.

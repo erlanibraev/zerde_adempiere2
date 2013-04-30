@@ -77,7 +77,7 @@ public class MBSCCoefficent extends X_BSC_Coefficient {
 	public BigDecimal calcCoefficient(String value, BigDecimal max, BigDecimal min) {
 		/* Warning BullSheet detected!
 		 * powered by Ibrayev Y.E.
-		 * При ффоде формулы расчета коэффициента обязательно  
+		 * При вводе формулы расчета коэффициента обязательно  
 		 */
 		BigDecimal result = null;
 		if (getFormula() != null) {
