@@ -142,6 +142,19 @@ public interface I_BSC_Card
 
 	public org.compiere.model.I_C_Period getC_Period() throws RuntimeException;
 
+    /** Column name CalcButton */
+    public static final String COLUMNNAME_CalcButton = "CalcButton";
+
+	/** Set CalcButton.
+	  * CalcButton
+	  */
+	public void setCalcButton (String CalcButton);
+
+	/** Get CalcButton.
+	  * CalcButton
+	  */
+	public String getCalcButton();
+
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
 
@@ -338,4 +351,17 @@ public interface I_BSC_Card
 	  * User who updated this records
 	  */
 	public int getUpdatedBy();
+
+    /** Column name ValueNumber */
+    public static final String COLUMNNAME_ValueNumber = "ValueNumber";
+
+	/** Set Value.
+	  * Numeric Value
+	  */
+	public void setValueNumber (BigDecimal ValueNumber);
+
+	/** Get Value.
+	  * Numeric Value
+	  */
+	public BigDecimal getValueNumber();
 }

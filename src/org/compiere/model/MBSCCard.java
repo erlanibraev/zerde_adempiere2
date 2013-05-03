@@ -5,12 +5,19 @@ package org.compiere.model;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Properties;
+import java.util.logging.Level;
+
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.process.DocAction;
 import org.compiere.process.BSCDocumentEngine;
+
 
 /**
  * @author Y.Ibrayev
@@ -24,7 +31,42 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 	
 	MPeriod period = null;
 
+	private ArrayList<MBSCCardLine> cardLine = new ArrayList<MBSCCardLine>(); 
+	private MParameter parameter = null; 
 	
+	public MParameter getParameter() {
+		if (parameter == null && getBSC_Parameter_ID() > 0) {
+			parameter = new MParameter(Env.getCtx(),getBSC_Parameter_ID(),get_TrxName());
+			parameter.setPeriod(getPeriod());
+		}
+		return parameter;
+	}
+
+	public void setParameter(MParameter parameter) {
+		this.parameter = parameter;
+	}
+
+	public ArrayList<MBSCCardLine> getCardLine() {
+		cardLine.clear();
+		String sql = "SELECT * FROM BSC_CardLine WHERE BSC_Card_ID = ?  AND isActive = 'Y'";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;		
+		try {
+			pstmt = DB.prepareStatement(sql,null);
+			pstmt.setInt(1, getBSC_Card_ID());
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				cardLine.add(new MBSCCardLine(Env.getCtx(), rs, null));
+			}
+		} catch (SQLException e) {
+			log.log(Level.SEVERE, "product", e);
+		} finally {
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
+		}	
+		return cardLine;
+	}
+
 	public MPeriod getPeriod() {
 		if (period == null || period.getC_Period_ID() != getC_Period_ID()) {
 			setPeriod(new MPeriod(Env.getCtx(),getC_Period_ID(),get_TrxName()));
@@ -59,6 +101,18 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 	 */
 	public MBSCCard(Properties ctx) {
 		super(ctx);
+	}
+	
+	public BigDecimal calculate() {
+		BigDecimal result = new BigDecimal(0);
+		for(MBSCCardLine line:getCardLine()) {
+			result = result.add(line.calculate());
+		}
+		if (getBSC_Parameter_ID() > 0 ) {
+			setValueNumber(result);
+			save();
+		}
+		return result;
 	}
 
 	/**	Process Message 			*/
@@ -104,9 +158,9 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 	public String prepareIt() {
 		log.severe("BSC_Card: prepareIt()");
 		String result = DocAction.STATUS_Invalid;
-		if (DOCSTATUS_NotApproved.equals(getDocStatus()) || DOCSTATUS_Drafted.equals(getDocStatus())) {
-			setDocStatus(DOCSTATUS_WaitingConfirmation);
-			result = DOCSTATUS_WaitingConfirmation;
+		if (STATUS_NotApproved.equals(getDocStatus()) || STATUS_Drafted.equals(getDocStatus())) {
+			setDocStatus(STATUS_WaitingConfirmation);
+			result = STATUS_WaitingConfirmation;
 		}
 		return result;
 	}
@@ -117,7 +171,7 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 	@Override
 	public boolean approveIt() {
 		log.severe("BSC_Card: approveIt()");
-		setDocStatus(DOCSTATUS_Approved);
+		setDocStatus(STATUS_Approved);
 		return true;
 	}
 
@@ -127,7 +181,7 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 	@Override
 	public boolean rejectIt() {
 		log.severe("BSC_Card: rejectIt()");
-		setDocStatus(DOCSTATUS_Drafted);
+		setDocStatus(STATUS_Drafted);
 		return true;
 	}
 
@@ -138,9 +192,9 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 	public String completeIt() {
 		log.severe("BSC_Card: completeIt()");
 		String result = DocAction.STATUS_Invalid;
-		if (DOCSTATUS_WaitingConfirmation.equals(getDocStatus())) {
-			setDocStatus(DOCSTATUS_InProgress);
-			result  = DOCSTATUS_InProgress;
+		if (STATUS_WaitingConfirmation.equals(getDocStatus())) {
+			setDocStatus(STATUS_InProgress);
+			result  = STATUS_InProgress;
 		}
 		return result;
 	}
@@ -156,9 +210,9 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 		if (m_processMsg != null)
 			return false;
 
-		if (DOCSTATUS_Closed.equals(getDocStatus())
-			|| DOCSTATUS_Reversed.equals(getDocStatus())
-			|| DOCSTATUS_Voided.equals(getDocStatus()))
+		if (STATUS_Closed.equals(getDocStatus())
+			|| STATUS_Reversed.equals(getDocStatus())
+			|| STATUS_Voided.equals(getDocStatus()))
 		{
 			m_processMsg = "Document Closed: " + getDocStatus();
 			setDocAction(DocAction.ACTION_None);
@@ -193,7 +247,7 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_CLOSE);
 		if (m_processMsg != null)
 			return false;
-		setDocStatus(DOCSTATUS_Closed);
+		setDocStatus(STATUS_Closed);
 		return true;
 	}
 
@@ -221,7 +275,7 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 	@Override
 	public boolean reActivateIt() {
 		log.severe("BSC_Card: reActivateIt()");
-		setDocStatus(DOCSTATUS_Drafted);
+		setDocStatus(STATUS_Drafted);
 		setProcessed(false);
 		setDocAction(DocAction.ACTION_None);
 		return true;
@@ -305,4 +359,13 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 		}
 		return result;
 	}
+	
+	@Override
+	public void setValueNumber (BigDecimal ValueNumber)
+	{
+		super.setValueNumber(ValueNumber);
+		getParameter().setValueNumber(ValueNumber);
+		getParameter().save();
+	}
+
 }

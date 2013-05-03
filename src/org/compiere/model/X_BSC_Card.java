@@ -33,7 +33,7 @@ public class X_BSC_Card extends PO implements I_BSC_Card, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130426L;
+	private static final long serialVersionUID = 20130503L;
 
     /** the default Constructor */
     public X_BSC_Card(Properties ctx)
@@ -236,6 +236,23 @@ public class X_BSC_Card extends PO implements I_BSC_Card, I_Persistent
 		return ii.intValue();
 	}
 
+	/** Set CalcButton.
+		@param CalcButton 
+		CalcButton
+	  */
+	public void setCalcButton (String CalcButton)
+	{
+		set_Value (COLUMNNAME_CalcButton, CalcButton);
+	}
+
+	/** Get CalcButton.
+		@return CalcButton
+	  */
+	public String getCalcButton () 
+	{
+		return (String)get_Value(COLUMNNAME_CalcButton);
+	}
+
 	/** Set Account Date.
 		@param DateAcct 
 		Accounting Date
@@ -304,32 +321,20 @@ public class X_BSC_Card extends PO implements I_BSC_Card, I_Persistent
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
-	/** DocAction AD_Reference_ID=131 */
-	public static final int DOCACTION_AD_Reference_ID=131;
-	/** Drafted = DR */
-	public static final String DOCACTION_Drafted = "DR";
-	/** Completed = CO */
-	public static final String DOCACTION_Completed = "CO";
-	/** Approved = AP */
-	public static final String DOCACTION_Approved = "AP";
-	/** Not Approved = NA */
-	public static final String DOCACTION_NotApproved = "NA";
-	/** Voided = VO */
-	public static final String DOCACTION_Voided = "VO";
-	/** Invalid = IN */
-	public static final String DOCACTION_Invalid = "IN";
-	/** Reversed = RE */
-	public static final String DOCACTION_Reversed = "RE";
-	/** Closed = CL */
-	public static final String DOCACTION_Closed = "CL";
-	/** Unknown = ?? */
-	public static final String DOCACTION_Unknown = "??";
-	/** In Progress = IP */
-	public static final String DOCACTION_InProgress = "IP";
-	/** Waiting Payment = WP */
-	public static final String DOCACTION_WaitingPayment = "WP";
-	/** Waiting Confirmation = WC */
-	public static final String DOCACTION_WaitingConfirmation = "WC";
+	/** DocAction AD_Reference_ID=1000135 */
+	public static final int DOCACTION_AD_Reference_ID=1000135;
+	/** На проверку = WC */
+	public static final String DOCACTION_НаПроверку = "WC";
+	/** Проверен = CO */
+	public static final String DOCACTION_Проверен = "CO";
+	/** Одобрить = AP */
+	public static final String DOCACTION_Одобрить = "AP";
+	/** Отклонить = RJ */
+	public static final String DOCACTION_Отклонить = "RJ";
+	/** Закрыть = CL */
+	public static final String DOCACTION_Закрыть = "CL";
+	/** <НЕТ> = -- */
+	public static final String DOCACTION_НЕТ = "--";
 	/** Set Document Action.
 		@param DocAction 
 		The targeted status of the document
@@ -348,32 +353,22 @@ public class X_BSC_Card extends PO implements I_BSC_Card, I_Persistent
 		return (String)get_Value(COLUMNNAME_DocAction);
 	}
 
-	/** DocStatus AD_Reference_ID=131 */
-	public static final int DOCSTATUS_AD_Reference_ID=131;
-	/** Drafted = DR */
-	public static final String DOCSTATUS_Drafted = "DR";
-	/** Completed = CO */
-	public static final String DOCSTATUS_Completed = "CO";
-	/** Approved = AP */
-	public static final String DOCSTATUS_Approved = "AP";
-	/** Not Approved = NA */
-	public static final String DOCSTATUS_NotApproved = "NA";
-	/** Voided = VO */
-	public static final String DOCSTATUS_Voided = "VO";
-	/** Invalid = IN */
-	public static final String DOCSTATUS_Invalid = "IN";
-	/** Reversed = RE */
-	public static final String DOCSTATUS_Reversed = "RE";
-	/** Closed = CL */
-	public static final String DOCSTATUS_Closed = "CL";
-	/** Unknown = ?? */
-	public static final String DOCSTATUS_Unknown = "??";
-	/** In Progress = IP */
-	public static final String DOCSTATUS_InProgress = "IP";
-	/** Waiting Payment = WP */
-	public static final String DOCSTATUS_WaitingPayment = "WP";
-	/** Waiting Confirmation = WC */
-	public static final String DOCSTATUS_WaitingConfirmation = "WC";
+	/** DocStatus AD_Reference_ID=1000134 */
+	public static final int DOCSTATUS_AD_Reference_ID=1000134;
+	/** <НЕТ> = NA */
+	public static final String DOCSTATUS_НЕТ = "NA";
+	/** Сформирован = DR */
+	public static final String DOCSTATUS_Сформирован = "DR";
+	/** Проверка = WC */
+	public static final String DOCSTATUS_Проверка = "WC";
+	/** Проверено = IP */
+	public static final String DOCSTATUS_Проверено = "IP";
+	/** Одобрен = AP */
+	public static final String DOCSTATUS_Одобрен = "AP";
+	/** Отклонен = RE */
+	public static final String DOCSTATUS_Отклонен = "RE";
+	/** Закрыт = CL */
+	public static final String DOCSTATUS_Закрыт = "CL";
 	/** Set Document Status.
 		@param DocStatus 
 		The current status of the document
@@ -548,5 +543,25 @@ public class X_BSC_Card extends PO implements I_BSC_Card, I_Persistent
 			return "Y".equals(oo);
 		}
 		return false;
+	}
+
+	/** Set Value.
+		@param ValueNumber 
+		Numeric Value
+	  */
+	public void setValueNumber (BigDecimal ValueNumber)
+	{
+		set_Value (COLUMNNAME_ValueNumber, ValueNumber);
+	}
+
+	/** Get Value.
+		@return Numeric Value
+	  */
+	public BigDecimal getValueNumber () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_ValueNumber);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
 	}
 }

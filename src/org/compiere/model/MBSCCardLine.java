@@ -69,7 +69,9 @@ public class MBSCCardLine extends X_BSC_CardLine {
 				calcParameter();
 			}
 			getFormula().setArguments(getArguments());
-			result = getFormula().calculate(); 
+			result = getFormula().calculate();
+			setValueNumber(result);
+			save();
 		}
 		return result;
 	}
@@ -189,30 +191,13 @@ public class MBSCCardLine extends X_BSC_CardLine {
 	
 	private MFormula getFormulaByUnit() {
 		MFormula result = getFormulaByUnit(getUnit());
-/*		
-		String sql = "SELECT * FROM BSC_Formula WHERE BSC_Formula_ID in (SELECT BSC_Formula_ID FROM BSC_UnitFormula WHERE Unit = ?)";
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;		
-		try {
-			pstmt = DB.prepareStatement(sql,null);
-			pstmt.setString (1, getUnit());
-			rs = pstmt.executeQuery();
-			if (rs.next()) {
-				result = new MFormula(Env.getCtx(), rs, get_TrxName());
-			}
-		} catch (SQLException e) {
-			log.log(Level.SEVERE, "product", e);
-		} finally {
-			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
-		}
-*/			
 		return result;
 	}
 	
 	public MParameter getParameter() {
 		if (parameter == null || parameter.getBSC_Parameter_ID() != getBSC_Parameter_ID()) {
 			setParameter(new MParameter(Env.getCtx(),getBSC_Parameter_ID(),get_TrxName()));
+			parameter.setPeriod(getCard().getPeriod());
 		}
 		return parameter;
 	}
@@ -241,6 +226,4 @@ public class MBSCCardLine extends X_BSC_CardLine {
 		}	
 		return result;
 	}
-	
-	
 }
