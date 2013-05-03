@@ -3,8 +3,6 @@
  */
 package org.compiere.process;
 
-import org.compiere.model.MTable;
-
 /**
  * @author Y.Ibrayev
  *
@@ -17,7 +15,6 @@ public class BSCDocumentEngine extends DocumentEngine {
 	 */
 	public BSCDocumentEngine(DocAction po, String docStatus) {
 		super(po, docStatus);
-		// TODO Auto-generated constructor stub
 	}
 	
 	@Override
@@ -25,25 +22,24 @@ public class BSCDocumentEngine extends DocumentEngine {
 		boolean result = true;
 		
 		if (processAction != null) {
-			// ToDo Что делать с процессами
+			//TODO Что делать с процессами
 		} 
 		
 		if (ACTION_WaitComplete.equals(docAction)) {
-			return STATUS_Completed.equals(prepareIt());
+			result = STATUS_Completed.equals(prepareIt());
 		} else if (ACTION_Complete.equals(docAction)) {
-			return STATUS_Completed.equals(completeIt());
+			result = STATUS_Completed.equals(completeIt());
 		} else if (ACTION_Approve.equals(docAction)) {
-			return approveIt();
+			result = approveIt();
 		} else if (ACTION_Reject.equals(docAction)) {
-			return rejectIt();
+			result = rejectIt();
 		} else if (ACTION_Close.equals(docAction)) {
-			return closeIt();
+			result = closeIt();
 		} else if (ACTION_ReActivate.equals(docAction)) {
-			return reActivateIt();
+			result = reActivateIt();
 		} else {
 			result = false;
 		}
-		
 		return result;
 	}
 	

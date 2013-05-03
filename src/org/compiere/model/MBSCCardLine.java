@@ -131,7 +131,7 @@ public class MBSCCardLine extends X_BSC_CardLine {
 		Object result = null;
 		if (varName.equalsIgnoreCase("Max")) {
 			result  = getValueMax();
-		} else if (varName == "Min") {
+		} else if (varName.equalsIgnoreCase("Min")) {
 			result = getValueMin();
 		} else if (varName.equalsIgnoreCase("Coefficient")) {
 			if (getCoefficient() != null) {

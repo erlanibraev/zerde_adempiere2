@@ -10,7 +10,6 @@ import java.sql.Timestamp;
 import java.util.Properties;
 import org.compiere.util.Env;
 import org.compiere.process.DocAction;
-import org.compiere.process.DocumentEngine;
 import org.compiere.process.BSCDocumentEngine;
 
 /**
@@ -44,7 +43,6 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 	 */
 	public MBSCCard(Properties ctx, int BSC_Card_ID, String trxName) {
 		super(ctx, BSC_Card_ID, trxName);
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -54,7 +52,6 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 	 */
 	public MBSCCard(Properties ctx, ResultSet rs, String trxName) {
 		super(ctx, rs, trxName);
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -62,13 +59,12 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 	 */
 	public MBSCCard(Properties ctx) {
 		super(ctx);
-		// TODO Auto-generated constructor stub
 	}
 
 	/**	Process Message 			*/
 	private String		m_processMsg = null;
 	/**	Just Prepared Flag			*/
-	private boolean		m_justPrepared = false;
+	//private boolean		m_justPrepared = false;
 	
 	/* (non-Javadoc)
 	 * @see org.compiere.process.DocAction#processIt(java.lang.String)
