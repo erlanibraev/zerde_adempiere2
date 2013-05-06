@@ -49,6 +49,6 @@ public class BSCDocumentEngine extends DocumentEngine {
 	 */
 	@Override
 	public String[] getActionOptions() {
-		return new String[] {ACTION_None, ACTION_Approve, ACTION_Close, ACTION_Complete, ACTION_Reject, ACTION_WaitComplete, ACTION_Invalidate, ACTION_ReActivate};
+		return new String[] {ACTION_None, ACTION_Approve, ACTION_Close, ACTION_Complete, ACTION_Reject, ACTION_WaitComplete, ACTION_Invalidate, ACTION_ReActivate, ACTION_Prepare};
 	}
 }
