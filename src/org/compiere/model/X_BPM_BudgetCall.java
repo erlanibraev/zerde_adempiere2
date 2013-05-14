@@ -46,6 +46,7 @@ public class X_BPM_BudgetCall extends PO implements I_BPM_BudgetCall, I_Persiste
         {
 			setBPM_ABP_ID (0);
 			setBPM_BudgetCall_ID (0);
+			setBPM_VersionBudgetLine_ID (0);
 			setC_Project_ID (0);
 			setC_ProjectParent_ID (0);
 			setC_Year_ID (0);
@@ -120,6 +121,31 @@ public class X_BPM_BudgetCall extends PO implements I_BPM_BudgetCall, I_Persiste
 	public int getBPM_BudgetCall_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_BPM_BudgetCall_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public I_BPM_VersionBudgetLine getBPM_VersionBudgetLine() throws RuntimeException
+    {
+		return (I_BPM_VersionBudgetLine)MTable.get(getCtx(), I_BPM_VersionBudgetLine.Table_Name)
+			.getPO(getBPM_VersionBudgetLine_ID(), get_TrxName());	}
+
+	/** Set BPM_VersionBudgetLine ID.
+		@param BPM_VersionBudgetLine_ID BPM_VersionBudgetLine ID	  */
+	public void setBPM_VersionBudgetLine_ID (int BPM_VersionBudgetLine_ID)
+	{
+		if (BPM_VersionBudgetLine_ID < 1) 
+			set_Value (COLUMNNAME_BPM_VersionBudgetLine_ID, null);
+		else 
+			set_Value (COLUMNNAME_BPM_VersionBudgetLine_ID, Integer.valueOf(BPM_VersionBudgetLine_ID));
+	}
+
+	/** Get BPM_VersionBudgetLine ID.
+		@return BPM_VersionBudgetLine ID	  */
+	public int getBPM_VersionBudgetLine_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_BPM_VersionBudgetLine_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

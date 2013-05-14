@@ -82,6 +82,17 @@ public interface I_BPM_BudgetCall
 	/** Get BPM_BudgetCall ID	  */
 	public int getBPM_BudgetCall_ID();
 
+    /** Column name BPM_VersionBudgetLine_ID */
+    public static final String COLUMNNAME_BPM_VersionBudgetLine_ID = "BPM_VersionBudgetLine_ID";
+
+	/** Set BPM_VersionBudgetLine ID	  */
+	public void setBPM_VersionBudgetLine_ID (int BPM_VersionBudgetLine_ID);
+
+	/** Get BPM_VersionBudgetLine ID	  */
+	public int getBPM_VersionBudgetLine_ID();
+
+	public I_BPM_VersionBudgetLine getBPM_VersionBudgetLine() throws RuntimeException;
+
     /** Column name C_Project_ID */
     public static final String COLUMNNAME_C_Project_ID = "C_Project_ID";
 
