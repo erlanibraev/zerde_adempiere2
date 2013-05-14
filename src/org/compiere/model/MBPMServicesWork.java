@@ -73,7 +73,7 @@ public class MBPMServicesWork extends X_BPM_ServicesWork {
 		ResultSet rs = null;
 		
 		// The name must start with a report hrm_order
-		String sql_ = "select t.ad_tree_id from ad_tree t where t.treeType='SW'";
+		String sql_ = "select ad_tree_id from ad_tree where treeType='"+X_AD_Tree.TREETYPE_ServicesWork+"'";
 		try
 		{
 			pstmt = DB.prepareStatement(sql_, null);
