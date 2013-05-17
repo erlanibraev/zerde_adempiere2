@@ -4,7 +4,6 @@
 package extend.org.compiere.callout;
 
 import java.util.Properties;
-
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.CalloutEngine;
 import org.compiere.model.GridField;
@@ -14,6 +13,7 @@ import org.compiere.model.MBPMBudgetCall;
 import org.compiere.model.MBPMVersionBudget;
 import org.compiere.model.MPeriod;
 import org.compiere.model.MUser;
+import org.compiere.model.X_BPM_BudgetCallLine;
 import org.compiere.model.X_BPM_VersionBudget;
 import org.compiere.util.Env;
 import org.eevolution.model.X_HR_Employee;
@@ -64,12 +64,35 @@ public class CalloutBudgetCall extends CalloutEngine {
 		
 	}
 	
-	/**/
+	/* Create a budget periods */
 	public void createBudgetLine(Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value) {
 		
 		int Year = Env.getContextAsInt(ctx, WindowNo, "C_Year_ID");
 		
 		MPeriod[] period = MBPMBudgetCall.getPeriodBudget(Year);
+		
+		int budgetCall = (Integer) mTab.getValue("BPM_BudgetCall_ID");
+		int chargeCall =  (Integer) mTab.getValue("C_Charge_ID");
+		int table =  (Integer) mTab.getValue("AD_Table_ID");
+		String record =  (String) mTab.getValue("Record_ID");
+		int n = 0;
+
+		for(MPeriod p: period){
+			if(n > 0)
+				mTab.dataNew(true);
+			mTab.setValue("C_Period_ID", p.getC_Period_ID());
+			mTab.setValue("C_UOM_ID", 100);
+			mTab.setValue("Quantity", 0);
+			mTab.setValue("AmountUnit", 0);
+			mTab.setValue("Amount(", 0);
+			mTab.setValue("BPM_BudgetCall_ID", budgetCall);
+			mTab.setValue("C_Charge_ID", chargeCall);
+			mTab.setValue("PaymentMonth",X_BPM_BudgetCallLine.PAYMENTMONTH_Current);
+			mTab.setValue("AD_Table_ID",  table);
+			mTab.setValue("Record_ID", record);
+			mTab.dataSave(true);
+			n++;
+		}
 		
 	}
 

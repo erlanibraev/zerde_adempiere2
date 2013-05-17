@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
 import org.compiere.util.Env;
+import org.compiere.util.KeyNamePair;
 
 /** Generated Model for BPM_BudgetCallLine
  *  @author Adempiere (generated) 
@@ -214,6 +215,14 @@ public class X_BPM_BudgetCallLine extends PO implements I_BPM_BudgetCallLine, I_
 			 return 0;
 		return ii.intValue();
 	}
+
+    /** Get Record ID/ColumnName
+        @return ID/ColumnName pair
+      */
+    public KeyNamePair getKeyNamePair() 
+    {
+        return new KeyNamePair(get_ID(), String.valueOf(getC_Charge_ID()));
+    }
 
 	public org.compiere.model.I_C_Period getC_Period() throws RuntimeException
     {
