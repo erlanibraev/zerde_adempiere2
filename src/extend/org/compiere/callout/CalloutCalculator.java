@@ -1,7 +1,7 @@
 /**
  * 
  */
-package extend.org.copmiere.callout;
+package extend.org.compiere.callout;
 
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;

@@ -3,8 +3,16 @@
  */
 package org.compiere.model;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Properties;
+import java.util.logging.Level;
+
+import org.compiere.util.CLogger;
+import org.compiere.util.DB;
+import org.compiere.util.Env;
 
 /**
  * @author V.Sokolov
@@ -16,6 +24,9 @@ public class MBPMBudgetCall extends X_BPM_BudgetCall {
 	 * 
 	 */
 	private static final long serialVersionUID = 5851240296742909043L;
+	
+	/**	Static Logger	*/
+	private static CLogger	s_log	= CLogger.getCLogger (MBPMBudgetCall.class);
 
 	/**
 	 * @param ctx
@@ -42,5 +53,38 @@ public class MBPMBudgetCall extends X_BPM_BudgetCall {
 		super(ctx, rs, trxName);
 	}
 	
+	public static MPeriod[] getPeriodBudget(int Year){
+		
+		//
+	    PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		MPeriod result = null;
+		
+		ArrayList<MPeriod> list = new ArrayList<MPeriod>();
+		
+		// 
+		String sql_ = "SELECT * FROM C_Period WHERE C_Year_ID="+Year+" ORDER BY periodno";
+		try
+		{
+			pstmt = DB.prepareStatement(sql_,null);
+			rs = pstmt.executeQuery();	
+			while(rs.next()){
+				result = new MPeriod(Env.getCtx(), rs, null);
+				list.add(result);
+			}				
+		}
+		catch (SQLException e)
+		{
+			s_log.log(Level.INFO, "product", e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
+		}	
+		
+		return list.toArray(new MPeriod[list.size()]);
+		
+	}  
 
 }

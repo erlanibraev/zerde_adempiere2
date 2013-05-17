@@ -31,7 +31,7 @@ public class X_BPM_BudgetCallLine extends PO implements I_BPM_BudgetCallLine, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130515L;
+	private static final long serialVersionUID = 20130517L;
 
     /** the default Constructor */
     public X_BPM_BudgetCallLine(Properties ctx)
@@ -45,6 +45,7 @@ public class X_BPM_BudgetCallLine extends PO implements I_BPM_BudgetCallLine, I_
       super (ctx, BPM_BudgetCallLine_ID, trxName);
       /** if (BPM_BudgetCallLine_ID == 0)
         {
+			setAD_Table_ID (0);
 			setAmount (Env.ZERO);
 			setAmountUnit (Env.ZERO);
 			setBPM_BudgetCall_ID (0);
@@ -52,8 +53,9 @@ public class X_BPM_BudgetCallLine extends PO implements I_BPM_BudgetCallLine, I_
 			setC_Charge_ID (0);
 			setC_Period_ID (0);
 			setC_UOM_ID (0);
-			setNumber (0);
 			setPaymentMonth (null);
+			setQuantity (0);
+			setRecord_ID (0);
         } */
     }
 
@@ -84,6 +86,29 @@ public class X_BPM_BudgetCallLine extends PO implements I_BPM_BudgetCallLine, I_
         .append(get_ID()).append("]");
       return sb.toString();
     }
+
+	/** Set Table.
+		@param AD_Table_ID 
+		Database Table information
+	  */
+	public void setAD_Table_ID (int AD_Table_ID)
+	{
+		if (AD_Table_ID < 1) 
+			set_Value (COLUMNNAME_AD_Table_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_Table_ID, Integer.valueOf(AD_Table_ID));
+	}
+
+	/** Get Table.
+		@return Database Table information
+	  */
+	public int getAD_Table_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Table_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
 
 	/** Set Amount.
 		@param Amount 
@@ -246,23 +271,6 @@ public class X_BPM_BudgetCallLine extends PO implements I_BPM_BudgetCallLine, I_
 		return ii.intValue();
 	}
 
-	/** Set Number.
-		@param Number Number	  */
-	public void setNumber (int Number)
-	{
-		set_Value (COLUMNNAME_Number, Integer.valueOf(Number));
-	}
-
-	/** Get Number.
-		@return Number	  */
-	public int getNumber () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_Number);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	/** PaymentMonth AD_Reference_ID=1000139 */
 	public static final int PAYMENTMONTH_AD_Reference_ID=1000139;
 	/** Current = CURRENT */
@@ -282,5 +290,48 @@ public class X_BPM_BudgetCallLine extends PO implements I_BPM_BudgetCallLine, I_
 	public String getPaymentMonth () 
 	{
 		return (String)get_Value(COLUMNNAME_PaymentMonth);
+	}
+
+	/** Set Quantity.
+		@param Quantity 
+		Количество
+	  */
+	public void setQuantity (int Quantity)
+	{
+		set_Value (COLUMNNAME_Quantity, Integer.valueOf(Quantity));
+	}
+
+	/** Get Quantity.
+		@return Количество
+	  */
+	public int getQuantity () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_Quantity);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set Record ID.
+		@param Record_ID 
+		Direct internal record ID
+	  */
+	public void setRecord_ID (int Record_ID)
+	{
+		if (Record_ID < 0) 
+			set_Value (COLUMNNAME_Record_ID, null);
+		else 
+			set_Value (COLUMNNAME_Record_ID, Integer.valueOf(Record_ID));
+	}
+
+	/** Get Record ID.
+		@return Direct internal record ID
+	  */
+	public int getRecord_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_Record_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 }

@@ -62,6 +62,19 @@ public interface I_BPM_BudgetCallLine
 	  */
 	public int getAD_Org_ID();
 
+    /** Column name AD_Table_ID */
+    public static final String COLUMNNAME_AD_Table_ID = "AD_Table_ID";
+
+	/** Set Table.
+	  * Database Table information
+	  */
+	public void setAD_Table_ID (int AD_Table_ID);
+
+	/** Get Table.
+	  * Database Table information
+	  */
+	public int getAD_Table_ID();
+
     /** Column name Amount */
     public static final String COLUMNNAME_Amount = "Amount";
 
@@ -176,15 +189,6 @@ public interface I_BPM_BudgetCallLine
 	  */
 	public boolean isActive();
 
-    /** Column name Number */
-    public static final String COLUMNNAME_Number = "Number";
-
-	/** Set Number	  */
-	public void setNumber (int Number);
-
-	/** Get Number	  */
-	public int getNumber();
-
     /** Column name PaymentMonth */
     public static final String COLUMNNAME_PaymentMonth = "PaymentMonth";
 
@@ -193,6 +197,32 @@ public interface I_BPM_BudgetCallLine
 
 	/** Get PaymentMonth	  */
 	public String getPaymentMonth();
+
+    /** Column name Quantity */
+    public static final String COLUMNNAME_Quantity = "Quantity";
+
+	/** Set Quantity.
+	  * Количество
+	  */
+	public void setQuantity (int Quantity);
+
+	/** Get Quantity.
+	  * Количество
+	  */
+	public int getQuantity();
+
+    /** Column name Record_ID */
+    public static final String COLUMNNAME_Record_ID = "Record_ID";
+
+	/** Set Record ID.
+	  * Direct internal record ID
+	  */
+	public void setRecord_ID (int Record_ID);
+
+	/** Get Record ID.
+	  * Direct internal record ID
+	  */
+	public int getRecord_ID();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

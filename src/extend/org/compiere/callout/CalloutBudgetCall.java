@@ -1,7 +1,7 @@
 /**
  * 
  */
-package extend.org.copmiere.callout;
+package extend.org.compiere.callout;
 
 import java.util.Properties;
 
@@ -10,7 +10,9 @@ import org.compiere.model.CalloutEngine;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.MBPMABP;
+import org.compiere.model.MBPMBudgetCall;
 import org.compiere.model.MBPMVersionBudget;
+import org.compiere.model.MPeriod;
 import org.compiere.model.MUser;
 import org.compiere.model.X_BPM_VersionBudget;
 import org.compiere.util.Env;
@@ -59,6 +61,15 @@ public class CalloutBudgetCall extends CalloutEngine {
 			throw new AdempiereException("The employee is not active");
 		
 		mTab.setValue("BPM_ABP_ID", MBPMABP.getABP(employee.getHR_Department_ID()).getBPM_ABP_ID());
+		
+	}
+	
+	/**/
+	public void createBudgetLine(Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value) {
+		
+		int Year = Env.getContextAsInt(ctx, WindowNo, "C_Year_ID");
+		
+		MPeriod[] period = MBPMBudgetCall.getPeriodBudget(Year);
 		
 	}
 
