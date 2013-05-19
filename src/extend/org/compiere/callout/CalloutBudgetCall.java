@@ -5,6 +5,7 @@ package extend.org.compiere.callout;
 
 import java.util.Properties;
 import org.adempiere.exceptions.AdempiereException;
+import org.compiere.apps.ADialog;
 import org.compiere.model.CalloutEngine;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
@@ -72,6 +73,11 @@ public class CalloutBudgetCall extends CalloutEngine {
 		MPeriod[] period = MBPMBudgetCall.getPeriodBudget(Year);
 		
 		int budgetCall = (Integer) mTab.getValue("BPM_BudgetCall_ID");
+		if(mTab.getValue("C_Charge_ID") == null){
+			mTab.dataIgnore();
+			ADialog.warn(999, null, "Не указана статья Расходов/Доходов");
+			return;
+		}
 		int chargeCall =  (Integer) mTab.getValue("C_Charge_ID");
 		int table =  (Integer) mTab.getValue("AD_Table_ID");
 		String record =  (String) mTab.getValue("Record_ID");
