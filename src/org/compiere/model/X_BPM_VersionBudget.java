@@ -29,7 +29,7 @@ public class X_BPM_VersionBudget extends PO implements I_BPM_VersionBudget, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130422L;
+	private static final long serialVersionUID = 20130520L;
 
     /** the default Constructor */
     public X_BPM_VersionBudget(Properties ctx)
@@ -45,6 +45,10 @@ public class X_BPM_VersionBudget extends PO implements I_BPM_VersionBudget, I_Pe
         {
 			setBPM_VersionBudget_ID (0);
 			setC_Year_ID (0);
+			setNumberSend (0);
+// 0
+			setSendEMail (null);
+// N
         } */
     }
 
@@ -167,5 +171,39 @@ public class X_BPM_VersionBudget extends PO implements I_BPM_VersionBudget, I_Pe
 	public String getDescription () 
 	{
 		return (String)get_Value(COLUMNNAME_Description);
+	}
+
+	/** Set NumberSend.
+		@param NumberSend NumberSend	  */
+	public void setNumberSend (int NumberSend)
+	{
+		set_Value (COLUMNNAME_NumberSend, Integer.valueOf(NumberSend));
+	}
+
+	/** Get NumberSend.
+		@return NumberSend	  */
+	public int getNumberSend () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_NumberSend);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set Send EMail.
+		@param SendEMail 
+		Enable sending Document EMail
+	  */
+	public void setSendEMail (String SendEMail)
+	{
+		set_Value (COLUMNNAME_SendEMail, SendEMail);
+	}
+
+	/** Get Send EMail.
+		@return Enable sending Document EMail
+	  */
+	public String getSendEMail () 
+	{
+		return (String)get_Value(COLUMNNAME_SendEMail);
 	}
 }
