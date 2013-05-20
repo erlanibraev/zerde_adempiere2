@@ -143,6 +143,28 @@ public interface I_BPM_VersionBudget
 	  */
 	public boolean isActive();
 
+    /** Column name NumberSend */
+    public static final String COLUMNNAME_NumberSend = "NumberSend";
+
+	/** Set NumberSend	  */
+	public void setNumberSend (int NumberSend);
+
+	/** Get NumberSend	  */
+	public int getNumberSend();
+
+    /** Column name SendEMail */
+    public static final String COLUMNNAME_SendEMail = "SendEMail";
+
+	/** Set Send EMail.
+	  * Enable sending Document EMail
+	  */
+	public void setSendEMail (String SendEMail);
+
+	/** Get Send EMail.
+	  * Enable sending Document EMail
+	  */
+	public String getSendEMail();
+
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
 

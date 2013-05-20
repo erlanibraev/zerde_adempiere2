@@ -12,7 +12,6 @@ import java.util.logging.Level;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
-import org.eevolution.model.X_HR_Employee;
 
 /**
  * @author V.Sokolov
@@ -55,7 +54,6 @@ public class MBPMVersionBudget extends X_BPM_VersionBudget {
 	}
 	
 	/* 
-	 * 
 	 */
 	@Override
 	protected boolean afterSave(boolean newRecord, boolean success) {
@@ -69,7 +67,7 @@ public class MBPMVersionBudget extends X_BPM_VersionBudget {
 			verLine.setBPM_Version(X_BPM_VersionBudgetLine.BPM_VERSIONTYPE_Current);
 			verLine.saveEx();
 		}
-		
+
 		return success;
 	}
 	
