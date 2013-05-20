@@ -2,6 +2,8 @@ package org.compiere.model;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.apps.IProcessParameter;
@@ -25,8 +27,9 @@ public class MTRMApplication extends X_TRM_Application implements DocAction, ASy
 	 *	@param success success
 	 *	@return success
 	 */
-	protected boolean afterSave (boolean newRecord, boolean success)
+/*	protected boolean afterSave (boolean newRecord, boolean success)
 	{
+/*		
 		int ad_process_id = getProcess();
 		
 		if(ad_process_id == -1) return true;
@@ -41,12 +44,25 @@ public class MTRMApplication extends X_TRM_Application implements DocAction, ASy
 
 		return success;
 	}	//	afterSave
-	
+	*/
 	private int getProcess()
 	{
 		String sql = "select ad_process_id from ad_process where lower(name) like '%trm_informheader%'";
 		
-		int ad_process_id = DB.getSQLValue(get_TrxName(), sql);
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		int ad_process_id = 0;//DB.getSQLValue(get_TrxName(), sql);
+		
+		try
+		{
+			pstmt = DB.prepareStatement(sql, null);
+			rs = pstmt.executeQuery();
+			
+			if(rs.next())
+				ad_process_id = rs.getInt(1);
+		}
+		catch(Exception e){}
 		
 		return ad_process_id;
 	}

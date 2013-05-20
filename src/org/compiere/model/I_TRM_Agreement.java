@@ -20,17 +20,17 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for TRM_Application
+/** Generated Interface for TRM_Agreement
  *  @author Adempiere (generated) 
  *  @version Release 3.7.0LTS
  */
-public interface I_TRM_Application 
+public interface I_TRM_Agreement 
 {
 
-    /** TableName=TRM_Application */
-    public static final String Table_Name = "TRM_Application";
+    /** TableName=TRM_Agreement */
+    public static final String Table_Name = "TRM_Agreement";
 
-    /** AD_Table_ID=1000233 */
+    /** AD_Table_ID=1000240 */
     public static final int Table_ID = MTable.getTable_ID(Table_Name);
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
@@ -62,47 +62,6 @@ public interface I_TRM_Application
 	  */
 	public int getAD_Org_ID();
 
-    /** Column name ApplAmount */
-    public static final String COLUMNNAME_ApplAmount = "ApplAmount";
-
-	/** Set ApplAmount.
-	  * Сумма финансовой заявки
-	  */
-	public void setApplAmount (BigDecimal ApplAmount);
-
-	/** Get ApplAmount.
-	  * Сумма финансовой заявки
-	  */
-	public BigDecimal getApplAmount();
-
-    /** Column name Apps */
-    public static final String COLUMNNAME_Apps = "Apps";
-
-	/** Set Apps.
-	  * Приложения
-	  */
-	public void setApps (String Apps);
-
-	/** Get Apps.
-	  * Приложения
-	  */
-	public String getApps();
-
-    /** Column name CMS_Contract_ID */
-    public static final String COLUMNNAME_CMS_Contract_ID = "CMS_Contract_ID";
-
-	/** Set Contract.
-	  * Номер контракта (CMS)
-	  */
-	public void setCMS_Contract_ID (int CMS_Contract_ID);
-
-	/** Get Contract.
-	  * Номер контракта (CMS)
-	  */
-	public int getCMS_Contract_ID();
-
-	public I_CMS_Contract getCMS_Contract() throws RuntimeException;
-
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
 
@@ -119,19 +78,6 @@ public interface I_TRM_Application
 	  */
 	public int getCreatedBy();
 
-    /** Column name DateAcct */
-    public static final String COLUMNNAME_DateAcct = "DateAcct";
-
-	/** Set Account Date.
-	  * Accounting Date
-	  */
-	public void setDateAcct (Timestamp DateAcct);
-
-	/** Get Account Date.
-	  * Accounting Date
-	  */
-	public Timestamp getDateAcct();
-
     /** Column name Description */
     public static final String COLUMNNAME_Description = "Description";
 
@@ -144,47 +90,6 @@ public interface I_TRM_Application
 	  * Optional short description of the record
 	  */
 	public String getDescription();
-
-    /** Column name DocumentNo */
-    public static final String COLUMNNAME_DocumentNo = "DocumentNo";
-
-	/** Set Document No.
-	  * Document sequence number of the document
-	  */
-	public void setDocumentNo (String DocumentNo);
-
-	/** Get Document No.
-	  * Document sequence number of the document
-	  */
-	public String getDocumentNo();
-
-    /** Column name GenerateApplication */
-    public static final String COLUMNNAME_GenerateApplication = "GenerateApplication";
-
-	/** Set GenerateApplication.
-	  * Сформировать заявку
-	  */
-	public void setGenerateApplication (String GenerateApplication);
-
-	/** Get GenerateApplication.
-	  * Сформировать заявку
-	  */
-	public String getGenerateApplication();
-
-    /** Column name Initiator_ID */
-    public static final String COLUMNNAME_Initiator_ID = "Initiator_ID";
-
-	/** Set Initiator_ID.
-	  * Сотрудник, создавший заявку
-	  */
-	public void setInitiator_ID (int Initiator_ID);
-
-	/** Get Initiator_ID.
-	  * Сотрудник, создавший заявку
-	  */
-	public int getInitiator_ID();
-
-	public org.compiere.model.I_AD_User getInitiator() throws RuntimeException;
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
@@ -199,18 +104,51 @@ public interface I_TRM_Application
 	  */
 	public boolean isActive();
 
-    /** Column name PaymentTerms */
-    public static final String COLUMNNAME_PaymentTerms = "PaymentTerms";
+    /** Column name Sign_N */
+    public static final String COLUMNNAME_Sign_N = "Sign_N";
 
-	/** Set PaymentTerms.
-	  * Условия оплаты
+	/** Set Sign_N.
+	  * Disapprove
 	  */
-	public void setPaymentTerms (String PaymentTerms);
+	public void setSign_N (boolean Sign_N);
 
-	/** Get PaymentTerms.
-	  * Условия оплаты
+	/** Get Sign_N.
+	  * Disapprove
 	  */
-	public String getPaymentTerms();
+	public boolean isSign_N();
+
+    /** Column name Sign_Y */
+    public static final String COLUMNNAME_Sign_Y = "Sign_Y";
+
+	/** Set Sign_Y	  */
+	public void setSign_Y (boolean Sign_Y);
+
+	/** Get Sign_Y	  */
+	public boolean isSign_Y();
+
+    /** Column name Signer_ID */
+    public static final String COLUMNNAME_Signer_ID = "Signer_ID";
+
+	/** Set Signer_ID.
+	  * Согласовывающий
+	  */
+	public void setSigner_ID (int Signer_ID);
+
+	/** Get Signer_ID.
+	  * Согласовывающий
+	  */
+	public int getSigner_ID();
+
+	public org.compiere.model.I_AD_User getSigner() throws RuntimeException;
+
+    /** Column name TRM_Agreement_ID */
+    public static final String COLUMNNAME_TRM_Agreement_ID = "TRM_Agreement_ID";
+
+	/** Set TRM_Agreement ID	  */
+	public void setTRM_Agreement_ID (int TRM_Agreement_ID);
+
+	/** Get TRM_Agreement ID	  */
+	public int getTRM_Agreement_ID();
 
     /** Column name TRM_Application_ID */
     public static final String COLUMNNAME_TRM_Application_ID = "TRM_Application_ID";

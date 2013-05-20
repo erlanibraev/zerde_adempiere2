@@ -33,7 +33,7 @@ public class X_TRM_Application extends PO implements I_TRM_Application, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130514L;
+	private static final long serialVersionUID = 20130517L;
 
     /** the default Constructor */
     public X_TRM_Application(Properties ctx)
@@ -54,7 +54,7 @@ public class X_TRM_Application extends PO implements I_TRM_Application, I_Persis
 			setDocumentNo (null);
 			setInitiator_ID (0);
 // @AD_User_ID@
-			settrs_application_ID (0);
+			setTRM_Application_ID (0);
         } */
     }
 
@@ -65,7 +65,7 @@ public class X_TRM_Application extends PO implements I_TRM_Application, I_Persis
     }
 
     /** AccessLevel
-      * @return 1 - Org 
+      * @return 3 - Client - Org 
       */
     protected int get_AccessLevel()
     {
@@ -273,20 +273,23 @@ public class X_TRM_Application extends PO implements I_TRM_Application, I_Persis
 	}
 
 	/** Set Financial Application ID.
-		@param trs_application_ID Financial Application ID	  */
-	public void settrs_application_ID (int trs_application_ID)
+		@param TRM_Application_ID 
+		Финансовая заявка
+	  */
+	public void setTRM_Application_ID (int TRM_Application_ID)
 	{
-		if (trs_application_ID < 1) 
-			set_ValueNoCheck (COLUMNNAME_trs_application_ID, null);
+		if (TRM_Application_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_TRM_Application_ID, null);
 		else 
-			set_ValueNoCheck (COLUMNNAME_trs_application_ID, Integer.valueOf(trs_application_ID));
+			set_ValueNoCheck (COLUMNNAME_TRM_Application_ID, Integer.valueOf(TRM_Application_ID));
 	}
 
 	/** Get Financial Application ID.
-		@return Financial Application ID	  */
-	public int gettrs_application_ID () 
+		@return Финансовая заявка
+	  */
+	public int getTRM_Application_ID () 
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_trs_application_ID);
+		Integer ii = (Integer)get_Value(COLUMNNAME_TRM_Application_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

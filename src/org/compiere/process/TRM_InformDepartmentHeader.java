@@ -10,6 +10,7 @@ import org.compiere.model.X_R_MailText;
 import org.compiere.model.X_TRM_Application;
 import org.compiere.util.DB;
 import org.compiere.util.EMail;
+import org.compiere.util.Env;
 
 public class TRM_InformDepartmentHeader extends SvrProcess {
 
@@ -27,7 +28,7 @@ public class TRM_InformDepartmentHeader extends SvrProcess {
 		
 		X_TRM_Application application = new X_TRM_Application(getCtx(), TRS_Application_ID, get_TrxName());
 		
-		int header_ID = getHeader(getDepartment(application.getInitiator_ID()));
+		int header_ID = getHeader(getDepartment(Env.getAD_User_ID(getCtx())));
 		
 		String label = "Согласование финансовой заявки";
 		String message = "Вам необходимо согласовать заявку №" + application.getDocumentNo() + ".\n\r";
