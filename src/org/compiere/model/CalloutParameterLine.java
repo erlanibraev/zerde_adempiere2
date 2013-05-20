@@ -73,7 +73,7 @@ public class CalloutParameterLine extends CalloutEngine {
 		for(String var: variables) {
 			boolean b = false;
 			for(String key: currentVariable.keySet()) {
-				b = (var == key) || b;
+				b = (var.equals(key)) || b;
 				if(b) {
 					break;
 				}
@@ -89,7 +89,7 @@ public class CalloutParameterLine extends CalloutEngine {
 		for(String key: currentVariable.keySet()) {
 			boolean b = false;
 			for(String var:variables) {
-				b = (var == key) || b;
+				b = (var.equals(key)) || b;
 				if (b) {
 					break;
 				}
