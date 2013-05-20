@@ -32,7 +32,7 @@ public class X_BSC_CardLine extends PO implements I_BSC_CardLine, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130408L;
+	private static final long serialVersionUID = 20130514L;
 
     /** the default Constructor */
     public X_BSC_CardLine(Properties ctx)
@@ -198,6 +198,34 @@ public class X_BSC_CardLine extends PO implements I_BSC_CardLine, I_Persistent
 		return ii.intValue();
 	}
 
+	public I_BSC_Parameter getBSC_Parameter_Out() throws RuntimeException
+    {
+		return (I_BSC_Parameter)MTable.get(getCtx(), I_BSC_Parameter.Table_Name)
+			.getPO(getBSC_Parameter_Out_ID(), get_TrxName());	}
+
+	/** Set BSC_Parameter_Out_ID.
+		@param BSC_Parameter_Out_ID 
+		BSC_Parameter_Out_ID
+	  */
+	public void setBSC_Parameter_Out_ID (int BSC_Parameter_Out_ID)
+	{
+		if (BSC_Parameter_Out_ID < 1) 
+			set_Value (COLUMNNAME_BSC_Parameter_Out_ID, null);
+		else 
+			set_Value (COLUMNNAME_BSC_Parameter_Out_ID, Integer.valueOf(BSC_Parameter_Out_ID));
+	}
+
+	/** Get BSC_Parameter_Out_ID.
+		@return BSC_Parameter_Out_ID
+	  */
+	public int getBSC_Parameter_Out_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_BSC_Parameter_Out_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	public I_BSC_Perspective getBSC_Perspective() throws RuntimeException
     {
 		return (I_BSC_Perspective)MTable.get(getCtx(), I_BSC_Perspective.Table_Name)
@@ -257,6 +285,29 @@ public class X_BSC_CardLine extends PO implements I_BSC_CardLine, I_Persistent
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
+	/** Set IsFormula.
+		@param IsFormula 
+		IsFormula
+	  */
+	public void setIsFormula (boolean IsFormula)
+	{
+		throw new IllegalArgumentException ("IsFormula is virtual column");	}
+
+	/** Get IsFormula.
+		@return IsFormula
+	  */
+	public boolean isFormula () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsFormula);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
 	/** Set Name.
 		@param Name 
 		Alphanumeric identifier of the entity
@@ -314,18 +365,15 @@ public class X_BSC_CardLine extends PO implements I_BSC_CardLine, I_Persistent
 		return (String)get_Value(COLUMNNAME_Unit);
 	}
 
-	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+	/** Set Value.
+		@param Value Value	  */
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
 	}
 
-	/** Get Search Key.
-		@return Search key for the record in the format required - must be unique
-	  */
+	/** Get Value.
+		@return Value	  */
 	public String getValue () 
 	{
 		return (String)get_Value(COLUMNNAME_Value);

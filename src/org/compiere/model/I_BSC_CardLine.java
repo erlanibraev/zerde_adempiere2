@@ -115,6 +115,21 @@ public interface I_BSC_CardLine
 
 	public I_BSC_Parameter getBSC_Parameter() throws RuntimeException;
 
+    /** Column name BSC_Parameter_Out_ID */
+    public static final String COLUMNNAME_BSC_Parameter_Out_ID = "BSC_Parameter_Out_ID";
+
+	/** Set BSC_Parameter_Out_ID.
+	  * BSC_Parameter_Out_ID
+	  */
+	public void setBSC_Parameter_Out_ID (int BSC_Parameter_Out_ID);
+
+	/** Get BSC_Parameter_Out_ID.
+	  * BSC_Parameter_Out_ID
+	  */
+	public int getBSC_Parameter_Out_ID();
+
+	public I_BSC_Parameter getBSC_Parameter_Out() throws RuntimeException;
+
     /** Column name BSC_Perspective_ID */
     public static final String COLUMNNAME_BSC_Perspective_ID = "BSC_Perspective_ID";
 
@@ -181,6 +196,19 @@ public interface I_BSC_CardLine
 	  */
 	public boolean isActive();
 
+    /** Column name IsFormula */
+    public static final String COLUMNNAME_IsFormula = "IsFormula";
+
+	/** Set IsFormula.
+	  * IsFormula
+	  */
+	public void setIsFormula (boolean IsFormula);
+
+	/** Get IsFormula.
+	  * IsFormula
+	  */
+	public boolean isFormula();
+
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";
 
@@ -226,14 +254,10 @@ public interface I_BSC_CardLine
     /** Column name Value */
     public static final String COLUMNNAME_Value = "Value";
 
-	/** Set Search Key.
-	  * Search key for the record in the format required - must be unique
-	  */
+	/** Set Value	  */
 	public void setValue (String Value);
 
-	/** Get Search Key.
-	  * Search key for the record in the format required - must be unique
-	  */
+	/** Get Value	  */
 	public String getValue();
 
     /** Column name ValueMax */

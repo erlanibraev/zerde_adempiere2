@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -41,7 +42,6 @@ public class MBSCCardLine extends X_BSC_CardLine {
 	 */
 	public MBSCCardLine(Properties ctx, int BSC_CardLine_ID, String trxName) {
 		super(ctx, BSC_CardLine_ID, trxName);
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -51,7 +51,6 @@ public class MBSCCardLine extends X_BSC_CardLine {
 	 */
 	public MBSCCardLine(Properties ctx, ResultSet rs, String trxName) {
 		super(ctx, rs, trxName);
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -59,7 +58,6 @@ public class MBSCCardLine extends X_BSC_CardLine {
 	 */
 	public MBSCCardLine(Properties ctx) {
 		super(ctx);
-		// TODO Auto-generated constructor stub
 	}
 
 	public BigDecimal calculate() {
@@ -69,11 +67,48 @@ public class MBSCCardLine extends X_BSC_CardLine {
 				calcParameter();
 			}
 			getFormula().setArguments(getArguments());
-			result = getFormula().calculate();
+			result = new BigDecimal(getFormula().calculate());
 			setValueNumber(result);
 			save();
 		}
 		return result;
+	}
+	
+	@Override 
+	public void setValueNumber (BigDecimal ValueNumber) {
+		super.setValueNumber(ValueNumber);
+		saveParameterOutValue();
+	}
+	
+	@Override
+	public String getValue() {
+		String result = super.getValue();
+		if (getBSC_Parameter_ID() > 0) {
+			MParameter param = getParameter();
+			MBSCCard card = new MBSCCard(Env.getCtx(),getBSC_Card_ID(),get_TrxName());
+			param.setPeriod(card.getPeriod());
+			if (param.getCurrentParameterLine().isFormula()) {
+				result = param.getCurrentParameterLine().calculate();
+			}
+		}
+		setValue(result);
+		return result;
+	}
+	
+	@Override
+	public void setValue (String Value) {
+		super.setValue(Value);
+		if (getBSC_Parameter_ID() > 0) {
+			MParameter param = getParameter();
+			MBSCCard card = new MBSCCard(Env.getCtx(),getBSC_Card_ID(),get_TrxName());
+			param.setPeriod(card.getPeriod());
+			if (!param.IsFormula()) {
+				param.setValue(Value);
+				param.save();
+			} else {
+				Value = param.getCurrentParameterLine().calculate();
+			}
+		}
 	}
 	
 	/**
@@ -82,7 +117,7 @@ public class MBSCCardLine extends X_BSC_CardLine {
 	private void calcParameter() {
 		if (getBSC_Parameter_ID() != 0) {
 			getParameter().setPeriod(getCard().getPeriod());
-			setValue(getParameter().getValueNumber().toString());
+			setValue(getParameter().getValue());
 		} else {
 			setValue("");
 		}
@@ -132,19 +167,19 @@ public class MBSCCardLine extends X_BSC_CardLine {
 	private Object getValue(String varName) throws Exception {
 		Object result = null;
 		if (varName.equalsIgnoreCase("Max")) {
-			result  = getValueMax();
+			result  = getValueMax().toString();
 		} else if (varName.equalsIgnoreCase("Min")) {
-			result = getValueMin();
+			result = getValueMin().toString();
 		} else if (varName.equalsIgnoreCase("Coefficient")) {
 			if (getCoefficient() != null) {
-				result = getCoefficient().calcCoefficient(getValue(),getValueMax(),getValueMin());
+				result = getCoefficient().calcCoefficient(getValue(),getValueMax(),getValueMin()).toString();
 			} else {
 				throw new Exception("MBSCardLine: variable not found -"+varName);
 			}
 		} else if (varName.equalsIgnoreCase("Value")) {
 			result = getValue();
 		} else if (varName.equalsIgnoreCase("Wight")) {
-			result = getWeight();
+			result = getWeight().toString();
 		} else {
 			log.log(Level.SEVERE,"MBSCardLine: variable not found - "+varName);
 			throw new Exception("MBSCardLine: variable not found - "+varName);
@@ -196,8 +231,10 @@ public class MBSCCardLine extends X_BSC_CardLine {
 	
 	public MParameter getParameter() {
 		if (parameter == null || parameter.getBSC_Parameter_ID() != getBSC_Parameter_ID()) {
-			setParameter(new MParameter(Env.getCtx(),getBSC_Parameter_ID(),get_TrxName()));
-			parameter.setPeriod(getCard().getPeriod());
+			if (getBSC_Parameter_ID() > 0) {
+				setParameter(new MParameter(Env.getCtx(),getBSC_Parameter_ID(),get_TrxName()));
+				parameter.setPeriod(getCard().getPeriod());
+			}
 		}
 		return parameter;
 	}
@@ -219,11 +256,106 @@ public class MBSCCardLine extends X_BSC_CardLine {
 				result = new MFormula(Env.getCtx(), rs, null);
 			}
 		} catch (SQLException e) {
-			sLog.log(Level.SEVERE, "product", e);
+			sLog.log(Level.SEVERE, "getFormulaByUnit", e);
 		} finally {
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}	
 		return result;
 	}
+	
+	//TODO Нужно добавить для ParamOut стандартные параметры max, min, coefficient, value, weight;
+	
+	protected void saveParameterOutValue() {
+		MBSCCard card = new MBSCCard(Env.getCtx(),getBSC_Card_ID(),get_TrxName());
+		if( getBSC_Parameter_Out_ID() > 0) {
+			MParameter param = new MParameter(Env.getCtx(),getBSC_Parameter_Out_ID(),get_TrxName());
+			param.setPeriod(card.getPeriod());
+			MParameterLine paramLine = param.getCurrentParameterLine();
+			if (!paramLine.isFormula() && paramLine.getBSC_Formula_ID() != getBSC_Formula_ID()) {
+				paramLine.setIsFormula(true);
+				paramLine.setBSC_Formula_ID(getBSC_Formula_ID());
+				paramLine.save();
+			}
+			setVar(param);
+		} else {
+			MParameter param = MParameter.createParameter(getName(), getDescription(), card.getC_BPartner_ID(), card.getC_Period_ID());
+			param.setPeriod(card.getPeriod());
+			setBSC_Parameter_Out_ID(param.getBSC_Parameter_ID());
+			setVar(param);
+		}
+	}
+	
+	protected void setVar(MParameter param) {
+		//TODO Тут установить переменные Value, Min, Max, Coefficient
+		
+		MParameter valueParam = getParameter();
+		MParameterLine paramLine = param.getCurrentParameterLine();
+		MBSCCard card = new MBSCCard(Env.getCtx(),getBSC_Card_ID(),get_TrxName());
+		Map<String,MVariable> args = paramLine.getVariables(); 
+		for(String key: args.keySet()) {
+			MParameter paramVar = null;
+			int vBSC_Parameter_ID = args.get(key).getBSC_Parameter_ID();
+			if (vBSC_Parameter_ID == 0) {
+				paramVar = MParameter.createParameter("(" +key + ") " + getName(), getDescription(), card.getC_BPartner_ID(), card.getC_Period_ID());
+				MVariable var = paramLine.getVariables().get(key);
+				var.setBSC_Parameter_ID(paramVar.getBSC_Parameter_ID());
+				var.save();
+			} else {
+				paramVar = new MParameter(Env.getCtx(),vBSC_Parameter_ID, get_TrxName());
+			}
+			
+			int formulaValue_ID = getFormulaValue_ID();
+			paramVar.setPeriod(card.getPeriod());
+			
+			if (key.equals("Value") && formulaValue_ID > 0) {
+				
+				MParameterLine pLine = paramVar.getCurrentParameterLine();
+				
+				if (pLine != null && getBSC_Parameter_ID() > 0 ) {
+					pLine.setIsFormula(true);
+					pLine.setBSC_Formula_ID(formulaValue_ID);
+					MVariable var = pLine.getVariables().get(key);
+					var.setBSC_Parameter_ID(valueParam.getBSC_Parameter_ID());
+					var.save();
+					pLine.save();
+				} else {
+					try {
+						pLine.setIsFormula(false);
+						paramVar.setValue((String)getValue(key));
+					} catch (Exception e) {
+						sLog.log(Level.SEVERE, "setVar", e);
+					}
+				}
+				
+			} else {
+				try {
+					paramVar.setValue((String) getValue(key));
+				} catch (Exception e) {
+					sLog.log(Level.SEVERE, "setVar", e);
+				}
+			}
+		}
+	}
+	
+	protected static int getFormulaValue_ID() {
+		int result = 0;
+		String sql = "SELECT * FROM BSC_Formula WHERE Name like 'Value'";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;		
+		try {
+			pstmt = DB.prepareStatement(sql,null);
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				result = rs.getInt(X_BSC_Formula.COLUMNNAME_BSC_Formula_ID);
+			}
+		} catch (SQLException e) {
+			sLog.log(Level.SEVERE, "getFormulaValue_ID", e);
+		} finally {
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
+		}	
+		return result;
+	}
+	
 }

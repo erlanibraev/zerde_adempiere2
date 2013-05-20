@@ -30,7 +30,7 @@ public class X_BSC_Parameter extends PO implements I_BSC_Parameter, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130214L;
+	private static final long serialVersionUID = 20130514L;
 
     /** the default Constructor */
     public X_BSC_Parameter(Properties ctx)
@@ -80,9 +80,9 @@ public class X_BSC_Parameter extends PO implements I_BSC_Parameter, I_Persistent
 	public void setBSC_Parameter_ID (int BSC_Parameter_ID)
 	{
 		if (BSC_Parameter_ID < 1) 
-			set_Value (COLUMNNAME_BSC_Parameter_ID, null);
+			set_ValueNoCheck (COLUMNNAME_BSC_Parameter_ID, null);
 		else 
-			set_Value (COLUMNNAME_BSC_Parameter_ID, Integer.valueOf(BSC_Parameter_ID));
+			set_ValueNoCheck (COLUMNNAME_BSC_Parameter_ID, Integer.valueOf(BSC_Parameter_ID));
 	}
 
 	/** Get BSC_Parameter ID.
@@ -90,6 +90,34 @@ public class X_BSC_Parameter extends PO implements I_BSC_Parameter, I_Persistent
 	public int getBSC_Parameter_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_BSC_Parameter_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
+    {
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
+			.getPO(getC_BPartner_ID(), get_TrxName());	}
+
+	/** Set Business Partner .
+		@param C_BPartner_ID 
+		Identifies a Business Partner
+	  */
+	public void setC_BPartner_ID (int C_BPartner_ID)
+	{
+		if (C_BPartner_ID < 1) 
+			set_Value (COLUMNNAME_C_BPartner_ID, null);
+		else 
+			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
+	}
+
+	/** Get Business Partner .
+		@return Identifies a Business Partner
+	  */
+	public int getC_BPartner_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

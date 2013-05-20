@@ -61,10 +61,10 @@ public class MFormula extends X_BSC_Formula {
 		return variables;
 	}
 	
-	public BigDecimal calculate() {
-		BigDecimal result=null;
+	public String calculate() {
+		String result=null;
 		try {
-			result = new BigDecimal(calc(getFormula(),getArguments()));
+			result = calc(getFormula(),getArguments());
 		} catch(Exception e) {
 			System.err.println(e);
 			result = null;

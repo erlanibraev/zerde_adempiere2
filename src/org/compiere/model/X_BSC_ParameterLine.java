@@ -31,7 +31,7 @@ public class X_BSC_ParameterLine extends PO implements I_BSC_ParameterLine, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130311L;
+	private static final long serialVersionUID = 20130520L;
 
     /** the default Constructor */
     public X_BSC_ParameterLine(Properties ctx)
@@ -286,7 +286,7 @@ public class X_BSC_ParameterLine extends PO implements I_BSC_ParameterLine, I_Pe
 		@param ValueNumber 
 		Numeric Value
 	  */
-	public void setValueNumber (BigDecimal ValueNumber)
+	public void setValueNumber (String ValueNumber)
 	{
 		set_Value (COLUMNNAME_ValueNumber, ValueNumber);
 	}
@@ -294,11 +294,8 @@ public class X_BSC_ParameterLine extends PO implements I_BSC_ParameterLine, I_Pe
 	/** Get Value.
 		@return Numeric Value
 	  */
-	public BigDecimal getValueNumber () 
+	public String getValueNumber () 
 	{
-		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_ValueNumber);
-		if (bd == null)
-			 return Env.ZERO;
-		return bd;
+		return (String)get_Value(COLUMNNAME_ValueNumber);
 	}
 }

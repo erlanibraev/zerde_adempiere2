@@ -37,7 +37,7 @@ public class CalloutCalculator extends CalloutEngine {
 		} else {	
 			try {
 				MParameterLine parameterLine = new MParameterLine(ctx,BSC_ParameterLine_ID.intValue(),null);
-				parameterLine.setValueNumber(parameterLine.calculate());
+				parameterLine.setValue(parameterLine.calculate());
 			} catch (Exception e) {
 				result = e.getMessage();
 				log.log(Level.SEVERE,result);

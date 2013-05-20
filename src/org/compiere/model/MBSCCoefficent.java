@@ -31,7 +31,6 @@ public class MBSCCoefficent extends X_BSC_Coefficient {
 	protected MBSCCoefficent(Properties ctx, int BSC_Coefficient_ID,
 			String trxName) {
 		super(ctx, BSC_Coefficient_ID, trxName);
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -41,7 +40,6 @@ public class MBSCCoefficent extends X_BSC_Coefficient {
 	 */
 	protected MBSCCoefficent(Properties ctx, ResultSet rs, String trxName) {
 		super(ctx, rs, trxName);
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -49,7 +47,6 @@ public class MBSCCoefficent extends X_BSC_Coefficient {
 	 */
 	protected MBSCCoefficent(Properties ctx) {
 		super(ctx);
-		// TODO Auto-generated constructor stub
 	}
 	
 	public MFormula getFormula() {
@@ -82,11 +79,11 @@ public class MBSCCoefficent extends X_BSC_Coefficient {
 		BigDecimal result = null;
 		if (getFormula() != null) {
 			HashMap<String,Object> map = new HashMap<String,Object>();
-			map.put("Value", value); // Magic name variable
+			map.put("Value", value.trim()); // Magic name variable
 			map.put("Max", max); // Magic name variable
 			map.put("Min", min); // Magic name variable
 			getFormula().setArguments(map);
-			result = getFormula().calculate(); 
+			result = new BigDecimal(getFormula().calculate()); 
 		}
 		return result;
 	}

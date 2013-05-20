@@ -44,9 +44,9 @@ public class CalcParameter extends SvrProcess {
 		log.log(Level.INFO,"CalcParameter: BSC_ParameterLine_ID - "+BSC_ParameterLine_ID);
 		if (BSC_ParameterLine_ID > 0) {
 			MParameterLine parameterLine = new MParameterLine(Env.getCtx(),BSC_ParameterLine_ID,null);
-			BigDecimal result = parameterLine.calculate();
+			String result = parameterLine.calculate();
 			log.log(Level.INFO,"CalcParameter: result - "+result.toString());
-			parameterLine.setValueNumber(result);
+			parameterLine.setValue(result);
 			parameterLine.save();
 		}
 		return null;

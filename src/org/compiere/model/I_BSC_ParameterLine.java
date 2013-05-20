@@ -224,10 +224,10 @@ public interface I_BSC_ParameterLine
 	/** Set Value.
 	  * Numeric Value
 	  */
-	public void setValueNumber (BigDecimal ValueNumber);
+	public void setValueNumber (String ValueNumber);
 
 	/** Get Value.
 	  * Numeric Value
 	  */
-	public BigDecimal getValueNumber();
+	public String getValueNumber();
 }

@@ -48,17 +48,17 @@ public class MVariable extends X_BSC_Variable {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public BigDecimal getVariable() {
-		BigDecimal result = new BigDecimal(0);
+	public String getVariable() {
+		String result = "0";
 		result = getVariable(null);
 		return result;
 	}
 	
-	public BigDecimal getVariable(MPeriod period) {
-		BigDecimal result = new BigDecimal(0);
+	public String getVariable(MPeriod period) {
+		String result = "";
 		if (getParameter() != null) {
 			getParameter().setPeriod(period);
-			result = getParameter().getValueNumber();
+			result = getParameter().getValue();
 		}
 		return result;
 	}

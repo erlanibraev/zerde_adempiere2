@@ -9,12 +9,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
 
+import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 
@@ -23,6 +25,9 @@ public class MParameter extends X_BSC_Parameter {
 	/**
 	 * @class: Parameter for BSC  
 	 */
+	
+	protected static CLogger sLog = CLogger.getCLogger ("MParameter"); 
+	
 	private static final long serialVersionUID = -909939771956323658L;
 
 	public static boolean GOAL_max = true;
@@ -32,84 +37,6 @@ public class MParameter extends X_BSC_Parameter {
 	private ArrayList<MParameterLine> parameterLine = new ArrayList<MParameterLine>();
 	private MPeriod currentPeriod = null;
 	private MParameterLine currentParameterLine = null;
-	private BigDecimal C_BPartner_ID = null;
-
-	public BigDecimal getC_BPartner_ID() {
-		String sql = "SELECT C_BPartner_ID FROM BSC_BPartner_Parameter WHERE BSC_Parameter_ID = ? and C_Period_ID = ?";
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;		
-		try {
-			pstmt = DB.prepareStatement(sql,null);
-			pstmt.setInt (1, getBSC_Parameter_ID());
-			pstmt.setInt (2, getPeriod().getC_Period_ID());
-			rs = pstmt.executeQuery();
-			while (rs.next()) {
-				C_BPartner_ID = rs.getBigDecimal(COLUMNNAME_C_BPartner_ID);
-			}
-		} catch (SQLException e) {
-			log.log(Level.SEVERE, "product", e);
-		} finally {
-			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
-		}	
-		return C_BPartner_ID;
-	}
-
-	public void setC_BPartner_ID(BigDecimal c_Bpartner_ID) {
-		if (getC_BPartner_ID() != null && !getC_BPartner_ID().equals(c_Bpartner_ID)) {
-			deleteC_BPartner_ID(c_Bpartner_ID.intValue(),getPeriod().getC_Period_ID());
-			insertC_BPartner_ID(c_Bpartner_ID,getPeriod().getC_Period_ID());
-		} else if(getC_BPartner_ID() == null && c_Bpartner_ID != null) {
-			insertC_BPartner_ID(c_Bpartner_ID,getPeriod().getC_Period_ID());
-		}
-	}
-
-	protected void insertC_BPartner_ID (BigDecimal c_Bpartner_ID, int c_Period_ID) {
-		String sql = "INSERT INTO BSC_BPartner_Parameter (C_BPartner_ID,BSC_Parameter_ID, C_Period_ID) VALUE (?,?,?)";
-		PreparedStatement pstmt = null;
-		BigDecimal C_BPartner_ID_old = c_Bpartner_ID;
-		int rs = 0;		
-		try {
-			pstmt = DB.prepareStatement(sql,null);
-			pstmt.setInt (1, getBSC_Parameter_ID());
-			pstmt.setInt (2, c_Bpartner_ID.intValue());
-			pstmt.setInt (3, c_Period_ID);
-			rs = pstmt.executeUpdate();
-			if (rs > 0) {
-				C_BPartner_ID = c_Bpartner_ID;
-				log.log(Level.INFO,"inserted BSC_Parameter_ID = " + Integer.toString(getBSC_Parameter_ID()).toString()+" and C_BPartner_ID = " + (C_BPartner_ID_old == null? " NULL": C_BPartner_ID_old.toString()));
-			}
-		} catch (SQLException e) {
-			log.log(Level.SEVERE, "inserted BSC_BPartner_Parameter", e);
-		} finally {
-			DB.close(pstmt);
-			pstmt = null;
-		}	
-
-	}
-	
-	protected void deleteC_BPartner_ID(int c_BPartner_ID, int c_Period_ID) {
-		String sql = "DELETE BSC_BPartner_Parameter WHERE BSC_Parameter_ID = ? and C_BPartner_ID = ? and C_Period_ID = ?";
-		PreparedStatement pstmt = null;
-		BigDecimal C_BPartner_ID_old = getC_BPartner_ID();
-		int rs = 0;		
-		try {
-			pstmt = DB.prepareStatement(sql,null);
-			pstmt.setInt (1, getBSC_Parameter_ID());
-			pstmt.setInt (2, c_BPartner_ID);
-			pstmt.setInt (3, c_Period_ID);
-			rs = pstmt.executeUpdate();
-			if (rs > 0) {
-				C_BPartner_ID = null;
-				log.log(Level.INFO,"deleted in BSC_Parameter_ID = " + Integer.toString(getBSC_Parameter_ID()).toString()+" C_BPartner_ID = " + (C_BPartner_ID_old == null? " NULL": C_BPartner_ID_old.toString()));
-			}
-		} catch (SQLException e) {
-			log.log(Level.SEVERE, "deleted  BSC_BPartner_Parameter", e);
-		} finally {
-			DB.close(pstmt);
-			pstmt = null;
-		}	
-	}
 
 	protected MParameterLine getCurrentParameterLine() {
 		return currentParameterLine;
@@ -192,7 +119,7 @@ public class MParameter extends X_BSC_Parameter {
 				getParameterLine().add(pl);
 				setCurrentParameterLine(pl);
 			} catch(Exception e) {
-				log.log(Level.SEVERE, "product", e);
+				log.log(Level.SEVERE, "setPeriod", e);
 			}
 		}
 	}
@@ -200,13 +127,13 @@ public class MParameter extends X_BSC_Parameter {
 	public BigDecimal getValueNumber() {
 		BigDecimal result = new BigDecimal(0);
 		if (getCurrentParameterLine() != null) {
-			result = getCurrentParameterLine().getValueNumber(); 
+			result = new BigDecimal(getCurrentParameterLine().getValue()); 
 		}
 		return result;
 	}
 	
 	public void setValueNumber(BigDecimal value) {
-		getCurrentParameterLine().setValueNumber(value);
+		getCurrentParameterLine().setValueNumber(value.toString());
 	}
 	
 	public BigDecimal getValueMax() {
@@ -266,8 +193,8 @@ public class MParameter extends X_BSC_Parameter {
 		}	
 	}
 	
-	protected static BigDecimal runCalc(MParameter parameter, MPeriod period, Set<Integer> forCycle) throws Exception {
-		BigDecimal result = null;
+	protected static String runCalc(MParameter parameter, MPeriod period, Set<Integer> forCycle) throws Exception {
+		String result = null;
 		if (forCycle == null) {
 			forCycle = new HashSet<Integer>();
 			forCycle.add(parameter.getBSC_Parameter_ID());
@@ -281,12 +208,12 @@ public class MParameter extends X_BSC_Parameter {
 					// Здесь вызваем исключение, что найден цикл!
 					throw new Exception("MParameter: detected cycle in "+parameter.getName()+"; ID - "+parameter.getBSC_Parameter_ID()+". "+param.getName()+" ID - "+param.getBSC_Parameter_ID()+" parameter exists");
 				}
-				BigDecimal value = runCalc(param, period, forCycle);
-				param.getParameterLine(period).setValueNumber(value);
+				String value = runCalc(param, period, forCycle);
+				param.getParameterLine(period).setValue(value);
 			}
 			result = parameter.getParameterLine(period).calculate();
 		} else {
-			result = parameter.getParameterLine(period).getValueNumber();
+			result = parameter.getParameterLine(period).getValue();
 		}
 		return result;
 	}
@@ -305,7 +232,7 @@ public class MParameter extends X_BSC_Parameter {
 			pl.setIsFormula(pl_prev.isFormula());
 			pl.save();
 			if (pl.isFormula()) { // Здесь идет рекурсия по дереву!
-				// ToDo отсечь циклы!
+				//TODO отсечь циклы!
 				pl.addVariables(pl_prev);
 			}
 			loadParameterLine();
@@ -358,6 +285,130 @@ public class MParameter extends X_BSC_Parameter {
 			rs = null; pstmt = null;
 		}	
 		return result;
+	}
+	
+	// Создание выходного параметра для Линии карты ССП
+	
+	public static MParameter createParameterForCardLine(String Name, String Description, int C_BPartner_ID, int BSC_Formula_ID, int C_Period_ID) {
+		MParameter result = null;
+		if (C_BPartner_ID > 0 && BSC_Formula_ID > 0 && C_Period_ID > 0) {
+			MBPartner partner = new MBPartner(Env.getCtx(),C_BPartner_ID,null);
+			MPeriod period = new MPeriod(Env.getCtx(),C_Period_ID,null);
+			MFormula formula = new MFormula(Env.getCtx(),BSC_Formula_ID,null);
+			if (partner != null && formula != null && period != null) {
+				MParameter param = new MParameter(Env.getCtx(),0,null);
+				param.setAD_Client_ID(Env.getAD_Client_ID(Env.getCtx()));
+				param.setAD_Org_ID(Env.getAD_Org_ID(Env.getCtx()));
+				param.setName(Name);
+				param.setDescription(Description);
+				param.setC_BPartner_ID(C_BPartner_ID);
+				if (param.save()) { //TODO переделать на Exception
+					MParameterLine paramLine = createParameterLine(param, BSC_Formula_ID, C_Period_ID);
+					if (paramLine != null) {
+						result = param;
+					} else {
+						param.delete(true);
+					}
+						
+				}
+			}
+		}
+		return result;		
+	}
+	
+	public static MParameterLine createParameterLine(MParameter param, int BSC_Formula_ID, int C_Period_ID) {
+		MParameterLine result = null;
+		MFormula formula = new MFormula(Env.getCtx(),BSC_Formula_ID,null);
+		if (param != null && BSC_Formula_ID > 0 && formula != null && C_Period_ID > 0) {
+			MParameterLine paramLine = new MParameterLine(Env.getCtx(),0,null);
+			paramLine.setAD_Client_ID(Env.getAD_Client_ID(Env.getCtx()));
+			paramLine.setAD_Org_ID(Env.getAD_Org_ID(Env.getCtx()));
+			paramLine.setBSC_Parameter_ID(param.getBSC_Parameter_ID());
+			paramLine.setIsFormula(true);
+			paramLine.setBSC_Formula_ID(BSC_Formula_ID);
+			paramLine.setC_Period_ID(C_Period_ID);
+			paramLine.setGoal(true);
+			paramLine.setIsActive(true);
+			if(paramLine.save()) {
+				if (createVariable(param, formula, C_Period_ID)) {
+					result = paramLine;
+				} else {
+					paramLine.delete(true);
+				}
+			}
+		}
+		return result;
+	}
+	
+	protected static boolean createVariable(MParameter param, MFormula formula, int C_Period_ID) {
+		boolean result = false;
+		HashMap<String, Object> arg = formula.getArguments();
+		boolean save = true;
+		for(String key:arg.keySet()) {
+			if (save) {
+				MVariable var = new MVariable(Env.getCtx(),0,null);
+				var.setName(key);
+				var.setBSC_Parameter_ID(param.getBSC_Parameter_ID());
+				MParameter varParam = createParameter(key, param.getDescription(), param.getC_BPartner_ID(), C_Period_ID);
+				if (varParam != null) {
+					save = save && var.save();
+					if (save) {
+						var.setBSC_ParameterLine_ID(varParam.getBSC_Parameter_ID());
+					} else {
+						varParam.delete(true);
+						var.delete(true);
+					}
+				} else {
+					save = false;
+				}
+			}
+		}
+		result  = save;
+		return result;
+	}
+	
+	protected static MParameter createParameter(String Name, String Description ,int C_BPartner_ID, int C_Period_ID){
+		MParameter result = null;
+		try {
+			MParameter param = new MParameter(Env.getCtx(),0,null);
+			param.setName(Name);
+			param.setDescription(Description);
+			param.setC_BPartner_ID(C_BPartner_ID);
+			param.setPeriod(new MPeriod(Env.getCtx(),C_Period_ID,null));
+			if (param.save()) { //TODO Переделать на Exception
+				MParameterLine paramLine = new MParameterLine(Env.getCtx(),0,null);
+				paramLine.setAD_Client_ID(Env.getAD_Client_ID(Env.getCtx()));
+				paramLine.setAD_Org_ID(Env.getAD_Org_ID(Env.getCtx()));
+				paramLine.setBSC_Parameter_ID(param.getBSC_Parameter_ID());
+				paramLine.setIsFormula(false);
+				paramLine.setC_Period_ID(C_Period_ID);
+				paramLine.setGoal(true);
+				paramLine.setIsActive(true);
+				if (paramLine.save()) {
+					result = param;
+				} else {
+					param.delete(true);
+				}
+			}
+		} catch(Exception e) {
+			sLog.log(Level.SEVERE, "createParameter: "+Name+" - ", e);
+		}
+		return result;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getValue() {
+		String result = "";
+		if (getCurrentParameterLine() != null) {
+			result = getCurrentParameterLine().getValue(); 
+		}
+		return result;
+	}
+
+	public void setValue(String value) {
+		getCurrentParameterLine().setValue(value);
 	}
 	
 }
