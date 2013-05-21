@@ -16,6 +16,11 @@ import org.compiere.util.DB;
 
 public class MTRMApplication extends X_TRM_Application implements DocAction, ASyncProcess {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -9142643033197058744L;
+
 	public MTRMApplication(Properties ctx, int TRS_Application_ID,
 			String trxName) {
 		super(ctx, TRS_Application_ID, trxName);

@@ -15,7 +15,8 @@ import org.compiere.model.X_C_BPartner;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
-import extend.org.compiere.utils.Utils;
+import extend.org.compiere.utils.Util;
+
 
 /**
  * Sending notifications
@@ -58,7 +59,7 @@ public class BPMSendNotif extends SvrProcess {
 			MUser[] user = MUser.getOfBPartner(m_ctx, bp.getC_BPartner_ID(), get_TrxName());
 			
 			
-			Utils.sendMail(user[0].getAD_User_ID(), getAD_User_ID(), "Бюджет на "+version.getC_Year().getFiscalYear()+" год", message, false);
+			Util.sendMail(user[0].getAD_User_ID(), getAD_User_ID(), "Бюджет на "+version.getC_Year().getFiscalYear()+" год", message, false);
 		}
 		
 		
