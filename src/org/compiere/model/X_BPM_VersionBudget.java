@@ -18,7 +18,9 @@
 package org.compiere.model;
 
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.Properties;
+import org.compiere.util.KeyNamePair;
 
 /** Generated Model for BPM_VersionBudget
  *  @author Adempiere (generated) 
@@ -29,7 +31,7 @@ public class X_BPM_VersionBudget extends PO implements I_BPM_VersionBudget, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130520L;
+	private static final long serialVersionUID = 20130522L;
 
     /** the default Constructor */
     public X_BPM_VersionBudget(Properties ctx)
@@ -44,7 +46,11 @@ public class X_BPM_VersionBudget extends PO implements I_BPM_VersionBudget, I_Pe
       /** if (BPM_VersionBudget_ID == 0)
         {
 			setBPM_VersionBudget_ID (0);
+			setC_Calendar_ID (0);
 			setC_Year_ID (0);
+			setDateFinish (new Timestamp( System.currentTimeMillis() ));
+			setIsHtml (true);
+// Y
 			setNumberSend (0);
 // 0
 			setSendEMail (null);
@@ -156,6 +162,31 @@ public class X_BPM_VersionBudget extends PO implements I_BPM_VersionBudget, I_Pe
 		return ii.intValue();
 	}
 
+    /** Get Record ID/ColumnName
+        @return ID/ColumnName pair
+      */
+    public KeyNamePair getKeyNamePair() 
+    {
+        return new KeyNamePair(get_ID(), String.valueOf(getC_Year_ID()));
+    }
+
+	/** Set Finish Date.
+		@param DateFinish 
+		Finish or (planned) completion date
+	  */
+	public void setDateFinish (Timestamp DateFinish)
+	{
+		set_Value (COLUMNNAME_DateFinish, DateFinish);
+	}
+
+	/** Get Finish Date.
+		@return Finish or (planned) completion date
+	  */
+	public Timestamp getDateFinish () 
+	{
+		return (Timestamp)get_Value(COLUMNNAME_DateFinish);
+	}
+
 	/** Set Description.
 		@param Description 
 		Optional short description of the record
@@ -171,6 +202,30 @@ public class X_BPM_VersionBudget extends PO implements I_BPM_VersionBudget, I_Pe
 	public String getDescription () 
 	{
 		return (String)get_Value(COLUMNNAME_Description);
+	}
+
+	/** Set HTML.
+		@param IsHtml 
+		Text has HTML tags
+	  */
+	public void setIsHtml (boolean IsHtml)
+	{
+		set_Value (COLUMNNAME_IsHtml, Boolean.valueOf(IsHtml));
+	}
+
+	/** Get HTML.
+		@return Text has HTML tags
+	  */
+	public boolean isHtml () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsHtml);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	/** Set NumberSend.

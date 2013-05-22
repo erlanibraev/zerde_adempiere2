@@ -117,6 +117,19 @@ public interface I_BPM_VersionBudget
 	  */
 	public int getCreatedBy();
 
+    /** Column name DateFinish */
+    public static final String COLUMNNAME_DateFinish = "DateFinish";
+
+	/** Set Finish Date.
+	  * Finish or (planned) completion date
+	  */
+	public void setDateFinish (Timestamp DateFinish);
+
+	/** Get Finish Date.
+	  * Finish or (planned) completion date
+	  */
+	public Timestamp getDateFinish();
+
     /** Column name Description */
     public static final String COLUMNNAME_Description = "Description";
 
@@ -142,6 +155,19 @@ public interface I_BPM_VersionBudget
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name IsHtml */
+    public static final String COLUMNNAME_IsHtml = "IsHtml";
+
+	/** Set HTML.
+	  * Text has HTML tags
+	  */
+	public void setIsHtml (boolean IsHtml);
+
+	/** Get HTML.
+	  * Text has HTML tags
+	  */
+	public boolean isHtml();
 
     /** Column name NumberSend */
     public static final String COLUMNNAME_NumberSend = "NumberSend";
