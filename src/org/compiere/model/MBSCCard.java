@@ -361,8 +361,7 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 	}
 	
 	@Override
-	public void setValueNumber (BigDecimal ValueNumber)
-	{
+	public void setValueNumber (BigDecimal ValueNumber)	{
 		super.setValueNumber(ValueNumber);
 		getParameter().setPeriod(getPeriod());
 		getParameter().setValueNumber(ValueNumber);

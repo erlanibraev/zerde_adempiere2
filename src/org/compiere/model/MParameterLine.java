@@ -19,7 +19,31 @@ public class MParameterLine extends X_BSC_ParameterLine {
 	 */
 	private static final long serialVersionUID = -426197082808681320L;
 	private Map<String,MVariable> variables = new HashMap<String,MVariable>();
+	private Map<String,MParameter> parameters = new HashMap<String,MParameter>();
 	private MFormula formula = null;
+
+	public Map<String, MParameter> getParameters() {
+		if (parameters.size() == 0 && isFormula()) {
+			loadParameters();
+		}
+		return parameters;
+	}
+
+	/**
+	 * 
+	 */
+	private void loadParameters() {
+		if (isFormula()) {
+			for(String key:getVariables().keySet()) {
+				MParameter par = getVariables().get(key).getParameter();
+				parameters.put(key, par);
+			}
+		}
+	}
+
+	public void setParameters(Map<String, MParameter> parameters) {
+		this.parameters = parameters;
+	}
 
 	public Map<String,MVariable> getVariables() {
 		if (variables.size() == 0 && isFormula()) {
@@ -80,8 +104,6 @@ public class MParameterLine extends X_BSC_ParameterLine {
 					par.setPeriod((MPeriod)this.getC_Period());
 					result.put(key,par.getValue());
 				} 
-			} else {
-				//TODO если в БД не найдена переменная. Что делать?
 			}
 		}
 		return result;
@@ -91,32 +113,7 @@ public class MParameterLine extends X_BSC_ParameterLine {
 		variables.clear();
 		if(isFormula()) {
 			fillVariables();
-//			MFormula formula = new MFormula(getCtx(), getBSC_Formula_ID(), get_TrxName());
-			variables = getCurrentVariable(getBSC_ParameterLine_ID()); 
-/*			
-			
-			for(String key: formula.getVariables()) {
-				variables.put(key, null);
-			}
-			String sql = "SELECT * FROM BSC_Variable WHERE BSC_ParameterLine_ID = ?";
-			PreparedStatement pstmt = null;
-			ResultSet rs = null;		
-			try {
-				pstmt = DB.prepareStatement(sql,null);
-				pstmt.setInt (1, getBSC_ParameterLine_ID());
-				rs = pstmt.executeQuery();
-				while (rs.next()) {
-					MVariable var = new MVariable(Env.getCtx(),rs,this.get_TrxName());
-					String key = var.getName();
-					variables.put(key, var);
-				}
-			} catch (SQLException e) {
-				log.log(Level.SEVERE, "MParameterLine: ", e);
-			} finally {
-				DB.close(rs, pstmt);
-				rs = null; pstmt = null;
-			}
-*/				
+			variables = getCurrentVariable(getBSC_ParameterLine_ID());
 		}
 	}
 	
