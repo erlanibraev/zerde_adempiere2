@@ -30,7 +30,7 @@ public interface I_TRM_Application
     /** TableName=TRM_Application */
     public static final String Table_Name = "TRM_Application";
 
-    /** AD_Table_ID=1000233 */
+    /** AD_Table_ID=1000241 */
     public static final int Table_ID = MTable.getTable_ID(Table_Name);
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
@@ -62,6 +62,28 @@ public interface I_TRM_Application
 	  */
 	public int getAD_Org_ID();
 
+    /** Column name AGR_Dispatcher_ID */
+    public static final String COLUMNNAME_AGR_Dispatcher_ID = "AGR_Dispatcher_ID";
+
+	/** Set AGR_Dispatcher ID	  */
+	public void setAGR_Dispatcher_ID (int AGR_Dispatcher_ID);
+
+	/** Get AGR_Dispatcher ID	  */
+	public int getAGR_Dispatcher_ID();
+
+	public I_AGR_Dispatcher getAGR_Dispatcher() throws RuntimeException;
+
+    /** Column name AGR_Stage_ID */
+    public static final String COLUMNNAME_AGR_Stage_ID = "AGR_Stage_ID";
+
+	/** Set AGR_Stage ID	  */
+	public void setAGR_Stage_ID (int AGR_Stage_ID);
+
+	/** Get AGR_Stage ID	  */
+	public int getAGR_Stage_ID();
+
+	public I_AGR_Stage getAGR_Stage() throws RuntimeException;
+
     /** Column name ApplAmount */
     public static final String COLUMNNAME_ApplAmount = "ApplAmount";
 
@@ -74,6 +96,19 @@ public interface I_TRM_Application
 	  * Сумма финансовой заявки
 	  */
 	public BigDecimal getApplAmount();
+
+    /** Column name Approve */
+    public static final String COLUMNNAME_Approve = "Approve";
+
+	/** Set Approve.
+	  * Одобрить
+	  */
+	public void setApprove (String Approve);
+
+	/** Get Approve.
+	  * Одобрить
+	  */
+	public String getApprove();
 
     /** Column name Apps */
     public static final String COLUMNNAME_Apps = "Apps";

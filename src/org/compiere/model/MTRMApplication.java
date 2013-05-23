@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Properties;
 
+import org.compiere.agreement.IAgreement;
 import org.compiere.apps.IProcessParameter;
 import org.compiere.apps.ProcessCtl;
 import org.compiere.apps.ProcessParameterPanel;
@@ -14,7 +15,7 @@ import org.compiere.process.ProcessInfo;
 import org.compiere.util.ASyncProcess;
 import org.compiere.util.DB;
 
-public class MTRMApplication extends X_TRM_Application implements DocAction, ASyncProcess {
+public class MTRMApplication extends X_TRM_Application implements DocAction, ASyncProcess, IAgreement {
 
 	/**
 	 * 
@@ -32,9 +33,9 @@ public class MTRMApplication extends X_TRM_Application implements DocAction, ASy
 	 *	@param success success
 	 *	@return success
 	 */
-/*	protected boolean afterSave (boolean newRecord, boolean success)
+	protected boolean afterSave (boolean newRecord, boolean success)
 	{
-/*		
+		
 		int ad_process_id = getProcess();
 		
 		if(ad_process_id == -1) return true;
@@ -45,11 +46,10 @@ public class MTRMApplication extends X_TRM_Application implements DocAction, ASy
 		
 		ProcessParameterPanel pu = new ProcessParameterPanel(0, pi);
 		ProcessCtl.process(this, 0, (IProcessParameter) pu, pi, null);
-		//ProcessCtl.pr
 
 		return success;
 	}	//	afterSave
-	*/
+	
 	private int getProcess()
 	{
 		String sql = "select ad_process_id from ad_process where lower(name) like '%trm_informheader%'";
@@ -183,26 +183,23 @@ public class MTRMApplication extends X_TRM_Application implements DocAction, ASy
 
 	@Override
 	public void lockUI(ProcessInfo pi) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void unlockUI(ProcessInfo pi) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public boolean isUILocked() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public void executeASync(ProcessInfo pi) {
-		// TODO Auto-generated method stub
-		
 	}
 
+	@Override
+	public int getAGR_Stage_ID() {
+		return super.getAGR_Stage_ID();
+	}
 }

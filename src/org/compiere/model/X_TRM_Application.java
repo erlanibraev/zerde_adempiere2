@@ -33,7 +33,7 @@ public class X_TRM_Application extends PO implements I_TRM_Application, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130517L;
+	private static final long serialVersionUID = 20130523L;
 
     /** the default Constructor */
     public X_TRM_Application(Properties ctx)
@@ -86,6 +86,56 @@ public class X_TRM_Application extends PO implements I_TRM_Application, I_Persis
       return sb.toString();
     }
 
+	public I_AGR_Dispatcher getAGR_Dispatcher() throws RuntimeException
+    {
+		return (I_AGR_Dispatcher)MTable.get(getCtx(), I_AGR_Dispatcher.Table_Name)
+			.getPO(getAGR_Dispatcher_ID(), get_TrxName());	}
+
+	/** Set AGR_Dispatcher ID.
+		@param AGR_Dispatcher_ID AGR_Dispatcher ID	  */
+	public void setAGR_Dispatcher_ID (int AGR_Dispatcher_ID)
+	{
+		if (AGR_Dispatcher_ID < 1) 
+			set_Value (COLUMNNAME_AGR_Dispatcher_ID, null);
+		else 
+			set_Value (COLUMNNAME_AGR_Dispatcher_ID, Integer.valueOf(AGR_Dispatcher_ID));
+	}
+
+	/** Get AGR_Dispatcher ID.
+		@return AGR_Dispatcher ID	  */
+	public int getAGR_Dispatcher_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AGR_Dispatcher_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public I_AGR_Stage getAGR_Stage() throws RuntimeException
+    {
+		return (I_AGR_Stage)MTable.get(getCtx(), I_AGR_Stage.Table_Name)
+			.getPO(getAGR_Stage_ID(), get_TrxName());	}
+
+	/** Set AGR_Stage ID.
+		@param AGR_Stage_ID AGR_Stage ID	  */
+	public void setAGR_Stage_ID (int AGR_Stage_ID)
+	{
+		if (AGR_Stage_ID < 1) 
+			set_Value (COLUMNNAME_AGR_Stage_ID, null);
+		else 
+			set_Value (COLUMNNAME_AGR_Stage_ID, Integer.valueOf(AGR_Stage_ID));
+	}
+
+	/** Get AGR_Stage ID.
+		@return AGR_Stage ID	  */
+	public int getAGR_Stage_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AGR_Stage_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set ApplAmount.
 		@param ApplAmount 
 		Сумма финансовой заявки
@@ -104,6 +154,23 @@ public class X_TRM_Application extends PO implements I_TRM_Application, I_Persis
 		if (bd == null)
 			 return Env.ZERO;
 		return bd;
+	}
+
+	/** Set Approve.
+		@param Approve 
+		Одобрить
+	  */
+	public void setApprove (String Approve)
+	{
+		set_Value (COLUMNNAME_Approve, Approve);
+	}
+
+	/** Get Approve.
+		@return Одобрить
+	  */
+	public String getApprove () 
+	{
+		return (String)get_Value(COLUMNNAME_Approve);
 	}
 
 	/** Set Apps.
