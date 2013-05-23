@@ -3,6 +3,7 @@
  */
 package extend.org.compiere.callout;
 
+import java.math.BigDecimal;
 import java.util.Properties;
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.apps.ADialog;
@@ -69,6 +70,11 @@ public class CalloutBudgetCall extends CalloutEngine {
 	public void createBudgetLine(Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value) {
 		
 		int Year = Env.getContextAsInt(ctx, WindowNo, "C_Year_ID");
+		if(mTab.getRowCount() > 1){
+			mTab.dataIgnore();
+			ADialog.warn(999, null, "Периоды уже созданы");
+			return;
+		}
 		
 		MPeriod[] period = MBPMBudgetCall.getPeriodBudget(Year);
 		
@@ -99,7 +105,26 @@ public class CalloutBudgetCall extends CalloutEngine {
 			mTab.dataSave(true);
 			n++;
 		}
-		mTab.dataRefresh();
+		mTab.getParentTab().dataRefreshAll();
+		
+	}
+	
+	/* Formula (calcAmount = Quantity * AmountUnit) */
+	public void calcAmount(Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value) {
+		
+		if(value == null)
+			return;
+		
+		int currentRow = mTab.getCurrentRow();
+
+		int quantity = (Integer) mTab.getValue("Quantity");
+		BigDecimal amountUnit = (BigDecimal) mTab.getValue("AmountUnit");
+		if(quantity != 0 || amountUnit.doubleValue() != 0.){
+			mTab.setValue("Amount", amountUnit.multiply(new BigDecimal(quantity)));
+			mTab.dataSave(false);	
+			mTab.getParentTab().dataRefreshAll();
+			mTab.navigate(currentRow);
+		}
 		
 	}
 
