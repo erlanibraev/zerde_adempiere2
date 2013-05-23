@@ -160,7 +160,8 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 		String result = DocAction.STATUS_Invalid;
 		if (STATUS_NotApproved.equals(getDocStatus()) || STATUS_Drafted.equals(getDocStatus())) {
 			setDocStatus(STATUS_WaitingConfirmation);
-			result = STATUS_Completed;
+//			result = STATUS_Completed;
+			result = STATUS_WaitingConfirmation;
 		}
 		return result;
 	}
@@ -194,7 +195,8 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 		String result = DocAction.STATUS_Invalid;
 		if (STATUS_WaitingConfirmation.equals(getDocStatus())) {
 			setDocStatus(STATUS_InProgress);
-			result = STATUS_Completed;
+//			result = STATUS_Completed;
+			result = STATUS_InProgress;
 		}
 		return result;
 	}
