@@ -22,7 +22,7 @@ public class DialogAgreement {
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(DialogAgreement.class);
 	
-	public static boolean dialog(ProcessInfo pi, Properties m_ctx, String Message){
+	public static boolean dialogApproved(ProcessInfo pi, Properties m_ctx, String Message){
 		
 		MProcess process = new MProcess(Env.getCtx(),  pi.getAD_Process_ID(), pi.getTransactionName());
 		log.info("Agremeent for "+process.get_TableName());
@@ -50,6 +50,23 @@ public class DialogAgreement {
 			titleDialog = title;
 
 	    JOptionPane.showMessageDialog(parent, message, titleDialog,  messageType);
+	}
+	
+	public static boolean dialogSendAgreement(ProcessInfo pi, Properties m_ctx, String Message){
+		
+		MProcess process = new MProcess(Env.getCtx(),  pi.getAD_Process_ID(), pi.getTransactionName());
+		log.info("Send agremeent for "+process.get_TableName());
+		
+		String[] choices = { Util.cleanAmp(Msg.getMsg(m_ctx, "Send")), Util.cleanAmp(Msg.getMsg(m_ctx, "Cancel"))};
+	    int i = JOptionPane.showOptionDialog(null, Message,
+	    		Msg.translate(Env.getCtx(), "Send agreement"), 
+	    		JOptionPane.DEFAULT_OPTION,
+	    		JOptionPane.QUESTION_MESSAGE, 
+	    		null, 		// Use default icon
+	        choices, 		// Array of choices
+	        choices[0]); 	// Initial choice
+
+	    return i == JOptionPane.YES_OPTION;
 	}
 
 }
