@@ -3,14 +3,9 @@
  */
 package org.compiere.apps;
 
-import java.awt.Container;
-import java.awt.Window;
 import java.util.Properties;
-
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-
 import org.compiere.model.MProcess;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
@@ -46,6 +41,15 @@ public class DialogAgreement {
 	    
 	    return retValue = input.equals(Util.cleanAmp(Msg.getMsg(m_ctx, "approved")));
 		
+	}
+	
+	public static void dialogOK(String title, String message, int messageType){
+		JFrame parent = new JFrame();
+		String titleDialog = "Dialog";
+		if(title.length() > 0)
+			titleDialog = title;
+
+	    JOptionPane.showMessageDialog(parent, message, titleDialog,  messageType);
 	}
 
 }
