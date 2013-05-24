@@ -29,7 +29,7 @@ public class X_AGR_AgreementList extends PO implements I_AGR_AgreementList, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130523L;
+	private static final long serialVersionUID = 20130524L;
 
     /** the default Constructor */
     public X_AGR_AgreementList(Properties ctx)
@@ -45,6 +45,10 @@ public class X_AGR_AgreementList extends PO implements I_AGR_AgreementList, I_Pe
         {
 			setAD_Table_ID (0);
 			setAGR_AgreementList_ID (0);
+			setAGR_Stage_ID (0);
+// @AGR_Stage_ID@
+			setProcessed (false);
+// N
 			setRecord_ID (0);
         } */
     }
@@ -125,6 +129,31 @@ public class X_AGR_AgreementList extends PO implements I_AGR_AgreementList, I_Pe
 		return ii.intValue();
 	}
 
+	public I_AGR_Stage getAGR_Stage() throws RuntimeException
+    {
+		return (I_AGR_Stage)MTable.get(getCtx(), I_AGR_Stage.Table_Name)
+			.getPO(getAGR_Stage_ID(), get_TrxName());	}
+
+	/** Set AGR_Stage ID.
+		@param AGR_Stage_ID AGR_Stage ID	  */
+	public void setAGR_Stage_ID (int AGR_Stage_ID)
+	{
+		if (AGR_Stage_ID < 1) 
+			set_Value (COLUMNNAME_AGR_Stage_ID, null);
+		else 
+			set_Value (COLUMNNAME_AGR_Stage_ID, Integer.valueOf(AGR_Stage_ID));
+	}
+
+	/** Get AGR_Stage ID.
+		@return AGR_Stage ID	  */
+	public int getAGR_Stage_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AGR_Stage_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set Description.
 		@param Description 
 		Optional short description of the record
@@ -140,6 +169,30 @@ public class X_AGR_AgreementList extends PO implements I_AGR_AgreementList, I_Pe
 	public String getDescription () 
 	{
 		return (String)get_Value(COLUMNNAME_Description);
+	}
+
+	/** Set Processed.
+		@param Processed 
+		The document has been processed
+	  */
+	public void setProcessed (boolean Processed)
+	{
+		set_Value (COLUMNNAME_Processed, Boolean.valueOf(Processed));
+	}
+
+	/** Get Processed.
+		@return The document has been processed
+	  */
+	public boolean isProcessed () 
+	{
+		Object oo = get_Value(COLUMNNAME_Processed);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	/** Set Record ID.
@@ -210,9 +263,9 @@ public class X_AGR_AgreementList extends PO implements I_AGR_AgreementList, I_Pe
 		return false;
 	}
 
-	public org.compiere.model.I_AD_User getSigner() throws RuntimeException
+	public org.compiere.model.I_C_BPartner getSigner() throws RuntimeException
     {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
 			.getPO(getSigner_ID(), get_TrxName());	}
 
 	/** Set Signer_ID.

@@ -33,7 +33,7 @@ public class X_TRM_Application extends PO implements I_TRM_Application, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130523L;
+	private static final long serialVersionUID = 20130524L;
 
     /** the default Constructor */
     public X_TRM_Application(Properties ctx)
@@ -47,6 +47,8 @@ public class X_TRM_Application extends PO implements I_TRM_Application, I_Persis
       super (ctx, TRM_Application_ID, trxName);
       /** if (TRM_Application_ID == 0)
         {
+			setAD_Table_ID (0);
+// @SQL=Select AD_Table_ID From AD_Table where tablename='TRM_Application'
 			setApplAmount (Env.ZERO);
 			setCMS_Contract_ID (0);
 			setDateAcct (new Timestamp( System.currentTimeMillis() ));
@@ -85,6 +87,34 @@ public class X_TRM_Application extends PO implements I_TRM_Application, I_Persis
         .append(get_ID()).append("]");
       return sb.toString();
     }
+
+	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
+			.getPO(getAD_Table_ID(), get_TrxName());	}
+
+	/** Set Table.
+		@param AD_Table_ID 
+		Database Table information
+	  */
+	public void setAD_Table_ID (int AD_Table_ID)
+	{
+		if (AD_Table_ID < 1) 
+			set_Value (COLUMNNAME_AD_Table_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_Table_ID, Integer.valueOf(AD_Table_ID));
+	}
+
+	/** Get Table.
+		@return Database Table information
+	  */
+	public int getAD_Table_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Table_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
 
 	public I_AGR_Dispatcher getAGR_Dispatcher() throws RuntimeException
     {
@@ -136,6 +166,23 @@ public class X_TRM_Application extends PO implements I_TRM_Application, I_Persis
 		return ii.intValue();
 	}
 
+	/** Set Approve.
+		@param AGRApprove 
+		Одобрить
+	  */
+	public void setAGRApprove (String AGRApprove)
+	{
+		set_Value (COLUMNNAME_AGRApprove, AGRApprove);
+	}
+
+	/** Get Approve.
+		@return Одобрить
+	  */
+	public String getAGRApprove () 
+	{
+		return (String)get_Value(COLUMNNAME_AGRApprove);
+	}
+
 	/** Set ApplAmount.
 		@param ApplAmount 
 		Сумма финансовой заявки
@@ -154,23 +201,6 @@ public class X_TRM_Application extends PO implements I_TRM_Application, I_Persis
 		if (bd == null)
 			 return Env.ZERO;
 		return bd;
-	}
-
-	/** Set Approve.
-		@param Approve 
-		Одобрить
-	  */
-	public void setApprove (String Approve)
-	{
-		set_Value (COLUMNNAME_Approve, Approve);
-	}
-
-	/** Get Approve.
-		@return Одобрить
-	  */
-	public String getApprove () 
-	{
-		return (String)get_Value(COLUMNNAME_Approve);
 	}
 
 	/** Set Apps.
@@ -250,6 +280,38 @@ public class X_TRM_Application extends PO implements I_TRM_Application, I_Persis
 	public String getDescription () 
 	{
 		return (String)get_Value(COLUMNNAME_Description);
+	}
+
+	/** DocStatus AD_Reference_ID=1000141 */
+	public static final int DOCSTATUS_AD_Reference_ID=1000141;
+	/** On approval = AP */
+	public static final String DOCSTATUS_OnApproval = "AP";
+	/** Refused = RE */
+	public static final String DOCSTATUS_Refused = "RE";
+	/** Approved = AD */
+	public static final String DOCSTATUS_Approved = "AD";
+	/** To pay = TP */
+	public static final String DOCSTATUS_ToPay = "TP";
+	/** Clear = CL */
+	public static final String DOCSTATUS_Clear = "CL";
+	/** Paid = PA */
+	public static final String DOCSTATUS_Paid = "PA";
+	/** Set Document Status.
+		@param DocStatus 
+		The current status of the document
+	  */
+	public void setDocStatus (String DocStatus)
+	{
+
+		set_Value (COLUMNNAME_DocStatus, DocStatus);
+	}
+
+	/** Get Document Status.
+		@return The current status of the document
+	  */
+	public String getDocStatus () 
+	{
+		return (String)get_Value(COLUMNNAME_DocStatus);
 	}
 
 	/** Set Document No.

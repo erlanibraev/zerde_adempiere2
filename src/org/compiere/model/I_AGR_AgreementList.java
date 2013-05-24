@@ -86,6 +86,17 @@ public interface I_AGR_AgreementList
 	/** Get AGR_AgreementList ID	  */
 	public int getAGR_AgreementList_ID();
 
+    /** Column name AGR_Stage_ID */
+    public static final String COLUMNNAME_AGR_Stage_ID = "AGR_Stage_ID";
+
+	/** Set AGR_Stage ID	  */
+	public void setAGR_Stage_ID (int AGR_Stage_ID);
+
+	/** Get AGR_Stage ID	  */
+	public int getAGR_Stage_ID();
+
+	public I_AGR_Stage getAGR_Stage() throws RuntimeException;
+
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
 
@@ -127,6 +138,19 @@ public interface I_AGR_AgreementList
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name Processed */
+    public static final String COLUMNNAME_Processed = "Processed";
+
+	/** Set Processed.
+	  * The document has been processed
+	  */
+	public void setProcessed (boolean Processed);
+
+	/** Get Processed.
+	  * The document has been processed
+	  */
+	public boolean isProcessed();
 
     /** Column name Record_ID */
     public static final String COLUMNNAME_Record_ID = "Record_ID";
@@ -176,7 +200,7 @@ public interface I_AGR_AgreementList
 	  */
 	public int getSigner_ID();
 
-	public org.compiere.model.I_AD_User getSigner() throws RuntimeException;
+	public org.compiere.model.I_C_BPartner getSigner() throws RuntimeException;
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

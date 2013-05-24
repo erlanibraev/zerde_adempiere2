@@ -178,6 +178,19 @@ public interface I_AGR_Stage
 	  */
 	public String getName();
 
+    /** Column name StageType */
+    public static final String COLUMNNAME_StageType = "StageType";
+
+	/** Set StageType.
+	  * Тип этапа
+	  */
+	public void setStageType (String StageType);
+
+	/** Get StageType.
+	  * Тип этапа
+	  */
+	public String getStageType();
+
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
 

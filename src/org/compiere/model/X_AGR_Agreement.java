@@ -30,7 +30,7 @@ public class X_AGR_Agreement extends PO implements I_AGR_Agreement, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130523L;
+	private static final long serialVersionUID = 20130524L;
 
     /** the default Constructor */
     public X_AGR_Agreement(Properties ctx)
@@ -44,6 +44,8 @@ public class X_AGR_Agreement extends PO implements I_AGR_Agreement, I_Persistent
       super (ctx, AGR_Agreement_ID, trxName);
       /** if (AGR_Agreement_ID == 0)
         {
+			setAD_Process_ID (0);
+// 1000202
 			setAGR_Agreement_ID (0);
 			setName (null);
         } */
@@ -76,6 +78,34 @@ public class X_AGR_Agreement extends PO implements I_AGR_Agreement, I_Persistent
         .append(get_ID()).append("]");
       return sb.toString();
     }
+
+	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_Name)
+			.getPO(getAD_Process_ID(), get_TrxName());	}
+
+	/** Set Process.
+		@param AD_Process_ID 
+		Process or Report
+	  */
+	public void setAD_Process_ID (int AD_Process_ID)
+	{
+		if (AD_Process_ID < 1) 
+			set_Value (COLUMNNAME_AD_Process_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_Process_ID, Integer.valueOf(AD_Process_ID));
+	}
+
+	/** Get Process.
+		@return Process or Report
+	  */
+	public int getAD_Process_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Process_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
 
 	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException
     {
@@ -123,6 +153,23 @@ public class X_AGR_Agreement extends PO implements I_AGR_Agreement, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set CheckAgreement.
+		@param CheckAgreement 
+		Проверка полноты согласования
+	  */
+	public void setCheckAgreement (String CheckAgreement)
+	{
+		set_Value (COLUMNNAME_CheckAgreement, CheckAgreement);
+	}
+
+	/** Get CheckAgreement.
+		@return Проверка полноты согласования
+	  */
+	public String getCheckAgreement () 
+	{
+		return (String)get_Value(COLUMNNAME_CheckAgreement);
 	}
 
 	/** Set Description.

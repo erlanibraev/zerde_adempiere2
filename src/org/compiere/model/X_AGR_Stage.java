@@ -30,7 +30,7 @@ public class X_AGR_Stage extends PO implements I_AGR_Stage, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130523L;
+	private static final long serialVersionUID = 20130524L;
 
     /** the default Constructor */
     public X_AGR_Stage(Properties ctx)
@@ -239,4 +239,28 @@ public class X_AGR_Stage extends PO implements I_AGR_Stage, I_Persistent
     {
         return new KeyNamePair(get_ID(), getName());
     }
+
+	/** StageType AD_Reference_ID=1000152 */
+	public static final int STAGETYPE_AD_Reference_ID=1000152;
+	/** Initial = IN */
+	public static final String STAGETYPE_Initial = "IN";
+	/** Ordinary = OR */
+	public static final String STAGETYPE_Ordinary = "OR";
+	/** Set StageType.
+		@param StageType 
+		Тип этапа
+	  */
+	public void setStageType (String StageType)
+	{
+
+		set_Value (COLUMNNAME_StageType, StageType);
+	}
+
+	/** Get StageType.
+		@return Тип этапа
+	  */
+	public String getStageType () 
+	{
+		return (String)get_Value(COLUMNNAME_StageType);
+	}
 }

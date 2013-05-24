@@ -197,9 +197,25 @@ public class MTRMApplication extends X_TRM_Application implements DocAction, ASy
 	@Override
 	public void executeASync(ProcessInfo pi) {
 	}
-
+	
 	@Override
-	public int getAGR_Stage_ID() {
+	public int getStage() 
+	{
 		return super.getAGR_Stage_ID();
 	}
+
+	@Override
+	public boolean setStage(int AGR_Stage_ID) 
+	{
+		super.setAGR_Stage_ID(AGR_Stage_ID);
+		return true;
+	}
+
+	@Override
+	public boolean setStatusAgreement(String status) 
+	{
+		super.setDocStatus(status);
+		return true;
+	}
+
 }

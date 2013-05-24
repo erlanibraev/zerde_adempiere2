@@ -62,6 +62,21 @@ public interface I_TRM_Application
 	  */
 	public int getAD_Org_ID();
 
+    /** Column name AD_Table_ID */
+    public static final String COLUMNNAME_AD_Table_ID = "AD_Table_ID";
+
+	/** Set Table.
+	  * Database Table information
+	  */
+	public void setAD_Table_ID (int AD_Table_ID);
+
+	/** Get Table.
+	  * Database Table information
+	  */
+	public int getAD_Table_ID();
+
+	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
+
     /** Column name AGR_Dispatcher_ID */
     public static final String COLUMNNAME_AGR_Dispatcher_ID = "AGR_Dispatcher_ID";
 
@@ -84,6 +99,19 @@ public interface I_TRM_Application
 
 	public I_AGR_Stage getAGR_Stage() throws RuntimeException;
 
+    /** Column name AGRApprove */
+    public static final String COLUMNNAME_AGRApprove = "AGRApprove";
+
+	/** Set Approve.
+	  * Одобрить
+	  */
+	public void setAGRApprove (String AGRApprove);
+
+	/** Get Approve.
+	  * Одобрить
+	  */
+	public String getAGRApprove();
+
     /** Column name ApplAmount */
     public static final String COLUMNNAME_ApplAmount = "ApplAmount";
 
@@ -96,19 +124,6 @@ public interface I_TRM_Application
 	  * Сумма финансовой заявки
 	  */
 	public BigDecimal getApplAmount();
-
-    /** Column name Approve */
-    public static final String COLUMNNAME_Approve = "Approve";
-
-	/** Set Approve.
-	  * Одобрить
-	  */
-	public void setApprove (String Approve);
-
-	/** Get Approve.
-	  * Одобрить
-	  */
-	public String getApprove();
 
     /** Column name Apps */
     public static final String COLUMNNAME_Apps = "Apps";
@@ -179,6 +194,19 @@ public interface I_TRM_Application
 	  * Optional short description of the record
 	  */
 	public String getDescription();
+
+    /** Column name DocStatus */
+    public static final String COLUMNNAME_DocStatus = "DocStatus";
+
+	/** Set Document Status.
+	  * The current status of the document
+	  */
+	public void setDocStatus (String DocStatus);
+
+	/** Get Document Status.
+	  * The current status of the document
+	  */
+	public String getDocStatus();
 
     /** Column name DocumentNo */
     public static final String COLUMNNAME_DocumentNo = "DocumentNo";
