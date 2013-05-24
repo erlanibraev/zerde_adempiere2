@@ -112,7 +112,7 @@ public class MAGRStage extends X_AGR_Stage
 			if(!stageList.get(i).isSign_Y())
 				return false;
 		
-		ArrayList<MAGRNode> nodes = new ArrayList<>();
+		ArrayList<MAGRNode> nodes = new ArrayList<MAGRNode>();
 		
 		nodes.addAll(MAGRNode.getOfAGR_StageList(getCtx(), get_ID(), get_TrxName()));
 		
