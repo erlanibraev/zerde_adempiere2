@@ -97,7 +97,7 @@ public class MAGRAgreement extends X_AGR_Agreement
   						nodesFromCurrentStage.get(1).getAGR_NextStage_ID() == stage.get_ID())
   					return false;
   			}
-  			else if(nodesFromCurrentStage.size() == 1 && stage.getName().equals(MAGRStage.STAGETYPE_Initial))
+  			else if(nodesFromCurrentStage.size() == 1 && stages.get(i).getStageType().equals(MAGRStage.STAGETYPE_Initial))
   				nodes.addAll(nodesFromCurrentStage);
   			else if(nodesFromCurrentStage.size() == 1 && nodesFromCurrentStage.get(0).isBack());
   			else return false;

@@ -22,25 +22,34 @@ public class DialogAgreement {
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(DialogAgreement.class);
 	
-	public static boolean dialogApproved(ProcessInfo pi, Properties m_ctx, String Message){
+	/**
+	 *  A confirmation dialog box
+	 * @return 0 - Click the Close button or Cancel
+	 * 		   1 - Click OK and then select Approved
+	 * 		   2 - Click OK and then select Not approved
+	 */
+	public static int dialogApproved(ProcessInfo pi, Properties m_ctx, String Message){
 		
 		MProcess process = new MProcess(Env.getCtx(),  pi.getAD_Process_ID(), pi.getTransactionName());
 		log.info("Agremeent for "+process.get_TableName());
-		boolean retValue = false;
+		int retValue = 0;
 		
 		String[] choices = { Util.cleanAmp(Msg.getMsg(m_ctx, "Approved")), Util.cleanAmp(Msg.getMsg(m_ctx, "Not approved"))};
-	    String input = (String) JOptionPane.showInputDialog(null, Message,
+	    String input = (String) JOptionPane.showInputDialog (null, Message,
 	    		Msg.translate(Env.getCtx(), "Agreement"), 
 	    		JOptionPane.QUESTION_MESSAGE, 
 	    		null, 		// Use default icon
 	        choices, 		// Array of choices
 	        choices[0]); 	// Initial choice
 
+	    // return Value
 	    if(input == null)
 	    	return retValue;
-	    
-	    return retValue = input.equals(Util.cleanAmp(Msg.getMsg(m_ctx, "approved")));
-		
+	    else if(input.equals(Util.cleanAmp(Msg.getMsg(m_ctx, choices[0]))))
+	    	return 1;
+	    else
+	    	return 2;
+	    		
 	}
 	
 	public static void dialogOK(String title, String message, int messageType){
