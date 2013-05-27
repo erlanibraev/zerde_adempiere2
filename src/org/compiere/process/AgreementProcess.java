@@ -4,6 +4,7 @@ import java.util.Properties;
 
 import org.compiere.agreement.Agreement_Dispatcher;
 import org.compiere.apps.DialogAgreement;
+import org.compiere.model.MAGRStage;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.X_AGR_Stage;
@@ -31,24 +32,36 @@ public class AgreementProcess extends SvrProcess
         
         PO po = table.getPO (getRecord_ID(), get_TrxName());
 
+        if(po == null) return null;
+        
+		int AGR_Stage_ID = po.get_ValueAsInt("AGR_Stage_ID");
+        boolean isHasStage = false;
 		
-		if(po == null) return null;
-		
-		boolean approved = false;
-		
-		//if(trm_application.getAGR_Stage_ID() > 0)
-		if(po.get_ValueAsInt(X_AGR_Stage.COLUMNNAME_AGR_Stage_ID) > 0)
+		if(AGR_Stage_ID > 0)
 		{
-			if(DialogAgreement.dialogApproved(pi, m_ctx, "Согласование"))
-				approved = true;
+			MAGRStage stage = new MAGRStage(getCtx(), AGR_Stage_ID, get_TrxName());
+			if(!stage.getStageType().equals(MAGRStage.STAGETYPE_Initial))
+				isHasStage = true;
+		}
+		
+		int retValue = 0;
+		
+		if(isHasStage)
+		{
+			retValue = DialogAgreement.dialogApproved(pi, m_ctx, "Согласование");
 		}
 		else
 		{
-			if(!DialogAgreement.dialogSendAgreement(pi, m_ctx, "Отправить на согласование"))
-				return "";
-			else approved = true;
-		}
+			retValue = DialogAgreement.dialogSendAgreement(pi, m_ctx, "Отправить на согласование") ? 1 : 0;
+		}		
 		
+		boolean approved = false;
+		
+		if(retValue == 0) 
+			return null;
+		else 
+			approved = retValue == 1;
+				
 		Agreement_Dispatcher dispatcher = new Agreement_Dispatcher(po, po.get_Table_ID(), po.get_ID());
 		
 		dispatcher.startAgreement(approved);

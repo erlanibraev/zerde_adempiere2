@@ -6,6 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import org.compiere.apps.IProcessParameter;
+import org.compiere.apps.ProcessCtl;
+import org.compiere.apps.ProcessParameterPanel;
+import org.compiere.process.ProcessInfo;
 import org.compiere.util.Env;
 
 public class MAGRAgreement extends X_AGR_Agreement 
@@ -22,6 +26,18 @@ public class MAGRAgreement extends X_AGR_Agreement
     {
       super (ctx, rs, trxName);
     }
+    
+    protected boolean afterSave (boolean newRecord, boolean success)
+	{
+		MAGRStage stage = new MAGRStage(getCtx(), null, get_TrxName());
+		stage.setAGR_Agreement_ID(get_ID());
+		stage.setStageType(MAGRStage.STAGETYPE_Initial);
+		stage.setName("Согласование");
+		stage.setLine(10);
+		stage.saveEx();
+    	
+		return success;
+	}	//	afterSave
     
     //Check for presence of process stages
   	private boolean stageCheck() throws SQLException

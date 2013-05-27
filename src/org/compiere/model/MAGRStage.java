@@ -119,6 +119,15 @@ public class MAGRStage extends X_AGR_Stage
 		if(nodes.size() == 1 && nodes.get(0).isBack()) return false;
 		else return nodes.size() > 0;
 	}
+	
+	public boolean isAllApproved(int AD_Table_ID, int Record_ID)
+	{
+		if(getName().equals(X_AGR_Stage.STAGETYPE_Initial)) return true;
+		
+		ArrayList<MAGRAgreementList> stageList = MAGRAgreementList.getOfStage(getCtx(), get_TrxName(), AD_Table_ID, Record_ID, get_ID());
+		
+		return stageList.size() == 0;
+	}
 		
 	public void Dissapprove(int AD_Table_ID, int Record_ID, int C_BPartner_ID)
 	{

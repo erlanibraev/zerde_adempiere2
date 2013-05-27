@@ -4,13 +4,17 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import org.apache.catalina.Logger;
+import org.compiere.apps.DialogAgreement;
 import org.compiere.model.MAGRAgreement;
 import org.compiere.model.MAGRAgreementList;
+import org.compiere.model.MAGRDispatcher;
 import org.compiere.model.MAGRNode;
 import org.compiere.model.MAGRStage;
 import org.compiere.model.PO;
 import org.compiere.model.X_AD_Ref_List;
+import org.compiere.model.X_AGR_Dispatcher;
 import org.compiere.model.X_AGR_Stage;
+import org.compiere.process.ProcessInfo;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.jfree.util.Log;
@@ -36,15 +40,14 @@ public class Agreement_Dispatcher
 	public Agreement_Dispatcher(PO document, int AD_Table_ID, int Record_ID)
 	{
 		this.AD_Table_ID = AD_Table_ID;
+		this.Record_ID = Record_ID;		
+		this.document = document;
+		
 		AGR_Stage_ID = document.get_ValueAsInt(X_AGR_Stage.COLUMNNAME_AGR_Stage_ID);// ((IAgreement)document).getStage();
 		AGR_Agreement_ID = AGR_Agreement();
 		AD_User_ID = Env.getAD_User_ID(Env.getCtx());	
 		HR_Department_ID = getHR_Department();
 		C_BPartner_ID = getBPartner();
-
-		this.Record_ID = Record_ID;
-		
-		this.document = document;
 	}
 	
 	//Start agreement process
@@ -63,7 +66,10 @@ public class Agreement_Dispatcher
 		currentStage = getCurrentStage();
 		
 		if(!currentStage.isUserHasAccess(AD_User_ID, HR_Department_ID))
+		{
+			DialogAgreement.dialogOK("Ошибка доступа", "У вас нет доступа к данному этапу согласования", 0);
 			return false;
+		}
 		
 		if(!isApprove)
 		{
@@ -94,7 +100,7 @@ public class Agreement_Dispatcher
 		{
 			createNextStage(stage, false);
 		}
-		else if(stage.isLastStage())
+		else if(stage.isLastStage() && stage.isAllApproved(AD_Table_ID, Record_ID))
 		{
 			quit(stage);
 		}
@@ -124,7 +130,16 @@ public class Agreement_Dispatcher
 	//Get agreement for this type of document
 	private int AGR_Agreement()
 	{
-		return 1000000;
+		int AGR_Dispatcher_ID = document.get_ValueAsInt(X_AGR_Dispatcher.COLUMNNAME_AGR_Dispatcher_ID);
+		int value = 0;
+		
+		if(AGR_Dispatcher_ID > 0)
+		{
+			MAGRDispatcher dispatcher = new MAGRDispatcher(Env.getCtx(), AGR_Dispatcher_ID, null);
+			
+			value = dispatcher.getAGR_Agreement_ID();
+		}
+		return value;
 	}
 		
 	private boolean validation() throws SQLException
