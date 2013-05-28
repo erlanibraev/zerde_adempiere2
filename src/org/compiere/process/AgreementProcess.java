@@ -62,7 +62,7 @@ public class AgreementProcess extends SvrProcess
 			}
 			else
 			{
-				approved = (boolean)value.get(0);
+				approved = (Boolean) value.get(0);
 				message = (String)value.get(1);
 			}
 		}
