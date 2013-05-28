@@ -6,7 +6,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-import org.compiere.agreement.IAgreement;
 import org.compiere.apps.IProcessParameter;
 import org.compiere.apps.ProcessCtl;
 import org.compiere.apps.ProcessParameterPanel;
@@ -15,7 +14,7 @@ import org.compiere.process.ProcessInfo;
 import org.compiere.util.ASyncProcess;
 import org.compiere.util.DB;
 
-public class MTRMApplication extends X_TRM_Application implements DocAction, ASyncProcess, IAgreement {
+public class MTRMApplication extends X_TRM_Application implements DocAction, ASyncProcess {
 
 	/**
 	 * 
@@ -197,25 +196,4 @@ public class MTRMApplication extends X_TRM_Application implements DocAction, ASy
 	@Override
 	public void executeASync(ProcessInfo pi) {
 	}
-	
-	@Override
-	public int getStage() 
-	{
-		return super.getAGR_Stage_ID();
-	}
-
-	@Override
-	public boolean setStage(int AGR_Stage_ID) 
-	{
-		super.setAGR_Stage_ID(AGR_Stage_ID);
-		return true;
-	}
-
-	@Override
-	public boolean setStatusAgreement(String status) 
-	{
-		super.setDocStatus(status);
-		return true;
-	}
-
 }

@@ -2,11 +2,7 @@ package org.compiere.agreement;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 
 import org.apache.catalina.Logger;
 import org.compiere.apps.DialogAgreement;
@@ -19,7 +15,6 @@ import org.compiere.model.PO;
 import org.compiere.model.X_AD_Ref_List;
 import org.compiere.model.X_AGR_Dispatcher;
 import org.compiere.model.X_AGR_Stage;
-import org.compiere.process.ProcessInfo;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.jfree.util.Log;
@@ -28,7 +23,6 @@ public class Agreement_Dispatcher
 {
 	
 	private MAGRStage currentStage = null;
-	private ArrayList<MAGRStage> stages = new ArrayList<MAGRStage>();
 	private PO document;
 	
 	private int AGR_Agreement_ID = 0;
@@ -162,7 +156,6 @@ public class Agreement_Dispatcher
 		MAGRAgreement agreement = new MAGRAgreement(Env.getCtx(), AGR_Agreement_ID, null);
 		
 		if(!agreement.checkAgreement()) return false;
-		//if(!stageCheck() || !stageOptionCheck() || !nodeCheck()) return false;
 						
 		return true;		
 	}
