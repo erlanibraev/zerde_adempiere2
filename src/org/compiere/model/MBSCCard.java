@@ -370,4 +370,57 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 		getParameter().save();
 	}
 
+	
+	protected String getPosition() {
+		String result = "";
+		if(getC_BPartner_ID() > 0) {
+			String sql = "select name from HR_Job where HR_Job_ID in (select HR_Job_ID from HR_Employee where C_BPartner_ID = ? and IsActive = 'Y')";
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;		
+			try {
+				pstmt = DB.prepareStatement(sql,null);
+				pstmt.setInt(1, getC_BPartner_ID());
+				rs = pstmt.executeQuery();
+				if (rs.next()) {
+					result = rs.getString(1);
+				}
+				result = (result == null ? "" : result);
+			} catch (SQLException e) {
+				log.log(Level.SEVERE, "product", e);
+			} finally {
+				DB.close(rs, pstmt);
+				rs = null; pstmt = null;
+			}	
+		}
+		return result;
+	}
+	
+	protected String getCardName() {
+		String result = getName();
+		if (getName() == null) {
+			result = "Карта ССП на ";
+			if (getC_Period_ID() > 0) {
+				result += getC_Period().getName() + " для ";
+				if(getC_BPartner_ID() > 0) {
+					MBPartner bp = new MBPartner(Env.getCtx(),getC_BPartner_ID(),get_TrxName());
+					result += "" + getPosition();
+					result += "(" + bp.getName()+ ")";
+				} else {
+					result = null;
+				}
+			} else {
+				result = null;
+			}
+		}
+		return result;
+	}
+	
+	@Override 
+	protected boolean beforeSave(boolean newRecord) {
+		boolean b = getCardName() != null;
+		if (b) {
+			setName(getCardName());
+		}
+		return beforeSave(newRecord) && b;
+	}
 }
