@@ -1,5 +1,6 @@
 package org.compiere.process;
 
+import java.util.ArrayList;
 import java.util.Properties;
 
 import org.compiere.agreement.Agreement_Dispatcher;
@@ -47,22 +48,34 @@ public class AgreementProcess extends SvrProcess
 		}
 		
 		int retValue = 0;
+		boolean approved = false;
+		
+		ArrayList<Object> value = new ArrayList<Object>();
 		
 		if(isHasStage)
 		{
-			retValue = DialogAgreement.dialogApproved(pi, m_ctx, "Согласование");
+			value = DialogAgreement.dialogApproved(pi, m_ctx, "Согласование");
+			
+			if(value.size() == 0)
+			{
+				retValue = 0;
+			}
+			else
+			{
+				approved = (boolean)value.get(0);
+				message = (String)value.get(1);
+			}
 		}
 		else
 		{
 			retValue = DialogAgreement.dialogSendAgreement(pi, m_ctx, "Отправить на согласование") ? 1 : 0;
-		}		
+		}				
 		
-		boolean approved = false;
 		
 		if(retValue == 0) 
 			return "Exit|Cancel";
-		else 
-			approved = retValue == 1;
+		//else 
+		//	approved = retValue == 1;
 				
 		Agreement_Dispatcher dispatcher = new Agreement_Dispatcher(po, po.get_Table_ID(), po.get_ID());
 		
