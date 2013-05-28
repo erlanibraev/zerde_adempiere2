@@ -64,6 +64,7 @@ public class AgreementProcess extends SvrProcess
 			{
 				approved = (Boolean) value.get(0);
 				message = (String)value.get(1);
+				retValue = 1;
 			}
 		}
 		else
@@ -71,11 +72,10 @@ public class AgreementProcess extends SvrProcess
 			retValue = DialogAgreement.dialogSendAgreement(pi, m_ctx, "Отправить на согласование") ? 1 : 0;
 		}				
 		
-		
 		if(retValue == 0) 
 			return "Exit|Cancel";
-		//else 
-		//	approved = retValue == 1;
+		//else if(retValue == 1)
+		approved = retValue == 1;
 				
 		Agreement_Dispatcher dispatcher = new Agreement_Dispatcher(po, po.get_Table_ID(), po.get_ID());
 		
