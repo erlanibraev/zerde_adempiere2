@@ -94,7 +94,7 @@ public class MAGRStage extends X_AGR_Stage
 		return signers;
 	}
 	
-	public boolean isUserHasAccess(int AD_User_ID, int HR_Department_ID)
+	public boolean isUserHasAccess(int AD_User_ID)
 	{
 		MUser user = new MUser(getCtx(), AD_User_ID, get_TrxName());		
 		

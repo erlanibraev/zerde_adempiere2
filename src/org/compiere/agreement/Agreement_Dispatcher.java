@@ -57,7 +57,7 @@ public class Agreement_Dispatcher
 		currentStage = getCurrentStage();
 		
 		//Check if current user has access for current stage
-		if(!currentStage.isUserHasAccess(AD_User_ID, HR_Department_ID))
+		if(!currentStage.isUserHasAccess(AD_User_ID))
 		{
 			DialogAgreement.dialogOK("Ошибка доступа", "У вас нет доступа к данному этапу согласования", 0);
 			return false;
@@ -69,7 +69,6 @@ public class Agreement_Dispatcher
 			DialogAgreement.dialogOK("Ошибка доступа", "Документ согласован", 0);
 			return false;
 		}
-		
 		//Check if current agreement is validate
 		try 
 		{
@@ -80,7 +79,7 @@ public class Agreement_Dispatcher
 		{
 			e.printStackTrace();
 		}			
-		
+				
 		//If stage not approved
 		if(!isApprove)
 		{
@@ -167,7 +166,8 @@ public class Agreement_Dispatcher
 		if(AGR_Stage_ID == 0)
 		{
 			stage = MAGRStage.getFirstStage(Env.getCtx(), AGR_Agreement_ID, null);
-			FillAgreementList(stage);
+			if(stage.isUserHasAccess(AD_User_ID))
+				FillAgreementList(stage);
 		}
 		else
 		{
