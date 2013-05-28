@@ -1,6 +1,9 @@
 package org.compiere.process;
 
+import java.util.ArrayList;
+
 import org.compiere.apps.ADialog;
+import org.compiere.apps.DialogAgreement;
 import org.compiere.model.MAGRAgreement;
 
 public class AGR_AgreementCheck extends SvrProcess 
@@ -24,12 +27,15 @@ public class AGR_AgreementCheck extends SvrProcess
 		if(agreement.checkAgreement())
 			returnValue = "Согласование " + agreement.getName() + " настроенно верно";
 		else
-			returnValue = "Согласование " + agreement.getName() + " настроенно не верно";
+		{
+			ArrayList<String> errors = agreement.getErrors();
+			
+			for(int i = 0; i < errors.size(); i++)
+				returnValue += errors.get(i) + "\n";
+		}
 		
-		ADialog dialog = new ADialog();
-		
-		dialog.ask(25, null, returnValue);
-		
+		DialogAgreement.dialogOK("Согласование", returnValue, 0);
+				
 		return returnValue;
 	}
 

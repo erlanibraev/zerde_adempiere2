@@ -1,6 +1,7 @@
 package org.compiere.model;
 
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -47,7 +48,7 @@ public class MAGRStage extends X_AGR_Stage
 	{
 		List<MAGRStage> stages = new Query(ctx, I_AGR_Stage.Table_Name, "AGR_Agreement_ID=? AND StageType LIKE '" + X_AGR_Stage.STAGETYPE_Initial + "'", trxName)
 		.setParameters(AGR_Agreement_ID)
-		.setOnlyActiveRecords(true).list();//.get(0));
+		.setOnlyActiveRecords(true).list();
 		
 		MAGRStage firstStage = stages.size() > 0 ? stages.get(0) : null;
 		
@@ -95,8 +96,7 @@ public class MAGRStage extends X_AGR_Stage
 	
 	public boolean isUserHasAccess(int AD_User_ID, int HR_Department_ID)
 	{
-		MUser user = new MUser(getCtx(), AD_User_ID, get_TrxName());
-		
+		MUser user = new MUser(getCtx(), AD_User_ID, get_TrxName());		
 		
 		return getSigners().contains(user.getC_BPartner_ID());
 	}
@@ -104,7 +104,7 @@ public class MAGRStage extends X_AGR_Stage
 	//Check for approvement of agreement with all persons
 	public boolean isCanMove(int AD_Table_ID, int Record_ID)
 	{
-		if(getName().equals(X_AGR_Stage.STAGETYPE_Initial)) return true;
+		if(getStageType().equals(X_AGR_Stage.STAGETYPE_Initial)) return true;
 		ArrayList<MAGRAgreementList> stageList = MAGRAgreementList.getOfStage(getCtx(), get_TrxName(), AD_Table_ID, Record_ID, get_ID());
 		
 		for(int i = 0; i < stageList.size(); i++)
@@ -116,18 +116,20 @@ public class MAGRStage extends X_AGR_Stage
 		nodes.addAll(MAGRNode.getOfAGR_StageList(getCtx(), get_ID(), get_TrxName()));
 		
 		if(nodes.size() == 1 && nodes.get(0).isBack()) return false;
+		
 		else return nodes.size() > 0;
 	}
 	
 	public boolean isAllApproved(int AD_Table_ID, int Record_ID)
 	{
-		if(getName().equals(X_AGR_Stage.STAGETYPE_Initial)) return true;
+		if(getStageType().equals(X_AGR_Stage.STAGETYPE_Initial)) return true;
 		
 		ArrayList<MAGRAgreementList> stageList = MAGRAgreementList.getOfStage(getCtx(), get_TrxName(), AD_Table_ID, Record_ID, get_ID());
 		
 		return stageList.size() == 0;
 	}
-		
+	
+	//Dissapprove stage
 	public void Dissapprove(int AD_Table_ID, int Record_ID, int C_BPartner_ID)
 	{
 		ArrayList<MAGRAgreementList> stageList = MAGRAgreementList.getOfStage(getCtx(), get_TrxName(), AD_Table_ID, Record_ID, get_ID());
@@ -138,16 +140,15 @@ public class MAGRStage extends X_AGR_Stage
 			{
 				stageList.get(i).setSign_N(true);
 				stageList.get(i).setSign_Y(false);
-				stageList.get(i).setProcessed(true);				
-				//break;
+				stageList.get(i).setIsApproved(true);
+				stageList.get(i).setRecordUpdated(new Timestamp(System.currentTimeMillis()));
 			}
-			stageList.get(i).setProcessed(true);
+			stageList.get(i).setIsApproved(true);
 			stageList.get(i).save();
 		}
 	}
 	
-//	public void Delete
-	
+	//Approve stage
 	public void Approve(int AD_Table_ID, int Record_ID, int C_BPartner_ID)
 	{
 		ArrayList<MAGRAgreementList> stageList = MAGRAgreementList.getOfStage(getCtx(), get_TrxName(), AD_Table_ID, Record_ID);
@@ -158,13 +159,15 @@ public class MAGRStage extends X_AGR_Stage
 			{
 				stageList.get(i).setSign_Y(true);
 				stageList.get(i).setSign_N(false);
-				stageList.get(i).setProcessed(true);
+				stageList.get(i).setIsApproved(true);
+				stageList.get(i).setRecordUpdated(new Timestamp(System.currentTimeMillis()));
 				stageList.get(i).save();
 				break;
 			}
 		}
 	}
 
+	//Check if this stage is the last stage of agreement
 	public boolean isLastStage()
 	{
 		boolean retValue = false;

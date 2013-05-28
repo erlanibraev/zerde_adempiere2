@@ -57,20 +57,26 @@ public class Agreement_Dispatcher
 	
 	//Start agreement process
 	public boolean startAgreement(boolean isApprove)
-	{					
+	{				
+		//Get current AGR_Stage
+		//If AGR_Stage is null then new AGR_Stage will be started
 		currentStage = getCurrentStage();
+		
+		//Check if current user has access for current stage
 		if(!currentStage.isUserHasAccess(AD_User_ID, HR_Department_ID))
 		{
 			DialogAgreement.dialogOK("Ошибка доступа", "У вас нет доступа к данному этапу согласования", 0);
 			return false;
 		}
 
+		//Check if current stage is a last stage of current agreement
 		if(currentStage.isLastStage() && currentStage.isAllApproved(AD_Table_ID, Record_ID))
 		{
 			DialogAgreement.dialogOK("Ошибка доступа", "Документ согласован", 0);
 			return false;
 		}
 		
+		//Check if current agreement is validate
 		try 
 		{
 			if(!validation()) 
@@ -81,11 +87,10 @@ public class Agreement_Dispatcher
 			e.printStackTrace();
 		}			
 		
+		//If stage not approved
 		if(!isApprove)
 		{
 			Dissaprove(currentStage);
-			//quit(currentStage);
-			return true;
 		}
 		else
 		{

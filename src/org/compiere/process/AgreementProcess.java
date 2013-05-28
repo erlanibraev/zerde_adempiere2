@@ -32,7 +32,7 @@ public class AgreementProcess extends SvrProcess
         
         PO po = table.getPO (getRecord_ID(), get_TrxName());
 
-        if(po == null) return null;
+        if(po == null) return "PO is null";
         
 		int AGR_Stage_ID = po.get_ValueAsInt("AGR_Stage_ID");
         boolean isHasStage = false;
@@ -58,7 +58,7 @@ public class AgreementProcess extends SvrProcess
 		boolean approved = false;
 		
 		if(retValue == 0) 
-			return null;
+			return "Exit|Cancel";
 		else 
 			approved = retValue == 1;
 				

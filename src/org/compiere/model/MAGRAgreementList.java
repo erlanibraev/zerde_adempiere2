@@ -29,7 +29,7 @@ public class MAGRAgreementList extends X_AGR_AgreementList
     	parameters.add(AD_Table_ID);
     	parameters.add(Record_ID);
     	parameters.add(false);
-    	List<MAGRAgreementList> list = new Query(ctx, I_AGR_AgreementList.Table_Name, "AD_Table_ID=? AND Record_ID=? AND Processed=?", trxName)
+    	List<MAGRAgreementList> list = new Query(ctx, I_AGR_AgreementList.Table_Name, "AD_Table_ID=? AND Record_ID=? AND isApproved=?", trxName)
 		.setParameters(parameters)
 		.setOnlyActiveRecords(true)
 		.list();
@@ -44,7 +44,7 @@ public class MAGRAgreementList extends X_AGR_AgreementList
     	parameters.add(Record_ID);
     	parameters.add(AGR_Stage_ID);
     	parameters.add(false);
-    	List<MAGRAgreementList> list = new Query(ctx, I_AGR_AgreementList.Table_Name, "AD_Table_ID=? AND Record_ID=? AND AGR_Stage_ID=? AND Processed=?", trxName)
+    	List<MAGRAgreementList> list = new Query(ctx, I_AGR_AgreementList.Table_Name, "AD_Table_ID=? AND Record_ID=? AND AGR_Stage_ID=? AND isApproved=?", trxName)
 		.setParameters(parameters)
 		.setOnlyActiveRecords(true)
 		.list();
