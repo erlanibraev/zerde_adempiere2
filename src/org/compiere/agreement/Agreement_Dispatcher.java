@@ -56,6 +56,13 @@ public class Agreement_Dispatcher
 		//If AGR_Stage is null then new AGR_Stage will be started
 		currentStage = getCurrentStage();
 		
+		//Check if current stage is a last stage of current agreement
+		if(currentStage.isLastStage() && currentStage.isAllApproved(AD_Table_ID, Record_ID))
+		{
+			DialogAgreement.dialogOK("Ошибка доступа", "Документ согласован", 0);
+			return false;
+		}
+				
 		//Check if current user has access for current stage
 		if(!currentStage.isUserHasAccess(AD_User_ID))
 		{
@@ -63,12 +70,6 @@ public class Agreement_Dispatcher
 			return false;
 		}
 
-		//Check if current stage is a last stage of current agreement
-		if(currentStage.isLastStage() && currentStage.isAllApproved(AD_Table_ID, Record_ID))
-		{
-			DialogAgreement.dialogOK("Ошибка доступа", "Документ согласован", 0);
-			return false;
-		}
 		//Check if current agreement is validate
 		try 
 		{
@@ -87,7 +88,7 @@ public class Agreement_Dispatcher
 		}
 		else
 		{
-			Approve(currentStage);
+			Approve(currentStage, message);
 		}
 		
 		return true;
@@ -100,9 +101,9 @@ public class Agreement_Dispatcher
 		createNextStage(stage, true);
 	}
 	//Approve document and check for possibility to move to the next stage
-	private void Approve(MAGRStage stage)
+	private void Approve(MAGRStage stage, String message)
 	{		
-		stage.Approve(AD_Table_ID, Record_ID, C_BPartner_ID);
+		stage.Approve(AD_Table_ID, Record_ID, C_BPartner_ID, message);
 		
 		if(stage.isCanMove(AD_Table_ID, Record_ID))
 		{
