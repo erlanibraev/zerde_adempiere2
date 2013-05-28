@@ -3,6 +3,7 @@
  */
 package org.compiere.apps;
 
+import java.util.ArrayList;
 import java.util.Properties;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -28,13 +29,25 @@ public class DialogAgreement {
 	 * 		   1 - Click OK and then select Approved
 	 * 		   2 - Click OK and then select Not approved
 	 */
-	public static int dialogApproved(ProcessInfo pi, Properties m_ctx, String Message){
+	public static ArrayList<Object> dialogApproved(ProcessInfo pi, Properties m_ctx, String Message){
 		
 		MProcess process = new MProcess(Env.getCtx(),  pi.getAD_Process_ID(), pi.getTransactionName());
 		log.info("Agremeent for "+process.get_TableName());
 		int retValue = 0;
 		
 		String[] choices = { Util.cleanAmp(Msg.getMsg(m_ctx, "Approved")), Util.cleanAmp(Msg.getMsg(m_ctx, "Not approved"))};
+		DialogApproved dialog = new DialogApproved(null, true, Msg.translate(Env.getCtx(), "Agreement"), choices);
+		dialog.show();
+		
+		ArrayList<Object> value = new ArrayList<Object>();
+		if(dialog.getItem() != null)
+			value.add(dialog.getItem().equals(Util.cleanAmp(Msg.getMsg(m_ctx, choices[0]))));
+		if(dialog.getDescription() != null)
+			value.add(dialog.getDescription());
+		else
+			value.add("");
+		/*
+		
 	    String input = (String) JOptionPane.showInputDialog (null, Message,
 	    		Msg.translate(Env.getCtx(), "Agreement"), 
 	    		JOptionPane.QUESTION_MESSAGE, 
@@ -48,7 +61,9 @@ public class DialogAgreement {
 	    else if(input.equals(Util.cleanAmp(Msg.getMsg(m_ctx, choices[0]))))
 	    	return 1;
 	    else
-	    	return 2;
+	    	return 2;*/
+		
+		return value;
 	    		
 	}
 	
