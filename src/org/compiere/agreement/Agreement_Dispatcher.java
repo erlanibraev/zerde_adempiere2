@@ -216,7 +216,7 @@ public class Agreement_Dispatcher
 	//Fill agreement list
 	private void FillAgreementList(MAGRStage stage)
 	{
-		ArrayList<Integer> signers = stage.getSigners(HR_Department_ID);
+		ArrayList<Integer> signers = stage.getSigners();
 		
 		for(int i = 0; i < signers.size(); i++)
 		{

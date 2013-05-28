@@ -54,14 +54,13 @@ public class MAGRStage extends X_AGR_Stage
 		return firstStage;
 	}
 	
-	public ArrayList<Integer> getSigners(int HR_Department_ID)
+	public ArrayList<Integer> getSigners()
 	{
 		List<Object> parameters = new ArrayList<Object>();
-		parameters.add(HR_Department_ID);
 		parameters.add(get_ID());
 		List<MAGRStageList> stageOptions = null;
 		if(!isMultiStage())
-			stageOptions = new Query(getCtx(), I_AGR_StageList.Table_Name, "HR_Department_ID=? AND AGR_Stage_ID=?", get_TrxName())
+			stageOptions = new Query(getCtx(), I_AGR_StageList.Table_Name, "AGR_Stage_ID=?", get_TrxName())
 			.setParameters(parameters)
 			.setOnlyActiveRecords(true).list();
 		else
@@ -99,7 +98,7 @@ public class MAGRStage extends X_AGR_Stage
 		MUser user = new MUser(getCtx(), AD_User_ID, get_TrxName());
 		
 		
-		return getSigners(HR_Department_ID).contains(user.getC_BPartner_ID());
+		return getSigners().contains(user.getC_BPartner_ID());
 	}
 
 	//Check for approvement of agreement with all persons
