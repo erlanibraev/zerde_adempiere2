@@ -18,6 +18,7 @@
 package org.compiere.model;
 
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.Properties;
 
 /** Generated Model for AGR_AgreementList
@@ -29,7 +30,7 @@ public class X_AGR_AgreementList extends PO implements I_AGR_AgreementList, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130524L;
+	private static final long serialVersionUID = 20130528L;
 
     /** the default Constructor */
     public X_AGR_AgreementList(Properties ctx)
@@ -47,9 +48,13 @@ public class X_AGR_AgreementList extends PO implements I_AGR_AgreementList, I_Pe
 			setAGR_AgreementList_ID (0);
 			setAGR_Stage_ID (0);
 // @AGR_Stage_ID@
-			setProcessed (false);
+			setIsApproved (false);
 // N
 			setRecord_ID (0);
+			setRecordCreated (new Timestamp( System.currentTimeMillis() ));
+// @Created@
+			setRecordUpdated (new Timestamp( System.currentTimeMillis() ));
+// @Created@
         } */
     }
 
@@ -171,21 +176,21 @@ public class X_AGR_AgreementList extends PO implements I_AGR_AgreementList, I_Pe
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
-	/** Set Processed.
-		@param Processed 
-		The document has been processed
+	/** Set Approved.
+		@param IsApproved 
+		Indicates if this document requires approval
 	  */
-	public void setProcessed (boolean Processed)
+	public void setIsApproved (boolean IsApproved)
 	{
-		set_Value (COLUMNNAME_Processed, Boolean.valueOf(Processed));
+		set_Value (COLUMNNAME_IsApproved, Boolean.valueOf(IsApproved));
 	}
 
-	/** Get Processed.
-		@return The document has been processed
+	/** Get Approved.
+		@return Indicates if this document requires approval
 	  */
-	public boolean isProcessed () 
+	public boolean isApproved () 
 	{
-		Object oo = get_Value(COLUMNNAME_Processed);
+		Object oo = get_Value(COLUMNNAME_IsApproved);
 		if (oo != null) 
 		{
 			 if (oo instanceof Boolean) 
@@ -216,6 +221,40 @@ public class X_AGR_AgreementList extends PO implements I_AGR_AgreementList, I_Pe
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set RecordCreated.
+		@param RecordCreated 
+		Запись создана
+	  */
+	public void setRecordCreated (Timestamp RecordCreated)
+	{
+		set_Value (COLUMNNAME_RecordCreated, RecordCreated);
+	}
+
+	/** Get RecordCreated.
+		@return Запись создана
+	  */
+	public Timestamp getRecordCreated () 
+	{
+		return (Timestamp)get_Value(COLUMNNAME_RecordCreated);
+	}
+
+	/** Set RecordUpdated.
+		@param RecordUpdated 
+		Запись обновлена
+	  */
+	public void setRecordUpdated (Timestamp RecordUpdated)
+	{
+		set_Value (COLUMNNAME_RecordUpdated, RecordUpdated);
+	}
+
+	/** Get RecordUpdated.
+		@return Запись обновлена
+	  */
+	public Timestamp getRecordUpdated () 
+	{
+		return (Timestamp)get_Value(COLUMNNAME_RecordUpdated);
 	}
 
 	/** Set Sign_N.

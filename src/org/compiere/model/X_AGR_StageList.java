@@ -17,10 +17,8 @@
 /** Generated Model - DO NOT CHANGE */
 package org.compiere.model;
 
-import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
-import org.compiere.util.Env;
 
 /** Generated Model for AGR_StageList
  *  @author Adempiere (generated) 
@@ -31,7 +29,7 @@ public class X_AGR_StageList extends PO implements I_AGR_StageList, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130523L;
+	private static final long serialVersionUID = 20130528L;
 
     /** the default Constructor */
     public X_AGR_StageList(Properties ctx)
@@ -186,31 +184,6 @@ public class X_AGR_StageList extends PO implements I_AGR_StageList, I_Persistent
 		return ii.intValue();
 	}
 
-	public org.eevolution.model.I_HR_Department getHR_Department() throws RuntimeException
-    {
-		return (org.eevolution.model.I_HR_Department)MTable.get(getCtx(), org.eevolution.model.I_HR_Department.Table_Name)
-			.getPO(getHR_Department_ID(), get_TrxName());	}
-
-	/** Set Payroll Department.
-		@param HR_Department_ID Payroll Department	  */
-	public void setHR_Department_ID (int HR_Department_ID)
-	{
-		if (HR_Department_ID < 1) 
-			set_Value (COLUMNNAME_HR_Department_ID, null);
-		else 
-			set_Value (COLUMNNAME_HR_Department_ID, Integer.valueOf(HR_Department_ID));
-	}
-
-	/** Get Payroll Department.
-		@return Payroll Department	  */
-	public int getHR_Department_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_HR_Department_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	public org.compiere.model.I_C_BPartner getHR_Header() throws RuntimeException
     {
 		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
@@ -309,25 +282,5 @@ public class X_AGR_StageList extends PO implements I_AGR_StageList, I_Persistent
 			return "Y".equals(oo);
 		}
 		return false;
-	}
-
-	/** Set Priority.
-		@param Priority 
-		Indicates if this request is of a high, medium or low priority.
-	  */
-	public void setPriority (BigDecimal Priority)
-	{
-		set_Value (COLUMNNAME_Priority, Priority);
-	}
-
-	/** Get Priority.
-		@return Indicates if this request is of a high, medium or low priority.
-	  */
-	public BigDecimal getPriority () 
-	{
-		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Priority);
-		if (bd == null)
-			 return Env.ZERO;
-		return bd;
 	}
 }

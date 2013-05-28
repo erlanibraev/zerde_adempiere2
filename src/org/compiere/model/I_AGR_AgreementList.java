@@ -139,18 +139,18 @@ public interface I_AGR_AgreementList
 	  */
 	public boolean isActive();
 
-    /** Column name Processed */
-    public static final String COLUMNNAME_Processed = "Processed";
+    /** Column name IsApproved */
+    public static final String COLUMNNAME_IsApproved = "IsApproved";
 
-	/** Set Processed.
-	  * The document has been processed
+	/** Set Approved.
+	  * Indicates if this document requires approval
 	  */
-	public void setProcessed (boolean Processed);
+	public void setIsApproved (boolean IsApproved);
 
-	/** Get Processed.
-	  * The document has been processed
+	/** Get Approved.
+	  * Indicates if this document requires approval
 	  */
-	public boolean isProcessed();
+	public boolean isApproved();
 
     /** Column name Record_ID */
     public static final String COLUMNNAME_Record_ID = "Record_ID";
@@ -164,6 +164,32 @@ public interface I_AGR_AgreementList
 	  * Direct internal record ID
 	  */
 	public int getRecord_ID();
+
+    /** Column name RecordCreated */
+    public static final String COLUMNNAME_RecordCreated = "RecordCreated";
+
+	/** Set RecordCreated.
+	  * Запись создана
+	  */
+	public void setRecordCreated (Timestamp RecordCreated);
+
+	/** Get RecordCreated.
+	  * Запись создана
+	  */
+	public Timestamp getRecordCreated();
+
+    /** Column name RecordUpdated */
+    public static final String COLUMNNAME_RecordUpdated = "RecordUpdated";
+
+	/** Set RecordUpdated.
+	  * Запись обновлена
+	  */
+	public void setRecordUpdated (Timestamp RecordUpdated);
+
+	/** Get RecordUpdated.
+	  * Запись обновлена
+	  */
+	public Timestamp getRecordUpdated();
 
     /** Column name Sign_N */
     public static final String COLUMNNAME_Sign_N = "Sign_N";

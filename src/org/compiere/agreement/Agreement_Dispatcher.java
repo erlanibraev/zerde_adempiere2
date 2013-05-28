@@ -1,7 +1,12 @@
 package org.compiere.agreement;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import org.apache.catalina.Logger;
 import org.compiere.apps.DialogAgreement;
@@ -43,7 +48,7 @@ public class Agreement_Dispatcher
 		this.Record_ID = Record_ID;		
 		this.document = document;
 		
-		AGR_Stage_ID = document.get_ValueAsInt(X_AGR_Stage.COLUMNNAME_AGR_Stage_ID);// ((IAgreement)document).getStage();
+		AGR_Stage_ID = document.get_ValueAsInt(X_AGR_Stage.COLUMNNAME_AGR_Stage_ID);
 		AGR_Agreement_ID = AGR_Agreement();
 		AD_User_ID = Env.getAD_User_ID(Env.getCtx());	
 		HR_Department_ID = getHR_Department();
@@ -52,7 +57,20 @@ public class Agreement_Dispatcher
 	
 	//Start agreement process
 	public boolean startAgreement(boolean isApprove)
-	{	
+	{					
+		currentStage = getCurrentStage();
+		if(!currentStage.isUserHasAccess(AD_User_ID, HR_Department_ID))
+		{
+			DialogAgreement.dialogOK("Ошибка доступа", "У вас нет доступа к данному этапу согласования", 0);
+			return false;
+		}
+
+		if(currentStage.isLastStage() && currentStage.isAllApproved(AD_Table_ID, Record_ID))
+		{
+			DialogAgreement.dialogOK("Ошибка доступа", "Документ согласован", 0);
+			return false;
+		}
+		
 		try 
 		{
 			if(!validation()) 
@@ -61,15 +79,7 @@ public class Agreement_Dispatcher
 		catch (SQLException e) 
 		{
 			e.printStackTrace();
-		}
-		
-		currentStage = getCurrentStage();
-		
-		if(!currentStage.isUserHasAccess(AD_User_ID, HR_Department_ID))
-		{
-			DialogAgreement.dialogOK("Ошибка доступа", "У вас нет доступа к данному этапу согласования", 0);
-			return false;
-		}
+		}			
 		
 		if(!isApprove)
 		{
@@ -159,6 +169,7 @@ public class Agreement_Dispatcher
 		if(AGR_Stage_ID == 0)
 		{
 			stage = MAGRStage.getFirstStage(Env.getCtx(), AGR_Agreement_ID, null);
+			FillAgreementList(stage);
 		}
 		else
 		{
@@ -166,13 +177,6 @@ public class Agreement_Dispatcher
 		}
 		
 		return stage;
-		
-/*		loadSigners(stage);
-		
-		MUser user = new MUser(Env.getCtx(), AD_User_ID, null);
-		
-		if(!signers.contains(user.getC_BPartner())) return;
-*/				
 	}
 	//Get next stage if stage is approved
 	private MAGRStage createNextStage(MAGRStage currentStage, boolean isBack)
@@ -218,6 +222,9 @@ public class Agreement_Dispatcher
 	{
 		ArrayList<Integer> signers = stage.getSigners();
 		
+		//get current date&time
+		Timestamp stamp = new Timestamp(System.currentTimeMillis());
+
 		for(int i = 0; i < signers.size(); i++)
 		{
 			MAGRAgreementList list = new MAGRAgreementList(Env.getCtx(), null, null);			
@@ -225,6 +232,8 @@ public class Agreement_Dispatcher
 			list.setRecord_ID(Record_ID);
 			list.setSigner_ID(signers.get(i));
 			list.setAGR_Stage_ID(stage.get_ID());
+			list.setRecordCreated(stamp);
+			list.setRecordUpdated(stamp);
 			if(!list.save())
 			{
 				Log.log(Logger.ERROR, "Agreement List not saved");

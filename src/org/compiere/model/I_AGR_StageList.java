@@ -128,17 +128,6 @@ public interface I_AGR_StageList
 	  */
 	public int getCreatedBy();
 
-    /** Column name HR_Department_ID */
-    public static final String COLUMNNAME_HR_Department_ID = "HR_Department_ID";
-
-	/** Set Payroll Department	  */
-	public void setHR_Department_ID (int HR_Department_ID);
-
-	/** Get Payroll Department	  */
-	public int getHR_Department_ID();
-
-	public org.eevolution.model.I_HR_Department getHR_Department() throws RuntimeException;
-
     /** Column name HR_Header_ID */
     public static final String COLUMNNAME_HR_Header_ID = "HR_Header_ID";
 
@@ -205,19 +194,6 @@ public interface I_AGR_StageList
 	  * Активно
 	  */
 	public boolean isHeaderActive();
-
-    /** Column name Priority */
-    public static final String COLUMNNAME_Priority = "Priority";
-
-	/** Set Priority.
-	  * Indicates if this request is of a high, medium or low priority.
-	  */
-	public void setPriority (BigDecimal Priority);
-
-	/** Get Priority.
-	  * Indicates if this request is of a high, medium or low priority.
-	  */
-	public BigDecimal getPriority();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
