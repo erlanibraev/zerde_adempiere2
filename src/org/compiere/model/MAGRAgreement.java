@@ -16,7 +16,7 @@ public class MAGRAgreement extends X_AGR_Agreement
 {
 	private static final long serialVersionUID = -704183934751993540L;
 	
-	private ArrayList<String> errorsList = new ArrayList<>();
+	private ArrayList<String> errorsList = new ArrayList<String>();
 
 	public MAGRAgreement(Properties ctx, int AGR_Agreement_ID, String trxName) 
 	{
@@ -99,7 +99,7 @@ public class MAGRAgreement extends X_AGR_Agreement
   	
   	public boolean checkAgreement() throws SQLException
   	{
-  		errorsList = new ArrayList<>();
+  		errorsList = new ArrayList<String>();
   		
   		if(!stageCheck() || !stageOptionCheck() || !hasExit()) return false;
   		
