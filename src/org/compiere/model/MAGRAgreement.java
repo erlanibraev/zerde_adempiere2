@@ -155,7 +155,7 @@ public class MAGRAgreement extends X_AGR_Agreement
   		{
   			X_AGR_StageList stageOption = stagesOptions.get(i);
   			
-  			if(stageOption.getHR_Department_ID() == -1 || !isHasAlternates(stageOption)) return false;			
+  			if(!isHasAlternates(stageOption)) return false;			
   		}
   		
   		for(int i = 0; i < stages.size(); i++)
