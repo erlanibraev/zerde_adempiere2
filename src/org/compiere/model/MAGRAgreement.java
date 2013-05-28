@@ -36,12 +36,14 @@ public class MAGRAgreement extends X_AGR_Agreement
     
     protected boolean afterSave (boolean newRecord, boolean success)
 	{
-		MAGRStage stage = new MAGRStage(getCtx(), null, get_TrxName());
-		stage.setAGR_Agreement_ID(get_ID());
-		stage.setStageType(MAGRStage.STAGETYPE_Initial);
-		stage.setName("---");
-		stage.setLine(10);
-		stage.saveEx();
+    	if(newRecord && success){
+			MAGRStage stage = new MAGRStage(getCtx(), null, get_TrxName());
+			stage.setAGR_Agreement_ID(get_ID());
+			stage.setStageType(MAGRStage.STAGETYPE_Initial);
+			stage.setName("---");
+			stage.setLine(10);
+			stage.saveEx();
+    	}
     	
 		return success;
 	}	//	afterSave

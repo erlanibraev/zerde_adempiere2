@@ -38,6 +38,7 @@ public class DialogAgreement {
 		String[] choices = { Util.cleanAmp(Msg.getMsg(m_ctx, "Approved")), Util.cleanAmp(Msg.getMsg(m_ctx, "Not approved"))};
 		DialogApproved dialog = new DialogApproved(null, true, Msg.translate(Env.getCtx(), "Agreement"), choices);
 		dialog.show();
+		dialog.dispose();
 		
 		ArrayList<Object> value = new ArrayList<Object>();
 		if(dialog.getItem() != null)
