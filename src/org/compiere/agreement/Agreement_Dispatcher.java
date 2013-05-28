@@ -50,7 +50,7 @@ public class Agreement_Dispatcher
 	}
 	
 	//Start agreement process
-	public boolean startAgreement(boolean isApprove)
+	public boolean startAgreement(boolean isApprove,String message)
 	{				
 		//Get current AGR_Stage
 		//If AGR_Stage is null then new AGR_Stage will be started
@@ -84,7 +84,7 @@ public class Agreement_Dispatcher
 		//If stage not approved
 		if(!isApprove)
 		{
-			Dissaprove(currentStage);
+			Dissaprove(currentStage, message);
 		}
 		else
 		{
@@ -95,9 +95,9 @@ public class Agreement_Dispatcher
 	}
 	
 	//Dissaprove document and quit from agreement process
-	private void Dissaprove(MAGRStage stage)
+	private void Dissaprove(MAGRStage stage,String message)
 	{
-		stage.Dissapprove(AD_Table_ID, Record_ID, C_BPartner_ID);
+		stage.Dissapprove(AD_Table_ID, Record_ID, C_BPartner_ID, message);
 		createNextStage(stage, true);
 	}
 	//Approve document and check for possibility to move to the next stage

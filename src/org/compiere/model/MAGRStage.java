@@ -130,7 +130,7 @@ public class MAGRStage extends X_AGR_Stage
 	}
 	
 	//Dissapprove stage
-	public void Dissapprove(int AD_Table_ID, int Record_ID, int C_BPartner_ID)
+	public void Dissapprove(int AD_Table_ID, int Record_ID, int C_BPartner_ID, String message)
 	{
 		ArrayList<MAGRAgreementList> stageList = MAGRAgreementList.getOfStage(getCtx(), get_TrxName(), AD_Table_ID, Record_ID, get_ID());
 		
@@ -141,6 +141,7 @@ public class MAGRStage extends X_AGR_Stage
 				stageList.get(i).setSign_N(true);
 				stageList.get(i).setSign_Y(false);
 				stageList.get(i).setIsApproved(true);
+				stageList.get(i).setDescription(message);
 				stageList.get(i).setRecordUpdated(new Timestamp(System.currentTimeMillis()));
 			}
 			stageList.get(i).setIsApproved(true);

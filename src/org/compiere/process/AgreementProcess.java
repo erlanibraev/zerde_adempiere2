@@ -37,6 +37,8 @@ public class AgreementProcess extends SvrProcess
 		int AGR_Stage_ID = po.get_ValueAsInt("AGR_Stage_ID");
         boolean isHasStage = false;
 		
+        String message = "";
+        
 		if(AGR_Stage_ID > 0)
 		{
 			MAGRStage stage = new MAGRStage(getCtx(), AGR_Stage_ID, get_TrxName());
@@ -64,7 +66,7 @@ public class AgreementProcess extends SvrProcess
 				
 		Agreement_Dispatcher dispatcher = new Agreement_Dispatcher(po, po.get_Table_ID(), po.get_ID());
 		
-		dispatcher.startAgreement(approved);
+		dispatcher.startAgreement(approved, message);
 		
 		return "";
 	}
