@@ -397,14 +397,14 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 	
 	protected String getCardName() {
 		String result = getName();
-		if (getName() == null) {
+		if (getName() == null || getName().trim().equals("")) {
 			result = "Карта ССП на ";
 			if (getC_Period_ID() > 0) {
 				result += getC_Period().getName() + " для ";
 				if(getC_BPartner_ID() > 0) {
 					MBPartner bp = new MBPartner(Env.getCtx(),getC_BPartner_ID(),get_TrxName());
 					result += "" + getPosition();
-					result += "(" + bp.getName()+ ")";
+					result += " (" + bp.getName()+ ")";
 				} else {
 					result = null;
 				}
@@ -421,6 +421,6 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 		if (b) {
 			setName(getCardName());
 		}
-		return beforeSave(newRecord) && b;
+		return super.beforeSave(newRecord) && b;
 	}
 }
