@@ -37,7 +37,7 @@ public class DialogAgreement {
 		
 		String[] choices = { Util.cleanAmp(Msg.getMsg(m_ctx, "Approved")), Util.cleanAmp(Msg.getMsg(m_ctx, "Not approved"))};
 		DialogApproved dialog = new DialogApproved(null, true, Msg.translate(Env.getCtx(), "Agreement"), choices);
-		dialog.show();
+		AEnv.showCenterScreen(dialog);
 		dialog.dispose();
 		
 		ArrayList<Object> value = new ArrayList<Object>();
@@ -47,22 +47,6 @@ public class DialogAgreement {
 			value.add(dialog.getDescription());
 		else
 			value.add("");
-		/*
-		
-	    String input = (String) JOptionPane.showInputDialog (null, Message,
-	    		Msg.translate(Env.getCtx(), "Agreement"), 
-	    		JOptionPane.QUESTION_MESSAGE, 
-	    		null, 		// Use default icon
-	        choices, 		// Array of choices
-	        choices[0]); 	// Initial choice
-
-	    // return Value
-	    if(input == null)
-	    	return retValue;
-	    else if(input.equals(Util.cleanAmp(Msg.getMsg(m_ctx, choices[0]))))
-	    	return 1;
-	    else
-	    	return 2;*/
 		
 		return value;
 	    		
