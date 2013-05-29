@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.compiere.apps;
 
 import java.util.ArrayList;
@@ -15,6 +12,7 @@ import org.compiere.util.Msg;
 import org.compiere.util.Util;
 
 /**
+ * The various dialog boxes for budgeting module
  * @author V.Sokolov
  *
  */
@@ -25,15 +23,14 @@ public class DialogAgreement {
 	
 	/**
 	 *  A confirmation dialog box
-	 * @return 0 - Click the Close button or Cancel
-	 * 		   1 - Click OK and then select Approved
-	 * 		   2 - Click OK and then select Not approved
+	 * @return  ArrayList [X, Y]
+	 * 			X - Boolean Type, Approved = true, Not approved = false
+	 * 			Y - String Type, reason
 	 */
 	public static ArrayList<Object> dialogApproved(ProcessInfo pi, Properties m_ctx, String Message){
 		
 		MProcess process = new MProcess(Env.getCtx(),  pi.getAD_Process_ID(), pi.getTransactionName());
 		log.info("Agremeent for "+process.get_TableName());
-		int retValue = 0;
 		
 		String[] choices = { Util.cleanAmp(Msg.getMsg(m_ctx, "Approved")), Util.cleanAmp(Msg.getMsg(m_ctx, "Not approved"))};
 		DialogApproved dialog = new DialogApproved(null, true, Msg.translate(Env.getCtx(), "Agreement"), choices);
@@ -49,7 +46,6 @@ public class DialogAgreement {
 			value.add("");
 		
 		return value;
-	    		
 	}
 	
 	public static void dialogOK(String title, String message, int messageType){
