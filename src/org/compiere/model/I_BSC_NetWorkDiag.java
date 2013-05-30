@@ -130,6 +130,19 @@ public interface I_BSC_NetWorkDiag
 	  */
 	public Timestamp getDateAcct();
 
+    /** Column name Description */
+    public static final String COLUMNNAME_Description = "Description";
+
+	/** Set Description.
+	  * Optional short description of the record
+	  */
+	public void setDescription (String Description);
+
+	/** Get Description.
+	  * Optional short description of the record
+	  */
+	public String getDescription();
+
     /** Column name DocAction */
     public static final String COLUMNNAME_DocAction = "DocAction";
 
@@ -168,6 +181,19 @@ public interface I_BSC_NetWorkDiag
 	  * Document sequence number of the document
 	  */
 	public String getDocumentNo();
+
+    /** Column name Help */
+    public static final String COLUMNNAME_Help = "Help";
+
+	/** Set Comment/Help.
+	  * Comment or Hint
+	  */
+	public void setHelp (String Help);
+
+	/** Get Comment/Help.
+	  * Comment or Hint
+	  */
+	public String getHelp();
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";

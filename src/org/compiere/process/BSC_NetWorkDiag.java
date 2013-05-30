@@ -21,7 +21,7 @@ public class BSC_NetWorkDiag extends SvrProcess {
 		{
 			return "Document is Deflected";
 		}
-		if(netWorkDiag.getDocStatus().equals(netWorkDiag.DOCSTATUS_Endorsed))
+		if(netWorkDiag.getDocStatus().equals(netWorkDiag.DOCSTATUS_Approved))
 		{
 			return "Document is Endorsed";
 		}

@@ -33,7 +33,7 @@ public class X_BSC_NetWorkDiag extends PO implements I_BSC_NetWorkDiag, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130528L;
+	private static final long serialVersionUID = 20130530L;
 
     /** the default Constructor */
     public X_BSC_NetWorkDiag(Properties ctx)
@@ -51,7 +51,7 @@ public class X_BSC_NetWorkDiag extends PO implements I_BSC_NetWorkDiag, I_Persis
 			setC_DocType_ID (0);
 // 1000069
 			setDocAction (null);
-// CO
+// COMP
 			setDocStatus (null);
 // FEXE
         } */
@@ -178,36 +178,35 @@ public class X_BSC_NetWorkDiag extends PO implements I_BSC_NetWorkDiag, I_Persis
 		return (Timestamp)get_Value(COLUMNNAME_DateAcct);
 	}
 
-	/** DocAction AD_Reference_ID=135 */
-	public static final int DOCACTION_AD_Reference_ID=135;
-	/** Complete = CO */
-	public static final String DOCACTION_Complete = "CO";
-	/** Approve = AP */
-	public static final String DOCACTION_Approve = "AP";
-	/** Reject = RJ */
-	public static final String DOCACTION_Reject = "RJ";
-	/** Post = PO */
-	public static final String DOCACTION_Post = "PO";
-	/** Void = VO */
-	public static final String DOCACTION_Void = "VO";
-	/** Close = CL */
-	public static final String DOCACTION_Close = "CL";
-	/** Reverse - Correct = RC */
-	public static final String DOCACTION_Reverse_Correct = "RC";
-	/** Reverse - Accrual = RA */
-	public static final String DOCACTION_Reverse_Accrual = "RA";
-	/** Invalidate = IN */
-	public static final String DOCACTION_Invalidate = "IN";
-	/** Re-activate = RE */
-	public static final String DOCACTION_Re_Activate = "RE";
-	/** <None> = -- */
-	public static final String DOCACTION_None = "--";
-	/** Prepare = PR */
-	public static final String DOCACTION_Prepare = "PR";
-	/** Unlock = XL */
-	public static final String DOCACTION_Unlock = "XL";
-	/** Wait Complete = WC */
-	public static final String DOCACTION_WaitComplete = "WC";
+	/** Set Description.
+		@param Description 
+		Optional short description of the record
+	  */
+	public void setDescription (String Description)
+	{
+		set_Value (COLUMNNAME_Description, Description);
+	}
+
+	/** Get Description.
+		@return Optional short description of the record
+	  */
+	public String getDescription () 
+	{
+		return (String)get_Value(COLUMNNAME_Description);
+	}
+
+	/** DocAction AD_Reference_ID=1000141 */
+	public static final int DOCACTION_AD_Reference_ID=1000141;
+	/** Approve = APPR */
+	public static final String DOCACTION_Approve = "APPR";
+	/** Deflect = DEFL */
+	public static final String DOCACTION_Deflect = "DEFL";
+	/** Complete = COMP */
+	public static final String DOCACTION_Complete = "COMP";
+	/** For approval = FAPP */
+	public static final String DOCACTION_ForApproval = "FAPP";
+	/** For execution = FEXE */
+	public static final String DOCACTION_ForExecution = "FEXE";
 	/** Set Document Action.
 		@param DocAction 
 		The targeted status of the document
@@ -242,8 +241,10 @@ public class X_BSC_NetWorkDiag extends PO implements I_BSC_NetWorkDiag, I_Persis
 	public static final String DOCSTATUS_ForApproval = "FAPP";
 	/** Deflected = DEFL */
 	public static final String DOCSTATUS_Deflected = "DEFL";
-	/** Endorsed = ENDO */
-	public static final String DOCSTATUS_Endorsed = "ENDO";
+	/** Approved = APPR */
+	public static final String DOCSTATUS_Approved = "APPR";
+	/** Drafted = DRAF */
+	public static final String DOCSTATUS_Drafted = "DRAF";
 	/** Set Document Status.
 		@param DocStatus 
 		The current status of the document
@@ -277,6 +278,23 @@ public class X_BSC_NetWorkDiag extends PO implements I_BSC_NetWorkDiag, I_Persis
 	public String getDocumentNo () 
 	{
 		return (String)get_Value(COLUMNNAME_DocumentNo);
+	}
+
+	/** Set Comment/Help.
+		@param Help 
+		Comment or Hint
+	  */
+	public void setHelp (String Help)
+	{
+		set_Value (COLUMNNAME_Help, Help);
+	}
+
+	/** Get Comment/Help.
+		@return Comment or Hint
+	  */
+	public String getHelp () 
+	{
+		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Sales Transaction.
