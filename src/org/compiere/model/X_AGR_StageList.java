@@ -19,6 +19,7 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AGR_StageList
  *  @author Adempiere (generated) 
@@ -29,13 +30,7 @@ public class X_AGR_StageList extends PO implements I_AGR_StageList, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130528L;
-
-    /** the default Constructor */
-    public X_AGR_StageList(Properties ctx)
-    { 
-      super (ctx, null, null);
-    } 
+	private static final long serialVersionUID = 20130530L;
 
     /** Standard Constructor */
     public X_AGR_StageList (Properties ctx, int AGR_StageList_ID, String trxName)
@@ -109,7 +104,9 @@ public class X_AGR_StageList extends PO implements I_AGR_StageList, I_Persistent
 	}
 
 	/** Set AGR_StageList ID.
-		@param AGR_StageList_ID AGR_StageList ID	  */
+		@param AGR_StageList_ID 
+		Связь с инициатором
+	  */
 	public void setAGR_StageList_ID (int AGR_StageList_ID)
 	{
 		if (AGR_StageList_ID < 1) 
@@ -119,7 +116,8 @@ public class X_AGR_StageList extends PO implements I_AGR_StageList, I_Persistent
 	}
 
 	/** Get AGR_StageList ID.
-		@return AGR_StageList ID	  */
+		@return Связь с инициатором
+	  */
 	public int getAGR_StageList_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AGR_StageList_ID);
@@ -283,4 +281,29 @@ public class X_AGR_StageList extends PO implements I_AGR_StageList, I_Persistent
 		}
 		return false;
 	}
+
+	/** Set Name.
+		@param Name 
+		Alphanumeric identifier of the entity
+	  */
+	public void setName (String Name)
+	{
+		set_Value (COLUMNNAME_Name, Name);
+	}
+
+	/** Get Name.
+		@return Alphanumeric identifier of the entity
+	  */
+	public String getName () 
+	{
+		return (String)get_Value(COLUMNNAME_Name);
+	}
+
+    /** Get Record ID/ColumnName
+        @return ID/ColumnName pair
+      */
+    public KeyNamePair getKeyNamePair() 
+    {
+        return new KeyNamePair(get_ID(), getName());
+    }
 }

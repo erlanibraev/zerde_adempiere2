@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.eevolution.model.MHREmployee;
+import org.posterita.struts.pos.GetReportAction;
 
 public class MAGRStage extends X_AGR_Stage 
 {
@@ -44,6 +45,35 @@ public class MAGRStage extends X_AGR_Stage
 		return list;
 	}
 	
+	private MAGRStage getTransitStage(boolean isBack)
+	{
+		MAGRNode[] nodes = MAGRNode.getOfTRM_Stage(getCtx(), get_ID(), get_TrxName());
+		
+		MAGRStage transitStage = null;
+		
+		for(int i = 0; i < nodes.length; i++)
+		{
+			MAGRStage nextStage = new MAGRStage(getCtx(), nodes[i].getAGR_NextStage_ID(), get_TrxName());
+			
+			if(isBack && nodes[i].isBack())
+				transitStage = nextStage;
+			else if(!isBack &&!nodes[i].isBack())
+				transitStage = nextStage;
+		}
+		
+		return transitStage;
+	}
+	
+	public MAGRStage getPreviousStage()
+	{
+		return getTransitStage(true);
+	}
+	
+	public MAGRStage getNextStage()
+	{
+		return getTransitStage(false);
+	}
+	
 	public static MAGRStage getFirstStage(Properties ctx, int AGR_Agreement_ID, String trxName)
 	{
 		List<MAGRStage> stages = new Query(ctx, I_AGR_Stage.Table_Name, "AGR_Agreement_ID=? AND StageType LIKE '" + X_AGR_Stage.STAGETYPE_Initial + "'", trxName)
@@ -55,50 +85,23 @@ public class MAGRStage extends X_AGR_Stage
 		return firstStage;
 	}
 	
-	public ArrayList<Integer> getSigners()
+	public ArrayList<Integer> getSigners(int AD_Table_ID, int Record_ID)
 	{
-		List<Object> parameters = new ArrayList<Object>();
-		parameters.add(get_ID());
-		List<MAGRStageList> stageOptions = null;
-		if(!isMultiStage())
-			stageOptions = new Query(getCtx(), I_AGR_StageList.Table_Name, "AGR_Stage_ID=?", get_TrxName())
-			.setParameters(parameters)
-			.setOnlyActiveRecords(true).list();
-		else
-			stageOptions = MAGRStageList.getOfAGR_StageList(getCtx(), super.get_ID(), get_TrxName());
-
-		if(stageOptions == null) return null;
+		ArrayList<MAGRApprovalList> lines = (ArrayList<MAGRApprovalList>) MAGRApprovalList.getOfAGR_StageList(getCtx(), get_ID(), AD_Table_ID, Record_ID, get_TrxName());
 		
 		ArrayList<Integer> signers = new ArrayList<Integer>();
 		
-		MAGRStageList option = null;
-		
-		for(int i = 0; i < stageOptions.size(); i++)
-		{
-			option = stageOptions.get(i);
-			
-			if(option.isHeaderActive())
-			{
-				signers.add(option.getHR_Header_ID());
-			}
-			else if(option.isAlternateActive())
-			{
-				signers.add(option.getAlternate_ID());
-			}
-			else
-			{
-				signers.add(option.getAlternate2_ID());
-			}
-		}
+		for(int i = 0;i < lines.size(); i++)
+			signers.add(lines.get(i).getC_BPartner_ID());
 		
 		return signers;
 	}
 	
-	public boolean isUserHasAccess(int AD_User_ID)
+	public boolean isUserHasAccess(int AD_User_ID, int AD_Table_ID, int Record_ID)
 	{
 		MUser user = new MUser(getCtx(), AD_User_ID, get_TrxName());		
 		
-		return getSigners().contains(user.getC_BPartner_ID());
+		return getSigners(AD_Table_ID, Record_ID).contains(user.getC_BPartner_ID());
 	}
 
 	//Check for approvement of agreement with all persons

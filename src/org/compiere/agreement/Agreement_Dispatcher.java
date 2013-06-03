@@ -8,6 +8,7 @@ import org.apache.catalina.Logger;
 import org.compiere.apps.DialogAgreement;
 import org.compiere.model.MAGRAgreement;
 import org.compiere.model.MAGRAgreementList;
+import org.compiere.model.MAGRApprovalList;
 import org.compiere.model.MAGRDispatcher;
 import org.compiere.model.MAGRNode;
 import org.compiere.model.MAGRStage;
@@ -29,11 +30,9 @@ public class Agreement_Dispatcher
 	private int AGR_Stage_ID = 0;
 	private int AD_User_ID = 0;
 	private int AD_Table_ID = 0;
-	private int HR_Department_ID = 0;
 	private int Record_ID = 0;
 	private int C_BPartner_ID = 0;
 	
-	//
 	private final String columnDocStatus = "DocStatus";
 		
 	public Agreement_Dispatcher(PO document, int AD_Table_ID, int Record_ID)
@@ -45,10 +44,8 @@ public class Agreement_Dispatcher
 		AGR_Stage_ID = document.get_ValueAsInt(X_AGR_Stage.COLUMNNAME_AGR_Stage_ID);
 		AGR_Agreement_ID = AGR_Agreement();
 		AD_User_ID = Env.getAD_User_ID(Env.getCtx());	
-		HR_Department_ID = getHR_Department();
 		C_BPartner_ID = getBPartner();
 	}
-	
 	//Start agreement process
 	public boolean startAgreement(boolean isApprove,String message)
 	{				
@@ -64,7 +61,7 @@ public class Agreement_Dispatcher
 		}
 				
 		//Check if current user has access for current stage
-		if(!currentStage.isUserHasAccess(AD_User_ID))
+		if(!currentStage.isUserHasAccess(AD_User_ID, AD_Table_ID, Record_ID))
 		{
 			DialogAgreement.dialogOK("Ошибка доступа", "У вас нет доступа к данному этапу согласования", 0);
 			return false;
@@ -93,7 +90,6 @@ public class Agreement_Dispatcher
 		
 		return true;
 	}
-	
 	//Dissaprove document and quit from agreement process
 	private void Dissaprove(MAGRStage stage,String message)
 	{
@@ -114,20 +110,6 @@ public class Agreement_Dispatcher
 			quit(stage);
 		}
 	}
-	
-	//Get HR_Department_ID of current user (using AD_User_ID)
-	private int getHR_Department()
-	{
-		StringBuffer buffer = new StringBuffer();
-		buffer.append("SELECT e.HR_Department_ID ");
-		buffer.append("FROM HR_Employee e ");
-		buffer.append("INNER JOIN C_BPartner b ON b.C_BPartner_ID = e.C_BPartner_ID ");
-		buffer.append("INNER JOIN AD_User u	ON u.C_BPartner_ID = b.C_BPartner_ID ");
-		buffer.append("WHERE e.isActive = 'Y' AND u.AD_User_ID = " + AD_User_ID);
-		
-		return DB.getSQLValue(null, buffer.toString());
-	}
-	
 	//Get C_BPartner_ID of current user (using AD_User_ID)
 	private int getBPartner()
 	{
@@ -135,7 +117,6 @@ public class Agreement_Dispatcher
 		
 		return DB.getSQLValue(null, sql);
 	}
-	
 	//Get agreement for this type of document
 	private int AGR_Agreement()
 	{
@@ -150,7 +131,7 @@ public class Agreement_Dispatcher
 		}
 		return value;
 	}
-		
+	
 	private boolean validation() throws SQLException
 	{
 		MAGRAgreement agreement = new MAGRAgreement(Env.getCtx(), AGR_Agreement_ID, null);
@@ -159,7 +140,6 @@ public class Agreement_Dispatcher
 						
 		return true;		
 	}
-
 	//Get current stage of agreement
 	private MAGRStage getCurrentStage()
 	{
@@ -167,8 +147,12 @@ public class Agreement_Dispatcher
 		if(AGR_Stage_ID == 0)
 		{
 			stage = MAGRStage.getFirstStage(Env.getCtx(), AGR_Agreement_ID, null);
-			if(stage.isUserHasAccess(AD_User_ID))
+			if(stage != null)// && stage.isUserHasAccess(AD_User_ID, AD_Table_ID, Record_ID))
+			{
+				Agreement_PrepareList prepareList = new Agreement_PrepareList(AGR_Agreement_ID, C_BPartner_ID, AD_Table_ID, Record_ID);
+				prepareList.FillAgreementList();
 				FillAgreementList(stage);
+			}
 		}
 		else
 		{
@@ -177,6 +161,7 @@ public class Agreement_Dispatcher
 		
 		return stage;
 	}
+		
 	//Get next stage if stage is approved
 	private MAGRStage createNextStage(MAGRStage currentStage, boolean isBack)
 	{
@@ -219,7 +204,7 @@ public class Agreement_Dispatcher
 	//Fill agreement list
 	private void FillAgreementList(MAGRStage stage)
 	{
-		ArrayList<Integer> signers = stage.getSigners();
+		ArrayList<Integer> signers = stage.getSigners(AD_Table_ID, Record_ID);
 		
 		//get current date&time
 		Timestamp stamp = new Timestamp(System.currentTimeMillis());

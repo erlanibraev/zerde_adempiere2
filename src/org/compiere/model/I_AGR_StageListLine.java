@@ -20,17 +20,17 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for AGR_StageList
+/** Generated Interface for AGR_StageListLine
  *  @author Adempiere (generated) 
  *  @version Release 3.7.0LTS
  */
-public interface I_AGR_StageList 
+public interface I_AGR_StageListLine 
 {
 
-    /** TableName=AGR_StageList */
-    public static final String Table_Name = "AGR_StageList";
+    /** TableName=AGR_StageListLine */
+    public static final String Table_Name = "AGR_StageListLine";
 
-    /** AD_Table_ID=1000249 */
+    /** AD_Table_ID=1000252 */
     public static final int Table_ID = MTable.getTable_ID(Table_Name);
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
@@ -62,17 +62,6 @@ public interface I_AGR_StageList
 	  */
 	public int getAD_Org_ID();
 
-    /** Column name AGR_Stage_ID */
-    public static final String COLUMNNAME_AGR_Stage_ID = "AGR_Stage_ID";
-
-	/** Set AGR_Stage_ID	  */
-	public void setAGR_Stage_ID (int AGR_Stage_ID);
-
-	/** Get AGR_Stage_ID	  */
-	public int getAGR_Stage_ID();
-
-	public I_AGR_Stage getAGR_Stage() throws RuntimeException;
-
     /** Column name AGR_StageList_ID */
     public static final String COLUMNNAME_AGR_StageList_ID = "AGR_StageList_ID";
 
@@ -86,35 +75,31 @@ public interface I_AGR_StageList
 	  */
 	public int getAGR_StageList_ID();
 
-    /** Column name Alternate_ID */
-    public static final String COLUMNNAME_Alternate_ID = "Alternate_ID";
+	public I_AGR_StageList getAGR_StageList() throws RuntimeException;
 
-	/** Set Alternate_ID.
-	  * Альтернативное ответственное лицо
+    /** Column name AGR_StageListLine_ID */
+    public static final String COLUMNNAME_AGR_StageListLine_ID = "AGR_StageListLine_ID";
+
+	/** Set AGR_StageListLine ID	  */
+	public void setAGR_StageListLine_ID (int AGR_StageListLine_ID);
+
+	/** Get AGR_StageListLine ID	  */
+	public int getAGR_StageListLine_ID();
+
+    /** Column name C_BPartner_ID */
+    public static final String COLUMNNAME_C_BPartner_ID = "C_BPartner_ID";
+
+	/** Set Business Partner .
+	  * Identifies a Business Partner
 	  */
-	public void setAlternate_ID (int Alternate_ID);
+	public void setC_BPartner_ID (int C_BPartner_ID);
 
-	/** Get Alternate_ID.
-	  * Альтернативное ответственное лицо
+	/** Get Business Partner .
+	  * Identifies a Business Partner
 	  */
-	public int getAlternate_ID();
+	public int getC_BPartner_ID();
 
-	public org.compiere.model.I_C_BPartner getAlternate() throws RuntimeException;
-
-    /** Column name Alternate2_ID */
-    public static final String COLUMNNAME_Alternate2_ID = "Alternate2_ID";
-
-	/** Set Alternate2_ID.
-	  * Альтернативное ответственное лицо (2)
-	  */
-	public void setAlternate2_ID (int Alternate2_ID);
-
-	/** Get Alternate2_ID.
-	  * Альтернативное ответственное лицо (2)
-	  */
-	public int getAlternate2_ID();
-
-	public org.compiere.model.I_C_BPartner getAlternate2() throws RuntimeException;
+	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -132,21 +117,6 @@ public interface I_AGR_StageList
 	  */
 	public int getCreatedBy();
 
-    /** Column name HR_Header_ID */
-    public static final String COLUMNNAME_HR_Header_ID = "HR_Header_ID";
-
-	/** Set HR_Header_ID.
-	  * Руководитель департамента
-	  */
-	public void setHR_Header_ID (int HR_Header_ID);
-
-	/** Get HR_Header_ID.
-	  * Руководитель департамента
-	  */
-	public int getHR_Header_ID();
-
-	public org.compiere.model.I_C_BPartner getHR_Header() throws RuntimeException;
-
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
 
@@ -160,57 +130,31 @@ public interface I_AGR_StageList
 	  */
 	public boolean isActive();
 
-    /** Column name IsAlternate2Active */
-    public static final String COLUMNNAME_IsAlternate2Active = "IsAlternate2Active";
+    /** Column name isAlsoInclude */
+    public static final String COLUMNNAME_isAlsoInclude = "isAlsoInclude";
 
-	/** Set IsAlternate2Active.
-	  * Активно
+	/** Set isAlsoInclude.
+	  * Также включая
 	  */
-	public void setIsAlternate2Active (boolean IsAlternate2Active);
+	public void setisAlsoInclude (boolean isAlsoInclude);
 
-	/** Get IsAlternate2Active.
-	  * Активно
+	/** Get isAlsoInclude.
+	  * Также включая
 	  */
-	public boolean isAlternate2Active();
+	public boolean isAlsoInclude();
 
-    /** Column name IsAlternateActive */
-    public static final String COLUMNNAME_IsAlternateActive = "IsAlternateActive";
+    /** Column name isExceptFor */
+    public static final String COLUMNNAME_isExceptFor = "isExceptFor";
 
-	/** Set IsAlternateActive.
-	  * Активно
+	/** Set isExceptFor.
+	  * За исключением
 	  */
-	public void setIsAlternateActive (boolean IsAlternateActive);
+	public void setisExceptFor (boolean isExceptFor);
 
-	/** Get IsAlternateActive.
-	  * Активно
+	/** Get isExceptFor.
+	  * За исключением
 	  */
-	public boolean isAlternateActive();
-
-    /** Column name IsHeaderActive */
-    public static final String COLUMNNAME_IsHeaderActive = "IsHeaderActive";
-
-	/** Set IsHeaderActive.
-	  * Активно
-	  */
-	public void setIsHeaderActive (boolean IsHeaderActive);
-
-	/** Get IsHeaderActive.
-	  * Активно
-	  */
-	public boolean isHeaderActive();
-
-    /** Column name Name */
-    public static final String COLUMNNAME_Name = "Name";
-
-	/** Set Name.
-	  * Alphanumeric identifier of the entity
-	  */
-	public void setName (String Name);
-
-	/** Get Name.
-	  * Alphanumeric identifier of the entity
-	  */
-	public String getName();
+	public boolean isExceptFor();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
