@@ -32,7 +32,7 @@ public class X_BSC_CardLine extends PO implements I_BSC_CardLine, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130514L;
+	private static final long serialVersionUID = 20130530L;
 
     /** the default Constructor */
     public X_BSC_CardLine(Properties ctx)
@@ -333,20 +333,20 @@ public class X_BSC_CardLine extends PO implements I_BSC_CardLine, I_Persistent
         return new KeyNamePair(get_ID(), getName());
     }
 
-	/** Unit AD_Reference_ID=1000132 */
-	public static final int UNIT_AD_Reference_ID=1000132;
-	/** Yes/No = Yes/No */
-	public static final String UNIT_YesNo = "Yes/No";
-	/** in_time = in_time */
-	public static final String UNIT_In_time = "in_time";
+	/** Unit AD_Reference_ID=1000135 */
+	public static final int UNIT_AD_Reference_ID=1000135;
 	/** % = % */
 	public static final String UNIT_ = "%";
-	/** qty = qty */
-	public static final String UNIT_Qty = "qty";
+	/** in_time = in_time */
+	public static final String UNIT_In_time = "in_time";
 	/** pcs = pcs */
 	public static final String UNIT_Pcs = "pcs";
+	/** qty = qty */
+	public static final String UNIT_Qty = "qty";
 	/** units = units */
 	public static final String UNIT_Units = "units";
+	/** Yes/No = Yes/No */
+	public static final String UNIT_YesNo = "Yes/No";
 	/** Set Unit.
 		@param Unit 
 		Unit
@@ -365,15 +365,18 @@ public class X_BSC_CardLine extends PO implements I_BSC_CardLine, I_Persistent
 		return (String)get_Value(COLUMNNAME_Unit);
 	}
 
-	/** Set Value.
-		@param Value Value	  */
+	/** Set Search Key.
+		@param Value 
+		Search key for the record in the format required - must be unique
+	  */
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
 	}
 
-	/** Get Value.
-		@return Value	  */
+	/** Get Search Key.
+		@return Search key for the record in the format required - must be unique
+	  */
 	public String getValue () 
 	{
 		return (String)get_Value(COLUMNNAME_Value);

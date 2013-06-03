@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.apache.commons.lang.StringUtils;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -177,8 +178,12 @@ public class MBSCCardLine extends X_BSC_CardLine {
 				throw new Exception("MBSCardLine: variable not found -"+varName);
 			}
 		} else if (varName.equalsIgnoreCase("Value")) {
-			result = getValue();
-		} else if (varName.equalsIgnoreCase("Wight")) {
+			if (StringUtils.isNumeric(getValue())) {
+				result = new BigDecimal(getValue());
+			} else {
+				result = getValue();
+			}
+		} else if (varName.equalsIgnoreCase("Weight")) {
 			result = getWeight().toString();
 		} else {
 			log.log(Level.SEVERE,"MBSCardLine: variable not found - "+varName);
@@ -322,7 +327,7 @@ public class MBSCCardLine extends X_BSC_CardLine {
 				} else {
 					try {
 						pLine.setIsFormula(false);
-						paramVar.setValue((String)getValue(key));
+						paramVar.setValue(getValue(key).toString());
 					} catch (Exception e) {
 						sLog.log(Level.SEVERE, "setVar", e);
 					}
@@ -330,7 +335,7 @@ public class MBSCCardLine extends X_BSC_CardLine {
 				
 			} else {
 				try {
-					paramVar.setValue((String) getValue(key));
+					paramVar.setValue(getValue(key).toString());
 				} catch (Exception e) {
 					sLog.log(Level.SEVERE, "setVar", e);
 				}

@@ -55,8 +55,9 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 			pstmt = DB.prepareStatement(sql,null);
 			pstmt.setInt(1, getBSC_Card_ID());
 			rs = pstmt.executeQuery();
-			if (rs.next()) {
-				cardLine.add(new MBSCCardLine(Env.getCtx(), rs, null));
+			while (rs.next()) {
+				MBSCCardLine line = new MBSCCardLine(Env.getCtx(), rs.getInt(X_BSC_CardLine.COLUMNNAME_BSC_CardLine_ID), null); 
+				cardLine.add(line);
 			}
 		} catch (SQLException e) {
 			log.log(Level.SEVERE, "product", e);

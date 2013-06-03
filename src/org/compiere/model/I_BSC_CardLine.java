@@ -30,7 +30,7 @@ public interface I_BSC_CardLine
     /** TableName=BSC_CardLine */
     public static final String Table_Name = "BSC_CardLine";
 
-    /** AD_Table_ID=1000234 */
+    /** AD_Table_ID=1000222 */
     public static final int Table_ID = MTable.getTable_ID(Table_Name);
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
@@ -254,10 +254,14 @@ public interface I_BSC_CardLine
     /** Column name Value */
     public static final String COLUMNNAME_Value = "Value";
 
-	/** Set Value	  */
+	/** Set Search Key.
+	  * Search key for the record in the format required - must be unique
+	  */
 	public void setValue (String Value);
 
-	/** Get Value	  */
+	/** Get Search Key.
+	  * Search key for the record in the format required - must be unique
+	  */
 	public String getValue();
 
     /** Column name ValueMax */
