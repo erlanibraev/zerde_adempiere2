@@ -33,7 +33,7 @@ public class X_BSC_NetWorkDiag extends PO implements I_BSC_NetWorkDiag, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130530L;
+	private static final long serialVersionUID = 20130531L;
 
     /** the default Constructor */
     public X_BSC_NetWorkDiag(Properties ctx)
@@ -51,9 +51,9 @@ public class X_BSC_NetWorkDiag extends PO implements I_BSC_NetWorkDiag, I_Persis
 			setC_DocType_ID (0);
 // 1000069
 			setDocAction (null);
-// COMP
+// CO
 			setDocStatus (null);
-// FEXE
+// DR
         } */
     }
 
@@ -195,18 +195,36 @@ public class X_BSC_NetWorkDiag extends PO implements I_BSC_NetWorkDiag, I_Persis
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
-	/** DocAction AD_Reference_ID=1000141 */
-	public static final int DOCACTION_AD_Reference_ID=1000141;
-	/** Approve = APPR */
-	public static final String DOCACTION_Approve = "APPR";
-	/** Deflect = DEFL */
-	public static final String DOCACTION_Deflect = "DEFL";
-	/** Complete = COMP */
-	public static final String DOCACTION_Complete = "COMP";
-	/** For approval = FAPP */
-	public static final String DOCACTION_ForApproval = "FAPP";
-	/** For execution = FEXE */
-	public static final String DOCACTION_ForExecution = "FEXE";
+	/** DocAction AD_Reference_ID=135 */
+	public static final int DOCACTION_AD_Reference_ID=135;
+	/** Complete = CO */
+	public static final String DOCACTION_Complete = "CO";
+	/** Approve = AP */
+	public static final String DOCACTION_Approve = "AP";
+	/** Reject = RJ */
+	public static final String DOCACTION_Reject = "RJ";
+	/** Post = PO */
+	public static final String DOCACTION_Post = "PO";
+	/** Void = VO */
+	public static final String DOCACTION_Void = "VO";
+	/** Close = CL */
+	public static final String DOCACTION_Close = "CL";
+	/** Reverse - Correct = RC */
+	public static final String DOCACTION_Reverse_Correct = "RC";
+	/** Reverse - Accrual = RA */
+	public static final String DOCACTION_Reverse_Accrual = "RA";
+	/** Invalidate = IN */
+	public static final String DOCACTION_Invalidate = "IN";
+	/** Re-activate = RE */
+	public static final String DOCACTION_Re_Activate = "RE";
+	/** <None> = -- */
+	public static final String DOCACTION_None = "--";
+	/** Prepare = PR */
+	public static final String DOCACTION_Prepare = "PR";
+	/** Unlock = XL */
+	public static final String DOCACTION_Unlock = "XL";
+	/** Wait Complete = WC */
+	public static final String DOCACTION_WaitComplete = "WC";
 	/** Set Document Action.
 		@param DocAction 
 		The targeted status of the document
@@ -225,26 +243,32 @@ public class X_BSC_NetWorkDiag extends PO implements I_BSC_NetWorkDiag, I_Persis
 		return (String)get_Value(COLUMNNAME_DocAction);
 	}
 
-	/** DocStatus AD_Reference_ID=1000139 */
-	public static final int DOCSTATUS_AD_Reference_ID=1000139;
-	/** Executed = EXEC */
-	public static final String DOCSTATUS_Executed = "EXEC";
-	/** Not executed = NEXE */
-	public static final String DOCSTATUS_NotExecuted = "NEXE";
-	/** Not executed in full = NEIF */
-	public static final String DOCSTATUS_NotExecutedInFull = "NEIF";
-	/** Not executed on time = NEOT */
-	public static final String DOCSTATUS_NotExecutedOnTime = "NEOT";
-	/** For execution = FEXE */
-	public static final String DOCSTATUS_ForExecution = "FEXE";
-	/** For approval = FAPP */
-	public static final String DOCSTATUS_ForApproval = "FAPP";
-	/** Deflected = DEFL */
-	public static final String DOCSTATUS_Deflected = "DEFL";
-	/** Approved = APPR */
-	public static final String DOCSTATUS_Approved = "APPR";
-	/** Drafted = DRAF */
-	public static final String DOCSTATUS_Drafted = "DRAF";
+	/** DocStatus AD_Reference_ID=131 */
+	public static final int DOCSTATUS_AD_Reference_ID=131;
+	/** Drafted = DR */
+	public static final String DOCSTATUS_Drafted = "DR";
+	/** Completed = CO */
+	public static final String DOCSTATUS_Completed = "CO";
+	/** Approved = AP */
+	public static final String DOCSTATUS_Approved = "AP";
+	/** Not Approved = NA */
+	public static final String DOCSTATUS_NotApproved = "NA";
+	/** Voided = VO */
+	public static final String DOCSTATUS_Voided = "VO";
+	/** Invalid = IN */
+	public static final String DOCSTATUS_Invalid = "IN";
+	/** Reversed = RE */
+	public static final String DOCSTATUS_Reversed = "RE";
+	/** Closed = CL */
+	public static final String DOCSTATUS_Closed = "CL";
+	/** Unknown = ?? */
+	public static final String DOCSTATUS_Unknown = "??";
+	/** In Progress = IP */
+	public static final String DOCSTATUS_InProgress = "IP";
+	/** Waiting Payment = WP */
+	public static final String DOCSTATUS_WaitingPayment = "WP";
+	/** Waiting Confirmation = WC */
+	public static final String DOCSTATUS_WaitingConfirmation = "WC";
 	/** Set Document Status.
 		@param DocStatus 
 		The current status of the document

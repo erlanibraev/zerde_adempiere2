@@ -13,18 +13,7 @@ public class BSC_NetWorkDiag extends SvrProcess {
 
 	@Override
 	protected String doIt() throws Exception {
-		if(netWorkDiag.getDocStatus().equals(netWorkDiag.DOCSTATUS_ForApproval))
-			{
-				return "Send email for approval!";
-			}
-		if(netWorkDiag.getDocStatus().equals(netWorkDiag.DOCSTATUS_Deflected))
-		{
-			return "Document is Deflected";
-		}
-		if(netWorkDiag.getDocStatus().equals(netWorkDiag.DOCSTATUS_Approved))
-		{
-			return "Document is Endorsed";
-		}
+		
 		return null;
 	}
 
