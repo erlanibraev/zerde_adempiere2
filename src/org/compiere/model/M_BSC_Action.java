@@ -13,6 +13,11 @@ import java.util.Properties;
 public class M_BSC_Action extends X_BSC_Action {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5506294109885922796L;
+
+	/**
 	 * @param ctx
 	 */
 	public M_BSC_Action(Properties ctx) {

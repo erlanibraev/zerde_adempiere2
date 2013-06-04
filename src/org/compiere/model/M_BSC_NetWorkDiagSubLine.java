@@ -13,6 +13,11 @@ import java.util.Properties;
 public class M_BSC_NetWorkDiagSubLine extends X_BSC_NetWorkDiagSubLine {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 9030008792522222350L;
+
+	/**
 	 * @param ctx
 	 */
 	public M_BSC_NetWorkDiagSubLine(Properties ctx) {

@@ -13,6 +13,11 @@ import java.util.Properties;
 public class M_BSC_Target_Indicator extends X_BSC_Target_Indicator {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7947212432113472033L;
+
+	/**
 	 * @param ctx
 	 */
 	public M_BSC_Target_Indicator(Properties ctx) {

@@ -13,6 +13,11 @@ import java.util.Properties;
 public class M_BSC_Responsible_Executor extends X_BSC_Responsible_Executor {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1203120666420880756L;
+
+	/**
 	 * @param ctx
 	 */
 	public M_BSC_Responsible_Executor(Properties ctx) {
