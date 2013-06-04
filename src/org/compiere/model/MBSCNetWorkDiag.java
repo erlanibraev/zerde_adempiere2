@@ -7,6 +7,7 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Properties;
 
 import org.compiere.process.DocAction;
@@ -62,6 +63,21 @@ public class MBSCNetWorkDiag extends X_BSC_NetWorkDiag implements DocAction {
 	
 	/**	Process Message 			*/
 	private String		m_processMsg = null;
+	/** */
+	private M_BSC_NetWorkDiagLine[] m_lines = null;
+	
+	public M_BSC_NetWorkDiagLine[] getLines (boolean requery){
+		if (m_lines != null && !requery) {
+			set_TrxName(m_lines, get_TrxName());
+			return m_lines;
+		}
+		List<M_BSC_NetWorkDiagLine> list = new Query(getCtx(), I_BSC_NetWorkDiagLine.Table_Name, "BSC_NetWorkDiag_ID = ?", get_TrxName())
+										.setParameters(get_ID())
+										.setOrderBy(M_BSC_NetWorkDiagLine.COLUMNNAME_BSC_NetWorkDiagLine_ID)
+										.list();
+		m_lines = list.toArray(new M_BSC_NetWorkDiagLine[list.size()]);
+		return m_lines;
+	}
 
 	@Override
 	public boolean processIt(String processAction) throws Exception {
