@@ -90,19 +90,34 @@ public class MBSCNetWorkDiag extends X_BSC_NetWorkDiag implements DocAction {
 	public boolean unlockIt() {
 		log.info(toString());
 		setProcessing(false);
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean invalidateIt() {
 		log.info(toString());
-		
-		return false;
+		setDocAction(DOCACTION_Prepare);
+		return true;
 	}
 
 	@Override
 	public String prepareIt() {
-		System.out.println("1");
+		log.info(toString());
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_PREPARE);
+		if (m_processMsg != null)
+			return DocAction.STATUS_Invalid;
+//		Std Period open?
+			MPeriod.testPeriodOpen(getCtx(), getDateAcct(), MDocType.DOCBASETYPE_AssetTransaction, getAD_Org_ID());
+			M_BSC_NetWorkDiagLine[] lines = getLines(false);
+			if (lines.length == 0)
+			{
+				m_processMsg = "@NoLines@";
+				return DocAction.STATUS_Invalid;
+			}
+			
+			m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_PREPARE);
+			if (m_processMsg != null)
+				return DocAction.STATUS_Invalid;
 		return DocAction.STATUS_InProgress;
 	}
 
@@ -120,20 +135,53 @@ public class MBSCNetWorkDiag extends X_BSC_NetWorkDiag implements DocAction {
 	
 	@Override
 	public String completeIt() {
-
+		String status = prepareIt();
+		if (!DocAction.STATUS_InProgress.equals(status))
+			return status;
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_COMPLETE);
+		if (m_processMsg != null)
+			return DocAction.STATUS_Invalid;
+		M_BSC_NetWorkDiagLine[] lines = getLines(false);
+		for(M_BSC_NetWorkDiagLine line : lines)
+		{
+			if (!line.isActive())
+				continue;
+			line.save();
+		}
 		return DocAction.STATUS_Completed;
 	}
 
 	@Override
 	public boolean voidIt() {
-		// TODO Auto-generated method stub
-		return false;
+		log.info(toString());
+		// Before Void
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_VOID);
+		if (m_processMsg != null)
+			return false;
+		
+		if (DOCSTATUS_Closed.equals(getDocStatus())
+			|| DOCSTATUS_Reversed.equals(getDocStatus())
+			|| DOCSTATUS_Voided.equals(getDocStatus()))
+		{
+			m_processMsg = "Document Closed: " + getDocStatus();
+			return false;
+		}
+		
+		
+		// After Void
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_VOID);
+		if (m_processMsg != null)
+			return false;		
+		setProcessed(true);
+		setDocAction(DOCACTION_None);
+	return true;
+	
 	}
 
 	@Override
 	public boolean closeIt() {
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
@@ -144,13 +192,33 @@ public class MBSCNetWorkDiag extends X_BSC_NetWorkDiag implements DocAction {
 
 	@Override
 	public boolean reverseAccrualIt() {
-		// TODO Auto-generated method stub
+		log.info(toString());
+		// Before reverseAccrual
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REVERSEACCRUAL);
+		if (m_processMsg != null)
+			return false;
+		
+		// After reverseAccrual
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSEACCRUAL);
+		if (m_processMsg != null)
+			return false;
+		
 		return false;
 	}
 
 	@Override
 	public boolean reActivateIt() {
-		// TODO Auto-generated method stub
+		log.info(toString());
+		// Before reActivate
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REACTIVATE);
+		if (m_processMsg != null)
+			return false;	
+		
+		// After reActivate
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REACTIVATE);
+		if (m_processMsg != null)
+			return false;
+		
 		return false;
 	}
 
@@ -162,8 +230,8 @@ public class MBSCNetWorkDiag extends X_BSC_NetWorkDiag implements DocAction {
 
 	@Override
 	public String getDocumentInfo() {
-		// TODO Auto-generated method stub
-		return "getDocumentInfo()";
+		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
+		return dt.getName() + " " + getDocumentNo();
 	}
 
 	@Override
@@ -175,13 +243,13 @@ public class MBSCNetWorkDiag extends X_BSC_NetWorkDiag implements DocAction {
 	@Override
 	public String getProcessMsg() {
 		// TODO Auto-generated method stub
-		return null;
+		return m_processMsg;
 	}
 
 	@Override
 	public int getDoc_User_ID() {
 		// TODO Auto-generated method stub
-		return 0;
+		return getUpdatedBy();
 	}
 
 	@Override
