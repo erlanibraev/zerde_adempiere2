@@ -116,6 +116,21 @@ public interface I_AGR_StageList
 
 	public org.compiere.model.I_C_BPartner getAlternate2() throws RuntimeException;
 
+    /** Column name C_BPartner_ID */
+    public static final String COLUMNNAME_C_BPartner_ID = "C_BPartner_ID";
+
+	/** Set Business Partner .
+	  * Identifies a Business Partner
+	  */
+	public void setC_BPartner_ID (int C_BPartner_ID);
+
+	/** Get Business Partner .
+	  * Identifies a Business Partner
+	  */
+	public int getC_BPartner_ID();
+
+	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
+
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
 
@@ -131,21 +146,6 @@ public interface I_AGR_StageList
 	  * User who created this records
 	  */
 	public int getCreatedBy();
-
-    /** Column name HR_Header_ID */
-    public static final String COLUMNNAME_HR_Header_ID = "HR_Header_ID";
-
-	/** Set HR_Header_ID.
-	  * Руководитель департамента
-	  */
-	public void setHR_Header_ID (int HR_Header_ID);
-
-	/** Get HR_Header_ID.
-	  * Руководитель департамента
-	  */
-	public int getHR_Header_ID();
-
-	public org.compiere.model.I_C_BPartner getHR_Header() throws RuntimeException;
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
@@ -198,19 +198,6 @@ public interface I_AGR_StageList
 	  * Активно
 	  */
 	public boolean isHeaderActive();
-
-    /** Column name Name */
-    public static final String COLUMNNAME_Name = "Name";
-
-	/** Set Name.
-	  * Alphanumeric identifier of the entity
-	  */
-	public void setName (String Name);
-
-	/** Get Name.
-	  * Alphanumeric identifier of the entity
-	  */
-	public String getName();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

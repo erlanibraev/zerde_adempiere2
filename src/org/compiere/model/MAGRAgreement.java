@@ -232,7 +232,7 @@ public class MAGRAgreement extends X_AGR_Agreement
   	{
   		boolean flag = false;
   		
-  		if(option.getHR_Header_ID() != -1 && option.isHeaderActive())
+  		if(option.getC_BPartner_ID() != -1 && option.isHeaderActive())
   			flag = true;
   		
   		if(!flag && option.getAlternate_ID() != -1 && option.isAlternateActive())

@@ -30,7 +30,7 @@ public class X_AGR_StageList extends PO implements I_AGR_StageList, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130530L;
+	private static final long serialVersionUID = 20130603L;
 
     /** Standard Constructor */
     public X_AGR_StageList (Properties ctx, int AGR_StageList_ID, String trxName)
@@ -182,33 +182,41 @@ public class X_AGR_StageList extends PO implements I_AGR_StageList, I_Persistent
 		return ii.intValue();
 	}
 
-	public org.compiere.model.I_C_BPartner getHR_Header() throws RuntimeException
+	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
     {
 		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getHR_Header_ID(), get_TrxName());	}
+			.getPO(getC_BPartner_ID(), get_TrxName());	}
 
-	/** Set HR_Header_ID.
-		@param HR_Header_ID 
-		Руководитель департамента
+	/** Set Business Partner .
+		@param C_BPartner_ID 
+		Identifies a Business Partner
 	  */
-	public void setHR_Header_ID (int HR_Header_ID)
+	public void setC_BPartner_ID (int C_BPartner_ID)
 	{
-		if (HR_Header_ID < 1) 
-			set_Value (COLUMNNAME_HR_Header_ID, null);
+		if (C_BPartner_ID < 1) 
+			set_Value (COLUMNNAME_C_BPartner_ID, null);
 		else 
-			set_Value (COLUMNNAME_HR_Header_ID, Integer.valueOf(HR_Header_ID));
+			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
 	}
 
-	/** Get HR_Header_ID.
-		@return Руководитель департамента
+	/** Get Business Partner .
+		@return Identifies a Business Partner
 	  */
-	public int getHR_Header_ID () 
+	public int getC_BPartner_ID () 
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_HR_Header_ID);
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
 	}
+
+    /** Get Record ID/ColumnName
+        @return ID/ColumnName pair
+      */
+    public KeyNamePair getKeyNamePair() 
+    {
+        return new KeyNamePair(get_ID(), String.valueOf(getC_BPartner_ID()));
+    }
 
 	/** Set IsAlternate2Active.
 		@param IsAlternate2Active 
@@ -281,29 +289,4 @@ public class X_AGR_StageList extends PO implements I_AGR_StageList, I_Persistent
 		}
 		return false;
 	}
-
-	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
-	public void setName (String Name)
-	{
-		set_Value (COLUMNNAME_Name, Name);
-	}
-
-	/** Get Name.
-		@return Alphanumeric identifier of the entity
-	  */
-	public String getName () 
-	{
-		return (String)get_Value(COLUMNNAME_Name);
-	}
-
-    /** Get Record ID/ColumnName
-        @return ID/ColumnName pair
-      */
-    public KeyNamePair getKeyNamePair() 
-    {
-        return new KeyNamePair(get_ID(), getName());
-    }
 }

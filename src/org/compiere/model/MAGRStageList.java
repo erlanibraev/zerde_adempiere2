@@ -45,7 +45,7 @@ public class MAGRStageList extends X_AGR_StageList
 		int retValue = 0;
 		
 		if(!isActive());
-		else if(isHeaderActive()) retValue = getHR_Header_ID();
+		else if(isHeaderActive()) retValue = getC_BPartner_ID();
 		else if(isAlternateActive()) retValue = getAlternate_ID();
 		else retValue = getAlternate2_ID();
 		
