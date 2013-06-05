@@ -35,20 +35,34 @@ public class DocumentEngineNWD extends DocumentEngine {
 		} 
 		
 		if (ACTION_WaitComplete.equals(docAction)) {
+			
 			result = STATUS_Completed.equals(prepareIt());
-			} else if (ACTION_Complete.equals(docAction)) { 
-				result = STATUS_Completed.equals(completeIt()); 
-				} else if (ACTION_Approve.equals(docAction)) { 
-					result = approveIt(); 
-					} else if (ACTION_Reject.equals(docAction)) { 
-						result = rejectIt(); 
-						} else if (ACTION_Close.equals(docAction)) { 
-							result = closeIt(); 
-							} else if (ACTION_ReActivate.equals(docAction)) { 
-								result = reActivateIt(); 
-								} else { 
-									result = false; 
-									}
+			
+		} else if (ACTION_Complete.equals(docAction)) { 
+		
+			result = STATUS_Completed.equals(completeIt()); 
+			
+		} else if (ACTION_Approve.equals(docAction)) { 
+		
+			result = approveIt(); 
+			
+		} else if (ACTION_Reject.equals(docAction)) { 
+		
+			result = rejectIt(); 
+			
+		} else if (ACTION_Close.equals(docAction)) { 
+		
+			result = closeIt(); 
+			
+		} else if (ACTION_ReActivate.equals(docAction)) { 
+		
+			result = reActivateIt(); 
+			
+		} else { 
+		
+			result = false; 
+			
+		}
 		return result;
 	}
 	

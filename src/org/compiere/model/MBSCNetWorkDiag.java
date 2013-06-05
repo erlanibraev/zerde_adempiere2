@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Properties;
 
 import org.compiere.process.DocAction;
-import org.compiere.process.DocumentEngine;
 import org.compiere.process.DocumentEngineNWD;
 
 /**
@@ -107,7 +106,7 @@ public class MBSCNetWorkDiag extends X_BSC_NetWorkDiag implements DocAction {
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
 //		Std Period open?
-			MPeriod.testPeriodOpen(getCtx(), getDateAcct(), MDocType.DOCBASETYPE_AssetTransaction, getAD_Org_ID());
+			//MPeriod.testPeriodOpen(getCtx(), getDateAcct(), MDocType.DOCBASETYPE_NetWorkDiagram, getAD_Org_ID());
 			M_BSC_NetWorkDiagLine[] lines = getLines(false);
 			if (lines.length == 0)
 			{
@@ -135,6 +134,7 @@ public class MBSCNetWorkDiag extends X_BSC_NetWorkDiag implements DocAction {
 	
 	@Override
 	public String completeIt() {
+		System.out.println("(_!_)");
 		String status = prepareIt();
 		if (!DocAction.STATUS_InProgress.equals(status))
 			return status;
