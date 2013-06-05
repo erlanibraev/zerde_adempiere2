@@ -269,7 +269,7 @@ public class MBSCCardLine extends X_BSC_CardLine {
 		return result;
 	}
 	
-	//TODO Нужно добавить для ParamOut стандартные параметры max, min, coefficient, value, weight;
+	// Нужно добавить для ParamOut стандартные параметры max, min, coefficient, value, weight;
 	
 	protected void saveParameterOutValue() {
 		MBSCCard card = new MBSCCard(Env.getCtx(),getBSC_Card_ID(),get_TrxName());
@@ -292,7 +292,7 @@ public class MBSCCardLine extends X_BSC_CardLine {
 	}
 	
 	protected void setVar(MParameter param) {
-		//TODO Тут установить переменные Value, Min, Max, Coefficient
+		//Тут установить переменные Value, Min, Max, Coefficient
 		
 		MParameter valueParam = getParameter();
 		MParameterLine paramLine = param.getCurrentParameterLine();

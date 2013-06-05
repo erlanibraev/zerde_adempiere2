@@ -7,7 +7,6 @@ import java.math.BigDecimal;
 import java.util.logging.Level;
 
 import org.compiere.model.MBSCCardLine;
-import org.compiere.model.MParameterLine;
 import org.compiere.util.Env;
 
 /**
