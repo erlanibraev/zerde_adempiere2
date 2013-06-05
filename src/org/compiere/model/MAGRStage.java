@@ -6,9 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import org.eevolution.model.MHREmployee;
-import org.posterita.struts.pos.GetReportAction;
-
 public class MAGRStage extends X_AGR_Stage 
 {
 	private static final long serialVersionUID = -1253764804008680542L;
