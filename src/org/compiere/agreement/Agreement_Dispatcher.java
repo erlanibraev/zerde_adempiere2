@@ -49,6 +49,7 @@ public class Agreement_Dispatcher
 	//Start agreement process
 	public boolean startAgreement(boolean isApprove,String message)
 	{				
+		boolean isApproved = false;
 		//Get current AGR_Stage
 		//If AGR_Stage is null then new AGR_Stage will be started
 		currentStage = getCurrentStage();
@@ -85,10 +86,10 @@ public class Agreement_Dispatcher
 		}
 		else
 		{
-			Approve(currentStage, message);
+			isApproved = Approve(currentStage, message);
 		}
 		
-		return true;
+		return isApproved;
 	}
 	//Dissaprove document and quit from agreement process
 	private void Dissaprove(MAGRStage stage,String message)
@@ -97,7 +98,7 @@ public class Agreement_Dispatcher
 		createNextStage(stage, true);
 	}
 	//Approve document and check for possibility to move to the next stage
-	private void Approve(MAGRStage stage, String message)
+	private boolean Approve(MAGRStage stage, String message)
 	{		
 		stage.Approve(AD_Table_ID, Record_ID, C_BPartner_ID, message);
 		
@@ -108,7 +109,10 @@ public class Agreement_Dispatcher
 		else if(stage.isLastStage() && stage.isAllApproved(AD_Table_ID, Record_ID))
 		{
 			quit(stage);
+			return true;
 		}
+		
+		return false;
 	}
 	//Get C_BPartner_ID of current user (using AD_User_ID)
 	private int getBPartner()

@@ -398,20 +398,16 @@ public interface I_cms_proposal
 
 	public org.eevolution.model.I_HR_Department getHR_Department() throws RuntimeException;
 
-    /** Column name HR_Header */
-    public static final String COLUMNNAME_HR_Header = "HR_Header";
+    /** Column name HR_Header_ID */
+    public static final String COLUMNNAME_HR_Header_ID = "HR_Header_ID";
 
-	/** Set HR_Header.
-	  * Руководитель департамента
-	  */
-	public void setHR_Header (int HR_Header);
+	/** Set HR_Header_ID	  */
+	public void setHR_Header_ID (int HR_Header_ID);
 
-	/** Get HR_Header.
-	  * Руководитель департамента
-	  */
-	public int getHR_Header();
+	/** Get HR_Header_ID	  */
+	public int getHR_Header_ID();
 
-	public org.compiere.model.I_AD_User getHR_Hea() throws RuntimeException;
+	public org.compiere.model.I_C_BPartner getHR_Header() throws RuntimeException;
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";

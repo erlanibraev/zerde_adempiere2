@@ -549,10 +549,10 @@ where e.isactive = 'Y' and ad_user_id = @AD_User_ID@
 	public static final int DOCSTATUS_AD_Reference_ID=1000149;
 	/** Approved = AP */
 	public static final String DOCSTATUS_Approved = "AP";
-	/** Rejected = RE */
-	public static final String DOCSTATUS_Rejected = "RE";
 	/** On approval = OA */
 	public static final String DOCSTATUS_OnApproval = "OA";
+	/** Rejected = 10000005 */
+	public static final String DOCSTATUS_Rejected = "10000005";
 	/** Set Document Status.
 		@param DocStatus 
 		The current status of the document
@@ -655,26 +655,26 @@ where e.isactive = 'Y' and ad_user_id = @AD_User_ID@
 		return ii.intValue();
 	}
 
-	public org.compiere.model.I_AD_User getHR_Hea() throws RuntimeException
+	public org.compiere.model.I_C_BPartner getHR_Header() throws RuntimeException
     {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getHR_Header(), get_TrxName());	}
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
+			.getPO(getHR_Header_ID(), get_TrxName());	}
 
-	/** Set HR_Header.
-		@param HR_Header 
-		Руководитель департамента
-	  */
-	public void setHR_Header (int HR_Header)
+	/** Set HR_Header_ID.
+		@param HR_Header_ID HR_Header_ID	  */
+	public void setHR_Header_ID (int HR_Header_ID)
 	{
-		set_Value (COLUMNNAME_HR_Header, Integer.valueOf(HR_Header));
+		if (HR_Header_ID < 1) 
+			set_Value (COLUMNNAME_HR_Header_ID, null);
+		else 
+			set_Value (COLUMNNAME_HR_Header_ID, Integer.valueOf(HR_Header_ID));
 	}
 
-	/** Get HR_Header.
-		@return Руководитель департамента
-	  */
-	public int getHR_Header () 
+	/** Get HR_Header_ID.
+		@return HR_Header_ID	  */
+	public int getHR_Header_ID () 
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_HR_Header);
+		Integer ii = (Integer)get_Value(COLUMNNAME_HR_Header_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

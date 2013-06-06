@@ -213,10 +213,9 @@ public class Cms_TransferData extends SvrProcess {
 				
 		Agreement_Dispatcher dispatcher = new Agreement_Dispatcher(po, po.get_Table_ID(), po.get_ID());
 		
-		dispatcher.startAgreement(approved, message);
+		boolean valuetoRet = dispatcher.startAgreement(approved, message);		
 		
-		return proposal.getDocStatus() != null && proposal.getDocStatus().equals("AP");
-		
+		return valuetoRet;
 	}
 	
 	private String GetDocument() throws Exception 
@@ -283,9 +282,9 @@ public class Cms_TransferData extends SvrProcess {
 		
 		searchTerms.put("SpecialConditions", proposal.getSpecialConditions());
 		
-		X_AD_User user = new X_AD_User(getCtx(), proposal.getHR_Header(), get_TrxName());
+//		X_AD_User user = new X_AD_User(getCtx(), proposal.getHR_Header(), get_TrxName());
 		
-		X_C_BPartner header = new X_C_BPartner(getCtx(), user.getC_BPartner_ID(), get_TrxName());		
+		X_C_BPartner header = new X_C_BPartner(getCtx(), proposal.getHR_Header_ID(), get_TrxName());		
 		
 		if(header.getName() != null)
 			searchTerms.put("DepartmentHeader", header.getName());		
@@ -402,8 +401,8 @@ public class Cms_TransferData extends SvrProcess {
 			
 			if(HR_Department_ID == -1)
 				throw new Exception("Unable to receive HR_Department_ID");			
-						
-			int HR_Header = proposal.getHR_Header();
+			
+			int HR_Header = DB.getSQLValue(get_TrxName(), "SELECT AD_User_ID FROM AD_User WHERE isActive = 'Y' AND C_BPartner_ID = " + proposal.getHR_Header_ID());
 			
 			sql.setLength(0);
 
