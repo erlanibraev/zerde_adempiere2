@@ -88,34 +88,6 @@ where e.isactive = 'Y' and ad_user_id = @AD_User_ID@
       return sb.toString();
     }
 
-	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
-			.getPO(getAD_Table_ID(), get_TrxName());	}
-
-	/** Set Table.
-		@param AD_Table_ID 
-		Database Table information
-	  */
-	public void setAD_Table_ID (int AD_Table_ID)
-	{
-		if (AD_Table_ID < 1) 
-			set_Value (COLUMNNAME_AD_Table_ID, null);
-		else 
-			set_Value (COLUMNNAME_AD_Table_ID, Integer.valueOf(AD_Table_ID));
-	}
-
-	/** Get Table.
-		@return Database Table information
-	  */
-	public int getAD_Table_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Table_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
     {
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
@@ -139,56 +111,6 @@ where e.isactive = 'Y' and ad_user_id = @AD_User_ID@
 	public int getAD_User_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_AGR_Dispatcher getAGR_Dispatcher() throws RuntimeException
-    {
-		return (I_AGR_Dispatcher)MTable.get(getCtx(), I_AGR_Dispatcher.Table_Name)
-			.getPO(getAGR_Dispatcher_ID(), get_TrxName());	}
-
-	/** Set AGR_Dispatcher ID.
-		@param AGR_Dispatcher_ID AGR_Dispatcher ID	  */
-	public void setAGR_Dispatcher_ID (int AGR_Dispatcher_ID)
-	{
-		if (AGR_Dispatcher_ID < 1) 
-			set_Value (COLUMNNAME_AGR_Dispatcher_ID, null);
-		else 
-			set_Value (COLUMNNAME_AGR_Dispatcher_ID, Integer.valueOf(AGR_Dispatcher_ID));
-	}
-
-	/** Get AGR_Dispatcher ID.
-		@return AGR_Dispatcher ID	  */
-	public int getAGR_Dispatcher_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AGR_Dispatcher_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_AGR_Stage getAGR_Stage() throws RuntimeException
-    {
-		return (I_AGR_Stage)MTable.get(getCtx(), I_AGR_Stage.Table_Name)
-			.getPO(getAGR_Stage_ID(), get_TrxName());	}
-
-	/** Set AGR_Stage ID.
-		@param AGR_Stage_ID AGR_Stage ID	  */
-	public void setAGR_Stage_ID (int AGR_Stage_ID)
-	{
-		if (AGR_Stage_ID < 1) 
-			set_Value (COLUMNNAME_AGR_Stage_ID, null);
-		else 
-			set_Value (COLUMNNAME_AGR_Stage_ID, Integer.valueOf(AGR_Stage_ID));
-	}
-
-	/** Get AGR_Stage ID.
-		@return AGR_Stage ID	  */
-	public int getAGR_Stage_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AGR_Stage_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -545,32 +467,6 @@ where e.isactive = 'Y' and ad_user_id = @AD_User_ID@
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
-	/** DocStatus AD_Reference_ID=1000149 */
-	public static final int DOCSTATUS_AD_Reference_ID=1000149;
-	/** Approved = AP */
-	public static final String DOCSTATUS_Approved = "AP";
-	/** On approval = OA */
-	public static final String DOCSTATUS_OnApproval = "OA";
-	/** Rejected = 10000005 */
-	public static final String DOCSTATUS_Rejected = "10000005";
-	/** Set Document Status.
-		@param DocStatus 
-		The current status of the document
-	  */
-	public void setDocStatus (String DocStatus)
-	{
-
-		set_Value (COLUMNNAME_DocStatus, DocStatus);
-	}
-
-	/** Get Document Status.
-		@return The current status of the document
-	  */
-	public String getDocStatus () 
-	{
-		return (String)get_Value(COLUMNNAME_DocStatus);
-	}
-
 	/** Set Document No.
 		@param DocumentNo 
 		Document sequence number of the document
@@ -661,7 +557,9 @@ where e.isactive = 'Y' and ad_user_id = @AD_User_ID@
 			.getPO(getHR_Header_ID(), get_TrxName());	}
 
 	/** Set HR_Header_ID.
-		@param HR_Header_ID HR_Header_ID	  */
+		@param HR_Header_ID 
+		Руководитель департамента
+	  */
 	public void setHR_Header_ID (int HR_Header_ID)
 	{
 		if (HR_Header_ID < 1) 
@@ -671,7 +569,8 @@ where e.isactive = 'Y' and ad_user_id = @AD_User_ID@
 	}
 
 	/** Get HR_Header_ID.
-		@return HR_Header_ID	  */
+		@return Руководитель департамента
+	  */
 	public int getHR_Header_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_HR_Header_ID);
