@@ -3,7 +3,6 @@
  */
 package org.compiere.model;
 
-import java.sql.ResultSet;
 import java.util.List;
 import java.util.Properties;
 
@@ -16,15 +15,7 @@ public class M_BSC_NetWorkDiagLine extends X_BSC_NetWorkDiagLine {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4087548607739319930L;
-
-	/**
-	 * @param ctx
-	 */
-	public M_BSC_NetWorkDiagLine(Properties ctx) {
-		super(ctx);
-		// TODO Auto-generated constructor stub
-	}
+	private static final long serialVersionUID = 965135736234250761L;
 
 	/**
 	 * @param ctx
@@ -34,16 +25,9 @@ public class M_BSC_NetWorkDiagLine extends X_BSC_NetWorkDiagLine {
 	public M_BSC_NetWorkDiagLine(Properties ctx, int BSC_NetWorkDiagLine_ID,
 			String trxName) {
 		super(ctx, BSC_NetWorkDiagLine_ID, trxName);
-	}
-
-	/**
-	 * @param ctx
-	 * @param rs
-	 * @param trxName
-	 */
-	public M_BSC_NetWorkDiagLine(Properties ctx, ResultSet rs, String trxName) {
-		super(ctx, rs, trxName);
-		// TODO Auto-generated constructor stub
+		if(BSC_NetWorkDiagLine_ID == 0){
+			setBSC_NetWorkDiagLine_ID(0);
+		}
 	}
 	/** */
 	private M_BSC_NetWorkDiagSubLine[] m_sublines = null;

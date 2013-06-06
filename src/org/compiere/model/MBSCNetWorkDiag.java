@@ -65,7 +65,7 @@ public class MBSCNetWorkDiag extends X_BSC_NetWorkDiag implements DocAction {
 	/** */
 	private M_BSC_NetWorkDiagLine[] m_lines = null;
 	
-	public M_BSC_NetWorkDiagLine[] getLines (boolean requery){
+	private M_BSC_NetWorkDiagLine[] getLines (boolean requery){
 		if (m_lines != null && !requery) {
 			set_TrxName(m_lines, get_TrxName());
 			return m_lines;
@@ -105,75 +105,45 @@ public class MBSCNetWorkDiag extends X_BSC_NetWorkDiag implements DocAction {
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_PREPARE);
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
-//		Std Period open?
-			//MPeriod.testPeriodOpen(getCtx(), getDateAcct(), MDocType.DOCBASETYPE_NetWorkDiagram, getAD_Org_ID());
-			M_BSC_NetWorkDiagLine[] lines = getLines(false);
-			if (lines.length == 0)
-			{
-				m_processMsg = "@NoLines@";
-				return DocAction.STATUS_Invalid;
-			}
-			
-			m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_PREPARE);
-			if (m_processMsg != null)
-				return DocAction.STATUS_Invalid;
+		
+		M_BSC_NetWorkDiagLine[] lines = getLines(false);
+		if (lines.length == 0)
+		{
+			m_processMsg = "@NoLines@";
+			return DocAction.STATUS_Invalid;
+		}
+
 		return DocAction.STATUS_InProgress;
 	}
 
 	@Override
 	public boolean approveIt() {
 		// TODO Auto-generated method stub
-		return false;
+		System.out.println("approveIt()");
+		return true;
 	}
 
 	@Override
 	public boolean rejectIt() {
 		// TODO Auto-generated method stub
-		return false;
+		System.out.println("rejectIt()");
+		return true;
 	}
 	
 	@Override
 	public String completeIt() {
-		System.out.println("(_!_)");
-		String status = prepareIt();
-		if (!DocAction.STATUS_InProgress.equals(status))
-			return status;
+		
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_COMPLETE);
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
-		M_BSC_NetWorkDiagLine[] lines = getLines(false);
-		for(M_BSC_NetWorkDiagLine line : lines)
-		{
-			if (!line.isActive())
-				continue;
-			line.save();
-		}
+		
 		return DocAction.STATUS_Completed;
 	}
 
 	@Override
 	public boolean voidIt() {
 		log.info(toString());
-		// Before Void
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_VOID);
-		if (m_processMsg != null)
-			return false;
-		
-		if (DOCSTATUS_Closed.equals(getDocStatus())
-			|| DOCSTATUS_Reversed.equals(getDocStatus())
-			|| DOCSTATUS_Voided.equals(getDocStatus()))
-		{
-			m_processMsg = "Document Closed: " + getDocStatus();
-			return false;
-		}
-		
-		
-		// After Void
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_VOID);
-		if (m_processMsg != null)
-			return false;		
-		setProcessed(true);
-		setDocAction(DOCACTION_None);
+
 	return true;
 	
 	}
@@ -187,39 +157,21 @@ public class MBSCNetWorkDiag extends X_BSC_NetWorkDiag implements DocAction {
 	@Override
 	public boolean reverseCorrectIt() {
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean reverseAccrualIt() {
 		log.info(toString());
-		// Before reverseAccrual
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REVERSEACCRUAL);
-		if (m_processMsg != null)
-			return false;
 		
-		// After reverseAccrual
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSEACCRUAL);
-		if (m_processMsg != null)
-			return false;
-		
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean reActivateIt() {
 		log.info(toString());
-		// Before reActivate
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REACTIVATE);
-		if (m_processMsg != null)
-			return false;	
-		
-		// After reActivate
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REACTIVATE);
-		if (m_processMsg != null)
-			return false;
-		
-		return false;
+		System.out.println("reActivateIt()");
+		return true;
 	}
 
 	@Override
