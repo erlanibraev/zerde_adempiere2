@@ -1,0 +1,125 @@
+@import url("*");
+@page{
+	size: A4 landscape; /* can use also 'landscape' for orientation */
+}
+	
+@media screen {
+	
+	html, body {
+		height: 100%; /* Высота родителя */
+		background-color: #FFFFFF;
+		font-family: tahoma, san-serif;
+		font-size: 12px;
+		line-height: 14px;
+	}
+	
+	div {
+	 	text-align:top;
+		vertical-align:middle;
+		border-width: 1px;
+		border-style: dotted;
+		border-color: gray;
+		margin-top: 2%;
+		padding-left: 2cm;
+		padding-right: 1.5cm;
+		padding-top: 1cm;
+		padding-bottom: 1cm;
+	}
+	
+	a
+	{	
+		text-decoration: none;	
+		font-family:tahoma,san-serif;
+		font-size: 12px;
+		letter-spacing: 0px;	
+	}
+	
+	.aBack{
+		font-family:tahoma,san-serif;
+		font-size: 12pt;
+		letter-spacing: 0px;
+		font-style: normal;
+	}
+	
+	p{
+		margin-left: 20px;
+		margin-top: 20px; 
+	}
+	
+	.trLightBlue {
+		background:#8DB3DC;
+	}
+	
+	.tdWheat {
+		background: url("../images/grid.png");
+	}
+	
+	.tdSalmon {
+		background: #FFA07A;
+	}
+	
+	th {
+		height: 40px;
+		text-align:center;
+		vertical-align:middle;
+		margin:auto;
+	}
+	
+	td{
+		height: 25px;
+		text-align:center;
+		vertical-align:middle;
+		margin:auto;
+	}
+	
+	.cursorHover tr:hover {	 /* для строки таблицы */
+	    background: #E6F0FA; /* Цвет фона при наведении */
+	    color: #000; /* Цвет текста при наведении */
+	 }
+	 
+	.letter { 
+		width: 70px;
+		height: 35px;
+		background: #E6F0FA;
+		border-color: #8DB3DC;
+		border-style: ridge;
+		border-width: 2px;
+		display: table-cell;
+		vertical-align: middle;
+		padding: 0;
+		padding-top: 5px;
+		padding-left: 15px;
+		margin-top: 20px;
+	    position: relative; /* Относительное позиционирование */ 
+		float:left;
+	}
+	
+	.letterRight{
+		width: 100px;
+		float:right;
+		padding-left: 5px;
+		padding-right: 5px;
+		padding-top: 2px;
+	}
+
+}
+
+@media print {
+
+	 body {
+		height: 100%; /* Высота родителя */
+		background-color: #FFFFFF;
+		font-family: san-serif;
+		font-size: 10px;
+		line-height: 14px;
+	}
+	
+	#back, #printExcel, #footer, #header {
+		display: none;
+	}
+	
+	.more {
+     	page-break-after: always;
+    } 
+
+}

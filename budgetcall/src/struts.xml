@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+
+	<constant name="struts.devMode" value="true" />
+
+	<package name="basicstruts2" extends="struts-default">
+
+        <!-- If no class attribute is specified the framework will assume success and 
+        render the result index.jsp -->
+        <!-- If no name value for the result node is specified the success value is the default -->
+		<action name="index" class="main.org.action.BudgetCall" method="execute">
+			<result name="success">/index.jsp</result>
+			<result name="none">/jsp/budgetcall/NONE.jsp</result>
+		</action>
+		
+		<action name="chargeAmount" class="main.org.action.ChargeAmount" method="execute">
+			<result name="success">/jsp/budgetcall/ChargeAmount.jsp</result>
+			<result name="none">/jsp/budgetcall/NONE.jsp</result>
+		</action>
+		
+		<action name="DownloadIt" class="main.org.action.DownloadFileAction" method="execute" >
+			<result name="success" type="stream">
+			  	<param name="contentType">application/vnd.ms-excel</param>
+			  	<param name="inputName">fileInputStream</param>
+			  	<param name="contentDisposition">attachment;filename=%{filename}</param>
+			  	<param name="bufferSize">4096</param>
+			</result>
+			<result name="none">/jsp/budgetcall/NONE.jsp</result>
+   		</action>
+		
+		<action name="periodAmount" class="main.org.action.PeriodAmount" method="execute">
+			<result name="success">/jsp/budgetcall/PeriodAmount.jsp</result>
+			<result name="none">/jsp/budgetcall/NONE.jsp</result>
+		</action>
+
+	</package>
+
+</struts>

@@ -4,6 +4,7 @@ buildJava
 ?
 ?.bat
 *.log
+*.war
 *.xls
 *.xlsx
 temp
