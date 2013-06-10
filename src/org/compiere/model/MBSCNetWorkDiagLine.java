@@ -3,6 +3,7 @@
  */
 package org.compiere.model;
 
+import java.sql.ResultSet;
 import java.util.List;
 import java.util.Properties;
 
@@ -25,9 +26,15 @@ public class MBSCNetWorkDiagLine extends X_BSC_NetWorkDiagLine {
 	public MBSCNetWorkDiagLine(Properties ctx, int BSC_NetWorkDiagLine_ID,
 			String trxName) {
 		super(ctx, BSC_NetWorkDiagLine_ID, trxName);
-		if(BSC_NetWorkDiagLine_ID == 0){
-			setBSC_NetWorkDiagLine_ID(0);
-		}
+	}
+	public MBSCNetWorkDiagLine(Properties ctx, ResultSet rs, String trxName) {
+		super(ctx, rs, trxName);
+		// TODO Auto-generated constructor stub
+	}
+
+	public MBSCNetWorkDiagLine(Properties ctx) {
+		super(ctx);
+		// TODO Auto-generated constructor stub
 	}
 	/** */
 	private MBSCNetWorkDiagSubLine[] m_sublines = null;

@@ -72,7 +72,7 @@ public class MBSCNetWorkDiag extends X_BSC_NetWorkDiag implements DocAction {
 		}
 		List<MBSCNetWorkDiagLine> list = new Query(getCtx(), I_BSC_NetWorkDiagLine.Table_Name, "BSC_NetWorkDiag_ID = ?", get_TrxName())
 										.setParameters(get_ID())
-										.setOrderBy(MBSCNetWorkDiagLine.COLUMNNAME_BSC_NetWorkDiagLine_ID)
+										.setOrderBy(X_BSC_NetWorkDiagLine.COLUMNNAME_BSC_NetWorkDiagLine_ID)
 										.list();
 		m_lines = list.toArray(new MBSCNetWorkDiagLine[list.size()]);
 		return m_lines;

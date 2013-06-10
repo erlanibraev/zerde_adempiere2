@@ -42,7 +42,7 @@ public class DocumentEngineNWD extends DocumentEngine {
 		} else if (ACTION_Invalidate.equals(docAction)){
 			result = invalidateIt();
 		} else if(ACTION_Prepare.equals(docAction)){
-			result = STATUS_Drafted.equals(prepareIt());
+			result = STATUS_InProgress.equals(prepareIt());
 		} else if (ACTION_ReActivate.equals(docAction)){
 			result = reActivateIt();
 		} else if (ACTION_Reject.equals(docAction)) { 
