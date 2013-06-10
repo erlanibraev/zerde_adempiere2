@@ -3,8 +3,18 @@
  */
 package org.compiere.process;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.net.URL;
+import java.util.Map;
 import java.util.Properties;
+import java.util.logging.Level;
+
+import org.adempiere.exceptions.AdempiereException;
+import org.compiere.install.ConfigurationData;
+import org.compiere.util.CLogger;
 import org.compiere.util.Env;
+import org.compiere.util.Ini;
 import org.compiere.util.Msg;
 
 import extend.org.compiere.utils.Util;
@@ -39,9 +49,8 @@ public class BudgetCallPrint extends SvrProcess{
 		
 		param.append("callID="+getRecord_ID());
 		param.append("&processID="+pi.getAD_Process_ID());
-		
-		url = Util.getHostHttp();
-		
+
+		url = getHttpHost();
 	}
 				
 
@@ -53,7 +62,15 @@ public class BudgetCallPrint extends SvrProcess{
 		if(url.startsWith("http"))
 			Env.startBrowser(url+param);
 		
+		
 		return Msg.translate(m_ctx, "Success");
 	}
-
+	
+	private String getHttpHost(){
+		
+		URL urlWeb = Ini.getCodeBase();
+		return "http://" + urlWeb.getHost();
+		 
+	}
+	
 }
