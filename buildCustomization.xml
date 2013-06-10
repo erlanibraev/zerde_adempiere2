@@ -119,7 +119,8 @@
 		
 		<ant inheritAll="false" dir="budgetcall" target="dist"/>
 		<copy file="budgetcall/dist/BudgetCall.war" todir="${adempiere.home}/lib"/>
-		
+		<copy file="${adempiere.zkCustomLibDir}/${adempiere.zkCustomJarFile}" todir="${adempiere.lib}"/>
+		<copy file="${adempiere.zkCustomLibDir}/${adempiere.customJarFile}" todir="${adempiere.lib}"/>
 	</target>
 		
 </project>

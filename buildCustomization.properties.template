@@ -2,6 +2,7 @@
 adempiere.trunk=D:/MAD/trunc/zerde_adempiere2
 adempiere.home=D:/Adempiere
 adempiere.zkCustomLibDir=D:/Adempiere/lib
+adempiere.lib=D:/SourceCode/zerde_adempiere/lib
 adempiere.zkCustomJarFile=zkcustomization_zerde2.jar
 adempiere.customLibDir=D:/Adempiere/lib
 adempiere.customJarFile=customization_zerde2.jar
