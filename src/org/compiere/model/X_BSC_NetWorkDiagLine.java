@@ -30,7 +30,7 @@ public class X_BSC_NetWorkDiagLine extends PO implements I_BSC_NetWorkDiagLine, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130604L;
+	private static final long serialVersionUID = 20130610L;
 
     /** the default Constructor */
     public X_BSC_NetWorkDiagLine(Properties ctx)

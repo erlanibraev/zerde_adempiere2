@@ -63,18 +63,18 @@ public class MBSCNetWorkDiag extends X_BSC_NetWorkDiag implements DocAction {
 	/**	Process Message 			*/
 	private String		m_processMsg = null;
 	/** */
-	private M_BSC_NetWorkDiagLine[] m_lines = null;
+	private MBSCNetWorkDiagLine[] m_lines = null;
 	
-	private M_BSC_NetWorkDiagLine[] getLines (boolean requery){
+	private MBSCNetWorkDiagLine[] getLines (boolean requery){
 		if (m_lines != null && !requery) {
 			set_TrxName(m_lines, get_TrxName());
 			return m_lines;
 		}
-		List<M_BSC_NetWorkDiagLine> list = new Query(getCtx(), I_BSC_NetWorkDiagLine.Table_Name, "BSC_NetWorkDiag_ID = ?", get_TrxName())
+		List<MBSCNetWorkDiagLine> list = new Query(getCtx(), I_BSC_NetWorkDiagLine.Table_Name, "BSC_NetWorkDiag_ID = ?", get_TrxName())
 										.setParameters(get_ID())
-										.setOrderBy(M_BSC_NetWorkDiagLine.COLUMNNAME_BSC_NetWorkDiagLine_ID)
+										.setOrderBy(MBSCNetWorkDiagLine.COLUMNNAME_BSC_NetWorkDiagLine_ID)
 										.list();
-		m_lines = list.toArray(new M_BSC_NetWorkDiagLine[list.size()]);
+		m_lines = list.toArray(new MBSCNetWorkDiagLine[list.size()]);
 		return m_lines;
 	}
 
@@ -106,7 +106,7 @@ public class MBSCNetWorkDiag extends X_BSC_NetWorkDiag implements DocAction {
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
 		
-		M_BSC_NetWorkDiagLine[] lines = getLines(false);
+		MBSCNetWorkDiagLine[] lines = getLines(false);
 		if (lines.length == 0)
 		{
 			m_processMsg = "@NoLines@";
