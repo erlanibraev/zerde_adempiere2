@@ -136,6 +136,12 @@ public class MBSCNetWorkDiag extends X_BSC_NetWorkDiag implements DocAction {
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_COMPLETE);
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
+		MBSCNetWorkDiagLine[] lines = getLines(false);
+		if (lines.length == 0)
+		{
+			m_processMsg = "@NoLines@";
+			return DocAction.STATUS_Invalid;
+		}
 		
 		return DocAction.STATUS_Completed;
 	}
