@@ -155,7 +155,7 @@ public class Agreement_Dispatcher
 			{
 				Agreement_PrepareList prepareList = new Agreement_PrepareList(AGR_Agreement_ID, C_BPartner_ID, AD_Table_ID, Record_ID);
 				prepareList.FillAgreementList();
-				FillAgreementList(stage);
+				FillAgreementList(stage, stage);
 			}
 		}
 		else
@@ -180,14 +180,14 @@ public class Agreement_Dispatcher
 			
 			MAGRStage stage = new MAGRStage(Env.getCtx(), nodeArray[i].getAGR_NextStage_ID(), null);
 			
+			document.set_ValueOfColumn(X_AGR_Stage.COLUMNNAME_AGR_Stage_ID, stage.get_ID());
+			document.saveEx();
+			
 			//If document is not approved, agreement list will not be filled
 			if((currentStage.get_ID() != nodeArray[i].getAGR_NextStage_ID()) && isNotFilled(stage))
 			{
-				FillAgreementList(stage);
+				FillAgreementList(stage,currentStage);
 			}
-						
-			document.set_ValueOfColumn(X_AGR_Stage.COLUMNNAME_AGR_Stage_ID, stage.get_ID());
-			document.saveEx();
 			
 			//Exit from agreement
 			if(stage.get_ID() == currentStage.get_ID()) 
@@ -206,10 +206,10 @@ public class Agreement_Dispatcher
 		return lines.size() == 0;
 	}	
 	//Fill agreement list
-	private void FillAgreementList(MAGRStage stage)
+	private void FillAgreementList(MAGRStage toStage, MAGRStage fromStage)
 	{
-		ArrayList<Integer> signers = stage.getSigners(AD_Table_ID, Record_ID);
-		
+		ArrayList<Integer> signers = toStage.getSigners(AD_Table_ID, Record_ID);
+		ArrayList<Integer> currentSigners = fromStage.getSigners(AD_Table_ID, Record_ID);
 		//get current date&time
 		Timestamp stamp = new Timestamp(System.currentTimeMillis());
 
@@ -219,12 +219,27 @@ public class Agreement_Dispatcher
 			list.setAD_Table_ID(AD_Table_ID);
 			list.setRecord_ID(Record_ID);
 			list.setSigner_ID(signers.get(i));
-			list.setAGR_Stage_ID(stage.get_ID());
+			list.setAGR_Stage_ID(toStage.get_ID());
 			list.setRecordCreated(stamp);
 			list.setRecordUpdated(stamp);
+			
 			if(!list.save())
 			{
 				Log.log(Logger.ERROR, "Agreement List not saved");
+			}
+			
+			if(currentSigners.contains(signers.get(i)) && toStage.get_ID() != fromStage.get_ID())
+			{
+				toStage.Approve(AD_Table_ID, Record_ID, signers.get(i), "");
+				
+				if(toStage.isCanMove(AD_Table_ID, Record_ID))
+				{
+					createNextStage(toStage, false);
+				}
+				else if(toStage.isLastStage() && toStage.isAllApproved(AD_Table_ID, Record_ID))
+				{
+					quit(toStage);
+				}
 			}
 		}		
 	}
