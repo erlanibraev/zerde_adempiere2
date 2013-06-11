@@ -3,21 +3,10 @@
  */
 package org.compiere.process;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.net.URL;
-import java.util.Map;
 import java.util.Properties;
-import java.util.logging.Level;
-
-import org.adempiere.exceptions.AdempiereException;
-import org.compiere.install.ConfigurationData;
-import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Ini;
 import org.compiere.util.Msg;
-
-import extend.org.compiere.utils.Util;
 
 /**
  * Add the process in the system and do not forget to attach templates:
@@ -68,8 +57,7 @@ public class BudgetCallPrint extends SvrProcess{
 	
 	private String getHttpHost(){
 		
-		URL urlWeb = Ini.getCodeBase();
-		return "http://" + urlWeb.getHost();
+		return "http://" + Ini.getCodeBase();
 		 
 	}
 	

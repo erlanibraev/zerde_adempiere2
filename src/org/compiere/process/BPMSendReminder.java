@@ -6,6 +6,7 @@ package org.compiere.process;
 import java.io.File;
 import java.text.MessageFormat;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import jxl.Sheet;
 import jxl.Workbook;
@@ -14,6 +15,7 @@ import org.adempiere.exceptions.AdempiereException;
 import org.compiere.apps.ADialog;
 import org.compiere.model.MAttachmentEntry;
 import org.compiere.model.MBPMEmployeeLine;
+import org.compiere.model.MBPMVersionBudget;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MOrg;
 import org.compiere.model.MUser;
@@ -27,36 +29,48 @@ import org.joda.time.DateTime;
 import extend.org.compiere.hrm.ExcelCell;
 import extend.org.compiere.utils.Util;
 
-
 /**
- * Sending notifications
- * used in the table BPM_VersionBudget column SendMail
  * @author V.Sokolov
  *
  */
-public class BPMSendNotif extends SvrProcess {
+public class BPMSendReminder extends SvrProcess {
 
-	
-	/** Current context		*/
+	/* Current context		*/
 	private Properties m_ctx;
-	/**	 */
+	/* Information process	 */
 	private ProcessInfo pi;
 	/* */
-	private X_BPM_VersionBudget version = null;
+	private String templateName = "MailReminder";
 	/* */
-	private String templateName = "MailNotification";
+	private int abpID;
+	private X_BPM_VersionBudget version = null;
 	
 	/* 
 	 */
+	@Override
 	protected void prepare() {
 		
-		log.info("Send Mail: beginning of the budget");
+		log.info("Send Mail: Reminder about filling budget");
 		m_ctx = getCtx();
 		pi = getProcessInfo();
 		
-		version = new X_BPM_VersionBudget(getCtx(), getRecord_ID(), get_TrxName()); 
+		ProcessInfoParameter[] para = getParameter();
+		for (int i = 0; i < para.length; i++)	{
+			String name = para[i].getParameterName();
+			if (name == null); 
+				//
+			else if (name.compareTo("BPM_ABP_ID") == 0 && para[i].getParameter() != null)
+				abpID = Integer.parseInt(para[i].getParameter().toString());
+			else
+			{
+				log.log(Level.INFO, "Unknown Parameter: " + name);
+			}
+		}
+		
+		version = MBPMVersionBudget.getVersionBudget(); 
+
 	}
-	
+
 	/* 
 	 */
 	@Override
@@ -106,7 +120,7 @@ public class BPMSendNotif extends SvrProcess {
 		msgHtml.append("<table border=\"center\" width=\"80%\"> \n")
 		.append("<tr> \n")
 		.append("	<td align=\"center\"> \n")
-		.append("		<font size=\"4\">Уведомление</font> ")
+		.append("		<font size=\"4\">Напоминание</font> ")
 		.append("	</td> \n")
 		.append("</tr> \n")
 		.append("<tr> \n")
@@ -130,19 +144,17 @@ public class BPMSendNotif extends SvrProcess {
 		if(version.isHtml())
 			message = MessageFormat.format(msgHtml.toString(), param);
 		else
-			message = "							Уведомление \r\r" + MessageFormat.format(textMail, param);
+			message = "							Напоминание \r\r" + MessageFormat.format(textMail, param);
 		
 		MBPMEmployeeLine bpe = new MBPMEmployeeLine(m_ctx);
-		X_BPM_EmployeeLine[] empLine = bpe.getEmployee();
+		X_BPM_EmployeeLine[] empLine = bpe.getEmployee(abpID);
+		
 		for(X_BPM_EmployeeLine emp: empLine){
 			X_C_BPartner bp = new X_C_BPartner(m_ctx, emp.getC_BPartner_ID(), get_TrxName());
 			MUser[] user = MUser.getOfBPartner(m_ctx, bp.getC_BPartner_ID(), get_TrxName());
 			if(user[0].getAD_User_ID() != 0 || user[0].getEMail() != null || user[0].getEMail().length() != 0)
 				Util.sendMail(user[0].getAD_User_ID(), getAD_User_ID(),  MessageFormat.format(subject.toString(), param), message, version.isHtml());
 		}
-		
-		version.setNumberSend(version.getNumberSend()+1);
-		version.saveEx();
 		
 		tableBook.close();
 		inputFile.delete();

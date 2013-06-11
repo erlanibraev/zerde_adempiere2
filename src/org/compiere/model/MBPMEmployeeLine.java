@@ -54,7 +54,28 @@ public class MBPMEmployeeLine extends X_BPM_EmployeeLine {
 		super(ctx, rs, trxName);
 	}
 	
-	public static X_BPM_EmployeeLine[] getEmployeeLines(){
+	/**
+	 * list of employee
+	 * @return
+	 */
+	public X_BPM_EmployeeLine[] getEmployee(){
+		
+		return getEmployeeLines("");
+		
+	}
+	
+	/**
+	 * list of employee ABP
+	 * @param abpID
+	 * @return
+	 */
+	public X_BPM_EmployeeLine[] getEmployee(int abpID){
+		
+		return getEmployeeLines("\n AND BPM_ABP_ID="+abpID);
+		
+	}
+	
+	private X_BPM_EmployeeLine[] getEmployeeLines(String clause){
 		
 		//
 	    PreparedStatement pstmt = null;
@@ -64,7 +85,7 @@ public class MBPMEmployeeLine extends X_BPM_EmployeeLine {
 		ArrayList<X_BPM_EmployeeLine> list = new ArrayList<X_BPM_EmployeeLine>();
 		
 		// 
-		String sql_ = "SELECT * FROM "+Table_Name+" WHERE isActive='Y'";
+		String sql_ = "SELECT * FROM "+Table_Name+" WHERE isActive='Y'" + clause;
 		try
 		{
 			pstmt = DB.prepareStatement(sql_,null);
