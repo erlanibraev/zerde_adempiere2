@@ -57,7 +57,8 @@ public class BudgetCallPrint extends SvrProcess{
 	
 	private String getHttpHost(){
 		
-		return "http://" + Ini.getCodeBase();
+		
+		return "http://" + Ini.getCodeBase().getHost();
 		 
 	}
 	

@@ -44,6 +44,7 @@ public class BPMSendReminder extends SvrProcess {
 	/* */
 	private int abpID;
 	private X_BPM_VersionBudget version = null;
+	X_BPM_EmployeeLine[] empLine;
 	
 	/* 
 	 */
@@ -147,7 +148,10 @@ public class BPMSendReminder extends SvrProcess {
 			message = "							Напоминание \r\r" + MessageFormat.format(textMail, param);
 		
 		MBPMEmployeeLine bpe = new MBPMEmployeeLine(m_ctx);
-		X_BPM_EmployeeLine[] empLine = bpe.getEmployee(abpID);
+		if(abpID != 0)
+			empLine = bpe.getEmployee(abpID);
+		else
+			empLine = bpe.getEmployee();
 		
 		for(X_BPM_EmployeeLine emp: empLine){
 			X_C_BPartner bp = new X_C_BPartner(m_ctx, emp.getC_BPartner_ID(), get_TrxName());
