@@ -151,7 +151,7 @@ public class BPMSendReminder extends SvrProcess {
 		if(abpID != 0)
 			empLine = bpe.getEmployee(abpID);
 		else
-			empLine = bpe.getEmployee();
+			empLine = bpe.getEmployeeReminder();
 		
 		for(X_BPM_EmployeeLine emp: empLine){
 			X_C_BPartner bp = new X_C_BPartner(m_ctx, emp.getC_BPartner_ID(), get_TrxName());

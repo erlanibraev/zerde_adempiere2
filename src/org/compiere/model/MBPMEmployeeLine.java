@@ -75,6 +75,40 @@ public class MBPMEmployeeLine extends X_BPM_EmployeeLine {
 		
 	}
 	
+	public X_BPM_EmployeeLine[] getEmployeeReminder(){
+		
+		//
+	    PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		// 
+		StringBuffer clause = new StringBuffer("\n AND BPM_ABP_ID in (0");
+		
+		String sql_ = "SELECT bpm_abp_id FROM bpm_budgetcallregister_v WHERE count = 0";
+		try
+		{
+			pstmt = DB.prepareStatement(sql_.toString(),null);
+			rs = pstmt.executeQuery();	
+			while(rs.next()){
+				clause.append(","+rs.getInt(1));
+			}				
+		}
+		catch (SQLException e)
+		{
+			s_log.log(Level.INFO, "product", e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
+		}	
+		
+		clause.append(")");
+		
+		return getEmployeeLines(clause.toString());
+		
+	}
+	
 	private X_BPM_EmployeeLine[] getEmployeeLines(String clause){
 		
 		//
