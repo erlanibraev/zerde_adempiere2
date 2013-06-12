@@ -33,7 +33,7 @@ public class X_TRM_Deposit extends PO implements I_TRM_Deposit, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130610L;
+	private static final long serialVersionUID = 20130611L;
 
     /** the default Constructor */
     public X_TRM_Deposit(Properties ctx)
@@ -139,6 +139,23 @@ public class X_TRM_Deposit extends PO implements I_TRM_Deposit, I_Persistent
 	public Timestamp getDateSigning () 
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateSigning);
+	}
+
+	/** Set Description.
+		@param Description 
+		Optional short description of the record
+	  */
+	public void setDescription (String Description)
+	{
+		set_Value (COLUMNNAME_Description, Description);
+	}
+
+	/** Get Description.
+		@return Optional short description of the record
+	  */
+	public String getDescription () 
+	{
+		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Document No.
