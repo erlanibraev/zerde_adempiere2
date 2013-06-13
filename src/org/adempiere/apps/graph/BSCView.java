@@ -58,9 +58,12 @@ public class BSCView extends CPanel implements FormPanel, ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().equals(ConfirmPanel.A_OK))
 			dispose();
-		else if (e.getSource() instanceof BSCIndicator)
-		{
-			
+		else if (e.getSource() instanceof BSCIndicator)	{
+			BSCIndicator ind = (BSCIndicator) e.getSource(); 
+			load(ind.getParameter().getBSC_Parameter_ID());
+		} else if (e.getSource() == cbParameter && cbParameter.getSelectedItem() != null) {
+			KeyNamePair knp = (KeyNamePair) cbParameter.getSelectedItem();
+			load(knp.getKey());
 		}
 	}
 
@@ -139,6 +142,8 @@ public class BSCView extends CPanel implements FormPanel, ActionListener{
 	{
 		log.fine("BSC_Parameter_ID=" + BSC_Parameter_ID);
 		if (BSC_Parameter_ID == 0)
+			return;
+		if (period == null && period.getC_Period_ID() == 0)
 			return;
 		int AD_Client_ID = Env.getAD_Client_ID(Env.getCtx());
 		m_Parameter = new MParameter (Env.getCtx(), BSC_Parameter_ID, null);
