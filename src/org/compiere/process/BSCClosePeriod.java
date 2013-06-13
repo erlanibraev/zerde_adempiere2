@@ -5,6 +5,7 @@ package org.compiere.process;
 
 import java.util.List;
 
+import org.compiere.apps.ADialog;
 import org.compiere.model.MBSCCard;
 import org.compiere.model.MPeriod;
 import org.compiere.util.DB;
@@ -20,16 +21,22 @@ public class BSCClosePeriod extends SvrProcess {
 	 * @see org.compiere.process.SvrProcess#prepare()
 	 */
 	
-	protected int C_Period_ID = 0;
-	protected MPeriod period = null;
-	protected List<MBSCCard> cards = null;
-	protected int AD_Client_ID = Env.getAD_Client_ID(getCtx());
-	protected int AD_Org_ID = Env.getAD_Org_ID(getCtx());
-	protected int C_DocType_ID = 0;
-	protected String resultIt = null;  
+	private int C_Period_ID = 0;
+	private MPeriod period = null;
+	private List<MBSCCard> cards = null;
+	private int AD_Client_ID = Env.getAD_Client_ID(getCtx());
+	private int AD_Org_ID = Env.getAD_Org_ID(getCtx());
+	private int C_DocType_ID = 0;
+	private String resultIt = null;
+	private int c_doctype_id = getC_DocType_ID();;
+	private int p_AD_Client_ID;  
 //---------------------------------------------------------------------------
 	@Override
 	protected void prepare() {
+		getProcessInfo();
+		
+	 	Env.getAD_User_ID(getCtx());
+		
 		initParameters();
 		
 	}
@@ -102,8 +109,12 @@ public class BSCClosePeriod extends SvrProcess {
 	 */
 	private boolean BSCClose() {
 		boolean result = false;
-		//TODO 
-		
+		if (c_doctype_id<0) {
+			log.info("doctype is not found");
+			return false;
+		}
+		ADialog dialog = new ADialog();
+		//TODO Хоть что-нибудь сделать!!!!!!!!!!!!!!!
 		return result;
 	}
 
