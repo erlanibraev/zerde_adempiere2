@@ -24,6 +24,7 @@ import org.compiere.model.MPeriod;
 import org.compiere.model.MRole;
 import org.compiere.swing.CComboBox;
 import org.compiere.swing.CPanel;
+import org.compiere.swing.CScrollPane;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -86,8 +87,10 @@ public class BSCView extends CPanel implements FormPanel, ActionListener{
 			confirmPanel.addActionListener(this);
 			
 			m_frame.getContentPane().add(loadPanel, BorderLayout.NORTH);
-			m_frame.getContentPane().add(mainPanel, BorderLayout.CENTER);
+//			m_frame.getContentPane().add(mainPanel, BorderLayout.CENTER);
 			m_frame.getContentPane().add(confirmPanel, BorderLayout.SOUTH);
+			CScrollPane scroll =  new CScrollPane(mainPanel);
+			m_frame.getContentPane().add(scroll, BorderLayout.CENTER);
 			
 		} catch(Exception e) {
 			log.log(Level.SEVERE,"BSCView: ",e);
