@@ -75,6 +75,21 @@ public interface I_TRM_DepositLine
 	  */
 	public BigDecimal getBeginningBalance();
 
+    /** Column name C_BankStatement_ID */
+    public static final String COLUMNNAME_C_BankStatement_ID = "C_BankStatement_ID";
+
+	/** Set Bank Statement.
+	  * Bank Statement of account
+	  */
+	public void setC_BankStatement_ID (int C_BankStatement_ID);
+
+	/** Get Bank Statement.
+	  * Bank Statement of account
+	  */
+	public int getC_BankStatement_ID();
+
+	public org.compiere.model.I_C_BankStatement getC_BankStatement() throws RuntimeException;
+
     /** Column name C_DocType_ID */
     public static final String COLUMNNAME_C_DocType_ID = "C_DocType_ID";
 
@@ -119,6 +134,19 @@ public interface I_TRM_DepositLine
 	  */
 	public Timestamp getDateOperation();
 
+    /** Column name DocStatus */
+    public static final String COLUMNNAME_DocStatus = "DocStatus";
+
+	/** Set Document Status.
+	  * The current status of the document
+	  */
+	public void setDocStatus (String DocStatus);
+
+	/** Get Document Status.
+	  * The current status of the document
+	  */
+	public String getDocStatus();
+
     /** Column name EndingBalance */
     public static final String COLUMNNAME_EndingBalance = "EndingBalance";
 
@@ -157,6 +185,19 @@ public interface I_TRM_DepositLine
 	  * Сумма строки
 	  */
 	public BigDecimal getLineSum();
+
+    /** Column name Processed */
+    public static final String COLUMNNAME_Processed = "Processed";
+
+	/** Set Processed.
+	  * The document has been processed
+	  */
+	public void setProcessed (boolean Processed);
+
+	/** Get Processed.
+	  * The document has been processed
+	  */
+	public boolean isProcessed();
 
     /** Column name TRM_Deposit_ID */
     public static final String COLUMNNAME_TRM_Deposit_ID = "TRM_Deposit_ID";
