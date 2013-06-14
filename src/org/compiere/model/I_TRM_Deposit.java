@@ -30,7 +30,7 @@ public interface I_TRM_Deposit
     /** TableName=TRM_Deposit */
     public static final String Table_Name = "TRM_Deposit";
 
-    /** AD_Table_ID=1000254 */
+    /** AD_Table_ID=1000259 */
     public static final int Table_ID = MTable.getTable_ID(Table_Name);
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
@@ -61,6 +61,21 @@ public interface I_TRM_Deposit
 	  * Organizational entity within client
 	  */
 	public int getAD_Org_ID();
+
+    /** Column name C_BankAccount_ID */
+    public static final String COLUMNNAME_C_BankAccount_ID = "C_BankAccount_ID";
+
+	/** Set Bank Account.
+	  * Account at the Bank
+	  */
+	public void setC_BankAccount_ID (int C_BankAccount_ID);
+
+	/** Get Bank Account.
+	  * Account at the Bank
+	  */
+	public int getC_BankAccount_ID();
+
+	public org.compiere.model.I_C_BankAccount getC_BankAccount() throws RuntimeException;
 
     /** Column name CMS_Contract_ID */
     public static final String COLUMNNAME_CMS_Contract_ID = "CMS_Contract_ID";
@@ -239,14 +254,10 @@ public interface I_TRM_Deposit
     /** Column name TRM_Deposit_ID */
     public static final String COLUMNNAME_TRM_Deposit_ID = "TRM_Deposit_ID";
 
-	/** Set TRM_Deposit ID.
-	  * Депозиты
-	  */
+	/** Set TRM_Deposit ID	  */
 	public void setTRM_Deposit_ID (int TRM_Deposit_ID);
 
-	/** Get TRM_Deposit ID.
-	  * Депозиты
-	  */
+	/** Get TRM_Deposit ID	  */
 	public int getTRM_Deposit_ID();
 
     /** Column name Updated */

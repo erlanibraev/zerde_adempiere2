@@ -33,7 +33,7 @@ public class X_TRM_Deposit extends PO implements I_TRM_Deposit, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130611L;
+	private static final long serialVersionUID = 20130614L;
 
     /** the default Constructor */
     public X_TRM_Deposit(Properties ctx)
@@ -78,6 +78,34 @@ public class X_TRM_Deposit extends PO implements I_TRM_Deposit, I_Persistent
         .append(get_ID()).append("]");
       return sb.toString();
     }
+
+	public org.compiere.model.I_C_BankAccount getC_BankAccount() throws RuntimeException
+    {
+		return (org.compiere.model.I_C_BankAccount)MTable.get(getCtx(), org.compiere.model.I_C_BankAccount.Table_Name)
+			.getPO(getC_BankAccount_ID(), get_TrxName());	}
+
+	/** Set Bank Account.
+		@param C_BankAccount_ID 
+		Account at the Bank
+	  */
+	public void setC_BankAccount_ID (int C_BankAccount_ID)
+	{
+		if (C_BankAccount_ID < 1) 
+			set_Value (COLUMNNAME_C_BankAccount_ID, null);
+		else 
+			set_Value (COLUMNNAME_C_BankAccount_ID, Integer.valueOf(C_BankAccount_ID));
+	}
+
+	/** Get Bank Account.
+		@return Account at the Bank
+	  */
+	public int getC_BankAccount_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_BankAccount_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
 
 	public I_CMS_Contract getCMS_Contract() throws RuntimeException
     {
@@ -305,9 +333,7 @@ public class X_TRM_Deposit extends PO implements I_TRM_Deposit, I_Persistent
 	}
 
 	/** Set TRM_Deposit ID.
-		@param TRM_Deposit_ID 
-		Депозиты
-	  */
+		@param TRM_Deposit_ID TRM_Deposit ID	  */
 	public void setTRM_Deposit_ID (int TRM_Deposit_ID)
 	{
 		if (TRM_Deposit_ID < 1) 
@@ -317,8 +343,7 @@ public class X_TRM_Deposit extends PO implements I_TRM_Deposit, I_Persistent
 	}
 
 	/** Get TRM_Deposit ID.
-		@return Депозиты
-	  */
+		@return TRM_Deposit ID	  */
 	public int getTRM_Deposit_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_TRM_Deposit_ID);
