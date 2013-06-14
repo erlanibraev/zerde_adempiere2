@@ -127,7 +127,7 @@ public class MParameter extends X_BSC_Parameter {
 	public BigDecimal getValueNumber() {
 		BigDecimal result = new BigDecimal(0);
 		if (getCurrentParameterLine() != null) {
-			result = new BigDecimal(getCurrentParameterLine().getValue()); 
+			result = new BigDecimal((getCurrentParameterLine().getValue() == null ? "0" : getCurrentParameterLine().getValue())); 
 		}
 		return result;
 	}
