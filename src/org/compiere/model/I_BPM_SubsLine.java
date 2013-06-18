@@ -20,17 +20,17 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for BPM_Subs
+/** Generated Interface for BPM_SubsLine
  *  @author Adempiere (generated) 
  *  @version Release 3.7.0LTS
  */
-public interface I_BPM_Subs 
+public interface I_BPM_SubsLine 
 {
 
-    /** TableName=BPM_Subs */
-    public static final String Table_Name = "BPM_Subs";
+    /** TableName=BPM_SubsLine */
+    public static final String Table_Name = "BPM_SubsLine";
 
-    /** AD_Table_ID=1000232 */
+    /** AD_Table_ID=1000255 */
     public static final int Table_ID = MTable.getTable_ID(Table_Name);
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
@@ -62,14 +62,20 @@ public interface I_BPM_Subs
 	  */
 	public int getAD_Org_ID();
 
-    /** Column name BPM_Share */
-    public static final String COLUMNNAME_BPM_Share = "BPM_Share";
+    /** Column name AD_User_ID */
+    public static final String COLUMNNAME_AD_User_ID = "AD_User_ID";
 
-	/** Set BPM_Share	  */
-	public void setBPM_Share (int BPM_Share);
+	/** Set Usuario.
+	  * User within the system - Internal or Business Partner Contact
+	  */
+	public void setAD_User_ID (int AD_User_ID);
 
-	/** Get BPM_Share	  */
-	public int getBPM_Share();
+	/** Get Usuario.
+	  * User within the system - Internal or Business Partner Contact
+	  */
+	public int getAD_User_ID();
+
+	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
     /** Column name BPM_Subs_ID */
     public static final String COLUMNNAME_BPM_Subs_ID = "BPM_Subs_ID";
@@ -79,6 +85,17 @@ public interface I_BPM_Subs
 
 	/** Get BPM_Subs ID	  */
 	public int getBPM_Subs_ID();
+
+	public I_BPM_Subs getBPM_Subs() throws RuntimeException;
+
+    /** Column name BPM_SubsLine_ID */
+    public static final String COLUMNNAME_BPM_SubsLine_ID = "BPM_SubsLine_ID";
+
+	/** Set BPM_SubsLine ID	  */
+	public void setBPM_SubsLine_ID (int BPM_SubsLine_ID);
+
+	/** Get BPM_SubsLine ID	  */
+	public int getBPM_SubsLine_ID();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -108,19 +125,6 @@ public interface I_BPM_Subs
 	  * The record is active in the system
 	  */
 	public boolean isActive();
-
-    /** Column name Name */
-    public static final String COLUMNNAME_Name = "Name";
-
-	/** Set Name.
-	  * Alphanumeric identifier of the entity
-	  */
-	public void setName (String Name);
-
-	/** Get Name.
-	  * Alphanumeric identifier of the entity
-	  */
-	public String getName();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

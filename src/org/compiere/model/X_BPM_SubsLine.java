@@ -19,12 +19,11 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
-import org.compiere.util.KeyNamePair;
 
-/** Generated Model for BPM_Subs
+/** Generated Model for BPM_SubsLine
  *  @author Adempiere (generated) 
  *  @version Release 3.7.0LTS - $Id$ */
-public class X_BPM_Subs extends PO implements I_BPM_Subs, I_Persistent 
+public class X_BPM_SubsLine extends PO implements I_BPM_SubsLine, I_Persistent 
 {
 
 	/**
@@ -33,25 +32,25 @@ public class X_BPM_Subs extends PO implements I_BPM_Subs, I_Persistent
 	private static final long serialVersionUID = 20130618L;
 
     /** the default Constructor */
-    public X_BPM_Subs(Properties ctx)
+    public X_BPM_SubsLine(Properties ctx)
     { 
       super (ctx, null, null);
     } 
 
     /** Standard Constructor */
-    public X_BPM_Subs (Properties ctx, int BPM_Subs_ID, String trxName)
+    public X_BPM_SubsLine (Properties ctx, int BPM_SubsLine_ID, String trxName)
     {
-      super (ctx, BPM_Subs_ID, trxName);
-      /** if (BPM_Subs_ID == 0)
+      super (ctx, BPM_SubsLine_ID, trxName);
+      /** if (BPM_SubsLine_ID == 0)
         {
-			setBPM_Share (0);
+			setAD_User_ID (0);
 			setBPM_Subs_ID (0);
-			setName (null);
+			setBPM_SubsLine_ID (0);
         } */
     }
 
     /** Load Constructor */
-    public X_BPM_Subs (Properties ctx, ResultSet rs, String trxName)
+    public X_BPM_SubsLine (Properties ctx, ResultSet rs, String trxName)
     {
       super (ctx, rs, trxName);
     }
@@ -73,36 +72,52 @@ public class X_BPM_Subs extends PO implements I_BPM_Subs, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_BPM_Subs[")
+      StringBuffer sb = new StringBuffer ("X_BPM_SubsLine[")
         .append(get_ID()).append("]");
       return sb.toString();
     }
 
-	/** Set BPM_Share.
-		@param BPM_Share BPM_Share	  */
-	public void setBPM_Share (int BPM_Share)
+	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
+			.getPO(getAD_User_ID(), get_TrxName());	}
+
+	/** Set Usuario.
+		@param AD_User_ID 
+		User within the system - Internal or Business Partner Contact
+	  */
+	public void setAD_User_ID (int AD_User_ID)
 	{
-		set_Value (COLUMNNAME_BPM_Share, Integer.valueOf(BPM_Share));
+		if (AD_User_ID < 1) 
+			set_Value (COLUMNNAME_AD_User_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
 	}
 
-	/** Get BPM_Share.
-		@return BPM_Share	  */
-	public int getBPM_Share () 
+	/** Get Usuario.
+		@return User within the system - Internal or Business Partner Contact
+	  */
+	public int getAD_User_ID () 
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_BPM_Share);
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
 	}
+
+	public I_BPM_Subs getBPM_Subs() throws RuntimeException
+    {
+		return (I_BPM_Subs)MTable.get(getCtx(), I_BPM_Subs.Table_Name)
+			.getPO(getBPM_Subs_ID(), get_TrxName());	}
 
 	/** Set BPM_Subs ID.
 		@param BPM_Subs_ID BPM_Subs ID	  */
 	public void setBPM_Subs_ID (int BPM_Subs_ID)
 	{
 		if (BPM_Subs_ID < 1) 
-			set_ValueNoCheck (COLUMNNAME_BPM_Subs_ID, null);
+			set_Value (COLUMNNAME_BPM_Subs_ID, null);
 		else 
-			set_ValueNoCheck (COLUMNNAME_BPM_Subs_ID, Integer.valueOf(BPM_Subs_ID));
+			set_Value (COLUMNNAME_BPM_Subs_ID, Integer.valueOf(BPM_Subs_ID));
 	}
 
 	/** Get BPM_Subs ID.
@@ -115,28 +130,23 @@ public class X_BPM_Subs extends PO implements I_BPM_Subs, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
-	public void setName (String Name)
+	/** Set BPM_SubsLine ID.
+		@param BPM_SubsLine_ID BPM_SubsLine ID	  */
+	public void setBPM_SubsLine_ID (int BPM_SubsLine_ID)
 	{
-		set_Value (COLUMNNAME_Name, Name);
+		if (BPM_SubsLine_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_BPM_SubsLine_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_BPM_SubsLine_ID, Integer.valueOf(BPM_SubsLine_ID));
 	}
 
-	/** Get Name.
-		@return Alphanumeric identifier of the entity
-	  */
-	public String getName () 
+	/** Get BPM_SubsLine ID.
+		@return BPM_SubsLine ID	  */
+	public int getBPM_SubsLine_ID () 
 	{
-		return (String)get_Value(COLUMNNAME_Name);
+		Integer ii = (Integer)get_Value(COLUMNNAME_BPM_SubsLine_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
-
-    /** Get Record ID/ColumnName
-        @return ID/ColumnName pair
-      */
-    public KeyNamePair getKeyNamePair() 
-    {
-        return new KeyNamePair(get_ID(), getName());
-    }
 }

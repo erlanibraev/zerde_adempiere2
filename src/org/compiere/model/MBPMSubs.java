@@ -53,7 +53,7 @@ public class MBPMSubs extends X_BPM_Subs {
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
 
-		if(getBPM_Share().intValue() > 100)
+		if(getBPM_Share() > 100)
 			throw new AdempiereException(Msg.translate(getCtx(), "Share >100"));
 		
 		return true;
