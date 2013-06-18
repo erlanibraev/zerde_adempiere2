@@ -21,7 +21,6 @@ import org.compiere.apps.ConfirmPanel;
 import org.compiere.apps.form.FormFrame;
 import org.compiere.apps.form.FormPanel;
 import org.compiere.grid.ed.AutoCompletion;
-import org.compiere.model.MFormula;
 import org.compiere.model.MParameter;
 import org.compiere.model.MParameterLine;
 import org.compiere.model.MPeriod;
@@ -209,7 +208,6 @@ public class BSCView extends CPanel implements FormPanel, ActionListener{
 			return;
 		int AD_Client_ID = Env.getAD_Client_ID(Env.getCtx());
 		m_Parameter = new MParameter (Env.getCtx(), BSC_Parameter_ID, null);
-//		period = m_Parameter.getPeriod();
 		m_Parameter.setPeriod(period);
 
 		mainPanel.removeAll();
@@ -221,18 +219,16 @@ public class BSCView extends CPanel implements FormPanel, ActionListener{
 		gbc.gridy = 0;
 		addBSCIndicator(m_Parameter, gbc); // new GridBagConstraints(1, 1, 10, 10, 0.0, 0.0,GridBagConstraints.FIRST_LINE_START, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0)
 		
-		for(int i = 1; i < 2; i++) {
-			JPanel temp = new JPanel();
-			temp.setPreferredSize(BSCIndicator.paneldimension);
+		JPanel temp = new JPanel();
+		temp.setPreferredSize(BSCIndicator.paneldimension);
 			
-			gbc = new GridBagConstraints();
+		gbc = new GridBagConstraints();
 			
-			gbc.fill = GridBagConstraints.HORIZONTAL;
-			gbc.gridx = i;
-			gbc.gridy = 0;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.gridx = 1;
+		gbc.gridy = 0;
 			
-			mainPanel.add(temp,gbc);
-		}
+		mainPanel.add(temp,gbc);
 		
 		MParameterLine parameterLine = m_Parameter.getParameterLine(period); 
 		Map<String,MParameter> pl = parameterLine.getParameters();
@@ -272,7 +268,10 @@ public class BSCView extends CPanel implements FormPanel, ActionListener{
 		
 		mainPanel.validate();
 		mainPanel.repaint();
-		validate();
+		mainPanel.updateUI();
+
+//		validate();
+//		repaint();
 	}	//	load
 
 	/**

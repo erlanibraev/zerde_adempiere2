@@ -56,7 +56,7 @@
 	  </javac>
 	  
 	<!-- Compile the java code (ZK) from ${srcZk} to ${buildWeb)-->
-		    <javac srcdir="${srcWeb}" destdir="${buildWeb}" includeantruntime="false" encoding="UTF-8" debug="true">
+		    <javac srcdir="${srcZk}" destdir="${buildWeb}" includeantruntime="false" encoding="UTF-8" debug="true">
 		      <classpath refid="lib.class.path"/>
 		    	<compilerarg value="-Xlint"/>
 		    </javac>
