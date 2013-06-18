@@ -10,7 +10,7 @@ import java.util.Properties;
  * @author A.Kulantayev
  *
  */
-public class MBSCTarget_Indicator extends X_BSC_Target_Indicator {
+public class MBSCTargetIndicator extends X_BSC_Target_Indicator {
 
 	/**
 	 * 
@@ -20,7 +20,7 @@ public class MBSCTarget_Indicator extends X_BSC_Target_Indicator {
 	/**
 	 * @param ctx
 	 */
-	public MBSCTarget_Indicator(Properties ctx) {
+	public MBSCTargetIndicator(Properties ctx) {
 		super(ctx);
 		// TODO Auto-generated constructor stub
 	}
@@ -30,7 +30,7 @@ public class MBSCTarget_Indicator extends X_BSC_Target_Indicator {
 	 * @param BSC_Target_Indicator_ID
 	 * @param trxName
 	 */
-	public MBSCTarget_Indicator(Properties ctx, int BSC_Target_Indicator_ID,
+	public MBSCTargetIndicator(Properties ctx, int BSC_Target_Indicator_ID,
 			String trxName) {
 		super(ctx, BSC_Target_Indicator_ID, trxName);
 		// TODO Auto-generated constructor stub
@@ -41,7 +41,7 @@ public class MBSCTarget_Indicator extends X_BSC_Target_Indicator {
 	 * @param rs
 	 * @param trxName
 	 */
-	public MBSCTarget_Indicator(Properties ctx, ResultSet rs, String trxName) {
+	public MBSCTargetIndicator(Properties ctx, ResultSet rs, String trxName) {
 		super(ctx, rs, trxName);
 		// TODO Auto-generated constructor stub
 	}

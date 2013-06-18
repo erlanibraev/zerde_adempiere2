@@ -65,7 +65,7 @@ public class MBSCNetWorkDiag extends X_BSC_NetWorkDiag implements DocAction {
 	/** */
 	private MBSCNetWorkDiagLine[] m_lines = null;
 	
-	private MBSCNetWorkDiagLine[] getLines (boolean requery){
+	public MBSCNetWorkDiagLine[] getLines (boolean requery){
 		if (m_lines != null && !requery) {
 			set_TrxName(m_lines, get_TrxName());
 			return m_lines;
@@ -105,6 +105,8 @@ public class MBSCNetWorkDiag extends X_BSC_NetWorkDiag implements DocAction {
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_PREPARE);
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
+//		Std Period open?
+//      MPeriod.testPeriodOpen(getCtx(), getDateAcct(), MDocType.DOCBASETYPE_NetWorkDiagram, getAD_Org_ID());
 		
 		MBSCNetWorkDiagLine[] lines = getLines(false);
 		if (lines.length == 0)
@@ -112,14 +114,26 @@ public class MBSCNetWorkDiag extends X_BSC_NetWorkDiag implements DocAction {
 			m_processMsg = "@NoLines@";
 			return DocAction.STATUS_Invalid;
 		}
-
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_PREPARE);
+			if (m_processMsg != null)
+				return DocAction.STATUS_Invalid;
 		return DocAction.STATUS_InProgress;
 	}
 
 	@Override
 	public boolean approveIt() {
-		// TODO Auto-generated method stub
 		System.out.println("approveIt()");
+		MBSCNetWorkDiag netWorkDiag = new MBSCNetWorkDiag(getCtx(), 1000000, get_TrxName());
+		System.out.println(netWorkDiag.getHelp());
+		MBSCNetWorkDiagLine[] lines = netWorkDiag.getLines(false);
+		MBSCNetWorkDiagSubLine[] sublines = lines[0].getSubLines(false);
+		System.out.println(sublines[0].getHelp());
+		MBSCTargetIndicator[] target_Indicators = sublines[0].getTarget_Indicator(false);
+		System.out.println(target_Indicators[0].getHelp());
+		MBSCAction[] actions = sublines[0].getActions(false); 
+		System.out.println(actions[0].getHelp());
+		MBSCResponsibleExecutor[] responsible_Executors = actions[0].getResponsible_Executors(false);
+		System.out.println(responsible_Executors[0].getName());
 		return true;
 	}
 
@@ -142,14 +156,26 @@ public class MBSCNetWorkDiag extends X_BSC_NetWorkDiag implements DocAction {
 			m_processMsg = "@NoLines@";
 			return DocAction.STATUS_Invalid;
 		}
-		
+		//User Validation
+		String valid = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_COMPLETE);
+		if (valid != null)
+		{
+			m_processMsg = valid;
+			return DocAction.STATUS_Invalid;
+		}
+		//
+		setProcessed(true);
+		setDocAction(DOCACTION_Close);
 		return DocAction.STATUS_Completed;
 	}
 
 	@Override
 	public boolean voidIt() {
 		log.info(toString());
-
+		// Before Void
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_VOID);
+		if (m_processMsg != null)
+		return false;
 	return true;
 	
 	}
@@ -163,21 +189,39 @@ public class MBSCNetWorkDiag extends X_BSC_NetWorkDiag implements DocAction {
 	@Override
 	public boolean reverseCorrectIt() {
 		// TODO Auto-generated method stub
-		return true;
+		return false;
 	}
 
 	@Override
 	public boolean reverseAccrualIt() {
 		log.info(toString());
+		// Before reverseAccrual
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REVERSEACCRUAL);
+		if (m_processMsg != null)
+			return false;
 		
-		return true;
+		// After reverseAccrual
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSEACCRUAL);
+		if (m_processMsg != null)
+			return false;
+		
+		return false;
 	}
 
 	@Override
 	public boolean reActivateIt() {
 		log.info(toString());
-		System.out.println("reActivateIt()");
-		return true;
+		// Before reActivate
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REACTIVATE);
+		if (m_processMsg != null)
+				return false;	
+			
+		// After reActivate
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REACTIVATE);
+		if (m_processMsg != null)
+				return false;
+			
+		return false;
 	}
 
 	@Override

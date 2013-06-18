@@ -10,7 +10,7 @@ import java.util.Properties;
  * @author A.Kulantayev
  *
  */
-public class MBSCResponsible_Executor extends X_BSC_Responsible_Executor {
+public class MBSCResponsibleExecutor extends X_BSC_Responsible_Executor {
 
 	/**
 	 * 
@@ -20,7 +20,7 @@ public class MBSCResponsible_Executor extends X_BSC_Responsible_Executor {
 	/**
 	 * @param ctx
 	 */
-	public MBSCResponsible_Executor(Properties ctx) {
+	public MBSCResponsibleExecutor(Properties ctx) {
 		super(ctx);
 		// TODO Auto-generated constructor stub
 	}
@@ -30,7 +30,7 @@ public class MBSCResponsible_Executor extends X_BSC_Responsible_Executor {
 	 * @param BSC_Responsible_Executor_ID
 	 * @param trxName
 	 */
-	public MBSCResponsible_Executor(Properties ctx,
+	public MBSCResponsibleExecutor(Properties ctx,
 			int BSC_Responsible_Executor_ID, String trxName) {
 		super(ctx, BSC_Responsible_Executor_ID, trxName);
 		// TODO Auto-generated constructor stub
@@ -41,7 +41,7 @@ public class MBSCResponsible_Executor extends X_BSC_Responsible_Executor {
 	 * @param rs
 	 * @param trxName
 	 */
-	public MBSCResponsible_Executor(Properties ctx, ResultSet rs,
+	public MBSCResponsibleExecutor(Properties ctx, ResultSet rs,
 			String trxName) {
 		super(ctx, rs, trxName);
 		// TODO Auto-generated constructor stub

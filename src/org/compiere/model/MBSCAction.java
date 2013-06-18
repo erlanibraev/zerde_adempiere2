@@ -46,19 +46,19 @@ public class MBSCAction extends X_BSC_Action {
 		// TODO Auto-generated constructor stub
 	}
 	
-	private MBSCResponsible_Executor[] m_responsible_executer = null;
+	private MBSCResponsibleExecutor[] m_responsible_executer = null;
 	
-	public MBSCResponsible_Executor[] getResponsible_Executors (boolean requery){
+	public MBSCResponsibleExecutor[] getResponsible_Executors (boolean requery){
 		if(m_responsible_executer!=null && !requery){
 			set_TrxName(m_responsible_executer, get_TrxName());
 			return m_responsible_executer;
 		}
 		
-		List<MBSCResponsible_Executor> list = new Query(getCtx(), I_BSC_Responsible_Executor.Table_Name, "BSC_Action_ID = ?", get_TrxName())
+		List<MBSCResponsibleExecutor> list = new Query(getCtx(), I_BSC_Responsible_Executor.Table_Name, "BSC_Action_ID = ?", get_TrxName())
 											.setParameters(get_ID())
 											.setOrderBy(I_BSC_Responsible_Executor.COLUMNNAME_BSC_Responsible_Executor_ID)
 											.list();
-		m_responsible_executer = list.toArray(new MBSCResponsible_Executor[list.size()]);
+		m_responsible_executer = list.toArray(new MBSCResponsibleExecutor[list.size()]);
 		return m_responsible_executer;
 	}
 

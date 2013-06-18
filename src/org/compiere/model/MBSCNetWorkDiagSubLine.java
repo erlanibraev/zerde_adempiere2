@@ -47,21 +47,21 @@ public class MBSCNetWorkDiagSubLine extends X_BSC_NetWorkDiagSubLine {
 		// TODO Auto-generated constructor stub
 	}
 	
-	private MBSCTarget_Indicator[] m_tar_indicators = null;
+	private MBSCTargetIndicator[] m_tar_indicators = null;
 	
 	private MBSCAction[] m_actions = null;
 	
-	public MBSCTarget_Indicator[] getTarget_Indicator (boolean requery){
+	public MBSCTargetIndicator[] getTarget_Indicator (boolean requery){
 		if(m_tar_indicators!=null && !requery){
 			set_TrxName(m_tar_indicators, get_TrxName());
 			return m_tar_indicators;
 		}
 		
-		List<MBSCTarget_Indicator> list = new Query(getCtx(), I_BSC_Target_Indicator.Table_Name, "BSC_NetWorkDiagSubLine_ID = ?", get_TrxName())
+		List<MBSCTargetIndicator> list = new Query(getCtx(), I_BSC_Target_Indicator.Table_Name, "BSC_NetWorkDiagSubLine_ID = ?", get_TrxName())
 										.setParameters(get_ID())
 										.setOrderBy(I_BSC_Target_Indicator.COLUMNNAME_BSC_Target_Indicator_ID)
 										.list();
-		m_tar_indicators = list.toArray(new MBSCTarget_Indicator[list.size()]);
+		m_tar_indicators = list.toArray(new MBSCTargetIndicator[list.size()]);
 		
 		return m_tar_indicators;
 	}
