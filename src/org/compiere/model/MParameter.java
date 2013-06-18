@@ -78,6 +78,11 @@ public class MParameter extends X_BSC_Parameter {
 		loadParameterLine();
 	}
 	
+	public MParameter(Properties ctx, ResultSet rs, String trxName) {
+		super(ctx, rs, trxName);
+		loadParameterLine();
+	}	
+	
 	public MPeriod getPeriod() {
 		MPeriod result = null;
 		if (getCurrentPeriod() == null) {

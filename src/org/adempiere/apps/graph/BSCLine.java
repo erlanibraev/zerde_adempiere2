@@ -16,6 +16,8 @@ public class BSCLine extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = -3451396548198450863L;
+	
+	private boolean isEnd = false;
 
 	public BSCLine() {
 		super();
@@ -29,7 +31,7 @@ public class BSCLine extends JPanel {
 		int x1 = getSize().width / 2;
 		int x2 = getSize().width / 2;
 		int y1 = 0;
-		int y2 = getSize().height;
+		int y2 = (!isEnd() ? getSize().height : getSize().height /2 );
 		
 		g.drawLine(x1, y1, x2, y2);
 		
@@ -39,5 +41,22 @@ public class BSCLine extends JPanel {
 		y2 = getSize().height / 2;
 		
 		g.drawLine(x1, y1, x2, y2);
+		
+		x1 = x2 - 10;
+		y1 = y2 - 10;
+		g.drawLine(x1, y1, x2, y2);
+		
+		x1 = x2 - 10;
+		y1 = y2 + 10;
+		g.drawLine(x1, y1, x2, y2);
 	}
+	
+	public boolean isEnd() {
+		return isEnd;
+	}
+
+	public void setEnd(boolean isEnd) {
+		this.isEnd = isEnd;
+	}
+
 }

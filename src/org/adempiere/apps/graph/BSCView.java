@@ -9,6 +9,9 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -18,10 +21,12 @@ import org.compiere.apps.ConfirmPanel;
 import org.compiere.apps.form.FormFrame;
 import org.compiere.apps.form.FormPanel;
 import org.compiere.grid.ed.AutoCompletion;
+import org.compiere.model.MFormula;
 import org.compiere.model.MParameter;
 import org.compiere.model.MParameterLine;
 import org.compiere.model.MPeriod;
 import org.compiere.model.MRole;
+import org.compiere.swing.CButton;
 import org.compiere.swing.CComboBox;
 import org.compiere.swing.CPanel;
 import org.compiere.swing.CScrollPane;
@@ -49,6 +54,7 @@ public class BSCView extends CPanel implements FormPanel, ActionListener{
 	private CPanel loadPanel = new CPanel(new FlowLayout(FlowLayout.LEADING));
 	private CComboBox cbParameter = new CComboBox();
 	private CComboBox cbPeriod = new CComboBox();
+	private CButton bBack = new CButton();
 	private MPeriod period = null;
 	private MParameter m_Parameter = null;
 	
@@ -70,7 +76,35 @@ public class BSCView extends CPanel implements FormPanel, ActionListener{
 			KeyNamePair knp = (KeyNamePair) cbPeriod.getSelectedItem();
 			period = new MPeriod(Env.getCtx(),knp.getKey(),null);
 			load(m_Parameter.getBSC_Parameter_ID());
+		} else if (e.getSource() == bBack) {
+			goBack();
+			load(m_Parameter.getBSC_Parameter_ID());
 		}
+	}
+
+	/**
+	 * 
+	 */
+	private void goBack() {
+		String sql = "select * from BSC_Parameter " +
+				     "where BSC_Parameter_ID in (select BSC_Parameter_ID from BSC_ParameterLine " +
+				     "where BSC_ParameterLine_ID in ( select BSC_ParameterLine_ID from BSC_Variable where bsc_parameter_id = ? ))";
+		int BSC_Parameter_ID = m_Parameter.getBSC_Parameter_ID();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;		
+		try {
+			pstmt = DB.prepareStatement(sql,null);
+			pstmt.setInt (1, BSC_Parameter_ID);
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				m_Parameter = new MParameter(Env.getCtx(), rs, null);
+			}
+		} catch (SQLException e) {
+			log.log(Level.SEVERE, "getFormulaByUnit", e);
+		} finally {
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
+		}	
 	}
 
 	/* (non-Javadoc)
@@ -87,7 +121,6 @@ public class BSCView extends CPanel implements FormPanel, ActionListener{
 			confirmPanel.addActionListener(this);
 			
 			m_frame.getContentPane().add(loadPanel, BorderLayout.NORTH);
-//			m_frame.getContentPane().add(mainPanel, BorderLayout.CENTER);
 			m_frame.getContentPane().add(confirmPanel, BorderLayout.SOUTH);
 			CScrollPane scroll =  new CScrollPane(mainPanel);
 			m_frame.getContentPane().add(scroll, BorderLayout.CENTER);
@@ -98,9 +131,7 @@ public class BSCView extends CPanel implements FormPanel, ActionListener{
 		
 	}
 
-	
-	
-	private void initLoadPanel() {
+	private CComboBox initCbParameter() {
 		String sql = MRole.getDefault().addAccessSQL(
 				"SELECT BSC_Parameter_ID, Name FROM BSC_Parameter ORDER BY 2",
 				"BSC_Parameter", MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);	//	all
@@ -108,17 +139,30 @@ public class BSCView extends CPanel implements FormPanel, ActionListener{
 		cbParameter = new CComboBox(pp);
 		AutoCompletion.enable(cbParameter);
 		cbParameter.addActionListener(this); 
-		loadPanel.add(cbParameter);
-		
-		sql = MRole.getDefault().addAccessSQL(
+		return cbParameter;
+	}
+	
+	private CComboBox initCbPeriod() {
+		String sql = MRole.getDefault().addAccessSQL(
 				"SELECT C_Period_ID, Name FROM C_Period ORDER BY 2",
 				"C_Period", MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);	//	all
 		KeyNamePair[] pp1 = DB.getKeyNamePairs(sql, true);
 		cbPeriod = new CComboBox(pp1);
 		AutoCompletion.enable(cbPeriod);
 		cbPeriod.addActionListener(this);
-		loadPanel.add(cbPeriod);
-		
+		return cbPeriod;
+	}
+	
+	private CButton initBBack() {
+		bBack = new CButton("<<");
+		bBack.addActionListener(this);
+		return bBack;
+	}
+	
+	private void initLoadPanel() {
+		loadPanel.add(initBBack());
+		loadPanel.add(initCbParameter());
+		loadPanel.add(initCbPeriod());
 	}
 	
 	/**
@@ -194,10 +238,10 @@ public class BSCView extends CPanel implements FormPanel, ActionListener{
 		Map<String,MParameter> pl = parameterLine.getParameters();
 		
 		int i = 1;
-		
+		BSCLine tempLine = null;
 		for(String key: pl.keySet()) {
 
-			BSCLine temp = new BSCLine();
+			tempLine = new BSCLine();
 			
 			gbc = new GridBagConstraints();
 			
@@ -205,7 +249,7 @@ public class BSCView extends CPanel implements FormPanel, ActionListener{
 			gbc.gridx = 0;
 			gbc.gridy = i;
 			
-			mainPanel.add(temp,gbc);
+			mainPanel.add(tempLine,gbc);
 			
 			MParameter p = pl.get(key);
 			p.setPeriod(period);
@@ -218,9 +262,13 @@ public class BSCView extends CPanel implements FormPanel, ActionListener{
 			
 			addBSCIndicator(p,gbc); // new GridBagConstraints(1, i++, 10, 10, 0.0, 0.0,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0)
 			
-//			for (int j = 0; j < nexts.length; j++)
-//				centerPanel.add (new WFLine (nexts[j]), false);
 		}
+		
+		if (tempLine != null) {
+			tempLine.setEnd(true);
+			tempLine.repaint();
+		}
+		
 		
 		mainPanel.validate();
 		mainPanel.repaint();
