@@ -52,9 +52,9 @@ public class MTRMDeposit extends X_TRM_Deposit
     	
     	for(int i = 0; i < lines.length; i++)
     	{
-    		lines[i].setProcessed(false);
-    		lines[i].setDocStatus(MTRMDepositLine.DOCSTATUS_Closed);
-    		lines[i].setProcessed(true);
+    		//lines[i].setProcessed(false);
+    		//lines[i].setDocStatus(MTRMDepositLine.DOCSTATUS_Closed);
+    		//lines[i].setProcessed(true);
     		lines[i].saveEx();
     	}
     }
@@ -92,9 +92,9 @@ public class MTRMDeposit extends X_TRM_Deposit
     		depositLine.setEndingBalance(this.getSum());
     		
     		depositLine.setC_DocType_ID(sum.doubleValue() >= 0.0d ? docTypes[replenishment].get_ID() : docTypes[withdrawal].get_ID());
-    		depositLine.setC_BankStatement_ID(bankStatement.get_ID());
-    		depositLine.setDocStatus(MTRMDepositLine.DOCSTATUS_Complete);
-    		depositLine.setProcessed(true);
+    		//depositLine.setC_BankStatement_ID(bankStatement.get_ID());
+    		//depositLine.setDocStatus(MTRMDepositLine.DOCSTATUS_Complete);
+    		//depositLine.setProcessed(true);
     		
     		this.saveEx();
     		depositLine.save();
@@ -111,7 +111,7 @@ public class MTRMDeposit extends X_TRM_Deposit
     	
     	for(int i = 0; i < lines.length; i++)
     	{
-    		lines[i].setProcessed(false);
+    		//lines[i].setProcessed(false);
     		sum = lines[i].getLineSum();
     		
     		//if(sum.doubleValue() >= 0)    		
@@ -119,8 +119,8 @@ public class MTRMDeposit extends X_TRM_Deposit
     		//else
     		//	this.setSum(this.getSum().add(sum.multiply(new BigDecimal(1))));
     		
-    		lines[i].setDocStatus(MTRMDepositLine.DOCSTATUS_Voided);
-    		lines[i].setProcessed(true);
+    		//lines[i].setDocStatus(MTRMDepositLine.DOCSTATUS_Voided);
+    		//lines[i].setProcessed(true);
     		lines[i].saveEx();
     	}
     	

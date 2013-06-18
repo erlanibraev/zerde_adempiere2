@@ -148,7 +148,7 @@ public class Agreement_Dispatcher
 	private MAGRStage getCurrentStage()
 	{
 		MAGRStage stage = null;
-		if(AGR_Stage_ID == 0)
+		if(AGR_Stage_ID == 0 || !isHasRecordsInAgreementList())
 		{
 			stage = MAGRStage.getFirstStage(Env.getCtx(), AGR_Agreement_ID, null);
 			if(stage != null)// && stage.isUserHasAccess(AD_User_ID, AD_Table_ID, Record_ID))
@@ -164,6 +164,11 @@ public class Agreement_Dispatcher
 		}
 		
 		return stage;
+	}
+	
+	private boolean isHasRecordsInAgreementList()
+	{
+		return DB.getSQLValue(null, "SELECT AGR_AgreementList_ID FROM AGR_AgreementList WHERE Record_ID = " + Record_ID) > -1;
 	}
 		
 	//Get next stage if stage is approved

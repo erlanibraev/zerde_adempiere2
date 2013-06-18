@@ -32,7 +32,7 @@ public class X_TRM_DepositLine extends PO implements I_TRM_DepositLine, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130614L;
+	private static final long serialVersionUID = 20130618L;
 
     /** the default Constructor */
     public X_TRM_DepositLine(Properties ctx)
@@ -46,10 +46,7 @@ public class X_TRM_DepositLine extends PO implements I_TRM_DepositLine, I_Persis
       super (ctx, TRM_DepositLine_ID, trxName);
       /** if (TRM_DepositLine_ID == 0)
         {
-			setC_BankStatement_ID (0);
 			setDateOperation (new Timestamp( System.currentTimeMillis() ));
-			setDocStatus (null);
-// PR
 			setTRM_Deposit_ID (0);
 			setTRM_DepositLine_ID (0);
         } */
@@ -103,34 +100,6 @@ public class X_TRM_DepositLine extends PO implements I_TRM_DepositLine, I_Persis
 		return bd;
 	}
 
-	public org.compiere.model.I_C_BankStatement getC_BankStatement() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BankStatement)MTable.get(getCtx(), org.compiere.model.I_C_BankStatement.Table_Name)
-			.getPO(getC_BankStatement_ID(), get_TrxName());	}
-
-	/** Set Bank Statement.
-		@param C_BankStatement_ID 
-		Bank Statement of account
-	  */
-	public void setC_BankStatement_ID (int C_BankStatement_ID)
-	{
-		if (C_BankStatement_ID < 1) 
-			set_Value (COLUMNNAME_C_BankStatement_ID, null);
-		else 
-			set_Value (COLUMNNAME_C_BankStatement_ID, Integer.valueOf(C_BankStatement_ID));
-	}
-
-	/** Get Bank Statement.
-		@return Bank Statement of account
-	  */
-	public int getC_BankStatement_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_BankStatement_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException
     {
 		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_Name)
@@ -176,34 +145,6 @@ public class X_TRM_DepositLine extends PO implements I_TRM_DepositLine, I_Persis
 		return (Timestamp)get_Value(COLUMNNAME_DateOperation);
 	}
 
-	/** DocStatus AD_Reference_ID=1000151 */
-	public static final int DOCSTATUS_AD_Reference_ID=1000151;
-	/** Closed = CL */
-	public static final String DOCSTATUS_Closed = "CL";
-	/** Voided = VO */
-	public static final String DOCSTATUS_Voided = "VO";
-	/** Prepare = PR */
-	public static final String DOCSTATUS_Prepare = "PR";
-	/** Complete = CO */
-	public static final String DOCSTATUS_Complete = "CO";
-	/** Set Document Status.
-		@param DocStatus 
-		The current status of the document
-	  */
-	public void setDocStatus (String DocStatus)
-	{
-
-		set_Value (COLUMNNAME_DocStatus, DocStatus);
-	}
-
-	/** Get Document Status.
-		@return The current status of the document
-	  */
-	public String getDocStatus () 
-	{
-		return (String)get_Value(COLUMNNAME_DocStatus);
-	}
-
 	/** Set Ending balance.
 		@param EndingBalance 
 		Ending  or closing balance
@@ -242,30 +183,6 @@ public class X_TRM_DepositLine extends PO implements I_TRM_DepositLine, I_Persis
 		if (bd == null)
 			 return Env.ZERO;
 		return bd;
-	}
-
-	/** Set Processed.
-		@param Processed 
-		The document has been processed
-	  */
-	public void setProcessed (boolean Processed)
-	{
-		set_Value (COLUMNNAME_Processed, Boolean.valueOf(Processed));
-	}
-
-	/** Get Processed.
-		@return The document has been processed
-	  */
-	public boolean isProcessed () 
-	{
-		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
 	}
 
 	public I_TRM_Deposit getTRM_Deposit() throws RuntimeException

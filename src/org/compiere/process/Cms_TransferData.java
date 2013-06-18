@@ -173,7 +173,9 @@ public class Cms_TransferData extends SvrProcess {
 		
         String message = "";
         
-		if(AGR_Stage_ID > 0)
+        boolean isHasRecordsInAgreementList = DB.getSQLValue(null, "SELECT AGR_AgreementList_ID FROM AGR_AgreementList WHERE Record_ID = " + getRecord_ID()) > 0;
+        
+        if(AGR_Stage_ID > 0 && isHasRecordsInAgreementList)
 		{
 			MAGRStage stage = new MAGRStage(getCtx(), AGR_Stage_ID, get_TrxName());
 			if(!stage.getStageType().equals(MAGRStage.STAGETYPE_Initial))
