@@ -8,6 +8,8 @@ import org.compiere.util.Env;
 import org.compiere.util.Ini;
 import org.compiere.util.Msg;
 
+import extend.org.compiere.utils.Util;
+
 /**
  * Add the process in the system and do not forget to attach templates:
  * 	1. templateFirst
@@ -57,8 +59,10 @@ public class BudgetCallPrint extends SvrProcess{
 	
 	private String getHttpHost(){
 		
-		
-		return "http://" + Ini.getCodeBase().getHost();
+		if(Ini.getCodeBase() != null)
+			return "http://" + Ini.getCodeBase().getHost();
+		else
+			return Util.getHostHttp();
 		 
 	}
 	
