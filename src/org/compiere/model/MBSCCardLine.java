@@ -137,7 +137,6 @@ public class MBSCCardLine extends X_BSC_CardLine {
 
 	public HashMap<String,Object> getArguments() {
 		if (arguments.size() == 0) {
-			// ToDo: Add arguments
 			for (String varName: getFormula().getVariables()) {
 				try{
 					arguments.put(varName, getValue(varName));
@@ -175,7 +174,7 @@ public class MBSCCardLine extends X_BSC_CardLine {
 			if (getCoefficient() != null) {
 				result = getCoefficient().calcCoefficient(getValue(),getValueMax(),getValueMin()).toString();
 			} else {
-				throw new Exception("MBSCardLine: variable not found -"+varName);
+				throw new Exception("MBSCardLine: variable not found - "+varName);
 			}
 		} else if (varName.equalsIgnoreCase("Value")) {
 			if (StringUtils.isNumeric(getValue())) {
@@ -345,7 +344,7 @@ public class MBSCCardLine extends X_BSC_CardLine {
 	
 	protected static int getFormulaValue_ID() {
 		int result = 0;
-		String sql = "SELECT * FROM BSC_Formula WHERE Name like 'Value'";
+		String sql = "SELECT * FROM BSC_Formula WHERE Name like 'Value' "; //"and AD_Client_ID = " +Env.getAD_Client_ID(Env.getCtx());
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;		
 		try {

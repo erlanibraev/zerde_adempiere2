@@ -21,8 +21,7 @@ public class WBSCView extends ADForm {
 	 */
 	@Override
 	protected void initForm() {
-//		BSCPanel paPanel = new BSCPanel();
-		WPAPanel paPanel = WPAPanel.get();
+		WBSCPanel paPanel = new WBSCPanel();
 		appendChild(paPanel);
 	}
 
