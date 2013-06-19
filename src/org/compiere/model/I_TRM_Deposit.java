@@ -62,6 +62,21 @@ public interface I_TRM_Deposit
 	  */
 	public int getAD_Org_ID();
 
+    /** Column name C_Bank_ID */
+    public static final String COLUMNNAME_C_Bank_ID = "C_Bank_ID";
+
+	/** Set Bank.
+	  * Bank
+	  */
+	public void setC_Bank_ID (int C_Bank_ID);
+
+	/** Get Bank.
+	  * Bank
+	  */
+	public int getC_Bank_ID();
+
+	public org.compiere.model.I_C_Bank getC_Bank() throws RuntimeException;
+
     /** Column name C_BankAccount_ID */
     public static final String COLUMNNAME_C_BankAccount_ID = "C_BankAccount_ID";
 
@@ -237,6 +252,19 @@ public interface I_TRM_Deposit
 	  * Alphanumeric identifier of the entity
 	  */
 	public String getName();
+
+    /** Column name RefreshLines */
+    public static final String COLUMNNAME_RefreshLines = "RefreshLines";
+
+	/** Set RefreshLines.
+	  * Обновить строки
+	  */
+	public void setRefreshLines (String RefreshLines);
+
+	/** Get RefreshLines.
+	  * Обновить строки
+	  */
+	public String getRefreshLines();
 
     /** Column name Sum */
     public static final String COLUMNNAME_Sum = "Sum";

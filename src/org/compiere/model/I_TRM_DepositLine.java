@@ -62,18 +62,20 @@ public interface I_TRM_DepositLine
 	  */
 	public int getAD_Org_ID();
 
-    /** Column name BeginningBalance */
-    public static final String COLUMNNAME_BeginningBalance = "BeginningBalance";
+    /** Column name AD_Table_ID */
+    public static final String COLUMNNAME_AD_Table_ID = "AD_Table_ID";
 
-	/** Set Beginning Balance.
-	  * Balance prior to any transactions
+	/** Set Table.
+	  * Database Table information
 	  */
-	public void setBeginningBalance (BigDecimal BeginningBalance);
+	public void setAD_Table_ID (int AD_Table_ID);
 
-	/** Get Beginning Balance.
-	  * Balance prior to any transactions
+	/** Get Table.
+	  * Database Table information
 	  */
-	public BigDecimal getBeginningBalance();
+	public int getAD_Table_ID();
+
+	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
 
     /** Column name C_DocType_ID */
     public static final String COLUMNNAME_C_DocType_ID = "C_DocType_ID";
@@ -106,31 +108,55 @@ public interface I_TRM_DepositLine
 	  */
 	public int getCreatedBy();
 
-    /** Column name DateOperation */
-    public static final String COLUMNNAME_DateOperation = "DateOperation";
+    /** Column name DateAcct */
+    public static final String COLUMNNAME_DateAcct = "DateAcct";
 
-	/** Set DateOperation.
-	  * Дата операции
+	/** Set Account Date.
+	  * Accounting Date
 	  */
-	public void setDateOperation (Timestamp DateOperation);
+	public void setDateAcct (Timestamp DateAcct);
 
-	/** Get DateOperation.
-	  * Дата операции
+	/** Get Account Date.
+	  * Accounting Date
 	  */
-	public Timestamp getDateOperation();
+	public Timestamp getDateAcct();
 
-    /** Column name EndingBalance */
-    public static final String COLUMNNAME_EndingBalance = "EndingBalance";
+    /** Column name Description */
+    public static final String COLUMNNAME_Description = "Description";
 
-	/** Set Ending balance.
-	  * Ending  or closing balance
+	/** Set Description.
+	  * Optional short description of the record
 	  */
-	public void setEndingBalance (BigDecimal EndingBalance);
+	public void setDescription (String Description);
 
-	/** Get Ending balance.
-	  * Ending  or closing balance
+	/** Get Description.
+	  * Optional short description of the record
 	  */
-	public BigDecimal getEndingBalance();
+	public String getDescription();
+
+    /** Column name DocStatus */
+    public static final String COLUMNNAME_DocStatus = "DocStatus";
+
+	/** Set Document Status.
+	  * The current status of the document
+	  */
+	public void setDocStatus (String DocStatus);
+
+	/** Get Document Status.
+	  * The current status of the document
+	  */
+	public String getDocStatus();
+
+    /** Column name Fact_Acct_ID */
+    public static final String COLUMNNAME_Fact_Acct_ID = "Fact_Acct_ID";
+
+	/** Set Accounting Fact	  */
+	public void setFact_Acct_ID (int Fact_Acct_ID);
+
+	/** Get Accounting Fact	  */
+	public int getFact_Acct_ID();
+
+	public org.compiere.model.I_Fact_Acct getFact_Acct() throws RuntimeException;
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
@@ -157,6 +183,32 @@ public interface I_TRM_DepositLine
 	  * Сумма строки
 	  */
 	public BigDecimal getLineSum();
+
+    /** Column name Processed */
+    public static final String COLUMNNAME_Processed = "Processed";
+
+	/** Set Processed.
+	  * The document has been processed
+	  */
+	public void setProcessed (boolean Processed);
+
+	/** Get Processed.
+	  * The document has been processed
+	  */
+	public boolean isProcessed();
+
+    /** Column name Record_ID */
+    public static final String COLUMNNAME_Record_ID = "Record_ID";
+
+	/** Set Record ID.
+	  * Direct internal record ID
+	  */
+	public void setRecord_ID (int Record_ID);
+
+	/** Get Record ID.
+	  * Direct internal record ID
+	  */
+	public int getRecord_ID();
 
     /** Column name TRM_Deposit_ID */
     public static final String COLUMNNAME_TRM_Deposit_ID = "TRM_Deposit_ID";

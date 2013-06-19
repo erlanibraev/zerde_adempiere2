@@ -44,6 +44,17 @@ public class MTRMDeposit extends X_TRM_Deposit
 		return retValue;
     }
     
+    public static MTRMDeposit[] getAllDeposit(Properties ctx, String trxName)
+    {
+    	List<MTRMDeposit> list = new Query(ctx, I_TRM_Deposit.Table_Name, "", trxName)
+		.setOnlyActiveRecords(true)
+		.list();
+		
+		MTRMDeposit[] retValue = new MTRMDeposit[list.size ()];
+		list.toArray (retValue);
+		return retValue;
+    }
+    
     public void CloseLines(MBankStatement bankStatement)
     {
     	MTRMDepositLine[] lines = MTRMDepositLine.getOfBankStatement(getCtx(), bankStatement.get_ID(), get_TrxName());
@@ -77,9 +88,9 @@ public class MTRMDeposit extends X_TRM_Deposit
     		depositLine.setAD_Client_ID(this.getAD_Client_ID());
     		depositLine.setAD_Org_ID(this.getAD_Org_ID());
     		depositLine.setTRM_Deposit_ID(this.get_ID());
-    		depositLine.setDateOperation(lines[i].getDateAcct());
+    		//depositLine.setDateOperation(lines[i].getDateAcct());
     		
-    		depositLine.setBeginningBalance(this.getSum());
+    		//depositLine.setBeginningBalance(this.getSum());
     		depositLine.setLineSum(sum);
     		
     		//Пополнение счета
@@ -89,7 +100,7 @@ public class MTRMDeposit extends X_TRM_Deposit
     		//else
     		//	this.setSum(this.getSum().subtract(sum));
     		
-    		depositLine.setEndingBalance(this.getSum());
+    		//depositLine.setEndingBalance(this.getSum());
     		
     		depositLine.setC_DocType_ID(sum.doubleValue() >= 0.0d ? docTypes[replenishment].get_ID() : docTypes[withdrawal].get_ID());
     		//depositLine.setC_BankStatement_ID(bankStatement.get_ID());

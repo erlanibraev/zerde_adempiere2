@@ -32,7 +32,7 @@ public class X_TRM_DepositLine extends PO implements I_TRM_DepositLine, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130618L;
+	private static final long serialVersionUID = 20130619L;
 
     /** the default Constructor */
     public X_TRM_DepositLine(Properties ctx)
@@ -46,7 +46,12 @@ public class X_TRM_DepositLine extends PO implements I_TRM_DepositLine, I_Persis
       super (ctx, TRM_DepositLine_ID, trxName);
       /** if (TRM_DepositLine_ID == 0)
         {
-			setDateOperation (new Timestamp( System.currentTimeMillis() ));
+			setAD_Table_ID (0);
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+			setDocStatus (null);
+// PR
+			setFact_Acct_ID (0);
+			setRecord_ID (0);
 			setTRM_Deposit_ID (0);
 			setTRM_DepositLine_ID (0);
         } */
@@ -80,24 +85,32 @@ public class X_TRM_DepositLine extends PO implements I_TRM_DepositLine, I_Persis
       return sb.toString();
     }
 
-	/** Set Beginning Balance.
-		@param BeginningBalance 
-		Balance prior to any transactions
+	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
+			.getPO(getAD_Table_ID(), get_TrxName());	}
+
+	/** Set Table.
+		@param AD_Table_ID 
+		Database Table information
 	  */
-	public void setBeginningBalance (BigDecimal BeginningBalance)
+	public void setAD_Table_ID (int AD_Table_ID)
 	{
-		set_Value (COLUMNNAME_BeginningBalance, BeginningBalance);
+		if (AD_Table_ID < 1) 
+			set_Value (COLUMNNAME_AD_Table_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_Table_ID, Integer.valueOf(AD_Table_ID));
 	}
 
-	/** Get Beginning Balance.
-		@return Balance prior to any transactions
+	/** Get Table.
+		@return Database Table information
 	  */
-	public BigDecimal getBeginningBalance () 
+	public int getAD_Table_ID () 
 	{
-		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_BeginningBalance);
-		if (bd == null)
-			 return Env.ZERO;
-		return bd;
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Table_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException
@@ -128,41 +141,91 @@ public class X_TRM_DepositLine extends PO implements I_TRM_DepositLine, I_Persis
 		return ii.intValue();
 	}
 
-	/** Set DateOperation.
-		@param DateOperation 
-		Дата операции
+	/** Set Account Date.
+		@param DateAcct 
+		Accounting Date
 	  */
-	public void setDateOperation (Timestamp DateOperation)
+	public void setDateAcct (Timestamp DateAcct)
 	{
-		set_Value (COLUMNNAME_DateOperation, DateOperation);
+		set_Value (COLUMNNAME_DateAcct, DateAcct);
 	}
 
-	/** Get DateOperation.
-		@return Дата операции
+	/** Get Account Date.
+		@return Accounting Date
 	  */
-	public Timestamp getDateOperation () 
+	public Timestamp getDateAcct () 
 	{
-		return (Timestamp)get_Value(COLUMNNAME_DateOperation);
+		return (Timestamp)get_Value(COLUMNNAME_DateAcct);
 	}
 
-	/** Set Ending balance.
-		@param EndingBalance 
-		Ending  or closing balance
+	/** Set Description.
+		@param Description 
+		Optional short description of the record
 	  */
-	public void setEndingBalance (BigDecimal EndingBalance)
+	public void setDescription (String Description)
 	{
-		set_Value (COLUMNNAME_EndingBalance, EndingBalance);
+		set_Value (COLUMNNAME_Description, Description);
 	}
 
-	/** Get Ending balance.
-		@return Ending  or closing balance
+	/** Get Description.
+		@return Optional short description of the record
 	  */
-	public BigDecimal getEndingBalance () 
+	public String getDescription () 
 	{
-		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_EndingBalance);
-		if (bd == null)
-			 return Env.ZERO;
-		return bd;
+		return (String)get_Value(COLUMNNAME_Description);
+	}
+
+	/** DocStatus AD_Reference_ID=1000151 */
+	public static final int DOCSTATUS_AD_Reference_ID=1000151;
+	/** Closed = CL */
+	public static final String DOCSTATUS_Closed = "CL";
+	/** Voided = VO */
+	public static final String DOCSTATUS_Voided = "VO";
+	/** Prepare = PR */
+	public static final String DOCSTATUS_Prepare = "PR";
+	/** Complete = CO */
+	public static final String DOCSTATUS_Complete = "CO";
+	/** Set Document Status.
+		@param DocStatus 
+		The current status of the document
+	  */
+	public void setDocStatus (String DocStatus)
+	{
+
+		set_Value (COLUMNNAME_DocStatus, DocStatus);
+	}
+
+	/** Get Document Status.
+		@return The current status of the document
+	  */
+	public String getDocStatus () 
+	{
+		return (String)get_Value(COLUMNNAME_DocStatus);
+	}
+
+	public org.compiere.model.I_Fact_Acct getFact_Acct() throws RuntimeException
+    {
+		return (org.compiere.model.I_Fact_Acct)MTable.get(getCtx(), org.compiere.model.I_Fact_Acct.Table_Name)
+			.getPO(getFact_Acct_ID(), get_TrxName());	}
+
+	/** Set Accounting Fact.
+		@param Fact_Acct_ID Accounting Fact	  */
+	public void setFact_Acct_ID (int Fact_Acct_ID)
+	{
+		if (Fact_Acct_ID < 1) 
+			set_Value (COLUMNNAME_Fact_Acct_ID, null);
+		else 
+			set_Value (COLUMNNAME_Fact_Acct_ID, Integer.valueOf(Fact_Acct_ID));
+	}
+
+	/** Get Accounting Fact.
+		@return Accounting Fact	  */
+	public int getFact_Acct_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_Fact_Acct_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set LineSum.
@@ -183,6 +246,53 @@ public class X_TRM_DepositLine extends PO implements I_TRM_DepositLine, I_Persis
 		if (bd == null)
 			 return Env.ZERO;
 		return bd;
+	}
+
+	/** Set Processed.
+		@param Processed 
+		The document has been processed
+	  */
+	public void setProcessed (boolean Processed)
+	{
+		set_Value (COLUMNNAME_Processed, Boolean.valueOf(Processed));
+	}
+
+	/** Get Processed.
+		@return The document has been processed
+	  */
+	public boolean isProcessed () 
+	{
+		Object oo = get_Value(COLUMNNAME_Processed);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Record ID.
+		@param Record_ID 
+		Direct internal record ID
+	  */
+	public void setRecord_ID (int Record_ID)
+	{
+		if (Record_ID < 0) 
+			set_Value (COLUMNNAME_Record_ID, null);
+		else 
+			set_Value (COLUMNNAME_Record_ID, Integer.valueOf(Record_ID));
+	}
+
+	/** Get Record ID.
+		@return Direct internal record ID
+	  */
+	public int getRecord_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_Record_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	public I_TRM_Deposit getTRM_Deposit() throws RuntimeException
