@@ -31,7 +31,7 @@ public class ChargeAmount extends Budget {
 	/**	Logger							*/
 	protected CLogger			log = CLogger.getCLogger (getClass());
 	
-	private Amount[] amt;
+	protected Amount[] amt;
 	private int sQuantity;
 	private String sAmount;
 	
@@ -55,6 +55,14 @@ public class ChargeAmount extends Budget {
 	}
 	public void setsAmount(String sAmount) {
 		this.sAmount = sAmount;
+	}
+	
+	public Amount getLabelValue(int index){
+		return amt[index];		
+	}
+	
+	public void setLabelValue(){
+		this.amt = getValues(callID, chargeID, periodID);
 	}
 	
 	/* 
