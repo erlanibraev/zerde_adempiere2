@@ -13,8 +13,7 @@ public class DocumentEngineNWD extends DocumentEngine {
 	 * @param po
 	 */
 	public DocumentEngineNWD(DocAction po) {
-		super(po);
-		// TODO Auto-generated constructor stub
+		this(po,STATUS_Drafted);
 	}
 
 	/**
@@ -42,7 +41,7 @@ public class DocumentEngineNWD extends DocumentEngine {
 		} else if (ACTION_Invalidate.equals(docAction)){
 			result = invalidateIt();
 		} else if(ACTION_Prepare.equals(docAction)){
-			result = STATUS_InProgress.equals(prepareIt());
+			result = STATUS_WaitingConfirmation.equals(prepareIt());
 		} else if (ACTION_ReActivate.equals(docAction)){
 			result = reActivateIt();
 		} else if (ACTION_Reject.equals(docAction)) { 

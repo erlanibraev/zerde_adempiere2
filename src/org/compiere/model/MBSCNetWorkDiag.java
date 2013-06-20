@@ -114,33 +114,51 @@ public class MBSCNetWorkDiag extends X_BSC_NetWorkDiag implements DocAction {
 			m_processMsg = "@NoLines@";
 			return DocAction.STATUS_Invalid;
 		}
+		else {
+		for(int i = 0; i<lines.length; i++){
+			MBSCNetWorkDiagSubLine[] sublines = lines[i].getSubLines(false);
+			if(sublines.length == 0){
+				m_processMsg = "NoSubLines on "+(i+1)+" position";
+				return DocAction.STATUS_Invalid;
+			}
+			else {
+				for(int j = 0; j <sublines.length; j++){
+					MBSCAction[] actions = sublines[j].getActions(false);
+					MBSCTargetIndicator[] targetIndicators = sublines[j].getTarget_Indicator(false);
+					if(actions.length == 0 || targetIndicators.length == 0){
+						m_processMsg = "NoAction or Target Indicator on Line "+(i+1)+" -->Subline "+(j+1);
+						return DocAction.STATUS_Invalid;
+					}
+					else{
+						for(int r=0; r<actions.length; r++){
+							MBSCResponsibleExecutor[] responsibleExecutors = actions[r].getResponsible_Executors(false);
+							if(responsibleExecutors.length == 0){
+								
+								m_processMsg = "No Responsible Executor(s) on Line "+(i+1)+" -->Subline "+(j+1)+" -->Action "+(r+1);
+								return DocAction.STATUS_Invalid;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_PREPARE);
 			if (m_processMsg != null)
 				return DocAction.STATUS_Invalid;
-		return DocAction.STATUS_InProgress;
+			
+		return DocAction.STATUS_WaitingConfirmation;
 	}
 
 	@Override
 	public boolean approveIt() {
-		System.out.println("approveIt()");
-		MBSCNetWorkDiag netWorkDiag = new MBSCNetWorkDiag(getCtx(), 1000000, get_TrxName());
-		System.out.println(netWorkDiag.getHelp());
-		MBSCNetWorkDiagLine[] lines = netWorkDiag.getLines(false);
-		MBSCNetWorkDiagSubLine[] sublines = lines[0].getSubLines(false);
-		System.out.println(sublines[0].getHelp());
-		MBSCTargetIndicator[] target_Indicators = sublines[0].getTarget_Indicator(false);
-		System.out.println(target_Indicators[0].getHelp());
-		MBSCAction[] actions = sublines[0].getActions(false); 
-		System.out.println(actions[0].getHelp());
-		MBSCResponsibleExecutor[] responsible_Executors = actions[0].getResponsible_Executors(false);
-		System.out.println(responsible_Executors[0].getName());
+		System.out.println("------>>------------>>MBSCNetWorkDiag.approveIt()");
 		return true;
 	}
 
 	@Override
 	public boolean rejectIt() {
-		// TODO Auto-generated method stub
-		System.out.println("rejectIt()");
+		System.out.println("------>>------------->>MBSCNetWorkDiag.rejectIt()");
 		return true;
 	}
 	
@@ -188,8 +206,17 @@ public class MBSCNetWorkDiag extends X_BSC_NetWorkDiag implements DocAction {
 
 	@Override
 	public boolean reverseCorrectIt() {
-		// TODO Auto-generated method stub
-		return false;
+		log.info(toString());
+		// Before reverseAccrual
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REVERSEACCRUAL);
+		if (m_processMsg != null)
+			return false;
+		
+		// After reverseAccrual
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSEACCRUAL);
+		if (m_processMsg != null)
+			return false;
+		return true;
 	}
 
 	@Override
@@ -220,8 +247,10 @@ public class MBSCNetWorkDiag extends X_BSC_NetWorkDiag implements DocAction {
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REACTIVATE);
 		if (m_processMsg != null)
 				return false;
-			
-		return false;
+		
+		setProcessed(false);	
+		setDocStatus(DOCSTATUS_Drafted);
+		return true;
 	}
 
 	@Override
