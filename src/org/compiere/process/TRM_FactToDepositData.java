@@ -3,6 +3,7 @@ package org.compiere.process;
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import org.compiere.model.MBankAccount;
 import org.compiere.model.MBankAccountAcct;
@@ -17,7 +18,7 @@ import org.compiere.util.DB;
 public class TRM_FactToDepositData extends SvrProcess 
 {
 	private int TRM_Deposit_ID = 0;
-
+	
 	@Override
 	protected void prepare() 
 	{
@@ -34,9 +35,9 @@ public class TRM_FactToDepositData extends SvrProcess
 		CreateLines(fact_acct_ID, TRM_Deposit_ID);
 		
 		return null;
-	}
+	}	
 	
-	private void CreateLines(int fact_acct_ID, int TRM_Deposit_ID)
+	private void CreateLines(int fact_acct_ID, int TRM_Deposit_ID) throws SQLException
 	{
 		MTRMDeposit deposit = new MTRMDeposit(getCtx(), TRM_Deposit_ID, get_TrxName());
 		
@@ -54,7 +55,7 @@ public class TRM_FactToDepositData extends SvrProcess
 		int replenishment = getC_DocType("DEP", "Replenishment");
 		int withdrawal = getC_DocType("DEP", "Withdrawal");
 		
-		BigDecimal totalSum = deposit.getSum();
+		BigDecimal totalSum = fact_acct_ID == 0 ? new BigDecimal(0) : deposit.getSum();
 		
 		try		
 		{
@@ -95,6 +96,11 @@ public class TRM_FactToDepositData extends SvrProcess
 			deposit.saveEx();
 		}
 		catch(Exception ex){}
+		finally
+		{
+			rs.close(); pstmt.close();
+			rs = null; pstmt = null;
+		}
 	}
 	
 	private String Accounts(int C_BankAccount_ID)
