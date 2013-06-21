@@ -48,6 +48,8 @@
 	
 	.trLightBlue {
 		background:#8DB3DC;
+		padding-left: 20px;
+		padding-right: 20px;
 	}
 	
 	.tdWheat {
@@ -100,6 +102,40 @@
 		padding-left: 5px;
 		padding-right: 5px;
 		padding-top: 2px;
+	}
+	
+	input.text
+	{
+		border: solid 1px #666666;
+		/*font-family: arial,sans-serif;*/	
+		font-size: 10pt;
+	}
+	
+	textarea.text
+	{
+		border: solid 1px #666666;
+		/*font-family: arial,sans-serif;*/	
+		font-size: 10pt;
+	}
+	
+	select.text
+	{
+		border: solid 1px #666666;
+		/*font-family: arial,sans-serif;*/	
+		font-size: 10pt;
+		color: #51585F;
+	}
+	
+	
+	input.medium
+	{
+		width:100px;
+	}
+	
+	input:focus
+	{
+		background-color: #CDD4E9;
+		border: solid 1px #333333;
 	}
 
 }

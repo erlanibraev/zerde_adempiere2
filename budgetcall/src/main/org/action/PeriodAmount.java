@@ -9,8 +9,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
-
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.apache.struts2.interceptor.ServletRequestAware;
+import org.apache.struts2.interceptor.ServletResponseAware;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import main.org.model.Budget;
@@ -21,7 +25,7 @@ import main.org.model.Utils;
  * @author V.Sokolov
  *
  */
-public class PeriodAmount extends Budget {
+public class PeriodAmount extends Budget implements ServletRequestAware,ServletResponseAware {
 
 	/**
 	 * 
@@ -32,11 +36,15 @@ public class PeriodAmount extends Budget {
 	
 	private String name;
 	private Period[] period;
+	private Period[] periodBean;
 	private int periodID;
 	private int sQuantity;
 	private String sAmount;
 	
-
+	private HttpServletRequest request;
+	private HttpServletResponse response;
+	
+	
 	public String getName() {
 		return name;
 	}
@@ -72,6 +80,31 @@ public class PeriodAmount extends Budget {
 		this.periodID = periodID;
 	}
 	
+	public Period[] getPeriodBean() {
+		return periodBean;
+	}
+	public void setPeriodBean(Period[] periodBean) {
+		if(periodBean == null)
+			this.periodBean = getValues(callID, tableID, recordID);
+		else
+			this.periodBean = periodBean;
+	}
+
+	public void setServletRequest(HttpServletRequest request){
+		this.request = request;
+	}
+
+	public HttpServletRequest getServletRequest(){
+		return request;
+	}
+
+	public void setServletResponse(HttpServletResponse response){
+		this.response = response;
+	}
+
+	public HttpServletResponse getServletResponse(){
+		return response;
+	}
 	
 	/* 
 	 */
@@ -80,10 +113,20 @@ public class PeriodAmount extends Budget {
 		
 		setPeriod(getValues(callID, tableID, recordID));
 		setPage(Utils.TEMPLATE_THREE);
-		
+		getClass().getDeclaredFields();
 		session.put("periodamount", this);
 		
 		return SUCCESS;
+	}
+	
+	/*
+	 */
+	@Override
+	public String input() throws Exception {
+		
+		getServletRequest().getParameter("quentity_IDX_1");
+		
+		return INPUT;
 	}
 	
 	public Period[] getValues(int callID, int tableID, int recordID){
@@ -143,5 +186,6 @@ public class PeriodAmount extends Budget {
 		
 		return list.toArray(new Period[list.size()]);
 	}
+
 	
 }

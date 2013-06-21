@@ -36,6 +36,10 @@
 			<result name="success">/jsp/budgetcall/PeriodAmount.jsp</result>
 			<result name="none">/jsp/budgetcall/NONE.jsp</result>
 		</action>
+		
+		<action name="doUpdate" class="main.org.action.PeriodAmount" method="input">
+			<result name="input">/jsp/budgetcall/PeriodAmount.jsp</result>
+		</action>
 
 	</package>
 

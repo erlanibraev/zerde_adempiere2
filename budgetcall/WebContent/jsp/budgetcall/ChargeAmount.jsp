@@ -99,22 +99,6 @@
 		    <th scope="col"><%= chargeTotal.getsAmount() %></th>
 		</tr>
 	</table>
-
-	<s:bean name="main.org.action.ChargeAmount" var="amo" >
-		<s:param name="labelValue"><%= chargeTotal.getAmt() %></s:param>
-		<s:param name="LabelValue"><%= chargeTotal.getAmt() %></s:param>
-		<s:param name="callID"><%= chargeTotal.getCallID() %></s:param>
-		<s:param name="sAmount">111</s:param>
-		<s:param name="chargeID"><%= chargeTotal.getChargeID() %></s:param>
-		<s:param name="periodID"><%= chargeTotal.getPeriodID() %></s:param>
-	</s:bean>
-
-	amt1 - <s:property value="#amo.labelValue[0].name" /> <br />
-	vvv = <%= chargeTotal.getAmt()[0].getName() %> <br />
-	amt size - <s:property value="#amo.amt.length" /> <br />
-	CallID - <s:property value="#amo.callID" /> 
-	
-	
 	<%@ include file="/jsp/budgetcall/Footer.jsp" %>
 	</div>
 </body>
