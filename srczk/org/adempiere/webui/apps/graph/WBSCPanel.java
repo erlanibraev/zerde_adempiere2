@@ -65,20 +65,21 @@ public class WBSCPanel extends Panel implements EventListener {
 		row.appendChild(pi);
 		pi.addEventListener(Events.ON_CLICK, this);			
 		
-//		Panel temp = new Panel();
-//		row.appendChild(temp);
+		Panel temp = new Panel();
+		row.appendChild(temp);
 		
 		MParameterLine parameterLine = m_Parameter.getParameterLine(period); 
 		Map<String,MParameter> pl = parameterLine.getParameters();
-//		BSCLine tempLine = null;
+		WBSCLine tempLine = null;
 		for(String key: pl.keySet()) {
 			row = new Row();
 			rows.appendChild(row);
 			row.setWidth("100%");
 			
-//			tempLine = new BSCLine();
+			tempLine = new WBSCLine();
 //			temp = new Panel();
-//			row.appendChild(temp);
+			row.appendChild(tempLine);
+//			tempLine.addEventListener(Events.ON_CLICK, this);	
 			
 			MParameter p = pl.get(key);
 			p.setPeriod(period);
@@ -89,7 +90,11 @@ public class WBSCPanel extends Panel implements EventListener {
 /*		
 		if (tempLine != null) {
 			tempLine.setEnd(true);
-			tempLine.repaint();
+			try {
+				tempLine.redraw(null);
+			} catch (Exception e) {
+				log.severe(e.getMessage());
+			}
 		}
 */		
 		
