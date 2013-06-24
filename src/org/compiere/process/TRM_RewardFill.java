@@ -25,7 +25,7 @@ public class TRM_RewardFill extends SvrProcess {
 	@Override
 	protected String doIt() throws Exception 
 	{
-		int currentYear = 
+		//int currentYear = 
 		LoadRewardLines(TRM_Deposit_ID, 2013);
 		
 		UpdateReward(TRM_Deposit_ID);
