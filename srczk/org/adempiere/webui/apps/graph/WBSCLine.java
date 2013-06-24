@@ -5,7 +5,6 @@ package org.adempiere.webui.apps.graph;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -16,11 +15,8 @@ import javax.imageio.ImageIO;
 
 import org.adempiere.webui.component.Panel;
 import org.compiere.util.CLogger;
-import org.jfree.chart.encoders.EncoderUtil;
-import org.jfree.chart.encoders.ImageFormat;
 import org.zkoss.image.AImage;
 import org.zkoss.zul.Image;
-import org.zkoss.zul.Imagemap;
 
 /**
  * @author Y.Ibrayev

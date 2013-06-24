@@ -77,9 +77,7 @@ public class WBSCPanel extends Panel implements EventListener {
 			row.setWidth("100%");
 			
 			tempLine = new WBSCLine();
-//			temp = new Panel();
 			row.appendChild(tempLine);
-//			tempLine.addEventListener(Events.ON_CLICK, this);	
 			
 			MParameter p = pl.get(key);
 			p.setPeriod(period);
