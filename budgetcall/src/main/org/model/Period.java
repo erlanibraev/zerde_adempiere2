@@ -9,11 +9,17 @@ package main.org.model;
  */
 public class Period extends Amount{
 	
+	private int periodID;
 	private String uom;
 	private String month;
 	private String description;
 	
-
+	public int getPeriodID() {
+		return periodID;
+	}
+	public void setPeriodID(int periodID) {
+		this.periodID = periodID;
+	}
 	public String getUom() {
 		return uom;
 	}

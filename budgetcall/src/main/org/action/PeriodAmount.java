@@ -124,7 +124,29 @@ public class PeriodAmount extends Budget implements ServletRequestAware,ServletR
 	@Override
 	public String input() throws Exception {
 		
-		getServletRequest().getParameter("quentity_IDX_1");
+		Period[] pp = getValues(callID, tableID, recordID);
+		String upd = "update bpm_budgetCallLine ";
+		String set = "";
+		String where = " where bpm_budgetCall_id="+callID
+				+"\n and c_charge_ID="+chargeID
+				+"\n and ad_table_ID="+tableID
+				+"\n and record_ID="+recordID;
+		
+		int idx = 1;
+		int quentity = 0;
+		double amountUnit = 0.;
+		for(Period p: pp){
+			if(idx == 1)
+				where += "\n and c_period_ID="+Integer.valueOf(getServletRequest().getParameter("period_IDX_"+idx));
+			set = " set ";
+			quentity = Integer.valueOf(getServletRequest().getParameter("quantity_IDX_"+idx));
+			set += "\n quentity="+quentity;
+			amountUnit = Double.valueOf(getServletRequest().getParameter("amountUnit_IDX_"+idx));
+			set += "\n amountUnit="+amountUnit;
+			
+			DB.executeUpdate(upd+set+where, null);
+			idx++;
+		}
 		
 		return INPUT;
 	}
@@ -136,11 +158,11 @@ public class PeriodAmount extends Budget implements ServletRequestAware,ServletR
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;		
 		
-		String sql = "select bv.name, u.name as uom, p.name as mth, t.quantity, round(t.amountUnit,2) as amountUnit, round(t.amount,2) as amount, t.paymentMonth as payment, bv.description \n" +
+		String sql = "select bv.name, u.name as uom, p.c_period_id as periodID, p.name as mth, t.quantity, round(t.amountUnit,2) as amountUnit, round(t.amount,2) as amount, t.paymentMonth as payment, bv.description \n" +
 				"from bpm_budgetcallLine t \n" +
 				"join c_uom u on u.c_uom_id=t.c_uom_id \n" +
 				"join c_period p on p.c_period_id=t.c_period_id \n" +
-				"join bpm_budget_v bv on bv.ad_table_id=t.ad_table_id and bv.record_id=t.record_id \n" +
+				"join bpm_budget_v bv on bv.bpm_budgetCall_id=t.bpm_budgetCall_id and bv.ad_table_id=t.ad_table_id and bv.record_id=t.record_id \n" +
 				"where t.bpm_budgetCall_id=? and t.ad_table_id=? and t.record_id=? \n" +
 				"order by t.C_period_id";
 		
@@ -159,6 +181,7 @@ public class PeriodAmount extends Budget implements ServletRequestAware,ServletR
 				values = new Period();
 				values.setName(rs.getString("name"));
 				values.setUom(rs.getString("uom"));
+				values.setPeriodID(rs.getInt("periodid"));
 				values.setMonth(rs.getString("mth"));
 				values.setQuantity(rs.getString("quantity"));
 				values.setAmountUnit(rs.getString("amountunit"));

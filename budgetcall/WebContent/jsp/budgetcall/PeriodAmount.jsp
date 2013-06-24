@@ -89,12 +89,15 @@
 					<td><s:property value="%{#a.uom}" /></td>
 					<td><s:property value="%{#a.month}" /></td>
 					<td>                             
-                		<s:textfield value="%{#a.quantity}" name="quentity_IDX_%{#stat.count}" size="10"  theme="simple" readonly="false" 
-                				onkeyup="do_math(this.form, 'amount_IDX_%{#stat.count}', 'quentity_IDX_%{#stat.count}', 'amountUnit_IDX_%{#stat.count}')" />  
+                		<s:textfield value="%{#a.quantity}" name="quantity_IDX_%{#stat.count}" size="10"  theme="simple" readonly="false" 
+                				onkeypress="return isQuantity(event)"
+                				onkeyup="do_math(this.form, 'amount_IDX_%{#stat.count}', 'quantity_IDX_%{#stat.count}', 'amountUnit_IDX_%{#stat.count}')" /> 
+                		<s:hidden name="period_IDX_%{#stat.count}" value="%{#a.periodID}" />
             		</td>
             		<td>                             
                 		<s:textfield value="%{#a.amountUnit}" name="amountUnit_IDX_%{#stat.count}" size="10"  theme="simple" readonly="false"
-                				onkeyup="do_math(this.form, 'amount_IDX_%{#stat.count}', 'quentity_IDX_%{#stat.count}', 'amountUnit_IDX_%{#stat.count}')" />  
+                				onkeypress="return isAmountUnit(event)"
+                				onkeyup="do_math(this.form, 'amount_IDX_%{#stat.count}', 'quantity_IDX_%{#stat.count}', 'amountUnit_IDX_%{#stat.count}')" />  
             		</td>  
             		<td>                             
                 		<s:textfield value="%{#a.amount}" name="amount_IDX_%{#stat.count}" size="10"  theme="simple" readonly="true" />  
@@ -114,52 +117,71 @@
 		</table>
 		
 			<s:submit value="Submit"/>
-		</s:form>
-		
-		<script>
-		
-		function getChar(event) {
-			  if (event.which == null) {
-			    if (event.keyCode < 32) return null;
-			    return String.fromCharCode(event.keyCode) // IE
-			  }
-
-			  if (event.which!=0 && event.charCode!=0) {
-			    if (event.which < 32) return null;
-			    return String.fromCharCode(event.which)   // остальные
-			  }
-
-			  return null; // специальная клавиша
-			}
-		
-		function do_math(f,edit,edit1,edit2)
-		{
-			f.elements[edit1].onkeypress = function(e) {
-
-				  e = e || event;
-
-				  if (e.ctrlKey || e.altKey || e.metaKey) return;
-
-				  var chr = getChar(e);
-
-				  // с null надо осторожно в неравенствах, т.к. например null >= '0' => true!
-				  // на всякий случай лучше вынести проверку chr == null отдельно
-				  if (chr == null) return;
-
-				  if (chr < '0' || chr > '9') {
-				    return false;
-				  }
-
-				}
 			
-		    var t1 = f.elements[edit1].value;
-		    var t2 = f.elements[edit2].value;
-		    var res = parseInt(t1)*parseInt(t2);
-		    f.elements[edit].value = isNaN(res) ? '' : res;
+			<input type="hidden" name="callID" value=<s:property value="callID" /> />
+			<input type="hidden" name="chargeID" value=<s:property value="chargeID" /> />
+			<input type="hidden" name="periodID" value=<s:property value="periodID" /> />
+			<input type="hidden" name="tableID" value=<%= periodTotal.getTableID() %> />
+			<input type="hidden" name="recordID" value=<%= periodTotal.getRecordID() %> />			
+			
+		</s:form>
+	</div>
+
+	<script>
+	
+		function getChar(event) {
+			
+			if (event.which == null) {
+				if (event.keyCode < 32) return null;
+			    return String.fromCharCode(event.keyCode); // IE
+			}
+	
+			if (event.which!=0 && event.charCode!=0) {
+				if (event.which < 32) return null;
+				return String.fromCharCode(event.which);   // остальные
+			}
+	
+			return null; // специальная клавиша
+		}
+	
+		function isQuantity(event) {
+			  
+			e = event;
+			if (e.ctrlKey || e.altKey || e.metaKey) return; 
+			var chr = getChar(e);
+			if (chr == null) return;
+			if (chr < '0' || chr > '9') {
+				return false;
+			}else return true;
+			  
 		}
 		
+		function isAmountUnit(event) {
+			  
+			  e = event;
+			  if (e.ctrlKey || e.altKey || e.metaKey) return; 
+			  var chr = getChar(e);
+			  if (chr == null) return;
+			  if(chr != '.'){
+				  if (chr < '0' || chr > '9') {
+					return false;
+				  }else return true;
+			  }else return true;
+			  
+		}
 
-		</script>
+	
+		function do_math(f,edit,edit1,edit2)
+		{
+	
+		    var t1 = f.elements[edit1].value;
+		    var t2 = f.elements[edit2].value;
+		    
+		    var res = parseInt(t1)*parseFloat(t2);
+		    f.elements[edit].value = isNaN(res) ? '' : Math.round(res * 100) / 100;
+		}
+	
+	</script>
 		
 	<!-- 
 		<s:bean name="main.org.action.PeriodAmount" var="per" />
@@ -176,6 +198,5 @@
 		UOM - <s:property value="#amo.periodBean[0].uom" /> <br />  
 	 -->
 		<%@ include file="/jsp/budgetcall/Footer.jsp" %>
-	</div>
 </body>
 </html>
