@@ -30,7 +30,7 @@ public interface I_BSC_Responsible_Executor
     /** TableName=BSC_Responsible_Executor */
     public static final String Table_Name = "BSC_Responsible_Executor";
 
-    /** AD_Table_ID=1000239 */
+    /** AD_Table_ID=1000256 */
     public static final int Table_ID = MTable.getTable_ID(Table_Name);
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
@@ -61,6 +61,21 @@ public interface I_BSC_Responsible_Executor
 	  * Organizational entity within client
 	  */
 	public int getAD_Org_ID();
+
+    /** Column name AD_User_ID */
+    public static final String COLUMNNAME_AD_User_ID = "AD_User_ID";
+
+	/** Set Usuario.
+	  * User within the system - Internal or Business Partner Contact
+	  */
+	public void setAD_User_ID (int AD_User_ID);
+
+	/** Get Usuario.
+	  * User within the system - Internal or Business Partner Contact
+	  */
+	public int getAD_User_ID();
+
+	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
     /** Column name BSC_Action_ID */
     public static final String COLUMNNAME_BSC_Action_ID = "BSC_Action_ID";

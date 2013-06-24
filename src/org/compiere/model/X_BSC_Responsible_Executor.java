@@ -30,7 +30,7 @@ public class X_BSC_Responsible_Executor extends PO implements I_BSC_Responsible_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130604L;
+	private static final long serialVersionUID = 20130621L;
 
     /** the default Constructor */
     public X_BSC_Responsible_Executor(Properties ctx)
@@ -75,6 +75,34 @@ public class X_BSC_Responsible_Executor extends PO implements I_BSC_Responsible_
         .append(get_ID()).append("]");
       return sb.toString();
     }
+
+	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
+			.getPO(getAD_User_ID(), get_TrxName());	}
+
+	/** Set Usuario.
+		@param AD_User_ID 
+		User within the system - Internal or Business Partner Contact
+	  */
+	public void setAD_User_ID (int AD_User_ID)
+	{
+		if (AD_User_ID < 1) 
+			set_Value (COLUMNNAME_AD_User_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
+	}
+
+	/** Get Usuario.
+		@return User within the system - Internal or Business Partner Contact
+	  */
+	public int getAD_User_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
 
 	public I_BSC_Action getBSC_Action() throws RuntimeException
     {

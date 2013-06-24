@@ -133,7 +133,6 @@ public class MBSCNetWorkDiag extends X_BSC_NetWorkDiag implements DocAction {
 						for(int r=0; r<actions.length; r++){
 							MBSCResponsibleExecutor[] responsibleExecutors = actions[r].getResponsible_Executors(false);
 							if(responsibleExecutors.length == 0){
-								
 								m_processMsg = "No Responsible Executor(s) on Line "+(i+1)+" -->Subline "+(j+1)+" -->Action "+(r+1);
 								return DocAction.STATUS_Invalid;
 							}
