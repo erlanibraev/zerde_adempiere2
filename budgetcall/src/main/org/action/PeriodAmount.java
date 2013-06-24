@@ -131,20 +131,25 @@ public class PeriodAmount extends Budget implements ServletRequestAware,ServletR
 				+"\n and c_charge_ID="+chargeID
 				+"\n and ad_table_ID="+tableID
 				+"\n and record_ID="+recordID;
+		String periodSql = "";
 		
 		int idx = 1;
 		int quentity = 0;
 		double amountUnit = 0.;
+		double amount = 0.;
 		for(Period p: pp){
-			if(idx == 1)
-				where += "\n and c_period_ID="+Integer.valueOf(getServletRequest().getParameter("period_IDX_"+idx));
+
+			periodSql = "\n and c_period_ID="+Integer.valueOf(getServletRequest().getParameter("period_IDX_"+idx));
 			set = " set ";
 			quentity = Integer.valueOf(getServletRequest().getParameter("quantity_IDX_"+idx));
-			set += "\n quentity="+quentity;
+			set += "\n quantity="+quentity;
 			amountUnit = Double.valueOf(getServletRequest().getParameter("amountUnit_IDX_"+idx));
-			set += "\n amountUnit="+amountUnit;
+			set += "\n ,amountUnit="+amountUnit;
+			amount = Double.valueOf(getServletRequest().getParameter("amount_IDX_"+idx));
+			set += "\n ,amount="+amount;
 			
-			DB.executeUpdate(upd+set+where, null);
+			DB.executeUpdate(upd+set+where+periodSql, null);
+			periodSql = "";
 			idx++;
 		}
 		
