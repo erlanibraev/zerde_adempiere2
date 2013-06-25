@@ -121,6 +121,22 @@
 		background: #F3E99E; /* Цвет фона */
 	  	border: 2px solid #8DB3DC; /* Параметры рамки */
 	}
+	
+	.button
+	{
+	    cursor: pointer;
+	    background-color: #8DB3DC;
+	    font-size: 1.1em;
+	    font-weight: bold;
+	    outline: 0;
+	    font-family: Arial, Verdana, Sans-Serif;
+	}
+	
+	.btn-large-green
+	{
+	    height: 27px;
+	    width: 175px;
+	}
 
 }
 

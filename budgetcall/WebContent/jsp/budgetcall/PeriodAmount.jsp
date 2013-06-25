@@ -70,12 +70,12 @@
 			<table class="more" border="1" style="margin-top:20px;" align="center" bordercolor="#663300" cellspacing="2">
 	  			<tr class="trLightBlue">
 			    	<th scope="col">Наименование</th>
-			    	<th scope="col">Ед. изм.</th>
-			    	<th scope="col">Месяц</th>
-			    	<th scope="col">Кол-во</th>
-			    	<th scope="col">Стоимость за единицу, тенге</th>
-			    	<th scope="col">Сумма, тенге</th>
-			    	<th scope="col">Оплата</th>
+			    	<th scope="col" width="100px">Ед. изм.</th>
+			    	<th scope="col" width="100px">Месяц</th>
+			    	<th scope="col" width="100px">Кол-во</th>
+			    	<th scope="col" width="100px">Стоимость за единицу, тенге</th>
+			    	<th scope="col" width="100px">Сумма, тенге</th>
+			    	<th scope="col" width="100px">Оплата</th>
 				</tr>
 				<%
 					if(rowSpan > 0){
@@ -91,18 +91,18 @@
 						<td><s:property value="%{#a.uom}" /></td>
 						<td><s:property value="%{#a.month}" /></td>
 						<td>                             
-	                		<s:textfield value="%{#a.quantity}" name="quantity_IDX_%{#stat.count}" size="7"  theme="simple" readonly="false" class="form-text" 
+	                		<s:textfield value="%{#a.quantity}" name="quantity_IDX_%{#stat.count}" size="11"  theme="simple" readonly="false" class="form-text" 
 	                				onkeypress="return isQuantity(event)"
 	                				onkeyup="do_math(this.form, 'amount_IDX_%{#stat.count}', 'quantity_IDX_%{#stat.count}', 'amountUnit_IDX_%{#stat.count}')" /> 
 	                		<s:hidden name="period_IDX_%{#stat.count}" value="%{#a.periodID}" />
 	            		</td>
 	            		<td>                             
-	                		<s:textfield value="%{#a.amountUnit}" name="amountUnit_IDX_%{#stat.count}" size="7"  theme="simple" readonly="false" class="form-text"
+	                		<s:textfield value="%{#a.amountUnit}" name="amountUnit_IDX_%{#stat.count}" size="11"  theme="simple" readonly="false" class="form-text"
 	                				onkeypress="return isAmountUnit(event)"
 	                				onkeyup="do_math(this.form, 'amount_IDX_%{#stat.count}', 'quantity_IDX_%{#stat.count}', 'amountUnit_IDX_%{#stat.count}')" />  
 	            		</td>  
 	            		<td>                             
-	                		<s:textfield value="%{#a.amount}" name="amount_IDX_%{#stat.count}" size="10" tabindex="-1" theme="simple" readonly="true" />  
+	                		<s:textfield value="%{#a.amount}" name="amount_IDX_%{#stat.count}" size="11" tabindex="-1" theme="simple" readonly="true" />  
 	            		</td>  
 	            		<td><s:property value="%{#a.payment}" /></td>
 					</tr>
@@ -111,23 +111,29 @@
 			    	<th scope="col">Всего</th>
 			    	<th scope="col">&nbsp;</th>
 			    	<th scope="col">&nbsp;</th>
-			    	<th scope="col"><%= periodTotal.getsQuantity() %></th>
+			    	<th scope="col">
+			    		<input type="text" value="<%= periodTotal.getsQuantity() %>" style="border-color:black;" name="sQuantity" size="10" tabindex="-1" readonly="true" />
+			    	</th>
 			    	<th scope="col">&nbsp;</th>
-			    	<th scope="col"><%= periodTotal.getsAmount() %></th>
+			    	<th scope="col">
+			    		<input type="text" value="<%= periodTotal.getsAmount() %>" style="border-color:black;" name="sAmount" size="10" tabindex="-1" readonly="true" />
+			    	</th>
 			    	<th scope="col">&nbsp;</th>
 				</tr>
+				<tr>
+					<th colspan="7">
+						<input type="submit" class="button btn-large-green" value="Внести изменения" />
+						
+						<input type="hidden" name="callID" value=<s:property value="callID" /> />
+						<input type="hidden" name="chargeID" value=<s:property value="chargeID" /> />
+						<input type="hidden" name="periodID" value=<s:property value="periodID" /> />
+						<input type="hidden" name="processID" value=<s:property value="processID" /> />
+						<input type="hidden" name="tableID" value=<%= periodTotal.getTableID() %> />
+						<input type="hidden" name="recordID" value=<%= periodTotal.getRecordID() %> />
+						<input type="hidden" name="rowspan" value=<%= rowSpan %> />			
+					</th>
+				</tr>
 			</table>
-			
-				<s:submit value="Внести изменения" name="Submit" />
-				
-				<input type="hidden" name="callID" value=<s:property value="callID" /> />
-				<input type="hidden" name="chargeID" value=<s:property value="chargeID" /> />
-				<input type="hidden" name="periodID" value=<s:property value="periodID" /> />
-				<input type="hidden" name="processID" value=<s:property value="processID" /> />
-				<input type="hidden" name="tableID" value=<%= periodTotal.getTableID() %> />
-				<input type="hidden" name="recordID" value=<%= periodTotal.getRecordID() %> />
-				<input type="hidden" name="rowspan" value=<%= rowSpan %> />			
-				
 			</s:form>
 		</fieldset>
 	</div>
