@@ -36,9 +36,7 @@ public class TRM_RewardFill extends SvrProcess {
 				log.log(Level.SEVERE, "Unknown Parameter: " + name);
 			}				
 		}
-		
-		//TRM_Deposit_ID =  getRecord_ID();
-		
+			
 		MTRMDeposit deposit = new MTRMDeposit(getCtx(), TRM_Deposit_ID, get_TrxName());
 		
 		CMS_Contract_ID = deposit.getCMS_Contract_ID();
@@ -50,11 +48,16 @@ public class TRM_RewardFill extends SvrProcess {
 	@Override
 	protected String doIt() throws Exception 
 	{ 
-		loadWorkPeriod(CMS_Contract_ID);
+		//loadWorkPeriod(CMS_Contract_ID);
 		
 		String sql = "SELECT MAX(TRM_Reward_ID) FROM TRM_Reward WHERE TRM_Deposit_ID = " + TRM_Deposit_ID;
 		
-		int maxID = DB.getSQLValue(get_TrxName(), sql);
+		int maxID = DB.getSQLValue(trxName, sql);
+		
+		MTRMDeposit deposit = new MTRMDeposit(m_ctx, TRM_Deposit_ID, trxName);
+		
+		startPeriod = deposit.getBeginningDate();
+		endPeriod = deposit.getEndDate();
 		
 		if(maxID <= 0)
 			LoadRewardLines(TRM_Deposit_ID, startPeriod, endPeriod);//2013);

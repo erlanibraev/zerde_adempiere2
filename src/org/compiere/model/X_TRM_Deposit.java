@@ -22,7 +22,6 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
 import org.compiere.util.Env;
-import org.compiere.util.KeyNamePair;
 
 /** Generated Model for TRM_Deposit
  *  @author Adempiere (generated) 
@@ -33,7 +32,7 @@ public class X_TRM_Deposit extends PO implements I_TRM_Deposit, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130619L;
+	private static final long serialVersionUID = 20130625L;
 
     /** the default Constructor */
     public X_TRM_Deposit(Properties ctx)
@@ -47,6 +46,8 @@ public class X_TRM_Deposit extends PO implements I_TRM_Deposit, I_Persistent
       super (ctx, TRM_Deposit_ID, trxName);
       /** if (TRM_Deposit_ID == 0)
         {
+			setBeginningDate (new Timestamp( System.currentTimeMillis() ));
+			setEndDate (new Timestamp( System.currentTimeMillis() ));
 			setTRM_Deposit_ID (0);
         } */
     }
@@ -78,6 +79,23 @@ public class X_TRM_Deposit extends PO implements I_TRM_Deposit, I_Persistent
         .append(get_ID()).append("]");
       return sb.toString();
     }
+
+	/** Set BeginningDate.
+		@param BeginningDate 
+		Дата начала действия
+	  */
+	public void setBeginningDate (Timestamp BeginningDate)
+	{
+		set_Value (COLUMNNAME_BeginningDate, BeginningDate);
+	}
+
+	/** Get BeginningDate.
+		@return Дата начала действия
+	  */
+	public Timestamp getBeginningDate () 
+	{
+		return (Timestamp)get_Value(COLUMNNAME_BeginningDate);
+	}
 
 	public org.compiere.model.I_C_Bank getC_Bank() throws RuntimeException
     {
@@ -231,6 +249,23 @@ public class X_TRM_Deposit extends PO implements I_TRM_Deposit, I_Persistent
 		return (String)get_Value(COLUMNNAME_DocumentNo);
 	}
 
+	/** Set End Date.
+		@param EndDate 
+		Last effective date (inclusive)
+	  */
+	public void setEndDate (Timestamp EndDate)
+	{
+		set_Value (COLUMNNAME_EndDate, EndDate);
+	}
+
+	/** Get End Date.
+		@return Last effective date (inclusive)
+	  */
+	public Timestamp getEndDate () 
+	{
+		return (Timestamp)get_Value(COLUMNNAME_EndDate);
+	}
+
 	/** Set EstablishSubLimit.
 		@param EstablishSubLimit 
 		Установленные сублимиты
@@ -331,14 +366,6 @@ public class X_TRM_Deposit extends PO implements I_TRM_Deposit, I_Persistent
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
-
-    /** Get Record ID/ColumnName
-        @return ID/ColumnName pair
-      */
-    public KeyNamePair getKeyNamePair() 
-    {
-        return new KeyNamePair(get_ID(), getName());
-    }
 
 	/** Set RefreshLines.
 		@param RefreshLines 

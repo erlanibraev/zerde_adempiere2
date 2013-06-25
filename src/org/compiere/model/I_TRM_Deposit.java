@@ -62,6 +62,19 @@ public interface I_TRM_Deposit
 	  */
 	public int getAD_Org_ID();
 
+    /** Column name BeginningDate */
+    public static final String COLUMNNAME_BeginningDate = "BeginningDate";
+
+	/** Set BeginningDate.
+	  * Дата начала действия
+	  */
+	public void setBeginningDate (Timestamp BeginningDate);
+
+	/** Get BeginningDate.
+	  * Дата начала действия
+	  */
+	public Timestamp getBeginningDate();
+
     /** Column name C_Bank_ID */
     public static final String COLUMNNAME_C_Bank_ID = "C_Bank_ID";
 
@@ -174,6 +187,19 @@ public interface I_TRM_Deposit
 	  * Document sequence number of the document
 	  */
 	public String getDocumentNo();
+
+    /** Column name EndDate */
+    public static final String COLUMNNAME_EndDate = "EndDate";
+
+	/** Set End Date.
+	  * Last effective date (inclusive)
+	  */
+	public void setEndDate (Timestamp EndDate);
+
+	/** Get End Date.
+	  * Last effective date (inclusive)
+	  */
+	public Timestamp getEndDate();
 
     /** Column name EstablishSubLimit */
     public static final String COLUMNNAME_EstablishSubLimit = "EstablishSubLimit";

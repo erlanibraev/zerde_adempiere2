@@ -282,7 +282,7 @@ public class TRM_RewardReport extends SvrProcess
 					label = new Label(col, index, "", totalrowstyle);
 			    	sheet.addCell(label);
 					//Дата
-					time = new DateTime(col+1, index, new java.sql.Date(currentDate.getTime()), totalrowstyle);
+					time = new DateTime(col+1, index, new java.sql.Date(currentDate.getTime()), dateFormat);
 	        		sheet.addCell(time);
 	        		
 	        		label = new Label(col+2, index, "", totalrowstyle);
