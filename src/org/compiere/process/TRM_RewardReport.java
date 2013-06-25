@@ -184,6 +184,15 @@ public class TRM_RewardReport extends SvrProcess
 	    dateFormat.setAlignment(Alignment.RIGHT);
 	    dateFormat.setVerticalAlignment(VerticalAlignment.CENTRE);
 	    
+	    WritableCellFormat totalDateFormat = new WritableCellFormat (customDateFormat);
+	    dateFormat.setBorder(Border.LEFT, BorderLineStyle.THIN, Colour.BLACK);
+	    dateFormat.setBorder(Border.RIGHT, BorderLineStyle.THIN, Colour.BLACK);
+	    dateFormat.setBorder(Border.TOP, BorderLineStyle.THIN, Colour.BLACK);
+	    dateFormat.setBorder(Border.BOTTOM, BorderLineStyle.THIN, Colour.BLACK);
+	    dateFormat.setAlignment(Alignment.RIGHT);
+	    dateFormat.setVerticalAlignment(VerticalAlignment.CENTRE);
+	    totalrowstyle.setBackground(Colour.GREY_25_PERCENT);
+	    
 	    Number number;
 		Label label;
 		DateTime time;
@@ -282,7 +291,7 @@ public class TRM_RewardReport extends SvrProcess
 					label = new Label(col, index, "", totalrowstyle);
 			    	sheet.addCell(label);
 					//Дата
-					time = new DateTime(col+1, index, new java.sql.Date(currentDate.getTime()), dateFormat);
+					time = new DateTime(col+1, index, new java.sql.Date(currentDate.getTime()), totalDateFormat);
 	        		sheet.addCell(time);
 	        		
 	        		label = new Label(col+2, index, "", totalrowstyle);
