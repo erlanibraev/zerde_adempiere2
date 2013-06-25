@@ -11,7 +11,6 @@ import java.util.logging.Level;
 
 import org.compiere.model.MBPartner;
 import org.compiere.model.MBSCNetWorkDiag;
-import org.compiere.model.MTable;
 import org.compiere.model.MUser;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -81,7 +80,7 @@ public class NWD_SendMail extends SvrProcess {
 			throw new Exception("User_ID not found");
 		for(int i = 0; i < sendList.size(); i++){
 			extend.org.compiere.utils.Util.sendMail(sendList.get(i).intValue(), p_AD_User_ID, "Мероприятия", "Список мероприятии для "
-					+ new MBPartner(m_ctx, (int)MUser.get(m_ctx, sendList.get(i).intValue()).get_Value("C_BPartner_ID"), 
+					+ new MBPartner(m_ctx, (Integer)(MUser.get(m_ctx, sendList.get(i).intValue()).get_Value("C_BPartner_ID")), 
 					  get_TrxName()).getName(), false);
 		}
 		return true;
