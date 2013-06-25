@@ -5,6 +5,7 @@ import java.util.Properties;
 
 public class MTRMReward extends X_TRM_Reward 
 {
+	private static final long serialVersionUID = -5199076433683955386L;
 
 	public MTRMReward(Properties ctx, int TRM_Reward_ID, String trxName) 
 	{

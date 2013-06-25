@@ -4,7 +4,12 @@ import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.compiere.apps.IProcessParameter;
+import org.compiere.apps.ProcessCtl;
+import org.compiere.apps.ProcessParameterPanel;
 import org.compiere.model.MBankAccount;
 import org.compiere.model.MBankAccountAcct;
 import org.compiere.model.MElementValue;
@@ -13,9 +18,11 @@ import org.compiere.model.MTRMDepositLine;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.X_C_ValidCombination;
+import org.compiere.util.ASyncProcess;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 
-public class TRM_FactToDepositData extends SvrProcess 
+public class TRM_FactToDepositData extends SvrProcess implements ASyncProcess 
 {
 	private int TRM_Deposit_ID = 0;
 	
@@ -34,8 +41,45 @@ public class TRM_FactToDepositData extends SvrProcess
 		
 		CreateLines(fact_acct_ID, TRM_Deposit_ID);
 		
+		//StartRewardFill();
+		
+		StartRewardFill();
+		
 		return null;
 	}	
+	
+	private String StartRewardFill()
+	{
+		int AD_Process_ID = getProcess();
+		
+		if(AD_Process_ID == 0)
+			return  "The process can not be found";
+		//  Prepare Process
+		ProcessInfo pi = new ProcessInfo ("The printing process of the order", AD_Process_ID);
+		pi.setAD_User_ID (Env.getAD_User_ID(Env.getCtx()));
+		pi.setAD_Client_ID(Env.getAD_Client_ID(Env.getCtx()));
+
+		List<ProcessInfoParameter> po = new ArrayList<ProcessInfoParameter>();		//
+		po.add(new ProcessInfoParameter("TRM_Deposit_ID", new BigDecimal(TRM_Deposit_ID),null,"",""));
+				
+		ProcessInfoParameter[] pp = new ProcessInfoParameter[po.size()];
+		po.toArray(pp);
+		pi.setParameter(pp);
+		//	Execute Process
+		ProcessParameterPanel pu = new ProcessParameterPanel(0, pi);
+		ProcessCtl.process(this, 0, (IProcessParameter) pu, pi, null);
+		
+		return "";
+	}
+	
+	private int getProcess()
+	{
+		String sql = "select ad_process_id from ad_process where name like '%TRM_RewardFill%'";
+		
+		int ad_process_id = DB.getSQLValue(get_TrxName(), sql);
+		
+		return ad_process_id;
+	}
 	
 	private void CreateLines(int fact_acct_ID, int TRM_Deposit_ID) throws SQLException
 	{
@@ -47,7 +91,7 @@ public class TRM_FactToDepositData extends SvrProcess
 		sql.append("SELECT e.Value, f.DateAcct, f.AmtSourceCr, f.AmtSourceDr, f.Fact_Acct_ID, f.AD_Table_ID, f.Record_ID \n\t");
 		sql.append("FROM Fact_Acct f INNER JOIN C_ElementValue e ON f.Account_ID = e.C_ElementValue_ID \n\t");
 		sql.append("WHERE f.Fact_Acct_ID > " + fact_acct_ID + " \n\t");
-		sql.append("AND e.Value LIKE '" + accountsInDeposit + "'");
+		sql.append("AND e.Value LIKE '" + accountsInDeposit + "' ORDER BY DateAcct");
 		
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -66,6 +110,9 @@ public class TRM_FactToDepositData extends SvrProcess
 			{
 				if(accountsInDeposit.contains(rs.getString(1)))
 				{
+					if(deposit.getDatePlacement() == null)
+						deposit.setDatePlacement(rs.getTimestamp("DateAcct"));
+					
 					MTRMDepositLine deposit_line = new MTRMDepositLine(getCtx(), 0, get_TrxName());
 					deposit_line.setDateAcct(rs.getTimestamp(2));
 					deposit_line.setLineSum(rs.getBigDecimal(4).subtract(rs.getBigDecimal(3)));
@@ -133,6 +180,30 @@ public class TRM_FactToDepositData extends SvrProcess
 	private int getC_DocType(String baseType, String docName)
 	{
 		return DB.getSQLValue(get_TrxName(), "SELECT C_DocType_ID FROM C_DocType WHERE DocBaseType = '" + baseType + "' AND Name = '" + docName + "'");
+	}
+
+	@Override
+	public void lockUI(ProcessInfo pi) 
+	{
+		
+	}
+
+	@Override
+	public void unlockUI(ProcessInfo pi) 
+	{
+		
+	}
+
+	@Override
+	public boolean isUILocked() 
+	{
+		return false;
+	}
+
+	@Override
+	public void executeASync(ProcessInfo pi) 
+	{
+		
 	}
 	
 	
