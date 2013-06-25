@@ -64,67 +64,72 @@
 			 	<td>&nbsp;</td>
 			</tr>
 		</table>
-		<s:form action="doUpdate">
-		<table class="more" border="1" style="margin-top:20px;" align="center" bordercolor="#663300" cellspacing="2">
-  			<tr class="trLightBlue">
-		    	<th scope="col">Наименование</th>
-		    	<th scope="col">Ед. изм.</th>
-		    	<th scope="col">Месяц</th>
-		    	<th scope="col">Кол-во</th>
-		    	<th scope="col">Стоимость за единицу, тенге</th>
-		    	<th scope="col">Сумма, тенге</th>
-		    	<th scope="col">Оплата</th>
-			</tr>
-			<%
-				if(rowSpan > 0){
-			%>
-				<tr>
-					<td style="text-align: center; padding-left: 20px; padding-right: 20px;" rowspan="<%= rowSpan %>"><b><s:property value="#amo.periodBean[0].name" /></b></td>
-			<%	} %>
-			
-			<s:iterator value="#amo.periodBean" status="stat" var="a">
-				<s:if test="#stat.count > 1">
-					<tr>
-				</s:if>
-					<td><s:property value="%{#a.uom}" /></td>
-					<td><s:property value="%{#a.month}" /></td>
-					<td>                             
-                		<s:textfield value="%{#a.quantity}" name="quantity_IDX_%{#stat.count}" size="10"  theme="simple" readonly="false" 
-                				onkeypress="return isQuantity(event)"
-                				onkeyup="do_math(this.form, 'amount_IDX_%{#stat.count}', 'quantity_IDX_%{#stat.count}', 'amountUnit_IDX_%{#stat.count}')" /> 
-                		<s:hidden name="period_IDX_%{#stat.count}" value="%{#a.periodID}" />
-            		</td>
-            		<td>                             
-                		<s:textfield value="%{#a.amountUnit}" name="amountUnit_IDX_%{#stat.count}" size="10"  theme="simple" readonly="false"
-                				onkeypress="return isAmountUnit(event)"
-                				onkeyup="do_math(this.form, 'amount_IDX_%{#stat.count}', 'quantity_IDX_%{#stat.count}', 'amountUnit_IDX_%{#stat.count}')" />  
-            		</td>  
-            		<td>                             
-                		<s:textfield value="%{#a.amount}" name="amount_IDX_%{#stat.count}" size="10"  theme="simple" readonly="true" />  
-            		</td>  
-            		<td><s:property value="%{#a.payment}" /></td>
+		<fieldset>
+		<legend>Данные</legend>
+			<s:form action="doUpdate">
+			<table class="more" border="1" style="margin-top:20px;" align="center" bordercolor="#663300" cellspacing="2">
+	  			<tr class="trLightBlue">
+			    	<th scope="col">Наименование</th>
+			    	<th scope="col">Ед. изм.</th>
+			    	<th scope="col">Месяц</th>
+			    	<th scope="col">Кол-во</th>
+			    	<th scope="col">Стоимость за единицу, тенге</th>
+			    	<th scope="col">Сумма, тенге</th>
+			    	<th scope="col">Оплата</th>
 				</tr>
-			</s:iterator>
-			<tr class="trLightBlue">
-		    	<th scope="col">Всего</th>
-		    	<th scope="col">&nbsp;</th>
-		    	<th scope="col">&nbsp;</th>
-		    	<th scope="col"><%= periodTotal.getsQuantity() %></th>
-		    	<th scope="col">&nbsp;</th>
-		    	<th scope="col"><%= periodTotal.getsAmount() %></th>
-		    	<th scope="col">&nbsp;</th>
-			</tr>
-		</table>
-		
-			<s:submit value="Submit"/>
+				<%
+					if(rowSpan > 0){
+				%>
+					<tr>
+						<td style="text-align: center; padding-left: 20px; padding-right: 20px;" rowspan="<%= rowSpan %>"><b><s:property value="#amo.periodBean[0].name" /></b></td>
+				<%	} %>
+				
+				<s:iterator value="#amo.periodBean" status="stat" var="a">
+					<s:if test="#stat.count > 1">
+						<tr>
+					</s:if>
+						<td><s:property value="%{#a.uom}" /></td>
+						<td><s:property value="%{#a.month}" /></td>
+						<td>                             
+	                		<s:textfield value="%{#a.quantity}" name="quantity_IDX_%{#stat.count}" size="7"  theme="simple" readonly="false" class="form-text" 
+	                				onkeypress="return isQuantity(event)"
+	                				onkeyup="do_math(this.form, 'amount_IDX_%{#stat.count}', 'quantity_IDX_%{#stat.count}', 'amountUnit_IDX_%{#stat.count}')" /> 
+	                		<s:hidden name="period_IDX_%{#stat.count}" value="%{#a.periodID}" />
+	            		</td>
+	            		<td>                             
+	                		<s:textfield value="%{#a.amountUnit}" name="amountUnit_IDX_%{#stat.count}" size="7"  theme="simple" readonly="false" class="form-text"
+	                				onkeypress="return isAmountUnit(event)"
+	                				onkeyup="do_math(this.form, 'amount_IDX_%{#stat.count}', 'quantity_IDX_%{#stat.count}', 'amountUnit_IDX_%{#stat.count}')" />  
+	            		</td>  
+	            		<td>                             
+	                		<s:textfield value="%{#a.amount}" name="amount_IDX_%{#stat.count}" size="10" tabindex="-1" theme="simple" readonly="true" />  
+	            		</td>  
+	            		<td><s:property value="%{#a.payment}" /></td>
+					</tr>
+				</s:iterator>
+				<tr class="trLightBlue">
+			    	<th scope="col">Всего</th>
+			    	<th scope="col">&nbsp;</th>
+			    	<th scope="col">&nbsp;</th>
+			    	<th scope="col"><%= periodTotal.getsQuantity() %></th>
+			    	<th scope="col">&nbsp;</th>
+			    	<th scope="col"><%= periodTotal.getsAmount() %></th>
+			    	<th scope="col">&nbsp;</th>
+				</tr>
+			</table>
 			
-			<input type="hidden" name="callID" value=<s:property value="callID" /> />
-			<input type="hidden" name="chargeID" value=<s:property value="chargeID" /> />
-			<input type="hidden" name="periodID" value=<s:property value="periodID" /> />
-			<input type="hidden" name="tableID" value=<%= periodTotal.getTableID() %> />
-			<input type="hidden" name="recordID" value=<%= periodTotal.getRecordID() %> />			
-			
-		</s:form>
+				<s:submit value="Внести изменения" name="Submit" />
+				
+				<input type="hidden" name="callID" value=<s:property value="callID" /> />
+				<input type="hidden" name="chargeID" value=<s:property value="chargeID" /> />
+				<input type="hidden" name="periodID" value=<s:property value="periodID" /> />
+				<input type="hidden" name="processID" value=<s:property value="processID" /> />
+				<input type="hidden" name="tableID" value=<%= periodTotal.getTableID() %> />
+				<input type="hidden" name="recordID" value=<%= periodTotal.getRecordID() %> />
+				<input type="hidden" name="rowspan" value=<%= rowSpan %> />			
+				
+			</s:form>
+		</fieldset>
 	</div>
 
 	<script>
@@ -183,20 +188,6 @@
 	
 	</script>
 		
-	<!-- 
-		<s:bean name="main.org.action.PeriodAmount" var="per" />
-		
-		<s:bean name="main.org.action.PeriodAmount" var="amo">
-			<s:param name="callID"><%= periodTotal.getCallID() %></s:param>
-			<s:param name="tableID"><%= periodTotal.getTableID() %></s:param>
-			<s:param name="recordID"><%= periodTotal.getRecordID() %></s:param>
-			<s:param name="periodBean" value="#per.periodBean" />
-		</s:bean>
-	
-		CallID - <s:property value="#amo.callID" /> <br />
-		UOM length - <s:property value="#amo.periodBean.length" /> <br />
-		UOM - <s:property value="#amo.periodBean[0].uom" /> <br />  
-	 -->
-		<%@ include file="/jsp/budgetcall/Footer.jsp" %>
+	<%@ include file="/jsp/budgetcall/Footer.jsp" %>
 </body>
 </html>

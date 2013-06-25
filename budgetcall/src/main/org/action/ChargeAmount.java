@@ -97,7 +97,7 @@ public class ChargeAmount extends Budget {
 		
 		String sql = "select t.ad_table_id, t.record_id, r.name, sum(t.quantity)::text as quantity, round(sum(t.amountUnit),2)::text as amountUnit, round(sum(t.amount),2) as amount \n" +
 				"from bpm_budgetCallLine t \n" +
-				"join bpm_budget_v r on r.ad_table_id=t.ad_table_id and r.record_id=t.record_id \n" +
+				"join bpm_budget_v r on r.bpm_budgetCall_id=t.bpm_budgetCall_id and r.ad_table_id=t.ad_table_id and r.record_id=t.record_id \n" +
 				"where t.bpm_budgetCall_id=? and t.c_charge_id=? " + month+ " \n" +
 				"group by t.ad_table_id, t.record_id, r.name \n" + having + " \n" +
 				"order by t.ad_table_id, t.record_id";

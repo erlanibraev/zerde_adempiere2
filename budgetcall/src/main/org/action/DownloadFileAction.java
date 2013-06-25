@@ -43,6 +43,8 @@ public class DownloadFileAction extends Budget{
 		filename = getPage()+"_"+countDownload;
 
 		ExcelPrint excelFile = new ExcelPrint(this);
+		if(excelFile.getFilePath().equals(NONE))
+			return NONE;
 		File inpFile = new File(excelFile.getFilePath()); 
 	
 		if(!inpFile.exists())

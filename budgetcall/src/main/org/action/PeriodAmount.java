@@ -73,13 +73,6 @@ public class PeriodAmount extends Budget implements ServletRequestAware,ServletR
 		this.period = period;
 	}
 	
-	public int getPeriodID() {
-		return periodID;
-	}
-	public void setPeriodID(int periodID) {
-		this.periodID = periodID;
-	}
-	
 	public Period[] getPeriodBean() {
 		return periodBean;
 	}
@@ -125,6 +118,7 @@ public class PeriodAmount extends Budget implements ServletRequestAware,ServletR
 	public String input() throws Exception {
 		
 		Period[] pp = getValues(callID, tableID, recordID);
+		int count = Integer.valueOf(getServletRequest().getParameter("rowspan"));
 		String upd = "update bpm_budgetCallLine ";
 		String set = "";
 		String where = " where bpm_budgetCall_id="+callID
@@ -137,7 +131,7 @@ public class PeriodAmount extends Budget implements ServletRequestAware,ServletR
 		int quentity = 0;
 		double amountUnit = 0.;
 		double amount = 0.;
-		for(Period p: pp){
+		for(int i = 0; i < count; i++){
 
 			periodSql = "\n and c_period_ID="+Integer.valueOf(getServletRequest().getParameter("period_IDX_"+idx));
 			set = " set ";

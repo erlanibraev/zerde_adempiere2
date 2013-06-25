@@ -26,6 +26,10 @@
 		padding-bottom: 1cm;
 	}
 	
+	form {
+		border-style: none;
+	}
+	
 	a
 	{	
 		text-decoration: none;	
@@ -104,38 +108,18 @@
 		padding-top: 2px;
 	}
 	
-	input.text
-	{
-		border: solid 1px #666666;
-		/*font-family: arial,sans-serif;*/	
-		font-size: 10pt;
-	}
-	
-	textarea.text
-	{
-		border: solid 1px #666666;
-		/*font-family: arial,sans-serif;*/	
-		font-size: 10pt;
-	}
-	
 	select.text
 	{
-		border: solid 1px #666666;
+		border: solid 2px #0A69AD;
 		/*font-family: arial,sans-serif;*/	
 		font-size: 10pt;
 		color: #51585F;
 	}
 	
-	
-	input.medium
-	{
-		width:100px;
-	}
-	
 	input:focus
 	{
-		background-color: #CDD4E9;
-		border: solid 1px #333333;
+		background: #F3E99E; /* Цвет фона */
+	  	border: 2px solid #8DB3DC; /* Параметры рамки */
 	}
 
 }

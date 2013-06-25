@@ -118,17 +118,21 @@ public class ExcelPrint extends Budget {
 	
 	public String getFilePath() throws Exception{
 		
+		//
+		MAttachmentEntry entry = Util.getAttachment(pi, m_ctx, page);
+		if(entry == null) return NONE;
+		
 		if(page.equals(Utils.TEMPLATE_FIRST))
-			return printFirstPage();
+			return printFirstPage(entry);
 		else if(page.equals(Utils.TEMPLATE_SECOND))
-			return printSecondPage();
+			return printSecondPage(entry);
 		else if(page.equals(Utils.TEMPLATE_THREE))
-			return printThreePage();
+			return printThreePage(entry);
 		
 		return Util.UNKNOWN;
 	}
 	
-	private String printFirstPage() throws Exception{
+	private String printFirstPage(MAttachmentEntry entry) throws Exception{
 		
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -136,12 +140,6 @@ public class ExcelPrint extends Budget {
 		for(int b = 0; b < period.length; b++){ // array initialization
 			sumMonth[b] = new BigDecimal(0);
 		}
-		
-		//
-		MAttachmentEntry entry = Util.getAttachment(pi, m_ctx, page);
-		if(entry == null)
-			throw new AdempiereException(Msg.translate(m_ctx, "NotFoundTemplate") + " " + page);
-		
 		
 		// We define a path to generate
 		String fileExtension = entry.getName().substring(entry.getName().lastIndexOf("."),entry.getName().length());
@@ -248,13 +246,7 @@ public class ExcelPrint extends Budget {
 		
 	}
 	
-	private String printSecondPage() throws Exception{
-		
-		//
-		MAttachmentEntry entry = Util.getAttachment(pi, m_ctx, page);
-		if(entry == null)
-			throw new AdempiereException(Msg.translate(m_ctx, "NotFoundTemplate") + " " + page);
-		
+	private String printSecondPage(MAttachmentEntry entry) throws Exception{
 		
 		// We define a path to generate
 		String fileExtension = entry.getName().substring(entry.getName().lastIndexOf("."),entry.getName().length());
@@ -334,13 +326,7 @@ public class ExcelPrint extends Budget {
 		return fullPath.toString();
 	}
 	
-	private String printThreePage() throws Exception{
-		
-		//
-		MAttachmentEntry entry = Util.getAttachment(pi, m_ctx, page);
-		if(entry == null)
-			throw new AdempiereException(Msg.translate(m_ctx, "NotFoundTemplate") + " " + page);
-		
+	private String printThreePage(MAttachmentEntry entry) throws Exception{
 		
 		// We define a path to generate
 		String fileExtension = entry.getName().substring(entry.getName().lastIndexOf("."),entry.getName().length());
