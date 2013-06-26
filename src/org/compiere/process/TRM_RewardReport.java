@@ -35,7 +35,10 @@ import org.compiere.apps.ADialog;
 import org.compiere.model.MAttachmentEntry;
 import org.compiere.model.MBank;
 import org.compiere.model.MBankAccount;
+import org.compiere.model.MBankAccountAcct;
+import org.compiere.model.MElementValue;
 import org.compiere.model.MTRMDeposit;
+import org.compiere.model.X_C_ValidCombination;
 import org.compiere.util.DB;
 import org.compiere.util.Msg;
 
@@ -185,13 +188,13 @@ public class TRM_RewardReport extends SvrProcess
 	    dateFormat.setVerticalAlignment(VerticalAlignment.CENTRE);
 	    
 	    WritableCellFormat totalDateFormat = new WritableCellFormat (customDateFormat);
-	    dateFormat.setBorder(Border.LEFT, BorderLineStyle.THIN, Colour.BLACK);
-	    dateFormat.setBorder(Border.RIGHT, BorderLineStyle.THIN, Colour.BLACK);
-	    dateFormat.setBorder(Border.TOP, BorderLineStyle.THIN, Colour.BLACK);
-	    dateFormat.setBorder(Border.BOTTOM, BorderLineStyle.THIN, Colour.BLACK);
-	    dateFormat.setAlignment(Alignment.RIGHT);
-	    dateFormat.setVerticalAlignment(VerticalAlignment.CENTRE);
-	    totalrowstyle.setBackground(Colour.GREY_25_PERCENT);
+	    totalDateFormat.setBorder(Border.LEFT, BorderLineStyle.THIN, Colour.BLACK);
+	    totalDateFormat.setBorder(Border.RIGHT, BorderLineStyle.THIN, Colour.BLACK);
+	    totalDateFormat.setBorder(Border.TOP, BorderLineStyle.THIN, Colour.BLACK);
+	    totalDateFormat.setBorder(Border.BOTTOM, BorderLineStyle.THIN, Colour.BLACK);
+	    totalDateFormat.setAlignment(Alignment.RIGHT);
+	    totalDateFormat.setVerticalAlignment(VerticalAlignment.CENTRE);
+	    totalDateFormat.setBackground(Colour.GREY_25_PERCENT);
 	    
 	    Number number;
 		Label label;
@@ -249,6 +252,9 @@ public class TRM_RewardReport extends SvrProcess
 		
 		double withdrawal = 0.0;
 		
+		Timestamp from = null;
+		Timestamp to = null;
+		
 		try
 		{
 			PreparedStatement pstmt = DB.prepareStatement(sql.toString(), get_TrxName());
@@ -257,6 +263,9 @@ public class TRM_RewardReport extends SvrProcess
 			while(rs.next())
 			{
 				currentDate = rs.getTimestamp("DateReward");
+				
+				if(from == null) from = currentDate;
+				
 				month = currentDate.getMonth();
 				//Индекс
 				number = new Number(col, index, rs.getInt("Index"), numcolstyle);
@@ -286,6 +295,8 @@ public class TRM_RewardReport extends SvrProcess
 				
 				if(currentDate.getMonth() != month)
 				{
+					to = currentDate;
+					
 					//--------------------------Итого за месяц
 					index++;
 					label = new Label(col, index, "", totalrowstyle);
@@ -303,9 +314,14 @@ public class TRM_RewardReport extends SvrProcess
 					//Фактически начисленное вознаграждение
 					number = new Number(col+4, index, premium.doubleValue(), totalrowstyle);
 					sheet.addCell(number);
+								    	
+					BigDecimal totalSum = getTotalLineSum(from, to);
 					
-					label = new Label(col+5, index, "", totalrowstyle);
-			    	sheet.addCell(label);					
+					number = new Number(col+5, index, totalSum.doubleValue(), totalrowstyle);
+			    	sheet.addCell(number);		
+					
+					from = null;
+					to = null;
 					
 					//-------------------------За вычетом налога
 					index++;
@@ -330,6 +346,9 @@ public class TRM_RewardReport extends SvrProcess
 					
 			    	premium = new BigDecimal(0);
 					month = currentDate.getMonth();
+					
+					
+					
 				}
 				
 				index++;
@@ -350,6 +369,74 @@ public class TRM_RewardReport extends SvrProcess
 			
 		}
 		catch(Exception ex){}
+	}
+	
+	private String Accounts(int C_BankAccount_ID)
+	{
+		String retValue = "";
+		
+		MBankAccount bankAccount = new MBankAccount(getCtx(), C_BankAccount_ID, get_TrxName());
+				
+		MBankAccountAcct accountLine = MBankAccountAcct.getOfBankAccount(getCtx(), bankAccount.get_ID(), get_TrxName());
+				
+		if(accountLine != null)
+		{
+			X_C_ValidCombination validCombination = new X_C_ValidCombination(getCtx(), accountLine.getB_Asset_Acct(), get_TrxName());
+			
+			MElementValue elementValue = new MElementValue(getCtx(), validCombination.getAccount_ID(), get_TrxName());
+			
+			retValue = elementValue.getValue();
+		}
+		
+		return retValue;
+	}
+	
+	private BigDecimal getTotalLineSum(Timestamp dateacctFrom, Timestamp dateacctTo)
+	{
+		if(dateacctFrom == null || dateacctTo == null) return new BigDecimal(0);
+		
+		MTRMDeposit deposit = new MTRMDeposit(getCtx(), TRM_Deposit_ID, get_TrxName());
+		String account = Accounts(deposit.getC_BankAccount_ID());
+		
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		StringBuffer sql = new StringBuffer();
+		
+		dateacctFrom.setDate(dateacctFrom.getDate() - 1);
+		dateacctTo.setDate(dateacctTo.getDate() - 1);
+		
+		sql.append("SELECT SUM(l.AmtSourceCr) as \"Credit\", SUM(l.AmtSourceDr) as \"Debit\" ");
+		sql.append("FROM GL_JournalLine l ");
+		sql.append("INNER JOIN C_ValidCombination v on l.C_ValidCombination_ID = v.C_ValidCombination_ID ");
+		sql.append("INNER JOIN C_ElementValue e on e.C_ElementValue_ID = v.Account_ID ");
+		sql.append("INNER JOIN GL_JournalLine l2 ON l.GL_Journal_ID = l2.GL_Journal_ID ");
+		sql.append("INNER JOIN C_ValidCombination v2 ON l2.C_ValidCombination_ID = v2.C_ValidCombination_ID ");
+		sql.append("INNER JOIN C_ElementValue e2 ON e2.C_ElementValue_ID = v2.Account_ID ");
+		sql.append("INNER JOIN GL_Journal j ON j.GL_Journal_ID = l.GL_Journal_ID ");
+		sql.append("WHERE  e.Value LIKE '%6110%' AND e2.Value LIKE '"+ account +"' AND j.DateAcct BETWEEN '" + dateacctFrom + "' AND '" + dateacctTo + "'");
+		
+		BigDecimal retValue = new BigDecimal(0);
+		
+		try
+		{
+			pstmt = DB.prepareStatement(sql.toString(), get_TrxName());
+			rs = pstmt.executeQuery();
+			
+			if(rs.next())
+			{
+				retValue = rs.getBigDecimal("Credit");	
+			}
+			
+			rs.close(); pstmt.close();
+			rs = null; pstmt = null;
+		}
+		catch(Exception ex){}
+		
+		if(retValue == null)
+			retValue = new BigDecimal(0);
+		
+		return retValue;
 	}
 	
 }
