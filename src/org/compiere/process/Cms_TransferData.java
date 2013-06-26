@@ -67,11 +67,7 @@ public class Cms_TransferData extends SvrProcess {
 		
 		p_AD_Client_ID = Env.getAD_Client_ID(getCtx());
 		p_AD_Org_ID = Env.getAD_Org_ID(getCtx());
-/*		if(proposal.getCreator_ID() == -1)
-			p_AD_User_ID = Env.getAD_User_ID(getCtx());
-		else
-			p_AD_User_ID = proposal.getCreator_ID();
-*/	 	
+
 		p_AD_User_ID = 1000000;
 	 	log.info("");
 		m_ctx = Env.getCtx();
@@ -111,28 +107,21 @@ public class Cms_TransferData extends SvrProcess {
 		
 		sql = new StringBuffer();
 		sql.setLength(0);
-	
-		sql.append("select c_bpartner_id from ad_user where ad_user_id = " + p_AD_User_ID);
-		int C_BPartner_ID = DB.getSQLValue(get_TrxName(), sql.toString());
 		
-		sql = new StringBuffer();
-		sql.setLength(0);
+		MUser creator = new MUser(getCtx(), proposal.getCreator_ID(), get_TrxName());
 		
-		sql.append("select h.hr_department_id from hr_employee e inner join hr_department h on e.hr_department_id = h.hr_department_id where e.c_bpartner_id = " + C_BPartner_ID + " AND e.isactive = 'Y'");
+		sql.append("select h.hr_department_id from hr_employee e inner join hr_department h on e.hr_department_id = h.hr_department_id where e.c_bpartner_id = " + creator.getC_BPartner_ID() + " AND e.isactive = 'Y'");
 		int HR_Department_ID = DB.getSQLValue(get_TrxName(), sql.toString());
 		
 		if(HR_Department_ID != -1)		
 			contract.setHR_Department_ID(HR_Department_ID);
-		if(C_BPartner_ID == -1)
-			throw new Exception("Unable to receive C_BPartner_ID");
-		
+				
 		contract.setC_BPartner_ID(proposal.getC_BPartner_ID());		
-		contract.setResponisbleEmployee_ID(C_BPartner_ID);
+		contract.setResponisbleEmployee_ID(creator.getC_BPartner_ID());
 		if(c_currency > 0)
 			contract.setC_Currency_ID(c_currency);
 		contract.setcms_statusestype_ID(X_cms_statusestype.CMS_Project);				
 		contract.setcms_contractstype_ID(proposal.getcms_contractstype_ID());
-//		contract.setCMS_Contract_ContractNum(dn);
 		
 		
 		//get current date time with Date()

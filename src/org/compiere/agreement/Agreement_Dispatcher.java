@@ -89,8 +89,16 @@ public class Agreement_Dispatcher
 			isApproved = Approve(currentStage, message);
 		}
 		
+		isApproved = isDocumentApproved();
+		
 		return isApproved;
 	}
+	
+	private boolean isDocumentApproved()
+	{
+		return DB.getSQLValue(null, "SELECT AGR_AgreementList_ID FROM AGR_AgreementList WHERE isApproved = 'N' AND Record_ID = " + Record_ID) <= 0;
+	}
+	
 	//Dissaprove document and quit from agreement process
 	private void Dissaprove(MAGRStage stage,String message)
 	{
@@ -246,7 +254,7 @@ public class Agreement_Dispatcher
 					quit(toStage);
 				}
 			}
-		}		
+		}
 	}
 
 	private void quit(MAGRStage stage)
