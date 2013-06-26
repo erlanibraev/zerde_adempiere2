@@ -43,14 +43,5 @@ public class MBPMBudgetCallLine extends X_BPM_BudgetCallLine {
 		super(ctx, rs, trxName);
 	}
 
-	
-	
-	/* 
-	 */
-	@Override
-	protected boolean afterSave(boolean newRecord, boolean success) {
-
-		return super.afterSave(newRecord, success);
-	}
 
 }

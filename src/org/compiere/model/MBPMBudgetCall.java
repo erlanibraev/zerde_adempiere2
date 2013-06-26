@@ -3,6 +3,7 @@
  */
 package org.compiere.model;
 
+import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -52,6 +53,54 @@ public class MBPMBudgetCall extends X_BPM_BudgetCall {
 	public MBPMBudgetCall(Properties ctx, ResultSet rs, String trxName) {
 		super(ctx, rs, trxName);
 	}
+	
+	/*
+	 */
+	@Override
+	protected boolean afterSave(boolean newRecord, boolean success) {
+		
+		super.afterSave(newRecord, success);
+		
+		if(newRecord){
+			
+			MPeriod[] period = getPeriodBudget(getC_Year_ID());
+		
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			
+			String sql_ = "SELECT * FROM bpm_budgetline_v WHERE bpm_budgetline_v.BPM_ABP_ID="+getBPM_ABP_ID();
+			try{
+				pstmt = DB.prepareStatement(sql_,null);
+				rs = pstmt.executeQuery();	
+				while(rs.next()){
+					for(MPeriod p: period){
+						MBPMBudgetCallLine line = new MBPMBudgetCallLine(getCtx(), 0, get_TrxName());
+						line.setBPM_BudgetCall_ID(getBPM_BudgetCall_ID());
+						line.setAD_Table_ID(rs.getInt(I_BPM_BudgetCallLine.COLUMNNAME_AD_Table_ID.toLowerCase()));
+						line.setRecord_ID(rs.getInt(I_BPM_BudgetCallLine.COLUMNNAME_Record_ID.toLowerCase()));
+						line.setAmount(new BigDecimal(0));
+						line.setAmountUnit(new BigDecimal(0));
+						line.setC_Charge_ID(rs.getInt(I_BPM_BudgetCallLine.COLUMNNAME_C_Charge_ID.toLowerCase()));
+						line.setC_Period_ID(p.getC_Period_ID());
+						line.setC_UOM_ID(100); // TODO 100 = шт.
+						line.setPaymentMonth(X_BPM_BudgetCallLine.PAYMENTMONTH_Current);
+						line.setQuantity(0);
+						line.saveEx();
+					}
+				}				
+			}catch(SQLException e){
+				s_log.log(Level.INFO, "product", e);
+			}
+			finally
+			{
+				DB.close(rs, pstmt);
+				rs = null; pstmt = null;
+			}	
+			
+		}
+		
+		return true;
+	}	
 	
 	public static MPeriod[] getPeriodBudget(int Year){
 		
