@@ -147,6 +147,9 @@ public class PeriodAmount extends Budget implements ServletRequestAware,ServletR
 			idx++;
 		}
 		
+		setsQuantity(Integer.valueOf(getServletRequest().getParameter("sQuantity")));
+		setsAmount(getServletRequest().getParameter("sAmount"));
+		
 		return INPUT;
 	}
 	

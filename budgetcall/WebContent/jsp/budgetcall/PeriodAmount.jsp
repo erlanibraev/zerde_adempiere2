@@ -29,16 +29,22 @@
 	<title>Budget Call</title>
 	<link rel="shortcut icon" href="images/logo.png" type="image/jpg" /> 	
 	<link type="text/css" href="css/Main.css" rel="stylesheet">
+	<script src="js/Script.js" type="text/javascript"></script>
 </head>
 <body>
 	<div>
-		<div  id="back" class="letter">
+		<div  id="back" class="letterLeft letter">
 			<a class="aBack" title="Вернуться назад" href="<s:url action='chargeAmount' >
 					<s:param name="callID"><s:property value="callID" /></s:param>
 					<s:param name="chargeID"><s:property value="chargeID" /></s:param>
 					<s:param name="periodID"><s:property value="periodID" /></s:param>
 					<s:param name="processID"><s:property value="processID" /></s:param>
 				</s:url>" ><img src="images/back.png" /></a>
+			<img src="images/separator.png" style="padding-right: 4px;" />
+			<a class="aBack" title="Главная страница" href="<s:url action='index' >
+					<s:param name="callID"><s:property value="callID" /></s:param>
+					<s:param name="processID"><s:property value="processID" /></s:param>
+				</s:url>" ><img src="images/home.png" /></a>
 		</div>
 		<%@ include file="/jsp/budgetcall/PrintExcel.jsp" %>
 				
@@ -91,15 +97,15 @@
 						<td><s:property value="%{#a.uom}" /></td>
 						<td><s:property value="%{#a.month}" /></td>
 						<td>                             
-	                		<s:textfield value="%{#a.quantity}" name="quantity_IDX_%{#stat.count}" size="11"  theme="simple" readonly="false" class="form-text" 
+	                		<s:textfield value="%{#a.quantity}" name="quantity_IDX_%{#stat.count}" size="11"  theme="simple" readonly="false" 
 	                				onkeypress="return isQuantity(event)"
-	                				onkeyup="do_math(this.form, 'amount_IDX_%{#stat.count}', 'quantity_IDX_%{#stat.count}', 'amountUnit_IDX_%{#stat.count}')" /> 
+	                				onkeyup="do_math(this.form, 'amount_IDX_%{#stat.count}', 'quantity_IDX_%{#stat.count}', 'amountUnit_IDX_%{#stat.count}'); summa(this.form, 'quantity_IDX_%{#stat.count}','sQuantity', %{#amo.periodBean.length}, 'quantity');" /> 
 	                		<s:hidden name="period_IDX_%{#stat.count}" value="%{#a.periodID}" />
 	            		</td>
 	            		<td>                             
-	                		<s:textfield value="%{#a.amountUnit}" name="amountUnit_IDX_%{#stat.count}" size="11"  theme="simple" readonly="false" class="form-text"
+	                		<s:textfield value="%{#a.amountUnit}" name="amountUnit_IDX_%{#stat.count}" size="11"  theme="simple" readonly="false" 
 	                				onkeypress="return isAmountUnit(event)"
-	                				onkeyup="do_math(this.form, 'amount_IDX_%{#stat.count}', 'quantity_IDX_%{#stat.count}', 'amountUnit_IDX_%{#stat.count}')" />  
+	                				onkeyup="do_math(this.form, 'amount_IDX_%{#stat.count}', 'quantity_IDX_%{#stat.count}', 'amountUnit_IDX_%{#stat.count}'); summa(this.form, 'amount_IDX_%{#stat.count}','sAmount', %{#amo.periodBean.length}, 'amount');" />  
 	            		</td>  
 	            		<td>                             
 	                		<s:textfield value="%{#a.amount}" name="amount_IDX_%{#stat.count}" size="11" tabindex="-1" theme="simple" readonly="true" />  
@@ -112,10 +118,12 @@
 			    	<th scope="col">&nbsp;</th>
 			    	<th scope="col">&nbsp;</th>
 			    	<th scope="col">
+			    		<s:property value="sQuantity" />
 			    		<input type="text" value="<%= periodTotal.getsQuantity() %>" style="border-color:black;" name="sQuantity" size="10" tabindex="-1" readonly="true" />
 			    	</th>
 			    	<th scope="col">&nbsp;</th>
 			    	<th scope="col">
+			    		<s:property value="sAmount" />
 			    		<input type="text" value="<%= periodTotal.getsAmount() %>" style="border-color:black;" name="sAmount" size="10" tabindex="-1" readonly="true" />
 			    	</th>
 			    	<th scope="col">&nbsp;</th>
@@ -137,63 +145,7 @@
 			</s:form>
 		</fieldset>
 	</div>
-
-	<script>
 	
-		function getChar(event) {
-			
-			if (event.which == null) {
-				if (event.keyCode < 32) return null;
-			    return String.fromCharCode(event.keyCode); // IE
-			}
-	
-			if (event.which!=0 && event.charCode!=0) {
-				if (event.which < 32) return null;
-				return String.fromCharCode(event.which);   // остальные
-			}
-	
-			return null; // специальная клавиша
-		}
-	
-		function isQuantity(event) {
-			  
-			e = event;
-			if (e.ctrlKey || e.altKey || e.metaKey) return; 
-			var chr = getChar(e);
-			if (chr == null) return;
-			if (chr < '0' || chr > '9') {
-				return false;
-			}else return true;
-			  
-		}
-		
-		function isAmountUnit(event) {
-			  
-			  e = event;
-			  if (e.ctrlKey || e.altKey || e.metaKey) return; 
-			  var chr = getChar(e);
-			  if (chr == null) return;
-			  if(chr != '.'){
-				  if (chr < '0' || chr > '9') {
-					return false;
-				  }else return true;
-			  }else return true;
-			  
-		}
-
-	
-		function do_math(f,edit,edit1,edit2)
-		{
-	
-		    var t1 = f.elements[edit1].value;
-		    var t2 = f.elements[edit2].value;
-		    
-		    var res = parseInt(t1)*parseFloat(t2);
-		    f.elements[edit].value = isNaN(res) ? '' : Math.round(res * 100) / 100;
-		}
-	
-	</script>
-		
 	<%@ include file="/jsp/budgetcall/Footer.jsp" %>
 </body>
 </html>
