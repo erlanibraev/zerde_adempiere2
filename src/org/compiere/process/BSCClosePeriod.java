@@ -13,7 +13,7 @@ import org.compiere.util.Env;
 
 /**
  * @author Y.Ibrayev
- * Close period do BSC Card
+ * Close period for BSC Card
  */
 public class BSCClosePeriod extends SvrProcess {
 

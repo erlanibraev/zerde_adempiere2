@@ -13,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
+import java.util.Properties;
 import java.util.logging.Level;
 
 import javax.swing.JPanel;
@@ -21,6 +22,7 @@ import org.compiere.apps.ConfirmPanel;
 import org.compiere.apps.form.FormFrame;
 import org.compiere.apps.form.FormPanel;
 import org.compiere.grid.ed.AutoCompletion;
+import org.compiere.grid.ed.VComboBox;
 import org.compiere.model.MParameter;
 import org.compiere.model.MParameterLine;
 import org.compiere.model.MPeriod;
@@ -33,30 +35,47 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
+import org.compiere.util.Trx;
+import org.compiere.process.ProcessCall;
 
 /**
  * @author Y.Ibrayev
  *
  */
-public class BSCView extends CPanel implements FormPanel, ActionListener{
+public class BSCView extends CPanel implements FormPanel, ActionListener {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 4676814519138213648L;
 	private static CLogger log = CLogger.getCLogger (ViewPI.class);
-	private int         m_WindowNo = 0;
-	private FormFrame 	m_frame;
+	private int m_WindowNo = 0;
+	private FormFrame m_frame;
 	private ConfirmPanel confirmPanel = new ConfirmPanel();
 	private CPanel mainPanel = new CPanel();
 	private GridBagLayout parameterLayout = new GridBagLayout();
 	private CPanel loadPanel = new CPanel(new FlowLayout(FlowLayout.LEADING));
-	private CComboBox cbParameter = new CComboBox();
-	private CComboBox cbPeriod = new CComboBox();
+	private VComboBox cbParameter = new VComboBox();
+	private VComboBox cbPeriod = new VComboBox();
 	private CButton bBack = new CButton();
 	private MPeriod period = null;
 	private MParameter m_Parameter = null;
-	
+
+	public MParameter getM_Parameter() {
+		return m_Parameter;
+	}
+
+	public void setM_Parameter(MParameter m_Parameter) {
+		this.m_Parameter = m_Parameter;
+	}
+
+	public MPeriod getPeriod() {
+		return period;
+	}
+
+	public void setPeriod(MPeriod period) {
+		this.period = period;
+	}
 
 	/* (non-Javadoc)
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
@@ -70,6 +89,7 @@ public class BSCView extends CPanel implements FormPanel, ActionListener{
 			load(ind.getParameter().getBSC_Parameter_ID());
 		} else if (e.getSource() == cbParameter && cbParameter.getSelectedItem() != null) {
 			KeyNamePair knp = (KeyNamePair) cbParameter.getSelectedItem();
+//			m_Parameter = new MParameter(Env.getCtx(),knp.getKey(),null);
 			load(knp.getKey());
 		} else if (e.getSource() == cbPeriod && cbPeriod.getSelectedItem() != null) {
 			KeyNamePair knp = (KeyNamePair) cbPeriod.getSelectedItem();
@@ -114,6 +134,9 @@ public class BSCView extends CPanel implements FormPanel, ActionListener{
 		log.fine("BSCView");
 		m_WindowNo = WindowNo;
 		m_frame = frame;
+		
+		prepare();
+		
 		try {
 			initLoadPanel();
 			initMainPanel();
@@ -127,15 +150,26 @@ public class BSCView extends CPanel implements FormPanel, ActionListener{
 		} catch(Exception e) {
 			log.log(Level.SEVERE,"BSCView: ",e);
 		}
-		
 	}
 
+	private void prepare() {
+		try {
+			int BSC_Parameter_ID = Env.getContextAsInt(Env.getCtx(), "BSC_Parameter_ID");
+			if (BSC_Parameter_ID > 0) {
+				m_Parameter = new MParameter(Env.getCtx(),BSC_Parameter_ID,null);
+				period = m_Parameter.getPeriod();
+			}
+		} catch(Exception e) {
+			log.log(Level.SEVERE,"BSCView: ",e);
+		}
+	}
+	
 	private CComboBox initCbParameter() {
 		String sql = MRole.getDefault().addAccessSQL(
 				"SELECT BSC_Parameter_ID, Name FROM BSC_Parameter ORDER BY 2",
 				"BSC_Parameter", MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);	//	all
 		KeyNamePair[] pp = DB.getKeyNamePairs(sql, true);
-		cbParameter = new CComboBox(pp);
+		cbParameter = new VComboBox(pp);
 		AutoCompletion.enable(cbParameter);
 		cbParameter.addActionListener(this); 
 		return cbParameter;
@@ -146,7 +180,7 @@ public class BSCView extends CPanel implements FormPanel, ActionListener{
 				"SELECT C_Period_ID, Name FROM C_Period ORDER BY 2",
 				"C_Period", MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);	//	all
 		KeyNamePair[] pp1 = DB.getKeyNamePairs(sql, true);
-		cbPeriod = new CComboBox(pp1);
+		cbPeriod = new VComboBox(pp1);
 		AutoCompletion.enable(cbPeriod);
 		cbPeriod.addActionListener(this);
 		return cbPeriod;
@@ -168,8 +202,8 @@ public class BSCView extends CPanel implements FormPanel, ActionListener{
 	 * 
 	 */
 	private void initMainPanel() {
-		m_Parameter = new MParameter(Env.getCtx(),1000000,null);
-		period = m_Parameter.getPeriod();
+//		m_Parameter = new MParameter(Env.getCtx(),1000000,null);
+//		period = m_Parameter.getPeriod();
 		mainPanel.setLayout(new GridBagLayout());
 		load((m_Parameter == null? 0: m_Parameter.getBSC_Parameter_ID()));
 	}
@@ -204,10 +238,13 @@ public class BSCView extends CPanel implements FormPanel, ActionListener{
 		log.fine("BSC_Parameter_ID=" + BSC_Parameter_ID);
 		if (BSC_Parameter_ID == 0)
 			return;
-		if (period == null && period.getC_Period_ID() == 0)
-			return;
-		int AD_Client_ID = Env.getAD_Client_ID(Env.getCtx());
 		m_Parameter = new MParameter (Env.getCtx(), BSC_Parameter_ID, null);
+		cbParameter.setValue(BSC_Parameter_ID);
+		
+		if (period == null || period.getC_Period_ID() == 0) {
+			period = m_Parameter.getPeriod();
+		}	
+		
 		m_Parameter.setPeriod(period);
 
 		mainPanel.removeAll();
@@ -285,5 +322,4 @@ public class BSCView extends CPanel implements FormPanel, ActionListener{
 		indicator.addActionListener(this);
 		mainPanel.add(indicator,gr);
 	}
-
 }
