@@ -30,7 +30,7 @@ public interface I_BSC_Parameter
     /** TableName=BSC_Parameter */
     public static final String Table_Name = "BSC_Parameter";
 
-    /** AD_Table_ID=1000213 */
+    /** AD_Table_ID=1000217 */
     public static final int Table_ID = MTable.getTable_ID(Table_Name);
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);

@@ -30,7 +30,7 @@ public class X_BSC_Parameter extends PO implements I_BSC_Parameter, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130514L;
+	private static final long serialVersionUID = 20130627L;
 
     /** the default Constructor */
     public X_BSC_Parameter(Properties ctx)

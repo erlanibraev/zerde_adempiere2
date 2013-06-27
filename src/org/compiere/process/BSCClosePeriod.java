@@ -113,10 +113,31 @@ public class BSCClosePeriod extends SvrProcess {
 			log.info("doctype is not found");
 			return false;
 		}
+
 		ADialog dialog = new ADialog();
+		boolean isWork = true;
+		if (isBSCClosed(getC_Period_ID())) {
+			
+		}
+		
+		if (isWork) {
+			return result;
+		}
+		
+		
 		//TODO Хоть что-нибудь сделать!!!!!!!!!!!!!!!
+		//TODO Сделать запись в главном журнале?!
 		return result;
 	}
 
-
+	public static boolean isBSCClosed(int C_Period_ID) {
+		boolean result = false;
+		if (C_Period_ID <=0) {
+			return result;
+		}
+		
+		result = true;
+		
+		return result;
+	}
 }
