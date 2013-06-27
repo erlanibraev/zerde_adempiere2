@@ -24,8 +24,8 @@
  </style>
 </head>
 <body>
-<div id="terra"><img src="Error.png" style="float:left;">
-			<font size="+2"> Заданы неверные параметры для отображения страницы. </br>
+<div id="terra"><img src="images/Error.png" style="float:left;">
+			<font size="+2"> Заданы неверные параметры для отображения страницы. <br/>
             Обратитесь к <a href="mailto:">администратору</a> системы. </font>
 </div>
 </body>

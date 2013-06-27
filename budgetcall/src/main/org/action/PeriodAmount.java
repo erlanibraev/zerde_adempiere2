@@ -9,7 +9,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -37,10 +36,9 @@ public class PeriodAmount extends Budget implements ServletRequestAware,ServletR
 	private String name;
 	private Period[] period;
 	private Period[] periodBean;
-	private int periodID;
 	private int sQuantity;
 	private String sAmount;
-	
+	private final String sessionKey = "periodamount";
 	private HttpServletRequest request;
 	private HttpServletResponse response;
 	
@@ -107,7 +105,7 @@ public class PeriodAmount extends Budget implements ServletRequestAware,ServletR
 		setPeriod(getValues(callID, tableID, recordID));
 		setPage(Utils.TEMPLATE_THREE);
 		getClass().getDeclaredFields();
-		session.put("periodamount", this);
+		session.put(sessionKey, this);
 		
 		return SUCCESS;
 	}
@@ -117,7 +115,6 @@ public class PeriodAmount extends Budget implements ServletRequestAware,ServletR
 	@Override
 	public String input() throws Exception {
 		
-		Period[] pp = getValues(callID, tableID, recordID);
 		int count = Integer.valueOf(getServletRequest().getParameter("rowspan"));
 		String upd = "update bpm_budgetCallLine ";
 		String set = "";
@@ -132,14 +129,14 @@ public class PeriodAmount extends Budget implements ServletRequestAware,ServletR
 		double amountUnit = 0.;
 		double amount = 0.;
 		for(int i = 0; i < count; i++){
+			
+			quentity = Integer.valueOf(getServletRequest().getParameter("quantity_IDX_"+idx));
+			amountUnit = Double.valueOf(getServletRequest().getParameter("amountUnit_IDX_"+idx));
+			amount = Double.valueOf(getServletRequest().getParameter("amount_IDX_"+idx));
 
 			periodSql = "\n and c_period_ID="+Integer.valueOf(getServletRequest().getParameter("period_IDX_"+idx));
-			set = " set ";
-			quentity = Integer.valueOf(getServletRequest().getParameter("quantity_IDX_"+idx));
-			set += "\n quantity="+quentity;
-			amountUnit = Double.valueOf(getServletRequest().getParameter("amountUnit_IDX_"+idx));
+			set = " set quantity="+quentity;
 			set += "\n ,amountUnit="+amountUnit;
-			amount = Double.valueOf(getServletRequest().getParameter("amount_IDX_"+idx));
 			set += "\n ,amount="+amount;
 			
 			DB.executeUpdate(upd+set+where+periodSql, null);
@@ -149,6 +146,11 @@ public class PeriodAmount extends Budget implements ServletRequestAware,ServletR
 		
 		setsQuantity(Integer.valueOf(getServletRequest().getParameter("sQuantity")));
 		setsAmount(getServletRequest().getParameter("sAmount"));
+		
+		PeriodAmount pa = (PeriodAmount) session.get(sessionKey);
+		pa.setsQuantity(Integer.valueOf(getServletRequest().getParameter("sQuantity")));
+		pa.setsAmount(getServletRequest().getParameter("sAmount"));
+		session.put(sessionKey, pa);
 		
 		return INPUT;
 	}

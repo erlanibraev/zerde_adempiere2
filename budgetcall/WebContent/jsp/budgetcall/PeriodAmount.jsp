@@ -94,23 +94,23 @@
 					<s:if test="#stat.count > 1">
 						<tr>
 					</s:if>
-						<td><s:property value="%{#a.uom}" /></td>
-						<td><s:property value="%{#a.month}" /></td>
-						<td>                             
+						<td bgcolor="#DAE1EA"><s:property value="%{#a.uom}" /></td>
+						<td bgcolor="#DAE1EA"><b><s:property value="%{#a.month}" /></b></td>
+						<td bgcolor="#DAE1EA">                             
 	                		<s:textfield value="%{#a.quantity}" name="quantity_IDX_%{#stat.count}" size="11"  theme="simple" readonly="false" 
 	                				onkeypress="return isQuantity(event)"
 	                				onkeyup="do_math(this.form, 'amount_IDX_%{#stat.count}', 'quantity_IDX_%{#stat.count}', 'amountUnit_IDX_%{#stat.count}'); summa(this.form, 'quantity_IDX_%{#stat.count}','sQuantity', %{#amo.periodBean.length}, 'quantity');" /> 
 	                		<s:hidden name="period_IDX_%{#stat.count}" value="%{#a.periodID}" />
 	            		</td>
-	            		<td>                             
+	            		<td bgcolor="#DAE1EA">                             
 	                		<s:textfield value="%{#a.amountUnit}" name="amountUnit_IDX_%{#stat.count}" size="11"  theme="simple" readonly="false" 
 	                				onkeypress="return isAmountUnit(event)"
 	                				onkeyup="do_math(this.form, 'amount_IDX_%{#stat.count}', 'quantity_IDX_%{#stat.count}', 'amountUnit_IDX_%{#stat.count}'); summa(this.form, 'amount_IDX_%{#stat.count}','sAmount', %{#amo.periodBean.length}, 'amount');" />  
 	            		</td>  
-	            		<td>                             
+	            		<td bgcolor="#DAE1EA">                             
 	                		<s:textfield value="%{#a.amount}" name="amount_IDX_%{#stat.count}" size="11" tabindex="-1" theme="simple" readonly="true" />  
 	            		</td>  
-	            		<td><s:property value="%{#a.payment}" /></td>
+	            		<td bgcolor="#DAE1EA"><s:property value="%{#a.payment}" /></td>
 					</tr>
 				</s:iterator>
 				<tr class="trLightBlue">
@@ -119,12 +119,12 @@
 			    	<th scope="col">&nbsp;</th>
 			    	<th scope="col">
 			    		<s:property value="sQuantity" />
-			    		<input type="text" value="<%= periodTotal.getsQuantity() %>" style="border-color:black;" name="sQuantity" size="10" tabindex="-1" readonly="true" />
+			    		<input type="text" value="<%= periodTotal.getsQuantity() %>" style="border-color:black; background-color: #DED592; font-weight: bold;" name="sQuantity" size="10" tabindex="-1" readonly />
 			    	</th>
 			    	<th scope="col">&nbsp;</th>
 			    	<th scope="col">
 			    		<s:property value="sAmount" />
-			    		<input type="text" value="<%= periodTotal.getsAmount() %>" style="border-color:black;" name="sAmount" size="10" tabindex="-1" readonly="true" />
+			    		<input type="text" value="<%= periodTotal.getsAmount() %>" style="border-color:black; background-color: #DED592; font-weight: bold;" name="sAmount" size="10" tabindex="-1" readonly />
 			    	</th>
 			    	<th scope="col">&nbsp;</th>
 				</tr>
