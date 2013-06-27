@@ -32,27 +32,26 @@ public class DocumentEngineNWD extends DocumentEngine {
 		if (processAction != null) {
 			//TODO Что делать с процессами
 		} 
-		if(ACTION_Approve.equals(docAction)){
-			result = approveIt();
-		} else if (ACTION_Close.equals(docAction)){
-			result = closeIt();
-		} else if (ACTION_Complete.equals(docAction)) { 
-			result = STATUS_Completed.equals(completeIt()); 
-		} else if (ACTION_Invalidate.equals(docAction)){
-			result = invalidateIt();
-		} else if(ACTION_Prepare.equals(docAction)){
-			result = STATUS_WaitingConfirmation.equals(prepareIt());
-		} else if (ACTION_ReActivate.equals(docAction)){
-			result = reActivateIt();
-		} else if (ACTION_Reject.equals(docAction)) { 
-			result = rejectIt(); 
-		} else if (ACTION_Reverse_Accrual.equals(docAction)){
-			result = reverseAccrualIt();
-		} else if (ACTION_Reverse_Correct.equals(docAction)){
-			result = reverseCorrectIt();
-		} else { 
-			result = false;	
-		}
+		
+		if(ACTION_Prepare.equals(docAction)){
+			result = STATUS_WaitingConfirmation.equals(prepareIt());}
+		
+		else if(ACTION_Approve.equals(docAction)){
+			result = approveIt();} 
+		
+		else if (ACTION_Reject.equals(docAction)) { 
+			result = rejectIt();}
+		
+		else if (ACTION_Complete.equals(docAction)) { 
+			result = STATUS_Completed.equals(completeIt());} 
+		
+		else if (ACTION_Close.equals(docAction)){
+			result = closeIt();} 
+		
+		else if (ACTION_ReActivate.equals(docAction)){
+			result = reActivateIt();} 
+		else { result = false;}
+		
 		return result;
 	}
 	
@@ -62,22 +61,25 @@ public class DocumentEngineNWD extends DocumentEngine {
 	 */
 	@Override
 	public String[] getActionOptions() {
-		return new String[] {
-				ACTION_Approve, //1
-				ACTION_Close,   //2
-				ACTION_Complete, //3
-				ACTION_Invalidate, //4
-				ACTION_None, //5
-				//ACTION_Post, //6
-				ACTION_Prepare, //7
-				ACTION_ReActivate, //8
-				ACTION_Reject, //9
-				ACTION_Reverse_Accrual, //10
-				ACTION_Reverse_Correct, //11
-				//ACTION_Unlock, //12
-				ACTION_Void, //13 
-				ACTION_WaitComplete //14
-				};
+		/*return new String[] {ACTION_Approve, ACTION_Close, ACTION_Complete, ACTION_Invalidate, ACTION_None, ACTION_Post, ACTION_Prepare,
+				ACTION_ReActivate, ACTION_Reject, ACTION_Reverse_Accrual, ACTION_Reverse_Correct, ACTION_Unlock, ACTION_Void, ACTION_WaitComplete};*/
+
+		if (isDrafted() || isNotApproved() || isInvalid())
+			return new String[] {ACTION_Prepare, ACTION_Void};
+		
+		if (isApproved())
+			return new String[] {ACTION_Complete, ACTION_Void};
+		
+		if (isWaiting())
+			return new String[] {ACTION_Approve, ACTION_Reject, ACTION_Void};
+		
+		if (isCompleted())
+			return new String[] {ACTION_Close, ACTION_ReActivate, ACTION_Void};
+		
+		if (isClosed())
+			return new String[] {ACTION_ReActivate, ACTION_ReOpen};
+
+		return new String[] {};
 	}
 
 }

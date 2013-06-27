@@ -26,19 +26,21 @@ public class NWD_SendMail extends SvrProcess {
 	private Properties m_ctx;
 	/** */
 	private String docstatus = null;
+	MBSCNetWorkDiag m_netNetWorkDiag = null;
 	@Override
 	protected void prepare() {
 		m_ctx = Env.getCtx();
 		docstatus = Env.getContext(getCtx(), "2|0|DocStatus");
+		m_netNetWorkDiag = new MBSCNetWorkDiag(m_ctx, getRecord_ID(), get_TrxName());
 	}
 
 	@Override
 	protected String doIt() throws Exception {
 		if(docstatus.equals("DR")){
-			extend.org.compiere.utils.Util.sendMail(1000050, 100, "TEST when docstatus DR", "message for Шуйпанова Айжан Мендыхановна", false);
+			System.out.println("Шуйпанова Айжан Мендыхановна");//extend.org.compiere.utils.Util.sendMail(1000050, 100, "TEST when docstatus DR", " Шуйпанова Айжан Мендыхановна, Approve this document. DocNo - "+m_netNetWorkDiag.getDocumentNo(), false);
 		}
 		else if (docstatus.equals("WC")){
-			extend.org.compiere.utils.Util.sendMail(1000052, 100, "TEST when docstatus WC", "message for Кенжигулова Динара Сансызбаевна", false);
+			System.out.println("Кенжигулова Динара Сансызбаевна");//extend.org.compiere.utils.Util.sendMail(1000052, 100, "TEST when docstatus WC", "message for Кенжигулова Динара Сансызбаевна", false);
 		}
 		else if(docstatus.equals("AP")){
 			sendMailAction();
@@ -49,12 +51,11 @@ public class NWD_SendMail extends SvrProcess {
 		
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		MBSCNetWorkDiag netWorkDiag = new MBSCNetWorkDiag(m_ctx, getRecord_ID(), get_TrxName());
 		String sql = "SELECT AD_User_ID "+ 
 					" FROM bsc_responsible_executor \n"+
 					" WHERE AD_User_ID IS NOT NULL AND bsc_action_id IN (SELECT bsc_action_id FROM bsc_action WHERE bsc_networkdiagsubline_id IN \n"+ 
 					" (SELECT bsc_networkdiagsubline_id FROM bsc_networkdiagsubline WHERE bsc_networkdiagline_id IN \n"+
-			        " (SELECT bsc_networkdiagline_id FROM bsc_networkdiagline WHERE bsc_networkdiag_id ="+ netWorkDiag.getBSC_NetWorkDiag_ID()+")))";
+			        " (SELECT bsc_networkdiagline_id FROM bsc_networkdiagline WHERE bsc_networkdiag_id ="+ m_netNetWorkDiag.getBSC_NetWorkDiag_ID()+")))";
 		
 		ArrayList<Integer> sendList = new ArrayList<Integer>();
 		

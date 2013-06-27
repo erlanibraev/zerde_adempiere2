@@ -44,7 +44,6 @@ public class MBSCNetWorkDiag extends X_BSC_NetWorkDiag implements DocAction {
 		if(BSC_NetWorkDiag_ID == 0)
 		{
 			setDateAcct(new Timestamp(System.currentTimeMillis()));
-			setDocAction(DOCACTION_Complete);
 			setDocStatus(DOCSTATUS_Drafted);
 			setProcessed(false);
 		}
@@ -145,20 +144,18 @@ public class MBSCNetWorkDiag extends X_BSC_NetWorkDiag implements DocAction {
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_PREPARE);
 			if (m_processMsg != null)
 				return DocAction.STATUS_Invalid;
-			
 		return DocAction.STATUS_WaitingConfirmation;
 	}
 
 	@Override
 	public boolean approveIt() {
-		setDocStatus(DOCSTATUS_Approved);
-		setDocAction(DOCACTION_Complete);	
+		//setDocAction(DOCACTION_Complete);	
 		return true;
 	}
 
 	@Override
 	public boolean rejectIt() {
-		System.out.println("------>>------------->>MBSCNetWorkDiag.rejectIt()");
+		//setDocAction(DOCACTION_Prepare);
 		return true;
 	}
 	
@@ -168,11 +165,6 @@ public class MBSCNetWorkDiag extends X_BSC_NetWorkDiag implements DocAction {
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_COMPLETE);
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
-		
-		if (!prepareIt().equals(DocAction.STATUS_WaitingConfirmation))
-		{
-			return DocAction.STATUS_Invalid;
-		}
 		//User Validation
 		String valid = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_COMPLETE);
 		if (valid != null)
@@ -180,8 +172,8 @@ public class MBSCNetWorkDiag extends X_BSC_NetWorkDiag implements DocAction {
 			m_processMsg = valid;
 			return DocAction.STATUS_Invalid;
 		}
-	
-		setDocAction(DOCACTION_Close);
+		setProcessed(true);
+		//setDocAction(DOCACTION_Close);
 		return DocAction.STATUS_Completed;
 	}
 
@@ -198,9 +190,7 @@ public class MBSCNetWorkDiag extends X_BSC_NetWorkDiag implements DocAction {
 
 	@Override
 	public boolean closeIt() {
-		setDocStatus(DOCSTATUS_Closed);
-		setDocAction(DOCACTION_Re_Activate);
-		setProcessed(true);
+		
 		return true;
 	}
 
@@ -251,8 +241,8 @@ public class MBSCNetWorkDiag extends X_BSC_NetWorkDiag implements DocAction {
 				return false;
 		
 		setProcessed(false);	
-		setDocStatus(DOCSTATUS_Drafted);
-		setDocAction(DOCACTION_Prepare);
+		//setDocStatus(DOCSTATUS_Drafted);
+		//setDocAction(DOCACTION_Prepare);
 		return true;
 	}
 
