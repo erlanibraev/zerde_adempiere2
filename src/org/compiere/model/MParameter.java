@@ -415,5 +415,26 @@ public class MParameter extends X_BSC_Parameter {
 	public void setValue(String value) {
 		getCurrentParameterLine().setValue(value);
 	}
+
+	/**
+	 * @param c_Period_ID
+	 */
+	public void createNewLine(int c_Period_ID) {
+		int prevC_Period_ID = getprevC_Period_ID(c_Period_ID);
+		MParameterLine prevParameterLine = getParameterLine(MPeriod.get(getCtx(), prevC_Period_ID));
+		// TODO Auto-generated method stub
+		
+	}
+
+	/**
+	 * @param c_Period_ID
+	 * @return
+	 */
+	private int getprevC_Period_ID(int c_Period_ID) {
+		int result = 0;
+		// TODO Auto-generated method stub
+		
+		return result;
+	}
 	
 }

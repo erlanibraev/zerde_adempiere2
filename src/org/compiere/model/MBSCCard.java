@@ -424,4 +424,41 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 		}
 		return super.beforeSave(newRecord) && b;
 	}
+	
+	public void copyCard(MPeriod period) {
+		if(period != null && period.getC_Period_ID() > 0) {
+			int new_BSC_Card_ID = createNewCard(period.getC_Period_ID());
+			if(new_BSC_Card_ID > 0) {
+				copyLines(new_BSC_Card_ID, period.getC_Period_ID());
+			}
+		}
+	}
+	
+	private int createNewCard(int C_Period_ID) {
+		int result = 0;
+		MBSCCard newCard = new MBSCCard(Env.getCtx(),0,get_TrxName());
+		newCard.setC_BPartner_ID(getC_BPartner_ID());
+		newCard.setName(getName());
+		newCard.setBSC_Parameter_ID(getBSC_Parameter_ID());
+		newCard.setDescription(getDescription());
+		newCard.setAD_Client_ID(getAD_Client_ID());
+		newCard.setAD_Org_ID(getAD_Org_ID());
+		newCard.setC_Period_ID(C_Period_ID);
+		newCard.setC_DocType_ID(getC_DocType_ID());
+		newCard.setC_DocTypeTarget_ID(getC_DocTypeTarget_ID());
+		newCard.setCalcButton(getCalcButton());
+		
+		newCard.getParameter().createNewLine(C_Period_ID);
+		
+		if (newCard.save()) {
+			result = newCard.getBSC_Card_ID();
+		}
+		return result;
+	}
+	
+	private void copyLines(int BSC_Card_ID, int C_Period_ID) {
+		for(MBSCCardLine cardLine:getCardLine()) {
+			cardLine.copyCardLine(BSC_Card_ID, C_Period_ID);
+		}
+	}
 }

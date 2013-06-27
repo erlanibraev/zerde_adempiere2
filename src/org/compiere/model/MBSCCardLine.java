@@ -362,4 +362,7 @@ public class MBSCCardLine extends X_BSC_CardLine {
 		return result;
 	}
 	
+	public void copyCardLine(int BSC_Card_ID, int C_Period_ID) {
+		// TODO
+	}
 }
