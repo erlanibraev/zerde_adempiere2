@@ -37,8 +37,10 @@ public class NWD_SendMail extends SvrProcess {
 		if(docstatus.equals("DR")){
 			extend.org.compiere.utils.Util.sendMail(1000050, 100, "TEST when docstatus DR", "message for Шуйпанова Айжан Мендыхановна", false);
 		}
+		else if (docstatus.equals("WC")){
+			extend.org.compiere.utils.Util.sendMail(1000052, 100, "TEST when docstatus WC", "message for Кенжигулова Динара Сансызбаевна", false);
+		}
 		else if(docstatus.equals("AP")){
-			extend.org.compiere.utils.Util.sendMail(1000052, 100, "TEST when docstatus AP", "message for Кенжигулова Динара Сансызбаевна", false);
 			sendMailAction();
 		}
 		return Msg.translate(m_ctx, "Success");

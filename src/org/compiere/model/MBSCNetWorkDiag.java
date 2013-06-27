@@ -151,7 +151,8 @@ public class MBSCNetWorkDiag extends X_BSC_NetWorkDiag implements DocAction {
 
 	@Override
 	public boolean approveIt() {
-		System.out.println("------>>------------>>MBSCNetWorkDiag.approveIt()");
+		setDocStatus(DOCSTATUS_Approved);
+		setDocAction(DOCACTION_Complete);	
 		return true;
 	}
 
@@ -167,10 +168,9 @@ public class MBSCNetWorkDiag extends X_BSC_NetWorkDiag implements DocAction {
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_COMPLETE);
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
-		MBSCNetWorkDiagLine[] lines = getLines(false);
-		if (lines.length == 0)
+		
+		if (!prepareIt().equals(DocAction.STATUS_WaitingConfirmation))
 		{
-			m_processMsg = "@NoLines@";
 			return DocAction.STATUS_Invalid;
 		}
 		//User Validation
@@ -180,8 +180,7 @@ public class MBSCNetWorkDiag extends X_BSC_NetWorkDiag implements DocAction {
 			m_processMsg = valid;
 			return DocAction.STATUS_Invalid;
 		}
-		//
-		setProcessed(true);
+	
 		setDocAction(DOCACTION_Close);
 		return DocAction.STATUS_Completed;
 	}
@@ -199,7 +198,9 @@ public class MBSCNetWorkDiag extends X_BSC_NetWorkDiag implements DocAction {
 
 	@Override
 	public boolean closeIt() {
-		// TODO Auto-generated method stub
+		setDocStatus(DOCSTATUS_Closed);
+		setDocAction(DOCACTION_Re_Activate);
+		setProcessed(true);
 		return true;
 	}
 
@@ -215,6 +216,8 @@ public class MBSCNetWorkDiag extends X_BSC_NetWorkDiag implements DocAction {
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSEACCRUAL);
 		if (m_processMsg != null)
 			return false;
+		setDocStatus(DOCSTATUS_NotApproved);
+		setDocAction(DOCACTION_Prepare);
 		return true;
 	}
 
@@ -249,6 +252,7 @@ public class MBSCNetWorkDiag extends X_BSC_NetWorkDiag implements DocAction {
 		
 		setProcessed(false);	
 		setDocStatus(DOCSTATUS_Drafted);
+		setDocAction(DOCACTION_Prepare);
 		return true;
 	}
 
