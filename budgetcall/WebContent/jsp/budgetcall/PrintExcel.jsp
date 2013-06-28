@@ -25,9 +25,13 @@
 	<s:param name="recordID"><s:property value="recordID" /></s:param>
 </s:url>
 
+<s:url id="ajax" namespace="/" action="searchCity" />
+
+
 <div id="printExcel" class="letterRight letter">
 		<s:a href="%{fileDownload}"><img src="images/excel.png" style="margin-left: 10px;" /></s:a>
 		<img src="images/separator.png" style="margin-left: 5px;" />
 	<!-- <s:a href="%{fileDownloadAll}"><img src="images/excelAll.png" style="margin-left: 10px;" /></s:a> -->
 		<a href='javascript:window.print(); void 0;' title="Печать"><img src="images/print.png" style="margin-left: 5px;" /></a>
+		<s:a href="%{ajax}"><font size="4">AJAX</font></s:a>
 </div>
