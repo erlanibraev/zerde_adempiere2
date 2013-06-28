@@ -61,9 +61,9 @@ public class DocumentEngineNWD extends DocumentEngine {
 	 */
 	@Override
 	public String[] getActionOptions() {
-		/*return new String[] {ACTION_Approve, ACTION_Close, ACTION_Complete, ACTION_Invalidate, ACTION_None, ACTION_Post, ACTION_Prepare,
-				ACTION_ReActivate, ACTION_Reject, ACTION_Reverse_Accrual, ACTION_Reverse_Correct, ACTION_Unlock, ACTION_Void, ACTION_WaitComplete};*/
-
+		return new String[] {ACTION_Approve, ACTION_Close, ACTION_Complete, ACTION_Invalidate, ACTION_None, ACTION_Post, ACTION_Prepare,
+				ACTION_ReActivate, ACTION_Reject, ACTION_Reverse_Accrual, ACTION_Reverse_Correct, ACTION_Unlock, ACTION_Void, ACTION_WaitComplete};
+/*
 		if (isDrafted() || isNotApproved() || isInvalid())
 			return new String[] {ACTION_Prepare, ACTION_Void};
 		
@@ -79,7 +79,7 @@ public class DocumentEngineNWD extends DocumentEngine {
 		if (isClosed())
 			return new String[] {ACTION_ReActivate, ACTION_ReOpen};
 
-		return new String[] {};
+		return new String[] {};*/
 	}
 
 }

@@ -26,21 +26,36 @@ public class NWD_SendMail extends SvrProcess {
 	private Properties m_ctx;
 	/** */
 	private String docstatus = null;
+	private String docaction = null;
 	MBSCNetWorkDiag m_netNetWorkDiag = null;
 	@Override
 	protected void prepare() {
 		m_ctx = Env.getCtx();
-		docstatus = Env.getContext(getCtx(), "2|0|DocStatus");
+		docstatus = Env.getContext(m_ctx, "2|0|DocStatus");
+		docaction = Env.getContext(m_ctx, "2|0|DocAction");
 		m_netNetWorkDiag = new MBSCNetWorkDiag(m_ctx, getRecord_ID(), get_TrxName());
 	}
 
 	@Override
 	protected String doIt() throws Exception {
-		if(docstatus.equals("DR")){
-			System.out.println("Шуйпанова Айжан Мендыхановна");//extend.org.compiere.utils.Util.sendMail(1000050, 100, "TEST when docstatus DR", " Шуйпанова Айжан Мендыхановна, Approve this document. DocNo - "+m_netNetWorkDiag.getDocumentNo(), false);
+		if(docstatus.equals("DR") || docstatus.equals("NA")){
+			//System.out.println("Шуйпанова Айжан Мендыхановна");//
+			extend.org.compiere.utils.Util.sendMail(1000050, 100, "TEST when docstatus DR", " Шуйпанова Айжан Мендыхановна, Approve this document. DocNo - "+m_netNetWorkDiag.getDocumentNo(), false);
 		}
 		else if (docstatus.equals("WC")){
-			System.out.println("Кенжигулова Динара Сансызбаевна");//extend.org.compiere.utils.Util.sendMail(1000052, 100, "TEST when docstatus WC", "message for Кенжигулова Динара Сансызбаевна", false);
+			//System.out.println("Кенжигулова Динара Сансызбаевна");//
+			StringBuffer mailText = new StringBuffer();
+			mailText.append("Infom about approval for document # ");
+			mailText.append(m_netNetWorkDiag.getDocumentNo());
+			mailText.append(". Document is ");
+			if(docaction.equals("RJ"))
+				mailText.append("Not Approved");
+			else if (docaction.equals("AP"))
+				mailText.append("Approved");
+			else mailText.append("Invalid");
+			
+			if(docaction.equals("RJ") || docaction.equals("AP"))
+				extend.org.compiere.utils.Util.sendMail(1000052, 100, "BSC NetWork Diagram Informtask", mailText.toString(), false);
 		}
 		else if(docstatus.equals("AP")){
 			sendMailAction();
@@ -55,7 +70,7 @@ public class NWD_SendMail extends SvrProcess {
 					" FROM bsc_responsible_executor \n"+
 					" WHERE AD_User_ID IS NOT NULL AND bsc_action_id IN (SELECT bsc_action_id FROM bsc_action WHERE bsc_networkdiagsubline_id IN \n"+ 
 					" (SELECT bsc_networkdiagsubline_id FROM bsc_networkdiagsubline WHERE bsc_networkdiagline_id IN \n"+
-			        " (SELECT bsc_networkdiagline_id FROM bsc_networkdiagline WHERE bsc_networkdiag_id ="+ m_netNetWorkDiag.getBSC_NetWorkDiag_ID()+")))";
+			        " (SELECT bsc_networkdiagline_id FROM bsc_networkdiagline WHERE bsc_networkdiag_id ="+ m_netNetWorkDiag.getBSC_NetWorkDiag_ID()+"))) \n GROUP BY AD_User_ID";
 		
 		ArrayList<Integer> sendList = new ArrayList<Integer>();
 		

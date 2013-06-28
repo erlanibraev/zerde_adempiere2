@@ -30,7 +30,7 @@ public interface I_BSC_NetWorkDiag
     /** TableName=BSC_NetWorkDiag */
     public static final String Table_Name = "BSC_NetWorkDiag";
 
-    /** AD_Table_ID=1000233 */
+    /** AD_Table_ID=1000251 */
     public static final int Table_ID = MTable.getTable_ID(Table_Name);
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
@@ -207,6 +207,37 @@ public interface I_BSC_NetWorkDiag
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name IsApproved */
+    public static final String COLUMNNAME_IsApproved = "IsApproved";
+
+	/** Set Approved.
+	  * Indicates if this document requires approval
+	  */
+	public void setIsApproved (boolean IsApproved);
+
+	/** Get Approved.
+	  * Indicates if this document requires approval
+	  */
+	public boolean isApproved();
+
+    /** Column name IsInitApproved */
+    public static final String COLUMNNAME_IsInitApproved = "IsInitApproved";
+
+	/** Set Initial Approved	  */
+	public void setIsInitApproved (boolean IsInitApproved);
+
+	/** Get Initial Approved	  */
+	public boolean isInitApproved();
+
+    /** Column name IsPreApproved */
+    public static final String COLUMNNAME_IsPreApproved = "IsPreApproved";
+
+	/** Set Pre Approved	  */
+	public void setIsPreApproved (boolean IsPreApproved);
+
+	/** Get Pre Approved	  */
+	public boolean isPreApproved();
 
     /** Column name IsSOTrx */
     public static final String COLUMNNAME_IsSOTrx = "IsSOTrx";

@@ -33,7 +33,7 @@ public class X_BSC_NetWorkDiag extends PO implements I_BSC_NetWorkDiag, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130531L;
+	private static final long serialVersionUID = 20130628L;
 
     /** the default Constructor */
     public X_BSC_NetWorkDiag(Properties ctx)
@@ -49,11 +49,16 @@ public class X_BSC_NetWorkDiag extends PO implements I_BSC_NetWorkDiag, I_Persis
         {
 			setBSC_NetWorkDiag_ID (0);
 			setC_DocType_ID (0);
-// 1000069
+// 1000070
 			setDocAction (null);
-// CO
-			setDocStatus (null);
-// DR
+// PR
+			setIsApproved (false);
+// @IsApproved@
+			setIsInitApproved (false);
+// N
+			setIsPreApproved (false);
+// N
+			setName (null);
         } */
     }
 
@@ -319,6 +324,72 @@ public class X_BSC_NetWorkDiag extends PO implements I_BSC_NetWorkDiag, I_Persis
 	public String getHelp () 
 	{
 		return (String)get_Value(COLUMNNAME_Help);
+	}
+
+	/** Set Approved.
+		@param IsApproved 
+		Indicates if this document requires approval
+	  */
+	public void setIsApproved (boolean IsApproved)
+	{
+		set_Value (COLUMNNAME_IsApproved, Boolean.valueOf(IsApproved));
+	}
+
+	/** Get Approved.
+		@return Indicates if this document requires approval
+	  */
+	public boolean isApproved () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsApproved);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Initial Approved.
+		@param IsInitApproved Initial Approved	  */
+	public void setIsInitApproved (boolean IsInitApproved)
+	{
+		set_Value (COLUMNNAME_IsInitApproved, Boolean.valueOf(IsInitApproved));
+	}
+
+	/** Get Initial Approved.
+		@return Initial Approved	  */
+	public boolean isInitApproved () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsInitApproved);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Pre Approved.
+		@param IsPreApproved Pre Approved	  */
+	public void setIsPreApproved (boolean IsPreApproved)
+	{
+		set_Value (COLUMNNAME_IsPreApproved, Boolean.valueOf(IsPreApproved));
+	}
+
+	/** Get Pre Approved.
+		@return Pre Approved	  */
+	public boolean isPreApproved () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsPreApproved);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	/** Set Sales Transaction.
