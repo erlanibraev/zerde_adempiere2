@@ -283,9 +283,7 @@ public class MParameter extends X_BSC_Parameter {
 			}
 		} catch (SQLException e) {
 			log.log(Level.SEVERE, "product", e);
-		}
-		finally
-		{
+		} finally {
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}	
@@ -422,8 +420,7 @@ public class MParameter extends X_BSC_Parameter {
 	public void createNewLine(int c_Period_ID) {
 		int prevC_Period_ID = getprevC_Period_ID(c_Period_ID);
 		MParameterLine prevParameterLine = getParameterLine(MPeriod.get(getCtx(), prevC_Period_ID));
-		// TODO Auto-generated method stub
-		
+		prevParameterLine.copyNextPeriod(c_Period_ID);
 	}
 
 	/**
@@ -432,9 +429,32 @@ public class MParameter extends X_BSC_Parameter {
 	 */
 	private int getprevC_Period_ID(int c_Period_ID) {
 		int result = 0;
-		// TODO Auto-generated method stub
-		
+		MPeriod period = MPeriod.get(getCtx(), c_Period_ID);
+		int C_Calendar_ID = period.getC_Calendar_ID(); 
+		int C_Year_ID = period.getC_Year_ID(); 
+		String sql = " SELECT CP.C_Period_ID " +
+				     " FROM C_Period CP " +
+				     " LEFT JOIN C_Year CY " +
+				     "        ON CP.AD_Org_ID = CY.AD_Org_ID " +
+				     "       AND CP.AD_Client_ID = CY.AD_Client_ID " +
+				     "       AND CY.IsActive = 'Y' " +
+				     "       AND CP.C_Year_ID = CY.C_Year_ID " +
+				     " WHERE CP.isActive = 'Y' " +
+				     "   AND CY.C_Calendar_ID = " + C_Calendar_ID + " " +
+				     "   AND CP.PeriodNo < 10 " +
+				     "   AND CY.FiscalYear <= (" +
+				     "                         SELECT FiscalYear " +
+				     "                         FROM C_Year " +
+				     "                         WHERE C_Year_ID = " + C_Year_ID+ " LIMIT 1" +
+				     "                        ) " +
+				     " ORDER BY CY.FiscalYear DESC" +
+				     "        , CP.PeriodNo DESC " +
+				     " LIMIT 1 " ; 
+		try {
+		result = DB.getSQLValue(get_TrxName(), sql);
+		} catch (Exception e) {
+			sLog.log(Level.SEVERE, "getPrevC_Period_ID: ", e);
+		}
 		return result;
 	}
-	
 }

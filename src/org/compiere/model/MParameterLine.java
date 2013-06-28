@@ -9,8 +9,11 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
+
+import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.hibernate.util.GetGeneratedKeysHelper;
 
 public class MParameterLine extends X_BSC_ParameterLine {
 
@@ -235,5 +238,63 @@ public class MParameterLine extends X_BSC_ParameterLine {
 		}	
 		return currentVariable;
 	}
+
+	/**
+	 * @param c_Period_ID
+	 */
+	public void copyNextPeriod(int c_Period_ID) {
+		MParameterLine nextPL = MParameterLine.get(getBSC_Parameter_ID(), c_Period_ID);
+		if (nextPL == null) {
+			nextPL = new MParameterLine(Env.getCtx(),0,get_TrxName());
+			nextPL.setBSC_Parameter_ID(getBSC_Parameter_ID());
+			nextPL.setAD_Client_ID(getAD_Org_ID());
+			nextPL.setAD_Org_ID(getAD_Org_ID());
+			nextPL.setC_Period_ID(c_Period_ID);
+			nextPL.setCalcButton(getCalcButton());
+			nextPL.setBSC_Formula_ID(getBSC_Formula_ID());
+			nextPL.setGoal(isGoal());
+			nextPL.setIsActive(isActive());
+			nextPL.setValueMax(getValueMax());
+			nextPL.setValueMin(getValueMin());
+			nextPL.setValue("---");
+			nextPL.setValueNumber("---");
+			if (nextPL.save()) {
+				if (nextPL.isFormula()) {
+					nextPL.loadVariables();
+					for(String key:nextPL.getVariables().keySet()) {
+						MVariable nextVar = nextPL.getVariables().get(key);
+						MVariable prevVar = getVariables().get(key);
+						MParameter par = prevVar.getParameter();
+						par.createNewLine(c_Period_ID);
+						nextVar.setParameter(par);
+						nextVar.save();
+					}
+					nextPL.save();
+				}
+			}
+		}
+	}
 	
+	public static MParameterLine get(int BSC_Parameter_ID, int C_Period_ID) {
+		CLogger log = CLogger.getCLogger (MParameterLine.class);;
+		MParameterLine result = null;
+		String sql = "SELECT * FROM BSC_ParameterLine WHERE isActive = 'Y' AND BSC_Parameter_ID = ? AND C_Period_ID = ?";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;		
+		try {
+			pstmt = DB.prepareStatement(sql,null);
+			pstmt.setInt (1, BSC_Parameter_ID);
+			pstmt.setInt (2, C_Period_ID);
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				result = new MParameterLine(Env.getCtx(),rs,null);
+			}
+		} catch (SQLException e) {
+			log.log(Level.SEVERE, "MParameterLine: ", e);
+		} finally {
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
+		}	
+		return result;
+	}
 }

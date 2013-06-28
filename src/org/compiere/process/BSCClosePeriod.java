@@ -274,8 +274,7 @@ public class BSCClosePeriod extends SvrProcess {
 					       "                   ) " +
 					       "ORDER BY FiscalYear LIMIT 1";
 			result = DB.getSQLValue(get_TrxName(), query);
-		} 
-		catch (Exception e) {
+		} catch (Exception e) {
 			log.log(Level.SEVERE, "BSCClosePeriod: ", e);
 		} 
 		return result;

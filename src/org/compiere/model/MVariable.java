@@ -36,6 +36,9 @@ public class MVariable extends X_BSC_Variable {
 
 	public void setParameter(MParameter parameter) {
 		this.parameter = parameter;
+		if (parameter != null) {
+			setBSC_Parameter_ID(parameter.getBSC_Parameter_ID());
+		}
 	}
 
 	public MVariable(Properties ctx, int BSC_Variable_ID, String trxName) {
