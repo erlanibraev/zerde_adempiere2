@@ -85,7 +85,7 @@ public class PeriodAmount extends Budget implements ServletRequestAware,ServletR
 		this.request = request;
 	}
 
-	public HttpServletRequest getServletRequest(){
+	public HttpServletRequest request(){
 		return request;
 	}
 
@@ -115,7 +115,7 @@ public class PeriodAmount extends Budget implements ServletRequestAware,ServletR
 	@Override
 	public String input() throws Exception {
 		
-		int count = Integer.valueOf(getServletRequest().getParameter("rowspan"));
+		int count = Integer.valueOf(request.getParameter("rowspan"));
 		String upd = "update bpm_budgetCallLine ";
 		String set = "";
 		String where = " where bpm_budgetCall_id="+callID
@@ -130,11 +130,11 @@ public class PeriodAmount extends Budget implements ServletRequestAware,ServletR
 		double amount = 0.;
 		for(int i = 0; i < count; i++){
 			
-			quentity = Integer.valueOf(getServletRequest().getParameter("quantity_IDX_"+idx));
-			amountUnit = Double.valueOf(getServletRequest().getParameter("amountUnit_IDX_"+idx));
-			amount = Double.valueOf(getServletRequest().getParameter("amount_IDX_"+idx));
+			quentity = Integer.valueOf(request.getParameter("quantity_IDX_"+idx));
+			amountUnit = Double.valueOf(request.getParameter("amountUnit_IDX_"+idx));
+			amount = Double.valueOf(request.getParameter("amount_IDX_"+idx));
 
-			periodSql = "\n and c_period_ID="+Integer.valueOf(getServletRequest().getParameter("period_IDX_"+idx));
+			periodSql = "\n and c_period_ID="+Integer.valueOf(request.getParameter("period_IDX_"+idx));
 			set = " set quantity="+quentity;
 			set += "\n ,amountUnit="+amountUnit;
 			set += "\n ,amount="+amount;
@@ -144,12 +144,12 @@ public class PeriodAmount extends Budget implements ServletRequestAware,ServletR
 			idx++;
 		}
 		
-		setsQuantity(Integer.valueOf(getServletRequest().getParameter("sQuantity")));
-		setsAmount(getServletRequest().getParameter("sAmount"));
+		setsQuantity(Integer.valueOf(request.getParameter("sQuantity")));
+		setsAmount(request.getParameter("sAmount"));
 		
 		PeriodAmount pa = (PeriodAmount) session.get(sessionKey);
-		pa.setsQuantity(Integer.valueOf(getServletRequest().getParameter("sQuantity")));
-		pa.setsAmount(getServletRequest().getParameter("sAmount"));
+		pa.setsQuantity(Integer.valueOf(request.getParameter("sQuantity")));
+		pa.setsAmount(request.getParameter("sAmount"));
 		session.put(sessionKey, pa);
 		
 		return INPUT;

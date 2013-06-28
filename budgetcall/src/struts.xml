@@ -40,6 +40,11 @@
 		<action name="doUpdate" class="main.org.action.PeriodAmount" method="input">
 			<result name="input">/jsp/budgetcall/PeriodAmount.jsp</result>
 		</action>
+		
+		<action name="searchCity" class="main.org.action.AjaxTest" method="execute">
+			<result name="success">/jsp/ajax-test.jsp</result>
+			<result name="none">/jsp/budgetcall/NONE.jsp</result>
+		</action>
 
 	</package>
 
