@@ -90,10 +90,7 @@ public class TRM_DepositReport extends SvrProcess
 	private BigDecimal StartPeriodSum(Timestamp date)
 	{
 		StringBuffer sql = new StringBuffer();
-		sql.append("select coalesce(sum(fa.amtacctcr - fa.amtacctdr),0)");
-		sql.append("from fact_acct fa, c_elementvalue ce  ");
-		sql.append("where fa.account_id=ce.c_elementvalue_id ");
-		sql.append("and PostingType='A'	and fa.dateacct < '" + date + "' and ce.value like '" + depositAccount + "%'");
+		sql.append("SELECT Sum(LineSum) FROM TRM_DepositLine WHERE DateAcct <='" + date + "'");
 		
 		BigDecimal totalSum = new BigDecimal(0);
 		
@@ -116,8 +113,8 @@ public class TRM_DepositReport extends SvrProcess
 		}
 		catch(Exception ex) {}
 		
-		if(totalSum.intValue() == 0)
-			totalSum = new BigDecimal(1);
+		//if(totalSum.intValue() == 0)
+		//	totalSum = new BigDecimal(1);
 		
 		return totalSum;
 	}
@@ -125,10 +122,7 @@ public class TRM_DepositReport extends SvrProcess
 	private BigDecimal EndPeriodSum(Timestamp date, Timestamp date2)
 	{
 		StringBuffer sql = new StringBuffer();
-		sql.append("select coalesce(sum(fa.amtacctcr - fa.amtacctdr),0)");
-		sql.append("from fact_acct fa, c_elementvalue ce  ");
-		sql.append("where fa.account_id=ce.c_elementvalue_id ");
-		sql.append("and PostingType='A'	and fa.dateacct BETWEEN '" + date + "' AND '" + date2 + "' and ce.value like '" + depositAccount + "%'");
+		sql.append("SELECT Sum(LineSum) FROM TRM_DepositLine WHERE DateAcct <= '" + date2 + "'");
 		
 		BigDecimal totalSum = new BigDecimal(0);
 		
@@ -151,8 +145,8 @@ public class TRM_DepositReport extends SvrProcess
 		}
 		catch(Exception ex) {}
 		
-		if(totalSum.intValue() == 0)
-			totalSum = new BigDecimal(1);
+		//if(totalSum.intValue() == 0)
+		//	totalSum = new BigDecimal(1);
 		
 		return totalSum;
 	}
@@ -285,8 +279,8 @@ public class TRM_DepositReport extends SvrProcess
 		sql.append(", (SELECT LineSum FROM TRM_DepositLine WHERE DateAcct = (SELECT MIN(DateAcct) FROM TRM_DepositLine WHERE TRM_Deposit_ID = d.TRM_Deposit_ID) AND TRM_Deposit_ID = d.TRM_Deposit_ID) as \"FirstSum\"");
 		sql.append(", d.InterestRate");
 		sql.append(", c.PlacementPeriod");
-		sql.append(", c.BeginningDateExecution");
-		sql.append(", c.EndDateExecution");
+		sql.append(", d.BeginningDate");
+		sql.append(", d.EndDate");
 		sql.append(", d.isPartialWithdrawal");
 		sql.append(", d.MinBalance");
 		sql.append(", p.Name");
@@ -299,8 +293,8 @@ public class TRM_DepositReport extends SvrProcess
 		
 		int counter = 1;
 		
-		BigDecimal startPeriodTotalSum = new BigDecimal(0); //StartPeriodSum(beginperiod);
-		BigDecimal endPeriodTotalSum = new BigDecimal(0);//EndPeriodSum(beginperiod, endperiod);
+		BigDecimal startPeriodTotalSum = StartPeriodSum(beginperiod);
+		BigDecimal endPeriodTotalSum = EndPeriodSum(beginperiod, endperiod);
 		
 		BigDecimal totalPremium = new BigDecimal(0);
 		
@@ -314,8 +308,8 @@ public class TRM_DepositReport extends SvrProcess
 				BigDecimal lineStartPeriodSum = rs.getBigDecimal("BeginningBalance") == null ? new BigDecimal(0.0) : rs.getBigDecimal("BeginningBalance");
 				BigDecimal lineEndPeriodSum = rs.getBigDecimal("EndingBalance") == null ? new BigDecimal(0.0) : rs.getBigDecimal("EndingBalance");
 				
-				startPeriodTotalSum = startPeriodTotalSum.add(lineStartPeriodSum);
-				endPeriodTotalSum = endPeriodTotalSum.add(lineEndPeriodSum);
+				//startPeriodTotalSum = startPeriodTotalSum.add(lineStartPeriodSum);
+				//endPeriodTotalSum = endPeriodTotalSum.add(lineEndPeriodSum);
 				
 				number = new Number(col, index, counter++ , nn);
 				sheet.addCell(number);
@@ -338,7 +332,7 @@ public class TRM_DepositReport extends SvrProcess
 				number = new Number(col+6, index, rs.getBigDecimal("FirstSum") == null ? 0.0 : rs.getBigDecimal("FirstSum").doubleValue(), numcolstyle);
 				sheet.addCell(number);
 				
-				number = new Number(col+7, index, lineEndPeriodSum.divide(endPeriodTotalSum, 2, RoundingMode.HALF_UP).doubleValue(), numcolstyle);
+				number = new Number(col+7, index, lineEndPeriodSum.divide(endPeriodTotalSum.intValue() == 0 ? new BigDecimal(1) : endPeriodTotalSum, 2, RoundingMode.HALF_UP).doubleValue() * 100, numcolstyle);
 				sheet.addCell(number);
 				
 //				label = new Label(col + 7, index, 0 + "%", valuestyle);
@@ -350,25 +344,25 @@ public class TRM_DepositReport extends SvrProcess
 		    	number = new Number(col+9, index, rs.getBigDecimal("PlacementPeriod") == null ? 0 : rs.getBigDecimal("PlacementPeriod").intValue(), nn);
 				sheet.addCell(number);
 				
-				if(rs.getDate("BeginningDateExecution") == null)
+				if(rs.getDate("BeginningDate") == null)
 				{
 					label = new Label(col + 10, index, "", valuestyle);
 			    	sheet.addCell(label);
 				}
 				else
 				{
-					time = new DateTime(col+10, index, new java.sql.Date(rs.getDate("BeginningDateExecution").getTime()), dateFormat);
+					time = new DateTime(col+10, index, new java.sql.Date(rs.getDate("BeginningDate").getTime()), dateFormat);
 					sheet.addCell(time);
 				}
 				
-				if(rs.getDate("EndDateExecution") == null)
+				if(rs.getDate("EndDate") == null)
 				{
 					label = new Label(col + 11, index, "", valuestyle);
 			    	sheet.addCell(label);
 				}
 				else
 				{
-					time = new DateTime(col+11, index, new java.sql.Date(rs.getDate("EndDateExecution").getTime()), dateFormat);
+					time = new DateTime(col+11, index, new java.sql.Date(rs.getDate("EndDate").getTime()), dateFormat);
 					sheet.addCell(time);
 				}
 				
