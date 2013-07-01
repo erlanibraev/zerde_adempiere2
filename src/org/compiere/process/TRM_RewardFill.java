@@ -205,6 +205,9 @@ public class TRM_RewardFill extends SvrProcess {
 				month = reward.getDateReward().getMonth();
 			}
 			
+			Timestamp rewardDate = reward.getDateReward();
+			rewardDate.setDate(rewardDate.getDate() + 1);
+			
 			if(dates.contains(reward.getDateReward()))
 			{
 				int index = dates.indexOf(reward.getDateReward());
@@ -224,6 +227,13 @@ public class TRM_RewardFill extends SvrProcess {
 				lineSum.remove(index);
 				dates.remove(index);
 			}
+			
+			else if(rewardDate.getMonth() != month)
+			{
+				rewardIndex = 1;
+				month = rewardDate.getMonth();
+			}
+			
 			
 			totalSum = totalSum.add(reward.getwithdrawal());
 			
