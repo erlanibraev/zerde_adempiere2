@@ -181,8 +181,12 @@ public class BSCIndicator extends JPanel implements MouseListener, ActionListene
         plot.setTickLabelFont(new Font("SansSerif", Font.BOLD, 12));
         plot.setTickLabelPaint(Color.white);
         plot.setInsets(new RectangleInsets(1.0, 2.0, 3.0, 4.0)); 
-
-        chart = new JFreeChart( getParameter().getName(), new Font("SansSerif", Font.BOLD, 15), plot,false);
+        
+        String message = getParameter().getName();
+        if (getParameter().getC_BPartner_ID() > 0) {
+        	message += "\n" + getParameter().getC_BPartner().getName();
+        }
+        chart = new JFreeChart( message, new Font("SansSerif", Font.BOLD, 15), plot,false);
         
 		return chart;
 	}

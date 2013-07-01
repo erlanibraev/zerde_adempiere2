@@ -14,7 +14,9 @@ import org.compiere.apps.ADialog;
 import org.compiere.model.MBSCCard;
 import org.compiere.model.MCalendar;
 import org.compiere.model.MPeriod;
+import org.compiere.model.MPeriodControl;
 import org.compiere.model.MPrepaidExpenses;
+import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 
@@ -157,7 +159,7 @@ public class BSCClosePeriod extends SvrProcess {
 
 		ADialog dialog = new ADialog();
 		boolean isWork = true;
-		if (isBSCClosed(getC_Period_ID())) {
+		if (isBSCClosedPeriod(getC_Period_ID())) {
 			if(!dialog.ask(25, null, "Процесс \"Закрытие периода ССП и КПИ.\" уже был успешно завершен. Вы хотите запустить данный процесс повторно?")) {
 				isWork = false;
 				result = true;
@@ -167,9 +169,13 @@ public class BSCClosePeriod extends SvrProcess {
 			MPeriod nextPeriod = getNextPeriod();
 			if(nextPeriod != null && nextPeriod.getC_Period_ID() > 0) {
 				//TODO Хоть что-нибудь сделать!!!!!!!!!!!!!!!
-				copyBSCCardToNextPeriod(nextPeriod);
-				closeCurrentBSCCard();
-				
+				try {
+					copyBSCCardToNextPeriod(nextPeriod);
+					closeCurrentBSCCard();
+				} catch(Exception e) {
+					log.log(Level.SEVERE,"BSCClosePeriod: ",e);
+					result = false;
+				}
 			} else {
 				dialog.error(30, null, "Нет следующего периода! Создайте следующий период перед запуском процесса");
 				result  = false;
@@ -182,14 +188,19 @@ public class BSCClosePeriod extends SvrProcess {
 	 * 
 	 */
 	private void closeCurrentBSCCard() {
-		// TODO Auto-generated method stub
-		
+		if (cards.size() > 0) {
+			for(MBSCCard card: cards) {
+				card.closePeriod(C_Period_ID);
+			}
+		}
+//		getPeriod().isOpen(DocBaseType);
 	}
 
 	/**
 	 * @param nextPeriod
+	 * @throws Exception 
 	 */
-	private void copyBSCCardToNextPeriod(MPeriod nextPeriod) {
+	private void copyBSCCardToNextPeriod(MPeriod nextPeriod) throws Exception {
 		// TODO Auto-generated method stub
 		if (nextPeriod == null || nextPeriod.getC_Period_ID() == 0) {
 			return;
@@ -199,7 +210,7 @@ public class BSCClosePeriod extends SvrProcess {
 				card.copyCard(nextPeriod);
 			}
 		} else {
-			//TODO Вызвать исключение
+			throw new Exception("Can not copy BSCCard for the next period"); 
 		}
 	}
 	
@@ -220,15 +231,16 @@ public class BSCClosePeriod extends SvrProcess {
 		return result;
 	}
 
-	public static boolean isBSCClosed(int C_Period_ID) {
+	public static boolean isBSCClosedPeriod(int C_Period_ID) {
 		boolean result = false;
 		if (C_Period_ID <=0) {
 			return result;
 		}
 		
-		//TODO проверка на закрытие Периода ССП и КПИ
-		
-		result = true;
+		MPeriodControl pc = new MPeriodControl(new MPeriod(Env.getCtx(),C_Period_ID,null),"BSC");
+		if (pc != null) {
+			result = !pc.isOpen();
+		}
 		
 		return result;
 	}

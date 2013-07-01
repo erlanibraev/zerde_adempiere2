@@ -460,4 +460,12 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 			cardLine.copyCardLine(BSC_Card_ID, C_Period_ID);
 		}
 	}
+
+	/**
+	 * @param c_Period_ID
+	 */
+	public void closePeriod(int c_Period_ID) {
+		// TODO Auto-generated method stub
+		
+	}
 }
