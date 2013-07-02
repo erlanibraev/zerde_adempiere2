@@ -62,12 +62,10 @@
 	</table>
 	
 	
-	<table class="cursorHover more" width="80%" border="1" style="margin-top:20px;" align="center" bordercolor="#663300" cellspacing="2">
+	<table class="cursorHover more" width="60%" border="1" style="margin-top:20px;" align="center" bordercolor="#663300" cellspacing="2">
   		<tr class="trLightBlue">
   			<th scope="col">№ п.п.</th>
 		    <th scope="col" width="60%">Наименование</th>
-		    <th scope="col" width="10%">Количество</th>
-		    <th scope="col" width="10%">Стоимость за единицу</th>
 		    <th scope="col" width="10%">Сумма, тенге</th>
 		</tr>
 		<%	int k = 1;
@@ -83,8 +81,6 @@
 					<s:param name="processID"><s:property value="processID" /></s:param>
 					</s:url>"><%= a.getName() %></a></b>
 				</td>
-				<td><%= a.getQuantity() %></td>
-				<td><%= a.getAmountUnit() %></td>
 				<td><%= a.getAmount() %></td>
 			</tr>
 		<%
@@ -94,8 +90,6 @@
 		<tr class="trLightBlue">
 			<th scope="col">&nbsp;</th>
 		    <th scope="col">Всего</th>
-		    <th scope="col"><%= chargeTotal.getsQuantity() %></th>
-		    <th scope="col">&nbsp;</th>
 		    <th scope="col"><%= chargeTotal.getsAmount() %></th>
 		</tr>
 	</table>

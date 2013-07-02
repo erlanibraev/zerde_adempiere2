@@ -24,7 +24,6 @@ import jxl.write.WritableCellFormat;
 import jxl.write.WritableFont;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
-
 import main.org.action.BudgetCall;
 import main.org.action.ChargeAmount;
 import main.org.action.DownloadFileAction;
@@ -34,8 +33,6 @@ import main.org.model.Budget;
 import main.org.model.ChargeCode;
 import main.org.model.Period;
 import main.org.model.Utils;
-
-import org.adempiere.exceptions.AdempiereException;
 import org.compiere.apps.ADialog;
 import org.compiere.model.*;
 import org.compiere.process.ProcessInfo;
@@ -294,10 +291,10 @@ public class ExcelPrint extends Budget {
 			label = new Label(col+1, row, a.getName(), borderStyleLeft); 
 			sheet.addCell(label);
 			// Quantity
-			number = new Number(col+2, row, Double.valueOf(a.getQuantity()), borderStyle);
+			number = new Number(col+2, row, 0, borderStyle);
 			sheet.addCell(number);
 			// Amount unit
-			number = new Number(col+3, row, Double.valueOf(a.getAmountUnit()), borderStyle);
+			number = new Number(col+3, row, 0, borderStyle);
 			sheet.addCell(number);
 			// Amount
 			number = new Number(col+4, row, Double.valueOf(a.getAmount()), borderStyle);
@@ -311,10 +308,10 @@ public class ExcelPrint extends Budget {
 		
 		// TOTAL
 		// Quantity
-		number = new Number(col+2, rowC, Double.valueOf(charge.getsQuantity()), borderStyleCenter);
+		number = new Number(col+2, rowC, 0, borderStyleCenter);
 		sheet.addCell(number);
 		// Amount
-		number = new Number(col+4, rowC, Double.valueOf(charge.getsAmount()), borderStyleCenter);
+		number = new Number(col+4, rowC, 0, borderStyleCenter);
 		sheet.addCell(number);
 		
 		
@@ -385,10 +382,10 @@ public class ExcelPrint extends Budget {
 			label = new Label(col+2, row, p.getMonth().substring(0, p.getMonth().indexOf("-")), borderStyleCenter); 
 			sheet.addCell(label);
 			//
-			number = new Number(col+3, row, Integer.valueOf(p.getQuantity()), borderStyle);
+			number = new Number(col+3, row, 0, borderStyle);
 			sheet.addCell(number);
 			//
-			number = new Number(col+4, row, Double.valueOf(p.getAmountUnit()), borderStyle);
+			number = new Number(col+4, row, 0, borderStyle);
 			sheet.addCell(number);
 			//
 			number = new Number(col+5, row, Double.valueOf(p.getAmount()), borderStyleCenter);

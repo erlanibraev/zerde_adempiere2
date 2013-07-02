@@ -32,7 +32,6 @@ public class ChargeAmount extends Budget {
 	protected CLogger			log = CLogger.getCLogger (getClass());
 	
 	protected Amount[] amt;
-	private int sQuantity;
 	private String sAmount;
 	
 	
@@ -41,13 +40,6 @@ public class ChargeAmount extends Budget {
 	}
 	public void setAmt(Amount[] amt) {
 		this.amt = amt;
-	}
-
-	public int getsQuantity() {
-		return sQuantity;
-	}
-	public void setsQuantity(int sQuantity) {
-		this.sQuantity = sQuantity;
 	}
 	
 	public String getsAmount() {
@@ -125,7 +117,6 @@ public class ChargeAmount extends Budget {
 				list.add(values);
 			}
 			
-			setsQuantity(sQuantity);
 			setsAmount(String.valueOf(sAmount));
 		}
 		catch (SQLException e)

@@ -12,6 +12,7 @@
 	Period[] period = periodTotal.getPeriod();
 	int rowSpan = period.length;
 	MCharge charge = new MCharge(Env.getCtx(), periodTotal.getChargeID(), null);
+	String selectPeriod = "bgcolor=\"#DAE1EA\"";
 %>
 
 		<s:bean name="main.org.action.PeriodAmount" var="per" />
@@ -20,6 +21,7 @@
 			<s:param name="callID"><%= periodTotal.getCallID() %></s:param>
 			<s:param name="tableID"><%= periodTotal.getTableID() %></s:param>
 			<s:param name="recordID"><%= periodTotal.getRecordID() %></s:param>
+			<s:param name="periodID"><%= periodTotal.getPeriodID() %></s:param>
 			<s:param name="periodBean" value="#per.periodBean" />
 		</s:bean>
 
@@ -94,23 +96,29 @@
 					<s:if test="#stat.count > 1">
 						<tr>
 					</s:if>
-						<td bgcolor="#DAE1EA"><s:property value="%{#a.uom}" /></td>
-						<td bgcolor="#DAE1EA"><b><s:property value="%{#a.month}" /></b></td>
-						<td bgcolor="#DAE1EA">                             
+					<s:if test="#amo.periodID == #a.periodID">
+						<% selectPeriod = "bgcolor=\"#9BC995\""; %>
+					</s:if>
+					<s:else>
+						<% selectPeriod = "bgcolor=\"#DAE1EA\""; %>
+					</s:else>
+						<td <%= selectPeriod %>><s:property value="%{#a.uom}" /></td>
+						<td <%= selectPeriod %>><b><s:property value="%{#a.month}" /></b></td>
+						<td <%= selectPeriod %>>                             
 	                		<s:textfield value="%{#a.quantity}" name="quantity_IDX_%{#stat.count}" size="11"  theme="simple" readonly="false" 
 	                				onkeypress="return isQuantity(event)"
 	                				onkeyup="do_math(this.form, 'amount_IDX_%{#stat.count}', 'quantity_IDX_%{#stat.count}', 'amountUnit_IDX_%{#stat.count}'); summa(this.form, 'quantity_IDX_%{#stat.count}','sQuantity', %{#amo.periodBean.length}, 'quantity');" /> 
 	                		<s:hidden name="period_IDX_%{#stat.count}" value="%{#a.periodID}" />
 	            		</td>
-	            		<td bgcolor="#DAE1EA">                             
+	            		<td <%= selectPeriod %>>                             
 	                		<s:textfield value="%{#a.amountUnit}" name="amountUnit_IDX_%{#stat.count}" size="11"  theme="simple" readonly="false" 
 	                				onkeypress="return isAmountUnit(event)"
 	                				onkeyup="do_math(this.form, 'amount_IDX_%{#stat.count}', 'quantity_IDX_%{#stat.count}', 'amountUnit_IDX_%{#stat.count}'); summa(this.form, 'amount_IDX_%{#stat.count}','sAmount', %{#amo.periodBean.length}, 'amount');" />  
 	            		</td>  
-	            		<td bgcolor="#DAE1EA">                             
+	            		<td <%= selectPeriod %>>                             
 	                		<s:textfield value="%{#a.amount}" name="amount_IDX_%{#stat.count}" size="11" tabindex="-1" theme="simple" readonly="true" />  
 	            		</td>  
-	            		<td bgcolor="#DAE1EA"><s:property value="%{#a.payment}" /></td>
+	            		<td <%= selectPeriod %>><s:property value="%{#a.payment}" /></td>
 					</tr>
 				</s:iterator>
 				<tr class="trLightBlue">
