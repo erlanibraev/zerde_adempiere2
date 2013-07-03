@@ -193,6 +193,7 @@ public class BSCClosePeriod extends SvrProcess {
 				card.closePeriod(C_Period_ID);
 			}
 		}
+		//TODO
 //		getPeriod().isOpen(DocBaseType);
 	}
 

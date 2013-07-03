@@ -466,6 +466,9 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 	 */
 	public void closePeriod(int c_Period_ID) {
 		// TODO Auto-generated method stub
-		
+		setDocStatus(DOCSTATUS_Закрыт);
+		setDocAction(DOCACTION_НЕТ);
+		setPosted(true);
+		save();
 	}
 }

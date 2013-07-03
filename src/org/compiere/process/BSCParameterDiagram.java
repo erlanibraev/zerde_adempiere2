@@ -53,11 +53,11 @@ public class BSCParameterDiagram extends SvrProcess {
 			if (BSC_Parameter_ID > 0) {
 				view.load(BSC_Parameter_ID);
 			}
-			myWindow.setVisible(true);
-			myWindow.pack();
 			AEnv.showCenterScreen(myWindow);
+			myWindow.setVisible(true);
+			myWindow.setAlwaysOnTop(true);
 		}
-		return "OK";
+		return null;
 	}
 	
 	protected int getBSCView_ID() {
