@@ -40,6 +40,7 @@ public class BudgetCallPrint extends SvrProcess{
 		
 		param.append("callID="+getRecord_ID());
 		param.append("&processID="+pi.getAD_Process_ID());
+		param.append("&lang="+Env.getAD_Language(m_ctx));
 
 		url = getHttpHost();
 	}

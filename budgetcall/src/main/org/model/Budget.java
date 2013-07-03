@@ -5,6 +5,8 @@ package main.org.model;
 
 import java.util.Map;
 
+import org.compiere.util.Language;
+
 import com.opensymphony.xwork2.ActionSupport;
 
 /**
@@ -26,6 +28,7 @@ public abstract class Budget extends ActionSupport implements ISpecification {
 	protected int recordID;
 	protected String page;
 	protected Map<String, Object> session; 
+	protected String lang = Language.AD_Language_ru_RU; // default language
 	
 	public int getCallID() {
 		return callID;
@@ -76,6 +79,13 @@ public abstract class Budget extends ActionSupport implements ISpecification {
 		this.recordID = recordID;
 	}
 	
+	public String getLang() {
+		return lang;
+	}
+	public void setLang(String lang) {
+		this.lang = lang;
+	}
+
 	/* 
 	 */
 	@Override

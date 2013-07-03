@@ -12,6 +12,7 @@ import java.util.logging.Level;
 
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 
 import main.org.model.Budget;
 import main.org.model.ChargeCode;
@@ -42,6 +43,8 @@ public class BudgetCall extends Budget {
 
 	@Override
 	public String execute() throws Exception {
+		
+		Env.setContext(Env.getCtx(), "#AD_Language", getLang());
 		
 		setChargeCode(getValues(callID));
 		setPage(Utils.TEMPLATE_FIRST);

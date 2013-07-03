@@ -30,7 +30,7 @@ public class X_BPM_BudgetCall extends PO implements I_BPM_BudgetCall, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130514L;
+	private static final long serialVersionUID = 20130703L;
 
     /** the default Constructor */
     public X_BPM_BudgetCall(Properties ctx)
@@ -50,6 +50,7 @@ public class X_BPM_BudgetCall extends PO implements I_BPM_BudgetCall, I_Persiste
 			setC_Project_ID (0);
 			setC_ProjectParent_ID (0);
 			setC_Year_ID (0);
+			setCategoryName (null);
         } */
     }
 
@@ -230,6 +231,30 @@ public class X_BPM_BudgetCall extends PO implements I_BPM_BudgetCall, I_Persiste
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** CategoryName AD_Reference_ID=1000152 */
+	public static final int CATEGORYNAME_AD_Reference_ID=1000152;
+	/** Income = INCOME */
+	public static final String CATEGORYNAME_Income = "INCOME";
+	/** Consumption = CONSUMPTION */
+	public static final String CATEGORYNAME_Consumption = "CONSUMPTION";
+	/** Set Category Name.
+		@param CategoryName 
+		Name of the Category
+	  */
+	public void setCategoryName (String CategoryName)
+	{
+
+		set_Value (COLUMNNAME_CategoryName, CategoryName);
+	}
+
+	/** Get Category Name.
+		@return Name of the Category
+	  */
+	public String getCategoryName () 
+	{
+		return (String)get_Value(COLUMNNAME_CategoryName);
 	}
 
 	/** Set Search Key.

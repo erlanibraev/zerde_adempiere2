@@ -30,7 +30,7 @@ public interface I_BPM_BudgetCall
     /** TableName=BPM_BudgetCall */
     public static final String Table_Name = "BPM_BudgetCall";
 
-    /** AD_Table_ID=1000233 */
+    /** AD_Table_ID=1000234 */
     public static final int Table_ID = MTable.getTable_ID(Table_Name);
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
@@ -133,6 +133,19 @@ public interface I_BPM_BudgetCall
 	public int getC_Year_ID();
 
 	public org.compiere.model.I_C_Year getC_Year() throws RuntimeException;
+
+    /** Column name CategoryName */
+    public static final String COLUMNNAME_CategoryName = "CategoryName";
+
+	/** Set Category Name.
+	  * Name of the Category
+	  */
+	public void setCategoryName (String CategoryName);
+
+	/** Get Category Name.
+	  * Name of the Category
+	  */
+	public String getCategoryName();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

@@ -24,7 +24,7 @@
 		</td>
 	 </tr>
 	 <tr>
-	 	<td width="70px" style="border:double; border-color:#8DB3DC; text-align: left; padding-left: 10px;">
+	 	<td width="90px" style="border:double; border-color:#8DB3DC; text-align: left; padding-left: 10px;">
 	 		<font color="#321818" style="font-family: sans-serif; font-style:normal;" size="+1">Год</font>
 	 	</td>
 	 	<td style="border:dotted; border-color:#999999; width:40%; text-align: left; padding-left: 10px;">
@@ -33,7 +33,7 @@
 	 	<td>&nbsp;</td>
 	</tr>
 	<tr>
-	 	<td width="70px" style="border:double; border-color:#8DB3DC; text-align: left; padding-left: 10px;">
+	 	<td width="90px" style="border:double; border-color:#8DB3DC; text-align: left; padding-left: 10px;">
 	 		<font color="#321818" style="font-family: sans-serif; font-style:normal;" size="+1">Проект</font>
 	 		</td>
 	 	<td style="border:dotted; border-color:#999999; width:40%; text-align: left; padding-left: 10px;">
@@ -42,11 +42,20 @@
 	 	<td>&nbsp;</td>
 	</tr>
 	<tr>
-	 	<td width="70px" style="border:double; border-color:#8DB3DC; text-align: left; padding-left: 10px;">
+	 	<td width="90px" style="border:double; border-color:#8DB3DC; text-align: left; padding-left: 10px;">
 	 		<font color="#321818" style="font-family: sans-serif; font-style:normal;" size="+1">АБП</font>
 	 	</td>
 	 	<td style="border:dotted; border-color:#999999; width:40%; text-align: left; padding-left: 10px;">
 	 		<b><%= abp.getHR_Department().getName() %></b>
+	 	</td>
+	 	<td>&nbsp;</td>
+	</tr>
+	<tr>
+	 	<td width="90px" style="border:double; border-color:#8DB3DC; text-align: left; padding-left: 10px;">
+	 		<font color="#321818" style="font-family: sans-serif; font-style:normal;" size="+1">Категория</font>
+	 	</td>
+	 	<td style="border:dotted; border-color:#999999; width:40%; text-align: left; padding-left: 10px;">
+	 		<b><%= Msg.translate(Env.getCtx(), MRefList.getListName(Env.getCtx(), X_BPM_BudgetCall.CATEGORYNAME_AD_Reference_ID, bCall.getCategoryName())) %></b>
 	 	</td>
 	 	<td>&nbsp;</td>
 	</tr>

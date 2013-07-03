@@ -35,7 +35,7 @@
 	
 	<table width="100%" cellspacing="2">
 		<tr>
-		 	<td width="70px" style="border:double; border-color:#F18800; text-align: left; padding-left: 10px;">
+		 	<td width="90px" style="border:double; border-color:#F18800; text-align: left; padding-left: 10px;">
 		 		<font color="#321818" style="font-family: sans-serif; font-style:normal;" size="+1">Статья</font>
 		 	</td>
 		 	<td style="border:dotted; border-color:#999999; width:40%; text-align: left; padding-left: 10px;">
@@ -47,7 +47,7 @@
 		%>
 		
 			<tr>
-			 	<td width="70px" style="border:double; border-color:#F18800; text-align: left; padding-left: 10px;">
+			 	<td width="90px" style="border:double; border-color:#F18800; text-align: left; padding-left: 10px;">
 			 		<font color="#321818" style="font-family: sans-serif; font-style:normal;" size="+1">Месяц</font>
 			 	</td>
 			 	<td style="border:dotted; border-color:#999999; width:40%; text-align: left; padding-left: 10px;">

@@ -164,7 +164,7 @@ public class PeriodAmount extends Budget implements ServletRequestAware,ServletR
 		
 		String sql = "select bv.name, u.name as uom, p.c_period_id as periodID, p.name as mth, t.quantity, round(t.amountUnit,2) as amountUnit, round(t.amount,2) as amount, t.paymentMonth as payment, bv.description \n" +
 				"from bpm_budgetcallLine t \n" +
-				"join c_uom u on u.c_uom_id=t.c_uom_id \n" +
+				"join c_uom_trl u on u.c_uom_id=t.c_uom_id \n" +
 				"join c_period p on p.c_period_id=t.c_period_id \n" +
 				"join bpm_budget_v bv on bv.bpm_budgetCall_id=t.bpm_budgetCall_id and bv.ad_table_id=t.ad_table_id and bv.record_id=t.record_id \n" +
 				"where t.bpm_budgetCall_id=? and t.ad_table_id=? and t.record_id=? \n" +
