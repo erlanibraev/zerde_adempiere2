@@ -30,7 +30,7 @@ public class X_BSC_Responsible_Executor extends PO implements I_BSC_Responsible_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130621L;
+	private static final long serialVersionUID = 20130703L;
 
     /** the default Constructor */
     public X_BSC_Responsible_Executor(Properties ctx)
@@ -44,6 +44,7 @@ public class X_BSC_Responsible_Executor extends PO implements I_BSC_Responsible_
       super (ctx, BSC_Responsible_Executor_ID, trxName);
       /** if (BSC_Responsible_Executor_ID == 0)
         {
+			setBSC_Action_ID (0);
 			setBSC_Responsible_Executor_ID (0);
         } */
     }

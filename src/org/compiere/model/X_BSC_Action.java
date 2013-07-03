@@ -17,8 +17,11 @@
 /** Generated Model - DO NOT CHANGE */
 package org.compiere.model;
 
+import java.math.BigDecimal;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.Properties;
+import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for BSC_Action
@@ -30,7 +33,7 @@ public class X_BSC_Action extends PO implements I_BSC_Action, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130604L;
+	private static final long serialVersionUID = 20130703L;
 
     /** the default Constructor */
     public X_BSC_Action(Properties ctx)
@@ -45,6 +48,10 @@ public class X_BSC_Action extends PO implements I_BSC_Action, I_Persistent
       /** if (BSC_Action_ID == 0)
         {
 			setBSC_Action_ID (0);
+			setBSC_NetWorkDiagSubLine_ID (0);
+			setDateFrom (new Timestamp( System.currentTimeMillis() ));
+			setDateTo (new Timestamp( System.currentTimeMillis() ));
+			setName (null);
         } */
     }
 
@@ -75,6 +82,26 @@ public class X_BSC_Action extends PO implements I_BSC_Action, I_Persistent
         .append(get_ID()).append("]");
       return sb.toString();
     }
+
+	/** Set Amount.
+		@param Amount 
+		Amount in a defined currency
+	  */
+	public void setAmount (BigDecimal Amount)
+	{
+		set_Value (COLUMNNAME_Amount, Amount);
+	}
+
+	/** Get Amount.
+		@return Amount in a defined currency
+	  */
+	public BigDecimal getAmount () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Amount);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
 
 	/** Set BSC NetWork Diagram Sub Line Action ID.
 		@param BSC_Action_ID BSC NetWork Diagram Sub Line Action ID	  */
@@ -121,6 +148,74 @@ public class X_BSC_Action extends PO implements I_BSC_Action, I_Persistent
 		return ii.intValue();
 	}
 
+	/** Set Code Budget Programm.
+		@param CodeBudgetProgramm 
+		Code of Budget Programm
+	  */
+	public void setCodeBudgetProgramm (String CodeBudgetProgramm)
+	{
+		set_Value (COLUMNNAME_CodeBudgetProgramm, CodeBudgetProgramm);
+	}
+
+	/** Get Code Budget Programm.
+		@return Code of Budget Programm
+	  */
+	public String getCodeBudgetProgramm () 
+	{
+		return (String)get_Value(COLUMNNAME_CodeBudgetProgramm);
+	}
+
+	/** Set Completion Form.
+		@param CompletionForm 
+		Form of Completion
+	  */
+	public void setCompletionForm (String CompletionForm)
+	{
+		set_Value (COLUMNNAME_CompletionForm, CompletionForm);
+	}
+
+	/** Get Completion Form.
+		@return Form of Completion
+	  */
+	public String getCompletionForm () 
+	{
+		return (String)get_Value(COLUMNNAME_CompletionForm);
+	}
+
+	/** Set Date From.
+		@param DateFrom 
+		Starting date for a range
+	  */
+	public void setDateFrom (Timestamp DateFrom)
+	{
+		set_Value (COLUMNNAME_DateFrom, DateFrom);
+	}
+
+	/** Get Date From.
+		@return Starting date for a range
+	  */
+	public Timestamp getDateFrom () 
+	{
+		return (Timestamp)get_Value(COLUMNNAME_DateFrom);
+	}
+
+	/** Set Date To.
+		@param DateTo 
+		End date of a date range
+	  */
+	public void setDateTo (Timestamp DateTo)
+	{
+		set_Value (COLUMNNAME_DateTo, DateTo);
+	}
+
+	/** Get Date To.
+		@return End date of a date range
+	  */
+	public Timestamp getDateTo () 
+	{
+		return (Timestamp)get_Value(COLUMNNAME_DateTo);
+	}
+
 	/** Set Description.
 		@param Description 
 		Optional short description of the record
@@ -136,6 +231,36 @@ public class X_BSC_Action extends PO implements I_BSC_Action, I_Persistent
 	public String getDescription () 
 	{
 		return (String)get_Value(COLUMNNAME_Description);
+	}
+
+	/** DocStatus AD_Reference_ID=1000152 */
+	public static final int DOCSTATUS_AD_Reference_ID=1000152;
+	/** Executed = EXEC */
+	public static final String DOCSTATUS_Executed = "EXEC";
+	/** For Execution = FEXE */
+	public static final String DOCSTATUS_ForExecution = "FEXE";
+	/** No Executed In Full = NEIF */
+	public static final String DOCSTATUS_NoExecutedInFull = "NEIF";
+	/** No Executed In Time = NEIT */
+	public static final String DOCSTATUS_NoExecutedInTime = "NEIT";
+	/** No Executed = NEXE */
+	public static final String DOCSTATUS_NoExecuted = "NEXE";
+	/** Set Document Status.
+		@param DocStatus 
+		The current status of the document
+	  */
+	public void setDocStatus (String DocStatus)
+	{
+
+		set_Value (COLUMNNAME_DocStatus, DocStatus);
+	}
+
+	/** Get Document Status.
+		@return The current status of the document
+	  */
+	public String getDocStatus () 
+	{
+		return (String)get_Value(COLUMNNAME_DocStatus);
 	}
 
 	/** Set Comment/Help.

@@ -30,7 +30,7 @@ public interface I_BSC_NetWorkDiagLine
     /** TableName=BSC_NetWorkDiagLine */
     public static final String Table_Name = "BSC_NetWorkDiagLine";
 
-    /** AD_Table_ID=1000234 */
+    /** AD_Table_ID=1000252 */
     public static final int Table_ID = MTable.getTable_ID(Table_Name);
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);

@@ -30,7 +30,7 @@ public class X_BSC_NetWorkDiagSubLine extends PO implements I_BSC_NetWorkDiagSub
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130604L;
+	private static final long serialVersionUID = 20130703L;
 
     /** the default Constructor */
     public X_BSC_NetWorkDiagSubLine(Properties ctx)
@@ -44,7 +44,10 @@ public class X_BSC_NetWorkDiagSubLine extends PO implements I_BSC_NetWorkDiagSub
       super (ctx, BSC_NetWorkDiagSubLine_ID, trxName);
       /** if (BSC_NetWorkDiagSubLine_ID == 0)
         {
+			setBSC_NetWorkDiagLine_ID (0);
 			setBSC_NetWorkDiagSubLine_ID (0);
+			setName (null);
+			setName2 (null);
         } */
     }
 

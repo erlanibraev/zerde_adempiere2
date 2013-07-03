@@ -30,7 +30,7 @@ public class X_BSC_Target_Indicator extends PO implements I_BSC_Target_Indicator
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130604L;
+	private static final long serialVersionUID = 20130703L;
 
     /** the default Constructor */
     public X_BSC_Target_Indicator(Properties ctx)
@@ -44,7 +44,9 @@ public class X_BSC_Target_Indicator extends PO implements I_BSC_Target_Indicator
       super (ctx, BSC_Target_Indicator_ID, trxName);
       /** if (BSC_Target_Indicator_ID == 0)
         {
+			setBSC_NetWorkDiagSubLine_ID (0);
 			setBSC_Target_Indicator_ID (0);
+			setName (null);
         } */
     }
 

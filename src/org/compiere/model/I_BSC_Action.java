@@ -30,7 +30,7 @@ public interface I_BSC_Action
     /** TableName=BSC_Action */
     public static final String Table_Name = "BSC_Action";
 
-    /** AD_Table_ID=1000237 */
+    /** AD_Table_ID=1000255 */
     public static final int Table_ID = MTable.getTable_ID(Table_Name);
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
@@ -62,6 +62,19 @@ public interface I_BSC_Action
 	  */
 	public int getAD_Org_ID();
 
+    /** Column name Amount */
+    public static final String COLUMNNAME_Amount = "Amount";
+
+	/** Set Amount.
+	  * Amount in a defined currency
+	  */
+	public void setAmount (BigDecimal Amount);
+
+	/** Get Amount.
+	  * Amount in a defined currency
+	  */
+	public BigDecimal getAmount();
+
     /** Column name BSC_Action_ID */
     public static final String COLUMNNAME_BSC_Action_ID = "BSC_Action_ID";
 
@@ -82,6 +95,32 @@ public interface I_BSC_Action
 
 	public I_BSC_NetWorkDiagSubLine getBSC_NetWorkDiagSubLine() throws RuntimeException;
 
+    /** Column name CodeBudgetProgramm */
+    public static final String COLUMNNAME_CodeBudgetProgramm = "CodeBudgetProgramm";
+
+	/** Set Code Budget Programm.
+	  * Code of Budget Programm
+	  */
+	public void setCodeBudgetProgramm (String CodeBudgetProgramm);
+
+	/** Get Code Budget Programm.
+	  * Code of Budget Programm
+	  */
+	public String getCodeBudgetProgramm();
+
+    /** Column name CompletionForm */
+    public static final String COLUMNNAME_CompletionForm = "CompletionForm";
+
+	/** Set Completion Form.
+	  * Form of Completion
+	  */
+	public void setCompletionForm (String CompletionForm);
+
+	/** Get Completion Form.
+	  * Form of Completion
+	  */
+	public String getCompletionForm();
+
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
 
@@ -98,6 +137,32 @@ public interface I_BSC_Action
 	  */
 	public int getCreatedBy();
 
+    /** Column name DateFrom */
+    public static final String COLUMNNAME_DateFrom = "DateFrom";
+
+	/** Set Date From.
+	  * Starting date for a range
+	  */
+	public void setDateFrom (Timestamp DateFrom);
+
+	/** Get Date From.
+	  * Starting date for a range
+	  */
+	public Timestamp getDateFrom();
+
+    /** Column name DateTo */
+    public static final String COLUMNNAME_DateTo = "DateTo";
+
+	/** Set Date To.
+	  * End date of a date range
+	  */
+	public void setDateTo (Timestamp DateTo);
+
+	/** Get Date To.
+	  * End date of a date range
+	  */
+	public Timestamp getDateTo();
+
     /** Column name Description */
     public static final String COLUMNNAME_Description = "Description";
 
@@ -110,6 +175,19 @@ public interface I_BSC_Action
 	  * Optional short description of the record
 	  */
 	public String getDescription();
+
+    /** Column name DocStatus */
+    public static final String COLUMNNAME_DocStatus = "DocStatus";
+
+	/** Set Document Status.
+	  * The current status of the document
+	  */
+	public void setDocStatus (String DocStatus);
+
+	/** Get Document Status.
+	  * The current status of the document
+	  */
+	public String getDocStatus();
 
     /** Column name Help */
     public static final String COLUMNNAME_Help = "Help";
