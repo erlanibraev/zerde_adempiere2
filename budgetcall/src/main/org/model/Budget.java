@@ -11,7 +11,7 @@ import com.opensymphony.xwork2.ActionSupport;
  * @author V.Sokolov
  *
  */
-public abstract class Budget extends ActionSupport implements Specification {
+public abstract class Budget extends ActionSupport implements ISpecification {
 	
 	/**
 	 * 

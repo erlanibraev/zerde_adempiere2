@@ -9,7 +9,7 @@ import org.apache.struts2.interceptor.SessionAware;
  * @author V.Sokolov
  *
  */
-public interface Specification extends SessionAware {
+public interface ISpecification extends SessionAware {
 	
 	public String getPage();
 	

@@ -59,17 +59,23 @@ public class ExcelPrint extends Budget {
 	/** */
 	private String path = Util.localFilePath + System.getProperty("file.separator");
 	private String page;
+	// Excel book
+	private Workbook tableBook = null;
+	private WritableWorkbook copy = null;
+	private WritableSheet sheet = null;
 	// Types of cells for
-	Label label;
-	Number number;
+	private Label label;
+	private Number number;
 	//
-    WritableFont font12 = new WritableFont (WritableFont.TIMES, 10, WritableFont.BOLD);
-    WritableFont font11 = new WritableFont (WritableFont.TIMES, 11, WritableFont.BOLD);
-	WritableCellFormat borderStyle = new WritableCellFormat();
-	WritableCellFormat borderStyleLeft = new WritableCellFormat(font12);
-	WritableCellFormat borderStyleRight = new WritableCellFormat(font12);
-	WritableCellFormat borderStyleCenter = new WritableCellFormat(font12);
-	WritableCellFormat borderCenter11 = new WritableCellFormat(font11);
+	private File temporaryFile = null;
+	private StringBuffer fullPath = null;
+	private WritableFont font12 = new WritableFont (WritableFont.TIMES, 10, WritableFont.BOLD);
+	private WritableFont font11 = new WritableFont (WritableFont.TIMES, 11, WritableFont.BOLD);
+	private WritableCellFormat borderStyle = new WritableCellFormat();
+	private WritableCellFormat borderStyleLeft = new WritableCellFormat(font12);
+	private WritableCellFormat borderStyleRight = new WritableCellFormat(font12);
+	private WritableCellFormat borderStyleCenter = new WritableCellFormat(font12);
+	private WritableCellFormat borderCenter11 = new WritableCellFormat(font11);
 	
 	public ExcelPrint(DownloadFileAction downloadAction) throws Exception{
 		
@@ -113,11 +119,29 @@ public class ExcelPrint extends Budget {
 		
 	}
 	
-	public String getFilePath() throws Exception{
+	public synchronized String getFilePath() throws Exception{
 		
 		//
 		MAttachmentEntry entry = Util.getAttachment(pi, m_ctx, page);
 		if(entry == null) return NONE;
+		
+		// We define a path to generate
+		String fileExtension = entry.getName().substring(entry.getName().lastIndexOf("."),entry.getName().length());
+		fullPath = new StringBuffer(path); 
+		fullPath.append("BudgetCallTemplate").append(fileExtension);
+				
+		// 
+		File templateCopy = new File(fullPath.toString());
+		temporaryFile = entry.getFile(Util.localFilePath + page);
+
+		 try {
+			 tableBook = Workbook.getWorkbook(temporaryFile);
+			 copy = Workbook.createWorkbook(templateCopy, tableBook);
+			 sheet = copy.getSheet(0);
+		} catch (Exception e) {
+		  	ADialog.error(999, null, "Error tableBook. " + e.getMessage());
+		   	return "Error tableBook.";
+		}
 		
 		if(page.equals(Utils.TEMPLATE_FIRST))
 			return printFirstPage(entry);
@@ -138,25 +162,7 @@ public class ExcelPrint extends Budget {
 			sumMonth[b] = new BigDecimal(0);
 		}
 		
-		// We define a path to generate
-		String fileExtension = entry.getName().substring(entry.getName().lastIndexOf("."),entry.getName().length());
-		StringBuffer fullPath = new StringBuffer(path); 
-		fullPath.append("BudgetCallTemplate").append(fileExtension);
-				
-		// 
-		File templateCopy = new File(fullPath.toString());
-		File temporaryFile = entry.getFile(Util.localFilePath + page);
-		Workbook tableBook = null;
-		WritableWorkbook copy = null;
-		WritableSheet sheet = null;
-		 try {
-			 tableBook = Workbook.getWorkbook(temporaryFile);
-			 copy = Workbook.createWorkbook(templateCopy, tableBook);
-			 sheet = copy.getSheet(0);
-		} catch (Exception e) {
-		  	ADialog.error(999, null, "Error tableBook. " + e.getMessage());
-		   	return "Error tableBook.";
-		}
+		
 		 
 		ExcelCell cellProper =  Util.getCellStart(tableBook,">>");
 		printProperty(sheet, cellProper);
@@ -245,26 +251,6 @@ public class ExcelPrint extends Budget {
 	
 	private String printSecondPage(MAttachmentEntry entry) throws Exception{
 		
-		// We define a path to generate
-		String fileExtension = entry.getName().substring(entry.getName().lastIndexOf("."),entry.getName().length());
-		StringBuffer fullPath = new StringBuffer(path); 
-		fullPath.append("BudgetCallTemplate").append(fileExtension);
-				
-		// 
-		File templateCopy = new File(fullPath.toString());
-		File temporaryFile = entry.getFile(Util.localFilePath + page);
-		Workbook tableBook = null;
-		WritableWorkbook copy = null;
-		WritableSheet sheet = null;
-		 try {
-			 tableBook = Workbook.getWorkbook(temporaryFile);
-			 copy = Workbook.createWorkbook(templateCopy, tableBook);
-			 sheet = copy.getSheet(0);
-		} catch (Exception e) {
-		  	ADialog.error(999, null, "Error tableBook. " + e.getMessage());
-		   	return "Error tableBook.";
-		}
-		 
 		ExcelCell cellProper =  Util.getCellStart(tableBook,">>");
 		printProperty(sheet, cellProper);
 		ExcelCell cellData =  Util.getCellStart(tableBook,">>>");
@@ -325,26 +311,6 @@ public class ExcelPrint extends Budget {
 	
 	private String printThreePage(MAttachmentEntry entry) throws Exception{
 		
-		// We define a path to generate
-		String fileExtension = entry.getName().substring(entry.getName().lastIndexOf("."),entry.getName().length());
-		StringBuffer fullPath = new StringBuffer(path); 
-		fullPath.append("BudgetCallTemplate").append(fileExtension);
-				
-		// 
-		File templateCopy = new File(fullPath.toString());
-		File temporaryFile = entry.getFile(Util.localFilePath + page);
-		Workbook tableBook = null;
-		WritableWorkbook copy = null;
-		WritableSheet sheet = null;
-		 try {
-			 tableBook = Workbook.getWorkbook(temporaryFile);
-			 copy = Workbook.createWorkbook(templateCopy, tableBook);
-			 sheet = copy.getSheet(0);
-		} catch (Exception e) {
-		  	ADialog.error(999, null, "Error tableBook. " + e.getMessage());
-		   	return "Error tableBook.";
-		}
-		 
 		ExcelCell cellProper =  Util.getCellStart(tableBook,">>");
 		printProperty(sheet, cellProper);
 		ExcelCell cellData =  Util.getCellStart(tableBook,">>>");
