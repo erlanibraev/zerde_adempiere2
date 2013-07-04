@@ -143,6 +143,17 @@ public interface I_BSC_NetWorkDiag
 	  */
 	public String getDescription();
 
+    /** Column name Director_ID */
+    public static final String COLUMNNAME_Director_ID = "Director_ID";
+
+	/** Set Director_ID	  */
+	public void setDirector_ID (int Director_ID);
+
+	/** Get Director_ID	  */
+	public int getDirector_ID();
+
+	public org.compiere.model.I_AD_User getDirector() throws RuntimeException;
+
     /** Column name DocAction */
     public static final String COLUMNNAME_DocAction = "DocAction";
 
@@ -268,6 +279,17 @@ public interface I_BSC_NetWorkDiag
 
 	/** Get Process Now	  */
 	public boolean isProcessing();
+
+    /** Column name Resposible_Manager_ID */
+    public static final String COLUMNNAME_Resposible_Manager_ID = "Resposible_Manager_ID";
+
+	/** Set Resposible_Manager_ID	  */
+	public void setResposible_Manager_ID (int Resposible_Manager_ID);
+
+	/** Get Resposible_Manager_ID	  */
+	public int getResposible_Manager_ID();
+
+	public org.compiere.model.I_AD_User getResposible_Manager() throws RuntimeException;
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

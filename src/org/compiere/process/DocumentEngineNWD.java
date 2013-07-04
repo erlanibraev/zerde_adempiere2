@@ -3,6 +3,12 @@
  */
 package org.compiere.process;
 
+import org.compiere.model.MBPartner;
+import org.compiere.model.MBSCNetWorkDiag;
+import org.compiere.model.MUser;
+import org.compiere.model.X_BSC_NetWorkDiag;
+import org.compiere.util.Env;
+
 /**
  * @author A.Kulantayev
  *
@@ -12,35 +18,67 @@ public class DocumentEngineNWD extends DocumentEngine {
 	/**
 	 * @param po
 	 */
-	public DocumentEngineNWD(DocAction po) {
-		this(po,STATUS_Drafted);
-	}
-
+	private int m_BSCNetWorkDiag_ID = 0;
 	/**
 	 * @param po
 	 * @param docStatus
 	 */
-	public DocumentEngineNWD(DocAction po, String docStatus) {
+	public DocumentEngineNWD(DocAction po, String docStatus, int p_BSCNetWorkDiag_ID) {
 		super(po, docStatus);
+		m_BSCNetWorkDiag_ID = p_BSCNetWorkDiag_ID;
 		// TODO Auto-generated constructor stub
 	}
 	
 	@Override
 	public boolean processIt (String processAction, String docAction) {
 		boolean result = true;
-		
+		int p_AD_User_ID = 0;
+		String emailtempTitle = "Информация о согласований (Сетевого графика)";
 		if (processAction != null) {
 			//TODO Что делать с процессами
 		} 
 		
 		if(ACTION_Prepare.equals(docAction)){
-			result = STATUS_WaitingConfirmation.equals(prepareIt());}
+			result = STATUS_WaitingConfirmation.equals(prepareIt());
+			if(result) {
+				try {
+					p_AD_User_ID = new X_BSC_NetWorkDiag(getCtx(), m_BSCNetWorkDiag_ID, get_TrxName()).get_ValueAsInt("Director_ID");
+					extend.org.compiere.utils.Util.sendMail(p_AD_User_ID, Env.getAD_Client_ID(getCtx()), emailtempTitle
+							, "Уважаемый(ая), "+new MBPartner(getCtx(), (new MUser(getCtx(), p_AD_User_ID, get_TrxName()).getC_BPartner_ID()), get_TrxName()).getName()
+							+ ", Вам надо согласовать документ №"	+ new MBSCNetWorkDiag(getCtx(), m_BSCNetWorkDiag_ID, get_TrxName()).get_Value("DocumentNo"), false);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
 		
 		else if(ACTION_Approve.equals(docAction)){
-			result = approveIt();} 
+			result = approveIt();
+			if(result){
+				try{
+					p_AD_User_ID = new X_BSC_NetWorkDiag(getCtx(), m_BSCNetWorkDiag_ID, get_TrxName()).get_ValueAsInt("Resposible_Manager_ID");
+					extend.org.compiere.utils.Util.sendMail(p_AD_User_ID, Env.getAD_Client_ID(getCtx()), emailtempTitle, "Уважаемый(ая), "
+							+ new MBPartner(getCtx(), (new MUser(getCtx(), p_AD_User_ID, get_TrxName()).getC_BPartner_ID()), get_TrxName()).getName() 
+							+", документ №"+ new MBSCNetWorkDiag(getCtx(), m_BSCNetWorkDiag_ID, get_TrxName()).get_Value("DocumentNo")+" одобрен.", false);
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+			}
+		} 
 		
 		else if (ACTION_Reject.equals(docAction)) { 
-			result = rejectIt();}
+			result = rejectIt();
+			if(result){
+				try{
+					p_AD_User_ID = new X_BSC_NetWorkDiag(getCtx(), m_BSCNetWorkDiag_ID, get_TrxName()).get_ValueAsInt("Resposible_Manager_ID");
+					extend.org.compiere.utils.Util.sendMail(p_AD_User_ID, Env.getAD_Client_ID(getCtx()), emailtempTitle, "Уважаемый(ая), "
+							+ new MBPartner(getCtx(), (new MUser(getCtx(), p_AD_User_ID, get_TrxName()).getC_BPartner_ID()), get_TrxName()).getName() 
+							+", документ №"+ new MBSCNetWorkDiag(getCtx(), m_BSCNetWorkDiag_ID, get_TrxName()).get_Value("DocumentNo")+" отклонен.", false);
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+			}
+		}
 		
 		else if (ACTION_Complete.equals(docAction)) { 
 			result = STATUS_Completed.equals(completeIt());} 
@@ -63,23 +101,5 @@ public class DocumentEngineNWD extends DocumentEngine {
 	public String[] getActionOptions() {
 		return new String[] {ACTION_Approve, ACTION_Close, ACTION_Complete, ACTION_Invalidate, ACTION_None, ACTION_Post, ACTION_Prepare,
 				ACTION_ReActivate, ACTION_Reject, ACTION_Reverse_Accrual, ACTION_Reverse_Correct, ACTION_Unlock, ACTION_Void, ACTION_WaitComplete};
-/*
-		if (isDrafted() || isNotApproved() || isInvalid())
-			return new String[] {ACTION_Prepare, ACTION_Void};
-		
-		if (isApproved())
-			return new String[] {ACTION_Complete, ACTION_Void};
-		
-		if (isWaiting())
-			return new String[] {ACTION_Approve, ACTION_Reject, ACTION_Void};
-		
-		if (isCompleted())
-			return new String[] {ACTION_Close, ACTION_ReActivate, ACTION_Void};
-		
-		if (isClosed())
-			return new String[] {ACTION_ReActivate, ACTION_ReOpen};
-
-		return new String[] {};*/
 	}
-
 }

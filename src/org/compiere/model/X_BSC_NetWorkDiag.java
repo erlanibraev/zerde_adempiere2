@@ -33,7 +33,7 @@ public class X_BSC_NetWorkDiag extends PO implements I_BSC_NetWorkDiag, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130703L;
+	private static final long serialVersionUID = 20130704L;
 
     /** the default Constructor */
     public X_BSC_NetWorkDiag(Properties ctx)
@@ -50,9 +50,13 @@ public class X_BSC_NetWorkDiag extends PO implements I_BSC_NetWorkDiag, I_Persis
 			setBSC_NetWorkDiag_ID (0);
 			setC_DocType_ID (0);
 // 1000070
+			setDirector_ID (0);
+// 1000050
 			setDocAction (null);
-// PR
+// CO
 			setName (null);
+			setResposible_Manager_ID (0);
+// 1000052
         } */
     }
 
@@ -192,6 +196,31 @@ public class X_BSC_NetWorkDiag extends PO implements I_BSC_NetWorkDiag, I_Persis
 	public String getDescription () 
 	{
 		return (String)get_Value(COLUMNNAME_Description);
+	}
+
+	public org.compiere.model.I_AD_User getDirector() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
+			.getPO(getDirector_ID(), get_TrxName());	}
+
+	/** Set Director_ID.
+		@param Director_ID Director_ID	  */
+	public void setDirector_ID (int Director_ID)
+	{
+		if (Director_ID < 1) 
+			set_Value (COLUMNNAME_Director_ID, null);
+		else 
+			set_Value (COLUMNNAME_Director_ID, Integer.valueOf(Director_ID));
+	}
+
+	/** Get Director_ID.
+		@return Director_ID	  */
+	public int getDirector_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_Director_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** DocAction AD_Reference_ID=135 */
@@ -432,5 +461,30 @@ public class X_BSC_NetWorkDiag extends PO implements I_BSC_NetWorkDiag, I_Persis
 			return "Y".equals(oo);
 		}
 		return false;
+	}
+
+	public org.compiere.model.I_AD_User getResposible_Manager() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
+			.getPO(getResposible_Manager_ID(), get_TrxName());	}
+
+	/** Set Resposible_Manager_ID.
+		@param Resposible_Manager_ID Resposible_Manager_ID	  */
+	public void setResposible_Manager_ID (int Resposible_Manager_ID)
+	{
+		if (Resposible_Manager_ID < 1) 
+			set_Value (COLUMNNAME_Resposible_Manager_ID, null);
+		else 
+			set_Value (COLUMNNAME_Resposible_Manager_ID, Integer.valueOf(Resposible_Manager_ID));
+	}
+
+	/** Get Resposible_Manager_ID.
+		@return Resposible_Manager_ID	  */
+	public int getResposible_Manager_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_Resposible_Manager_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 }

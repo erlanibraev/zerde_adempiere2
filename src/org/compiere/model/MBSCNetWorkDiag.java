@@ -80,7 +80,7 @@ public class MBSCNetWorkDiag extends X_BSC_NetWorkDiag implements DocAction {
 	@Override
 	public boolean processIt(String processAction) throws Exception {
 		m_processMsg = null;
-		DocumentEngineNWD engine = new DocumentEngineNWD (this, getDocStatus());
+		DocumentEngineNWD engine = new DocumentEngineNWD (this, getDocStatus(),get_ID());
 		return engine.processIt (processAction, getDocAction());
 	}
 
