@@ -33,19 +33,17 @@ public class BSCClosePeriod extends SvrProcess {
 	private int C_Period_ID = 0;
 	private MPeriod period = null;
 	private List<MBSCCard> cards = new ArrayList<MBSCCard>();;
-	private int AD_Client_ID = Env.getAD_Client_ID(getCtx());
-	private int AD_Org_ID = Env.getAD_Org_ID(getCtx());
+	private int AD_Client_ID = 0 ; // Env.getAD_Client_ID(getCtx());
+	private int AD_Org_ID = 0; // Env.getAD_Org_ID(getCtx());
 	private int C_DocType_ID = 0;
 	private String resultIt = null;
-	private int c_doctype_id = getC_DocType_ID();;
 	private int p_AD_Client_ID;  
 //---------------------------------------------------------------------------
 	@Override
 	protected void prepare() {
-		getProcessInfo();
-		
-	 	Env.getAD_User_ID(getCtx());
-		
+		AD_Client_ID = Env.getAD_Client_ID(getCtx());
+		AD_Org_ID = Env.getAD_Org_ID(getCtx());
+		C_DocType_ID = getC_DocType_ID();
 		initParameters();
 		
 	}
@@ -57,7 +55,9 @@ public class BSCClosePeriod extends SvrProcess {
 	protected String doIt() throws Exception {
 		if (BSCClose()) {
 			resultIt = "Период отчета по КПИ и ССП закрыт";
-		} 
+		} else {
+			resultIt = "Период отчета по КПИ и ССП НЕ ЗАКРЫТ!";
+		}
 		return resultIt;
 	}
 //---------------------------------------------------------------------------
@@ -152,7 +152,7 @@ public class BSCClosePeriod extends SvrProcess {
 	 */
 	private boolean BSCClose() {
 		boolean result = false;
-		if (c_doctype_id<0) {
+		if (C_DocType_ID<0) {
 			log.info("doctype is not found");
 			return false;
 		}
@@ -168,10 +168,9 @@ public class BSCClosePeriod extends SvrProcess {
 		if (isWork) {
 			MPeriod nextPeriod = getNextPeriod();
 			if(nextPeriod != null && nextPeriod.getC_Period_ID() > 0) {
-				//TODO Хоть что-нибудь сделать!!!!!!!!!!!!!!!
 				try {
 					copyBSCCardToNextPeriod(nextPeriod);
-					closeCurrentBSCCard();
+					result = closeCurrentBSCCard();
 				} catch(Exception e) {
 					log.log(Level.SEVERE,"BSCClosePeriod: ",e);
 					result = false;
@@ -187,14 +186,23 @@ public class BSCClosePeriod extends SvrProcess {
 	/**
 	 * 
 	 */
-	private void closeCurrentBSCCard() {
+	private boolean closeCurrentBSCCard() {
+		boolean result = false;
 		if (cards.size() > 0) {
 			for(MBSCCard card: cards) {
 				card.closePeriod(C_Period_ID);
 			}
 		}
 		//TODO
-//		getPeriod().isOpen(DocBaseType);
+		if (C_Period_ID >0) {
+			MPeriodControl pc = new MPeriodControl(new MPeriod(Env.getCtx(),C_Period_ID,null),"BSC");
+			if (pc != null) {
+				pc.setPeriodStatus(MPeriodControl.PERIODSTATUS_Closed);
+				pc.setPeriodAction(MPeriodControl.PERIODACTION_OpenPeriod);
+				result = pc.save();
+			}
+		}
+		return result;
 	}
 
 	/**
@@ -206,12 +214,12 @@ public class BSCClosePeriod extends SvrProcess {
 		if (nextPeriod == null || nextPeriod.getC_Period_ID() == 0) {
 			return;
 		}
-		if (cards.size() > 0 && haveBSCCard(nextPeriod.getC_Period_ID())) {
+		if (cards.size() > 0 && !haveBSCCard(nextPeriod.getC_Period_ID())) {
 			for(MBSCCard card: cards) {
 				card.copyCard(nextPeriod);
 			}
 		} else {
-			throw new Exception("Can not copy BSCCard for the next period"); 
+//			throw new Exception("Can not copy BSCCard for the next period"); 
 		}
 	}
 	
@@ -255,7 +263,7 @@ public class BSCClosePeriod extends SvrProcess {
 			
 			int next_CPeriod_ID = getNextPeriod(C_Year_ID,currentNo+1);
 			
-			if (next_CPeriod_ID == 0) {
+			if (next_CPeriod_ID <= 0) {
 				C_Year_ID  = getNextYear(C_Calendar_ID, C_Year_ID);
 				if (C_Year_ID > 0) {
 					next_CPeriod_ID = getNextPeriod(C_Year_ID,0);
@@ -283,9 +291,9 @@ public class BSCClosePeriod extends SvrProcess {
 					       "  AND FiscalYear > (" +
 					       "                    SELECT FiscalYear " +
 					       "                    FROM C_Year " +
-					       "                    WHERE C_Year_ID = "+ C_Year_ID +" LIMIT 1 " +
+					       "                    WHERE C_Year_ID = "+ C_Year_ID +"  " +
 					       "                   ) " +
-					       "ORDER BY FiscalYear LIMIT 1";
+					       "ORDER BY FiscalYear ";
 			result = DB.getSQLValue(get_TrxName(), query);
 		} catch (Exception e) {
 			log.log(Level.SEVERE, "BSCClosePeriod: ", e);
@@ -301,10 +309,9 @@ public class BSCClosePeriod extends SvrProcess {
 					       " WHERE isActive = 'Y' " +
 					       "   AND C_Year_ID = " + C_Year_ID +" " +
 					       "   AND PeriodNo >= "+currentNo+" " +
-					       " ORDER BY PeriodNo LIMIT 1";
+					       " ORDER BY PeriodNo ";
 			result = DB.getSQLValue(get_TrxName(), query);
-		} 
-		catch (Exception e) {
+		} catch (Exception e) {
 			log.log(Level.SEVERE, "BSCClosePeriod: ", e);
 		} 
 		return result;

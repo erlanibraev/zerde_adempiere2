@@ -380,15 +380,19 @@ public class MBSCCardLine extends X_BSC_CardLine {
 			newLine.setBSC_Parameter_ID(getBSC_Parameter_ID());
 			newLine.setBSC_Parameter_Out_ID(getBSC_Parameter_Out_ID());
 			newLine.setBSC_Perspective_ID(getBSC_Perspective_ID());
-			newLine.setValue("---");
+			newLine.setValue("0");
 			newLine.setValueNumber(new BigDecimal(0));
 			if(newLine.save()) {
 				MParameter par = newLine.getParameter();
-				par.createNewLine(C_Period_ID);
-				par.save();
+				if (par != null) {
+					par.createNewLine(C_Period_ID);
+					par.save();
+				}
 				par = new MParameter(Env.getCtx(),newLine.getBSC_Parameter_Out_ID(),get_TrxName());
-				par.createNewLine(C_Period_ID);
-				par.save();
+				if (par != null) {
+					par.createNewLine(C_Period_ID);
+					par.save();
+				}
 			}
 		}
 	}

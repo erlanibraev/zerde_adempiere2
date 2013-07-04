@@ -420,7 +420,9 @@ public class MParameter extends X_BSC_Parameter {
 	public void createNewLine(int c_Period_ID) {
 		int prevC_Period_ID = getprevC_Period_ID(c_Period_ID);
 		MParameterLine prevParameterLine = getParameterLine(MPeriod.get(getCtx(), prevC_Period_ID));
-		prevParameterLine.copyNextPeriod(c_Period_ID);
+		if (prevParameterLine != null) {
+			prevParameterLine.copyNextPeriod(c_Period_ID);
+		}
 	}
 
 	/**
@@ -435,23 +437,28 @@ public class MParameter extends X_BSC_Parameter {
 		String sql = " SELECT CP.C_Period_ID " +
 				     " FROM C_Period CP " +
 				     " LEFT JOIN C_Year CY " +
-				     "        ON CP.AD_Org_ID = CY.AD_Org_ID " +
-				     "       AND CP.AD_Client_ID = CY.AD_Client_ID " +
-				     "       AND CY.IsActive = 'Y' " +
-				     "       AND CP.C_Year_ID = CY.C_Year_ID " +
+				     " ON CP.AD_Org_ID = CY.AD_Org_ID " +
+				     " AND CP.AD_Client_ID = CY.AD_Client_ID " +
+				     " AND CY.IsActive = 'Y' " +
+				     " AND CP.C_Year_ID = CY.C_Year_ID " +
 				     " WHERE CP.isActive = 'Y' " +
-				     "   AND CY.C_Calendar_ID = " + C_Calendar_ID + " " +
-				     "   AND CP.PeriodNo < 10 " +
-				     "   AND CY.FiscalYear <= (" +
-				     "                         SELECT FiscalYear " +
-				     "                         FROM C_Year " +
-				     "                         WHERE C_Year_ID = " + C_Year_ID+ " LIMIT 1" +
-				     "                        ) " +
+				     " AND CY.C_Calendar_ID = " + C_Calendar_ID + " AND ((" +
+				     " CP.PeriodNo < 10 " +
+				     " AND CY.FiscalYear = (" +
+				     " SELECT FiscalYear " +
+				     " FROM C_Year " +
+				     " WHERE C_Year_ID = " + C_Year_ID+ "" +
+				     " )) OR ( " +
+				     " CY.FiscalYear < (" +
+				     " SELECT FiscalYear " +
+				     " FROM C_Year " +
+				     " WHERE C_Year_ID = " + C_Year_ID+ "" +
+				     " ))) " +
 				     " ORDER BY CY.FiscalYear DESC" +
-				     "        , CP.PeriodNo DESC " +
-				     " LIMIT 1 " ; 
+				     " , CP.PeriodNo DESC " +
+				     "" ; 
 		try {
-		result = DB.getSQLValue(get_TrxName(), sql);
+			result = DB.getSQLValue(get_TrxName(), sql);
 		} catch (Exception e) {
 			sLog.log(Level.SEVERE, "getPrevC_Period_ID: ", e);
 		}
