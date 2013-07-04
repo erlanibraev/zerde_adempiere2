@@ -3,7 +3,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>Ajax testing</title>
 	<link rel="shortcut icon" href="images/logo.png" type="image/jpg" /> 	
 	<link type="text/css" href="css/Main.css" rel="stylesheet">
@@ -20,10 +19,10 @@
 				<table border="0" cellpadding="3" cellspacing="0">
 					<tr>
 					<td valign="top">
-					<input type="textbox" id="getCities" size="20" onKeyDown="search(this);" style="width:300px;" autocomplete="off" >
+					<input type="textbox" id="getCities" size="20" onkeypress="search(this);" style="width:300px;" autocomplete="off" />
 					<div align="left" id="searchResult" style="width:300px;	border:#000000;"></div>
 					<a href="javascript:searchByCity();">
-					<img src="<%=request.getContextPath()%>/b_go.gif" alt="go"
+					<img src="images/adempiere.png" alt="go"
 					width="23" height="15" border="0"></a>
 					</td>
 					</tr>

@@ -13,13 +13,13 @@ function newXMLHttpRequest() {
 		try {
 				// Try to create XMLHttpRequest in later versions
 				// of Internet Explorer
-				xmlreq = new ActiveXObject("Msxml2.XMLHTTP");
+				xmlreq = new ActiveXObject('Msxml2.XMLHTTP');
 		} catch (e1) {
 			// Failed to create required ActiveXObject
 			try {
 				// Try version supported by older versions
 				// of Internet Explorer
-				xmlreq = new ActiveXObject("Microsoft.XMLHTTP");
+				xmlreq = new ActiveXObject('Microsoft.XMLHTTP');
 			} catch (e2) {
 				// Unable to create an XMLHttpRequest by any means
 				xmlreq = false;
@@ -38,7 +38,7 @@ function newXMLHttpRequest() {
 function getReadyStateHandler(req, responseXmlHandler) {
 	// Return an anonymous function that listens to the XMLHttpRequest instance
 	return function () {
-		// If the request's status is "complete"
+		// If the request's status is 'complete'
 		if (req.readyState == 4) {
 			// Check that we received a successful response from the server
 			if (req.status == 200) {
@@ -46,7 +46,7 @@ function getReadyStateHandler(req, responseXmlHandler) {
 				responseXmlHandler(req.responseXML);
 			} else {
 				// An HTTP problem has occurred
-				alert("HTTP error "+req.status+": "+req.statusText);
+				alert('HTTP error '+req.status+': '+req.statusText);
 			}
 		}
 	};
@@ -55,32 +55,32 @@ function getReadyStateHandler(req, responseXmlHandler) {
 function search(searchKey) {
 	
 	var form = document.forms[0];
-	var keyValue = document.getElementById("getCities").value;
-	keyValue = keyValue.replace(/^\s*|\s*$/g,"");
-	if (keyValue.length > 1)
+	var keyValue = document.getElementById('getCities').value;
+	keyValue = keyValue.replace(/^\s*|\s*$/g,'');
+	if (keyValue.length > 0)
 	{
-	availableSelectList = document.getElementById("searchResult");
+	availableSelectList = document.getElementById('searchResult');
 	var req = newXMLHttpRequest();
 	req.onreadystatechange = getReadyStateHandler(req, update);
-	req.open("POST","<%=request.getContextPath()%>/searchCity.action", true);
-	req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-	req.send("getCities="+keyValue);
+	req.open('POST','search.action', true);
+	req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+	req.send('getCities='+keyValue);
 	}
 }
 
 function update(cartXML)
 {
-	var countries = cartXML.getElementsByTagName("cities")[0];
-	var country = countries.getElementsByTagName("city");
+	var countries = cartXML.getElementsByTagName('cities')[0];
+	var country = countries.getElementsByTagName('city');
 	availableSelectList.innerHTML = '';
 	for (var i = 0; i < country.length ; i++)
 	{
 		var ndValue = country[i].firstChild.nodeValue;
-		availableSelectList.innerHTML += ndValue+"\n";
+		availableSelectList.innerHTML += ndValue+'\n';
 	}
 }
 function searchByCountry()
 {
 	var form = document.forms[0];
-	alert("This gets the city names");
+	alert('This gets the city names');
 }

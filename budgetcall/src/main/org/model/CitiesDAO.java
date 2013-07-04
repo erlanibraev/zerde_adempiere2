@@ -4,8 +4,6 @@
 package main.org.model;
 
 import java.sql.*;
-import javax.naming.InitialContext;
-import javax.sql.DataSource;
 
 import org.compiere.util.DB;
 
@@ -15,30 +13,13 @@ import org.compiere.util.DB;
  */
 public class CitiesDAO {
 
-	/**
-	* Get a connection from a specified datasource
-	* @param dataSourceName name
-	* @return Connection
-	*/
-	public Connection getConnection(String dataSourceName) {
-		
-		InitialContext context = null;
-		try {
-			context = new InitialContext();
-			DataSource dataSource = (DataSource) context.lookup(dataSourceName);
-			return dataSource.getConnection();
-		} catch(Exception ex) {
-			ex.printStackTrace();
-			return null;
-		}
-	}
 	
 	public String getCitiesByName (String searchText) {
 		
 		PreparedStatement psmt = null;
 		ResultSet rs = null;
 		StringBuffer cities = new StringBuffer();
-		String sql = "select name from c_city where name like ?";
+		String sql = "select name from c_city where lower(name) like lower(?)";
 		try {
 			psmt = DB.prepareStatement(sql,null);
 			psmt.setString(1,searchText+"%");
