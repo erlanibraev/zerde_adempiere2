@@ -37,7 +37,6 @@ public class BSCClosePeriod extends SvrProcess {
 	private int AD_Org_ID = 0; // Env.getAD_Org_ID(getCtx());
 	private int C_DocType_ID = 0;
 	private String resultIt = null;
-	private int p_AD_Client_ID;  
 //---------------------------------------------------------------------------
 	@Override
 	protected void prepare() {
@@ -266,7 +265,7 @@ public class BSCClosePeriod extends SvrProcess {
 			if (next_CPeriod_ID <= 0) {
 				C_Year_ID  = getNextYear(C_Calendar_ID, C_Year_ID);
 				if (C_Year_ID > 0) {
-					next_CPeriod_ID = getNextPeriod(C_Year_ID,0);
+					next_CPeriod_ID = getNextPeriod(C_Year_ID,-1);
 				}
 			}
 			if (next_CPeriod_ID > 0) {
@@ -281,38 +280,40 @@ public class BSCClosePeriod extends SvrProcess {
 	 * @param c_Year_ID
 	 * @return
 	 */
-	private int getNextYear(int C_Calendar_ID, int C_Year_ID) {
+	private static int getNextYear(int C_Calendar_ID, int C_Year_ID) {
 		int result = 0;
 		try {
-			String query = "SELECT C_Year_ID " +
-					       "FROM C_Year " +
-					       "WHERE isActive = 'Y' " +
-					       "  AND C_Calendar_ID = " + C_Calendar_ID +" " +
-					       "  AND FiscalYear > (" +
-					       "                    SELECT FiscalYear " +
-					       "                    FROM C_Year " +
-					       "                    WHERE C_Year_ID = "+ C_Year_ID +"  " +
-					       "                   ) " +
-					       "ORDER BY FiscalYear ";
-			result = DB.getSQLValue(get_TrxName(), query);
+			String query = " SELECT C_Year_ID FROM \"BSC_getNextYear\"("+C_Calendar_ID+","+C_Year_ID+")";
+//					       "FROM C_Year " +
+//					       "WHERE isActive = 'Y' " +
+//					       "  AND C_Calendar_ID = " + C_Calendar_ID +" " +
+//					       "  AND FiscalYear > (" +
+//					       "                    SELECT FiscalYear " +
+//					       "                    FROM C_Year " +
+//					       "                    WHERE C_Year_ID = "+ C_Year_ID +"  " +
+//					       "                   ) " +
+//					       "ORDER BY FiscalYear ";
+			result = DB.getSQLValue(null, query);
 		} catch (Exception e) {
-			log.log(Level.SEVERE, "BSCClosePeriod: ", e);
+			CLogger Log = CLogger.getCLogger(BSCClosePeriod.class);
+			Log.log(Level.SEVERE, "BSCClosePeriod: ", e);
 		} 
 		return result;
 	}
 
-	private int getNextPeriod(int C_Year_ID, int currentNo) {
+	private static int getNextPeriod(int C_Year_ID, int currentNo) {
 		int result = 0;
 		try {
-			String query = " SELECT C_Period_ID " +
-					       " FROM C_Period " +
-					       " WHERE isActive = 'Y' " +
-					       "   AND C_Year_ID = " + C_Year_ID +" " +
-					       "   AND PeriodNo >= "+currentNo+" " +
-					       " ORDER BY PeriodNo ";
-			result = DB.getSQLValue(get_TrxName(), query);
+			String query = " SELECT C_Period_ID FROM \"BSC_getNextPeriod\"("+C_Year_ID+","+currentNo+")";
+//					       " FROM C_Period " +
+//					       " WHERE isActive = 'Y' " +
+//					       "   AND C_Year_ID = " + C_Year_ID +" " +
+//					       "   AND PeriodNo >= "+currentNo+" " +
+//					       " ORDER BY PeriodNo ";
+			result = DB.getSQLValue(null, query);
 		} catch (Exception e) {
-			log.log(Level.SEVERE, "BSCClosePeriod: ", e);
+			CLogger Log = CLogger.getCLogger(BSCClosePeriod.class);
+			Log.log(Level.SEVERE, "BSCClosePeriod: ", e);
 		} 
 		return result;
 	}

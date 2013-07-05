@@ -85,7 +85,14 @@ public class MFormula extends X_BSC_Formula {
 			JexlContext jc = new MapContext();
 			if (args != null) {
 				for(Object key: args.keySet()) {
-					jc.set(key.toString(), args.get(key));
+					Object o = null; 
+					try {
+						o = new BigDecimal(args.get(key).toString());
+					} catch (Exception exc) {
+						o = args.get(key).toString();
+					} finally {
+						jc.set(key.toString(), o);
+					}
 				}
 			}
 			Object o = e.evaluate(jc);

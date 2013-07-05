@@ -411,7 +411,9 @@ public class MParameter extends X_BSC_Parameter {
 	}
 
 	public void setValue(String value) {
-		getCurrentParameterLine().setValue(value);
+		if (getCurrentParameterLine() != null) {
+			getCurrentParameterLine().setValue(value);
+		}
 	}
 
 	/**
@@ -419,10 +421,7 @@ public class MParameter extends X_BSC_Parameter {
 	 */
 	public void createNewLine(int c_Period_ID) {
 		int prevC_Period_ID = getprevC_Period_ID(c_Period_ID);
-		MParameterLine prevParameterLine = getParameterLine(MPeriod.get(getCtx(), prevC_Period_ID));
-		if (prevParameterLine != null) {
-			prevParameterLine.copyNextPeriod(c_Period_ID);
-		}
+		createNewLine(prevC_Period_ID,c_Period_ID);
 	}
 
 	/**
@@ -463,5 +462,16 @@ public class MParameter extends X_BSC_Parameter {
 			sLog.log(Level.SEVERE, "getPrevC_Period_ID: ", e);
 		}
 		return result;
+	}
+
+	/**
+	 * @param c_Period_ID
+	 * @param next_c_Period_ID
+	 */
+	public void createNewLine(int c_Period_ID, int next_c_Period_ID) {
+		MParameterLine prevParameterLine = getParameterLine(MPeriod.get(getCtx(), c_Period_ID));
+		if (prevParameterLine != null) {
+			prevParameterLine.copyNextPeriod(next_c_Period_ID);
+		}
 	}
 }

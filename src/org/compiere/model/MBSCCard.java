@@ -447,7 +447,7 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 		newCard.setC_DocType_ID(getC_DocType_ID());
 		newCard.setC_DocTypeTarget_ID(getC_DocTypeTarget_ID());
 		newCard.setCalcButton(getCalcButton());
-		newCard.getParameter().createNewLine(C_Period_ID);
+		newCard.getParameter().createNewLine(getC_Period_ID(),C_Period_ID);
 		
 		if (newCard.save()) {
 			result = newCard.getBSC_Card_ID();

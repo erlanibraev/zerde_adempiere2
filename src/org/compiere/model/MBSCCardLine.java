@@ -35,6 +35,26 @@ public class MBSCCardLine extends X_BSC_CardLine {
 	private MBSCCoefficent coefficient = null;
 	private MBSCCard card = null;
 	private MParameter parameter = null;
+	private MParameter parameter_Out = null;
+
+	public MParameter getParameter_Out() {
+		if (getBSC_Parameter_Out_ID() > 0 && (parameter_Out == null || parameter_Out.getBSC_Parameter_ID() != getBSC_Parameter_Out_ID())) {
+			parameter_Out = new MParameter(Env.getCtx(),getBSC_Parameter_Out_ID(),get_TrxName());
+			if (getCard() != null &&  getCard().getPeriod() != null) {
+				parameter_Out.setPeriod(getCard().getPeriod());
+			}
+		}
+		return parameter_Out;
+	}
+
+	public void setParameter_Out(MParameter parameter_Out) {
+		this.parameter_Out = parameter_Out;
+		if (parameter_Out != null) {
+			setBSC_Parameter_Out_ID(parameter_Out.getBSC_Parameter_ID());
+		} else {
+			setBSC_Parameter_Out_ID(0);
+		}
+	}
 
 	/**
 	 * @param ctx
@@ -63,12 +83,13 @@ public class MBSCCardLine extends X_BSC_CardLine {
 
 	public BigDecimal calculate() {
 		BigDecimal result =  null;
+
 		if(getFormula() != null) {
 			if (getBSC_Parameter_ID() != 0) {
 				calcParameter();
 			}
-			getFormula().setArguments(getArguments());
-			result = new BigDecimal(getFormula().calculate());
+			saveParameterOutValue();
+			result = new BigDecimal(getParameter_Out().getValue());
 			setValueNumber(result);
 			save();
 		}
@@ -78,7 +99,6 @@ public class MBSCCardLine extends X_BSC_CardLine {
 	@Override 
 	public void setValueNumber (BigDecimal ValueNumber) {
 		super.setValueNumber(ValueNumber);
-		saveParameterOutValue();
 	}
 	
 	@Override
@@ -101,13 +121,13 @@ public class MBSCCardLine extends X_BSC_CardLine {
 		super.setValue(Value);
 		if (getBSC_Parameter_ID() > 0) {
 			MParameter param = getParameter();
-			MBSCCard card = new MBSCCard(Env.getCtx(),getBSC_Card_ID(),get_TrxName());
+			MBSCCard card = getCard();
 			param.setPeriod(card.getPeriod());
 			if (!param.IsFormula()) {
 				param.setValue(Value);
 				param.save();
 			} else {
-				Value = param.getCurrentParameterLine().calculate();
+				Value = param.getCurrentParameterLine().getValue();
 			}
 		}
 	}
@@ -271,9 +291,10 @@ public class MBSCCardLine extends X_BSC_CardLine {
 	// Нужно добавить для ParamOut стандартные параметры max, min, coefficient, value, weight;
 	
 	protected void saveParameterOutValue() {
-		MBSCCard card = new MBSCCard(Env.getCtx(),getBSC_Card_ID(),get_TrxName());
+		MBSCCard card = getCard();
+		MParameter param = null;
 		if( getBSC_Parameter_Out_ID() > 0) {
-			MParameter param = new MParameter(Env.getCtx(),getBSC_Parameter_Out_ID(),get_TrxName());
+			param = getParameter_Out();
 			param.setPeriod(card.getPeriod());
 			MParameterLine paramLine = param.getCurrentParameterLine();
 			if (!paramLine.isFormula() && paramLine.getBSC_Formula_ID() != getBSC_Formula_ID()) {
@@ -283,9 +304,9 @@ public class MBSCCardLine extends X_BSC_CardLine {
 			}
 			setVar(param);
 		} else {
-			MParameter param = MParameter.createParameter(getName(), getDescription(), card.getC_BPartner_ID(), card.getC_Period_ID());
+			param = MParameter.createParameter(getName(), getDescription(), card.getC_BPartner_ID(), card.getC_Period_ID());
 			param.setPeriod(card.getPeriod());
-			setBSC_Parameter_Out_ID(param.getBSC_Parameter_ID());
+			setParameter_Out(param);
 			setVar(param);
 		}
 	}
@@ -295,7 +316,7 @@ public class MBSCCardLine extends X_BSC_CardLine {
 		
 		MParameter valueParam = getParameter();
 		MParameterLine paramLine = param.getCurrentParameterLine();
-		MBSCCard card = new MBSCCard(Env.getCtx(),getBSC_Card_ID(),get_TrxName());
+		MBSCCard card = getCard();
 		Map<String,MVariable> args = paramLine.getVariables(); 
 		for(String key: args.keySet()) {
 			MParameter paramVar = null;
@@ -308,9 +329,9 @@ public class MBSCCardLine extends X_BSC_CardLine {
 			} else {
 				paramVar = new MParameter(Env.getCtx(),vBSC_Parameter_ID, get_TrxName());
 			}
+			paramVar.setPeriod(card.getPeriod());
 			
 			int formulaValue_ID = getFormulaValue_ID();
-			paramVar.setPeriod(card.getPeriod());
 			
 			if (key.equals("Value") && formulaValue_ID > 0) {
 				
@@ -339,6 +360,7 @@ public class MBSCCardLine extends X_BSC_CardLine {
 					sLog.log(Level.SEVERE, "setVar", e);
 				}
 			}
+			paramVar.save();
 		}
 	}
 	
@@ -385,12 +407,12 @@ public class MBSCCardLine extends X_BSC_CardLine {
 			if(newLine.save()) {
 				MParameter par = newLine.getParameter();
 				if (par != null) {
-					par.createNewLine(C_Period_ID);
+					par.createNewLine(getCard().getC_Period_ID(),C_Period_ID);
 					par.save();
 				}
 				par = new MParameter(Env.getCtx(),newLine.getBSC_Parameter_Out_ID(),get_TrxName());
 				if (par != null) {
-					par.createNewLine(C_Period_ID);
+					par.createNewLine(getCard().getC_Period_ID(),C_Period_ID);
 					par.save();
 				}
 			}
