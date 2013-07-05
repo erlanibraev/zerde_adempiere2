@@ -31,7 +31,7 @@
 	<title>Budget Call</title>
 	<link rel="shortcut icon" href="images/logo.png" type="image/jpg" /> 	
 	<link type="text/css" href="css/Main.css" rel="stylesheet">
-	<script src="js/Script.js" type="text/javascript"></script>
+	<%@ include file="/js/JScript.jsp" %>
 </head>
 <body>
 	<div>
@@ -74,7 +74,7 @@
 		</table>
 		<fieldset>
 		<legend>Данные</legend>
-			<s:form action="doUpdate">
+			<s:form id="myForm">
 			<table class="more" border="1" style="margin-top:20px;" align="center" bordercolor="#663300" cellspacing="2">
 	  			<tr class="trLightBlue">
 			    	<th scope="col">Наименование</th>
@@ -139,6 +139,7 @@
 				<tr>
 					<th colspan="7">
 						<input type="submit" class="button btn-large-green" value="Внести изменения" />
+						<input type="button" class="button btn-large-green" value="Внести изменения" onclick="sendForm('doUpdate');" />
 						
 						<input type="hidden" name="callID" value=<s:property value="callID" /> />
 						<input type="hidden" name="chargeID" value=<s:property value="chargeID" /> />
@@ -155,5 +156,6 @@
 	</div>
 	
 	<%@ include file="/jsp/budgetcall/Footer.jsp" %>
+	
 </body>
 </html>

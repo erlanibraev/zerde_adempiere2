@@ -30,7 +30,7 @@ public class PeriodAmount extends Budget implements ServletRequestAware,ServletR
 	 * 
 	 */
 	private static final long serialVersionUID = 8588479221768360808L;
-	/**	Logger							*/
+	/**	Logger	*/
 	protected CLogger			log = CLogger.getCLogger (getClass());
 	
 	private String name;

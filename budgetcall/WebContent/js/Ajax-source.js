@@ -27,7 +27,7 @@ function newXMLHttpRequest() {
 		}
 	}
 	return xmlreq;
-}
+};
 
 /*
 * Returns a function that waits for the specified XMLHttpRequest
@@ -50,11 +50,10 @@ function getReadyStateHandler(req, responseXmlHandler) {
 			}
 		}
 	};
-}
+};
 
 function search(searchKey) {
 	
-	var form = document.forms[0];
 	var keyValue = document.getElementById('getCities').value;
 	keyValue = keyValue.replace(/^\s*|\s*$/g,'');
 	if (keyValue.length > 0)
@@ -64,9 +63,21 @@ function search(searchKey) {
 	req.onreadystatechange = getReadyStateHandler(req, update);
 	req.open('POST','search.action', true);
 	req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-	req.send('getCities='+keyValue);
+	
+	var qString = $("#myForm").formSerialize();
+	
+	req.send(qString);
 	}
-}
+};
+
+function sendForm(action){
+	
+	var req = newXMLHttpRequest();
+	req.open('POST',action, true);
+	req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+	var qString = $("#myForm").formSerialize();
+	req.send(qString);
+};
 
 function update(cartXML)
 {
@@ -78,9 +89,5 @@ function update(cartXML)
 		var ndValue = country[i].firstChild.nodeValue;
 		availableSelectList.innerHTML += ndValue+'\n';
 	}
-}
-function searchByCountry()
-{
-	var form = document.forms[0];
-	alert('This gets the city names');
-}
+};
+
