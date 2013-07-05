@@ -9,7 +9,6 @@
 		<title>Budget Call</title>
 		<link rel="shortcut icon" href="images/logo.png" type="image/jpg" /> 	
 		<link type="text/css" href="css/Main.css" rel="stylesheet">
-		<%@ include file="/js/JScript.jsp" %>
 	</head>
 	<body>
 	<div>
