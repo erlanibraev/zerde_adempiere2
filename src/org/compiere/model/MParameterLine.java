@@ -256,8 +256,9 @@ public class MParameterLine extends X_BSC_ParameterLine {
 			nextPL.setIsActive(isActive());
 			nextPL.setValueMax(getValueMax());
 			nextPL.setValueMin(getValueMin());
-			nextPL.setValue("---");
-			nextPL.setValueNumber("---");
+			nextPL.setIsFormula(isFormula());
+//			nextPL.setValue("0");
+			nextPL.setValueNumber("0");
 			if (nextPL.save()) {
 				if (nextPL.isFormula()) {
 					nextPL.loadVariables();
@@ -265,7 +266,7 @@ public class MParameterLine extends X_BSC_ParameterLine {
 						MVariable nextVar = nextPL.getVariables().get(key);
 						MVariable prevVar = getVariables().get(key);
 						MParameter par = prevVar.getParameter();
-						par.createNewLine(c_Period_ID);
+						par.createNewLine(getC_Period_ID(),c_Period_ID);
 						nextVar.setParameter(par);
 						nextVar.save();
 					}
