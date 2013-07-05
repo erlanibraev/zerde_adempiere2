@@ -9,6 +9,7 @@ import org.compiere.model.MAGRStage;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.X_AGR_Stage;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 
 public class AgreementProcess extends SvrProcess 
@@ -43,6 +44,19 @@ public class AgreementProcess extends SvrProcess
 		if(AGR_Stage_ID > 0)
 		{
 			MAGRStage stage = new MAGRStage(getCtx(), AGR_Stage_ID, get_TrxName());
+			
+			if(stage.isLastStage() && stage.isAllApproved(getTable_ID(), po.get_ID()))
+			{
+				DialogAgreement.dialogOK("Ошибка доступа", "Документ согласован", 0);
+				return "Документ согласован";
+			}
+			
+			if(!stage.isUserHasAccess(Env.getAD_User_ID(getCtx()), getTable_ID(), po.get_ID()))
+			{
+				DialogAgreement.dialogOK("Ошибка доступа", "У вас нет доступа к данному этапу согласования", 0);
+				return "Ошибка доступа";
+			}
+			
 			if(!stage.getStageType().equals(MAGRStage.STAGETYPE_Initial))
 				isHasStage = true;
 		}

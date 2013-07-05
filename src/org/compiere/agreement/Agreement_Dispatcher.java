@@ -60,7 +60,7 @@ public class Agreement_Dispatcher
 			DialogAgreement.dialogOK("Ошибка доступа", "Документ согласован", 0);
 			return false;
 		}
-				
+	
 		//Check if current user has access for current stage
 		if(!currentStage.isUserHasAccess(AD_User_ID, AD_Table_ID, Record_ID))
 		{
