@@ -54,6 +54,7 @@ public class X_BPM_BudgetCallLine extends PO implements I_BPM_BudgetCallLine, I_
 			setC_Charge_ID (0);
 			setC_Period_ID (0);
 			setC_UOM_ID (0);
+			setmonth_ID (0);
 			setPaymentMonth (null);
 			setQuantity (0);
 			setRecord_ID (0);
@@ -280,23 +281,26 @@ public class X_BPM_BudgetCallLine extends PO implements I_BPM_BudgetCallLine, I_
 		return ii.intValue();
 	}
 
-	public org.compiere.model.I_C_Period getmo() throws RuntimeException
+	public org.compiere.model.I_C_Period getmonth() throws RuntimeException
     {
 		return (org.compiere.model.I_C_Period)MTable.get(getCtx(), org.compiere.model.I_C_Period.Table_Name)
-			.getPO(getmonth(), get_TrxName());	}
+			.getPO(getmonth_ID(), get_TrxName());	}
 
 	/** Set month.
-		@param month month	  */
-	public void setmonth (int month)
+		@param month_ID month	  */
+	public void setmonth_ID (int month_ID)
 	{
-		set_Value (COLUMNNAME_month, Integer.valueOf(month));
+		if (month_ID < 1) 
+			set_Value (COLUMNNAME_month_ID, null);
+		else 
+			set_Value (COLUMNNAME_month_ID, Integer.valueOf(month_ID));
 	}
 
 	/** Get month.
 		@return month	  */
-	public int getmonth () 
+	public int getmonth_ID () 
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_month);
+		Integer ii = (Integer)get_Value(COLUMNNAME_month_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

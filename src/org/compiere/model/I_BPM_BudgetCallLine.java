@@ -189,16 +189,16 @@ public interface I_BPM_BudgetCallLine
 	  */
 	public boolean isActive();
 
-    /** Column name month */
-    public static final String COLUMNNAME_month = "month";
+    /** Column name month_ID */
+    public static final String COLUMNNAME_month_ID = "month_ID";
 
 	/** Set month	  */
-	public void setmonth (int month);
+	public void setmonth_ID (int month_ID);
 
 	/** Get month	  */
-	public int getmonth();
+	public int getmonth_ID();
 
-	public org.compiere.model.I_C_Period getmo() throws RuntimeException;
+	public org.compiere.model.I_C_Period getmonth() throws RuntimeException;
 
     /** Column name PaymentMonth */
     public static final String COLUMNNAME_PaymentMonth = "PaymentMonth";
