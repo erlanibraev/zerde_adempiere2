@@ -43,7 +43,8 @@ public class DocumentEngineNWD extends DocumentEngine {
 			if(result) {
 				try {
 					p_AD_User_ID = new X_BSC_NetWorkDiag(getCtx(), m_BSCNetWorkDiag_ID, get_TrxName()).get_ValueAsInt("Director_ID");
-					extend.org.compiere.utils.Util.sendMail(p_AD_User_ID, Env.getAD_Client_ID(getCtx()), emailtempTitle
+					if(p_AD_User_ID > 0) 
+						extend.org.compiere.utils.Util.sendMail(p_AD_User_ID, Env.getAD_Client_ID(getCtx()), emailtempTitle
 							, "Уважаемый(ая), "+new MBPartner(getCtx(), (new MUser(getCtx(), p_AD_User_ID, get_TrxName()).getC_BPartner_ID()), get_TrxName()).getName()
 							+ ", Вам надо согласовать документ №"	+ new MBSCNetWorkDiag(getCtx(), m_BSCNetWorkDiag_ID, get_TrxName()).get_Value("DocumentNo"), false);
 				} catch (Exception e) {
@@ -57,7 +58,8 @@ public class DocumentEngineNWD extends DocumentEngine {
 			if(result){
 				try{
 					p_AD_User_ID = new X_BSC_NetWorkDiag(getCtx(), m_BSCNetWorkDiag_ID, get_TrxName()).get_ValueAsInt("Resposible_Manager_ID");
-					extend.org.compiere.utils.Util.sendMail(p_AD_User_ID, Env.getAD_Client_ID(getCtx()), emailtempTitle, "Уважаемый(ая), "
+					if(p_AD_User_ID > 0) 
+						extend.org.compiere.utils.Util.sendMail(p_AD_User_ID, Env.getAD_Client_ID(getCtx()), emailtempTitle, "Уважаемый(ая), "
 							+ new MBPartner(getCtx(), (new MUser(getCtx(), p_AD_User_ID, get_TrxName()).getC_BPartner_ID()), get_TrxName()).getName() 
 							+", документ №"+ new MBSCNetWorkDiag(getCtx(), m_BSCNetWorkDiag_ID, get_TrxName()).get_Value("DocumentNo")+" одобрен.", false);
 				}catch(Exception e){
@@ -71,7 +73,8 @@ public class DocumentEngineNWD extends DocumentEngine {
 			if(result){
 				try{
 					p_AD_User_ID = new X_BSC_NetWorkDiag(getCtx(), m_BSCNetWorkDiag_ID, get_TrxName()).get_ValueAsInt("Resposible_Manager_ID");
-					extend.org.compiere.utils.Util.sendMail(p_AD_User_ID, Env.getAD_Client_ID(getCtx()), emailtempTitle, "Уважаемый(ая), "
+					if(p_AD_User_ID > 0) 
+						extend.org.compiere.utils.Util.sendMail(p_AD_User_ID, Env.getAD_Client_ID(getCtx()), emailtempTitle, "Уважаемый(ая), "
 							+ new MBPartner(getCtx(), (new MUser(getCtx(), p_AD_User_ID, get_TrxName()).getC_BPartner_ID()), get_TrxName()).getName() 
 							+", документ №"+ new MBSCNetWorkDiag(getCtx(), m_BSCNetWorkDiag_ID, get_TrxName()).get_Value("DocumentNo")+" отклонен.", false);
 				}catch(Exception e){
