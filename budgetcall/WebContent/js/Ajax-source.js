@@ -42,8 +42,10 @@ function getReadyStateHandler(req, responseXmlHandler) {
 		if (req.readyState == 4) {
 			// Check that we received a successful response from the server
 			if (req.status == 200) {
+				
 				// Pass the XML payload of the response to the handler function.
-				responseXmlHandler(req.responseXML);
+				responseXmlHandler();
+				$("#myForm").unblock();
 			} else {
 				// An HTTP problem has occurred
 				alert('HTTP error '+req.status+': '+req.statusText);
@@ -72,22 +74,19 @@ function search(searchKey) {
 
 function sendForm(action){
 	
+	$("#myForm").block({ message: "Подождите идет загрузка..." });
+	availableSelectList = document.getElementById('searchResult');
+	
 	var req = newXMLHttpRequest();
+	req.onreadystatechange = getReadyStateHandler(req, update);
 	req.open('POST',action, true);
 	req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 	var qString = $("#myForm").formSerialize();
 	req.send(qString);
 };
 
-function update(cartXML)
+function update()
 {
-	var countries = cartXML.getElementsByTagName('cities')[0];
-	var country = countries.getElementsByTagName('city');
-	availableSelectList.innerHTML = '';
-	for (var i = 0; i < country.length ; i++)
-	{
-		var ndValue = country[i].firstChild.nodeValue;
-		availableSelectList.innerHTML += ndValue+'\n';
-	}
+	availableSelectList.innerHTML = 'Сохранилось \n';
 };
 

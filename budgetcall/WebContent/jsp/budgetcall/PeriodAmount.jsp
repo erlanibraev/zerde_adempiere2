@@ -138,9 +138,9 @@
 				</tr>
 				<tr>
 					<th colspan="7">
-						<input type="submit" class="button btn-large-green" value="Внести изменения" />
+						<!--  <input type="submit" class="button btn-large-green" value="Внести изменения" />  -->
 						<input type="button" class="button btn-large-green" value="Внести изменения" onclick="sendForm('doUpdate');" />
-						
+						<div align="right" id="searchResult" style="border:gray;"></div>
 						<input type="hidden" name="callID" value=<s:property value="callID" /> />
 						<input type="hidden" name="chargeID" value=<s:property value="chargeID" /> />
 						<input type="hidden" name="periodID" value=<s:property value="periodID" /> />
