@@ -32,7 +32,7 @@ public class X_BPM_BudgetCallLine extends PO implements I_BPM_BudgetCallLine, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130517L;
+	private static final long serialVersionUID = 20130705L;
 
     /** the default Constructor */
     public X_BPM_BudgetCallLine(Properties ctx)
@@ -236,9 +236,9 @@ public class X_BPM_BudgetCallLine extends PO implements I_BPM_BudgetCallLine, I_
 	public void setC_Period_ID (int C_Period_ID)
 	{
 		if (C_Period_ID < 1) 
-			set_Value (COLUMNNAME_C_Period_ID, null);
+			set_ValueNoCheck (COLUMNNAME_C_Period_ID, null);
 		else 
-			set_Value (COLUMNNAME_C_Period_ID, Integer.valueOf(C_Period_ID));
+			set_ValueNoCheck (COLUMNNAME_C_Period_ID, Integer.valueOf(C_Period_ID));
 	}
 
 	/** Get Period.
@@ -275,6 +275,28 @@ public class X_BPM_BudgetCallLine extends PO implements I_BPM_BudgetCallLine, I_
 	public int getC_UOM_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_UOM_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_C_Period getmo() throws RuntimeException
+    {
+		return (org.compiere.model.I_C_Period)MTable.get(getCtx(), org.compiere.model.I_C_Period.Table_Name)
+			.getPO(getmonth(), get_TrxName());	}
+
+	/** Set month.
+		@param month month	  */
+	public void setmonth (int month)
+	{
+		set_Value (COLUMNNAME_month, Integer.valueOf(month));
+	}
+
+	/** Get month.
+		@return month	  */
+	public int getmonth () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_month);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

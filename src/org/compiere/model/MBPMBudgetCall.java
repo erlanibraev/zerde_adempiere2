@@ -82,6 +82,7 @@ public class MBPMBudgetCall extends X_BPM_BudgetCall {
 						line.setAmountUnit(new BigDecimal(0));
 						line.setC_Charge_ID(rs.getInt(I_BPM_BudgetCallLine.COLUMNNAME_C_Charge_ID.toLowerCase()));
 						line.setC_Period_ID(p.getC_Period_ID());
+						line.setmonth(p.getC_Period_ID());
 						line.setC_UOM_ID(100); // TODO 100 = шт.
 						line.setPaymentMonth(X_BPM_BudgetCallLine.PAYMENTMONTH_Current);
 						line.setQuantity(0);
