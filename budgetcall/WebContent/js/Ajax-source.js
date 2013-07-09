@@ -3,6 +3,8 @@
 * doesn't support it
 */
 var availableSelectList;
+var countRow;
+
 function newXMLHttpRequest() {
 	
 	var xmlreq = false;
@@ -45,7 +47,7 @@ function getReadyStateHandler(req, responseXmlHandler) {
 				
 				// Pass the XML payload of the response to the handler function.
 				responseXmlHandler();
-				$("#myForm").unblock();
+				$.unblockUI();
 			} else {
 				// An HTTP problem has occurred
 				alert('HTTP error '+req.status+': '+req.statusText);
@@ -74,8 +76,12 @@ function search(searchKey) {
 
 function sendForm(action){
 	
-	$("#myForm").block({ message: "Подождите идет загрузка..." });
-	availableSelectList = document.getElementById('searchResult');
+	var msg = '<img src="images/ajax-load.gif">';
+	
+	$.blockUI({ message: msg,
+				css: { backgroundColor: '#DAE1EA'}
+			});
+	availableSelectList = document.getElementById('ResultSave');
 	
 	var req = newXMLHttpRequest();
 	req.onreadystatechange = getReadyStateHandler(req, update);
@@ -87,6 +93,26 @@ function sendForm(action){
 
 function update()
 {
-	availableSelectList.innerHTML = 'Сохранилось \n';
+	var idx = 1;
+	for(var i = 0; i < countRow; i++){
+		
+		document.getElementById('quantity_IDX_'+idx).className="";
+		document.getElementById('quantity_Copy_'+idx).value = document.getElementById('quantity_IDX_'+idx).value; 
+		document.getElementById('amountUnit_IDX_'+idx).className="";
+		document.getElementById('amountUnit_Copy_'+idx).value = document.getElementById('amountUnit_IDX_'+idx).value;
+		
+		idx++;
+	}
+};
+
+function changeValue(comp, currentV, oldV){
+	
+	var currentValue = currentV.value;
+	var oldValue = document.getElementById(oldV).value;
+	
+	if(currentValue != oldValue)
+		document.getElementById(comp).className="changeValue";
+	else
+		document.getElementById(comp).className="";
 };
 

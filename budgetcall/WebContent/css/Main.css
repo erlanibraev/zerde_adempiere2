@@ -122,6 +122,12 @@
 	  	border: 2px solid #8DB3DC; /* Параметры рамки */
 	}
 	
+	.changeValue
+	{
+		background: #FF9200; /* Цвет фона */
+	  	border: 2px solid #000000; /* Параметры рамки */
+	}
+	
 	.button
 	{
 		text-align: center;

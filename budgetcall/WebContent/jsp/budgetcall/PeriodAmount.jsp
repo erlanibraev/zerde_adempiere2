@@ -22,6 +22,9 @@
 	<link rel="shortcut icon" href="images/logo.png" type="image/jpg" /> 	
 	<link type="text/css" href="css/Main.css" rel="stylesheet">
 	<%@ include file="/js/JScript.jsp" %>
+	<script type="text/javascript">
+		countRow = <%= period.length %>
+	</script>
 </head>
 <body>
 	<div>
@@ -110,15 +113,19 @@
 						<td <%= selectPeriod %>><%= p.getUom() %></td>
 						<td <%= selectPeriod %>><b><%= p.getMonth() %></b></td>
 						<td <%= selectPeriod %>>                             
-	                		<s:textfield value="%{#quantityV}" name="quantity_IDX_%{#count}" size="11"  theme="simple" readonly="false" 
+	                		<s:textfield value="%{#quantityV}" name="quantity_IDX_%{#count}" id="quantity_IDX_%{#count}" size="11"  theme="simple" readonly="false" 
 	                				onkeypress="return isQuantity(event)"
-	                				onkeyup="do_math(this.form, 'amount_IDX_%{#count}', 'quantity_IDX_%{#count}', 'amountUnit_IDX_%{#count}'); summa(this.form, 'quantity_IDX_%{#count}','sQuantity', %{period.length}, 'quantity');" /> 
+	                				onkeyup="do_math(this.form, 'amount_IDX_%{#count}', 'quantity_IDX_%{#count}', 'amountUnit_IDX_%{#count}'); summa(this.form, 'quantity_IDX_%{#count}','sQuantity', %{period.length}, 'quantity');" 
+	                				onchange="changeValue('quantity_IDX_%{#count}', this, 'quantity_Copy_%{#count}');" /> 
 	                		<s:hidden name="period_IDX_%{#count}" value="%{#periodV}" />
+	                		<s:hidden name="quantity_Copy_%{#count}" id="quantity_Copy_%{#count}" value="%{#quantityV}" />
 	            		</td>
 	            		<td <%= selectPeriod %>>                             
-	                		<s:textfield value="%{#amountUnitV}" name="amountUnit_IDX_%{#count}" size="11"  theme="simple" readonly="false" 
+	                		<s:textfield value="%{#amountUnitV}" name="amountUnit_IDX_%{#count}" id="amountUnit_IDX_%{#count}" size="11"  theme="simple" readonly="false" 
 	                				onkeypress="return isAmountUnit(event)"
-	                				onkeyup="do_math(this.form, 'amount_IDX_%{#count}', 'quantity_IDX_%{#count}', 'amountUnit_IDX_%{#count}'); summa(this.form, 'amount_IDX_%{#count}','sAmount', %{period.length}, 'amount');" />  
+	                				onkeyup="do_math(this.form, 'amount_IDX_%{#count}', 'quantity_IDX_%{#count}', 'amountUnit_IDX_%{#count}'); summa(this.form, 'amount_IDX_%{#count}','sAmount', %{period.length}, 'amount');" 
+	                				onchange="changeValue('amountUnit_IDX_%{#count}', this, 'amountUnit_Copy_%{#count}');" />
+	                		<s:hidden name="amountUnit_Copy_%{#count}" id="amountUnit_Copy_%{#count}" value="%{#amountUnitV}" />  
 	            		</td>  
 	            		<td <%= selectPeriod %>>                             
 	                		<s:textfield value="%{#amountV}" name="amount_IDX_%{#count}" size="11" tabindex="-1" theme="simple" readonly="true" />  
@@ -148,7 +155,6 @@
 					<th colspan="7">
 						<!--  <input type="submit" class="button btn-large-green" value="Внести изменения" />  -->
 						<input type="button" class="button btn-large-green" value="Внести изменения" onclick="sendForm('doUpdate');" />
-						<div align="right" id="searchResult" style="border:gray;"></div>
 						<input type="hidden" name="callID" value=<%= periodTotal.getCallID() %> />
 						<input type="hidden" name="chargeID" value=<%= periodTotal.getChargeID() %> />
 						<input type="hidden" name="periodID" value=<%= periodTotal.getPeriodID() %> />
