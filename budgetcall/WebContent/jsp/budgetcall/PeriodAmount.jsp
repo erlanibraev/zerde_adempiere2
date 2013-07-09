@@ -15,16 +15,6 @@
 	String selectPeriod = "bgcolor=\"#DAE1EA\"";
 %>
 
-		<s:bean name="main.org.action.PeriodAmount" var="per" />
-		
-		<s:bean name="main.org.action.PeriodAmount" var="amo">
-			<s:param name="callID"><%= periodTotal.getCallID() %></s:param>
-			<s:param name="tableID"><%= periodTotal.getTableID() %></s:param>
-			<s:param name="recordID"><%= periodTotal.getRecordID() %></s:param>
-			<s:param name="periodID"><%= periodTotal.getPeriodID() %></s:param>
-			<s:param name="periodBean" value="#per.periodBean" />
-		</s:bean>
-
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -89,38 +79,56 @@
 					if(rowSpan > 0){
 				%>
 					<tr>
-						<td style="text-align: center; padding-left: 20px; padding-right: 20px;" rowspan="<%= rowSpan %>"><b><s:property value="#amo.periodBean[0].name" /></b></td>
+						<td style="text-align: center; padding-left: 20px; padding-right: 20px;" rowspan="<%= rowSpan %>"><b><%= period[0].getName() %></b></td>
 				<%	} %>
 				
-				<s:iterator value="#amo.periodBean" status="stat" var="a">
-					<s:if test="#stat.count > 1">
-						<tr>
-					</s:if>
-					<s:if test="#amo.periodID == #a.periodID">
-						<% selectPeriod = "bgcolor=\"#9BC995\""; %>
-					</s:if>
-					<s:else>
-						<% selectPeriod = "bgcolor=\"#DAE1EA\""; %>
-					</s:else>
-						<td <%= selectPeriod %>><s:property value="%{#a.uom}" /></td>
-						<td <%= selectPeriod %>><b><s:property value="%{#a.month}" /></b></td>
+				<%
+				int n = 1;
+					for(Period p: period){
+						if(n > 1){
+				%>
+							<tr>
+				<%
+						}
+						if(periodTotal.getPeriodID() == p.getPeriodID()){
+				%>
+							<% selectPeriod = "bgcolor=\"#9BC995\""; %>
+				<%
+						}
+						else{
+				%>
+							<% selectPeriod = "bgcolor=\"#DAE1EA\""; %>
+				<%
+						}
+				%>
+						<s:set var="quantityV"><%= p.getQuantity() %></s:set>
+						<s:set var="periodV"><%= p.getPeriodID() %></s:set>
+						<s:set var="amountUnitV"><%= p.getAmountUnit() %></s:set>
+						<s:set var="amountV"><%= p.getAmount() %></s:set>
+						<s:set var="count"><%= n %></s:set>                
+						
+						<td <%= selectPeriod %>><%= p.getUom() %></td>
+						<td <%= selectPeriod %>><b><%= p.getMonth() %></b></td>
 						<td <%= selectPeriod %>>                             
-	                		<s:textfield value="%{#a.quantity}" name="quantity_IDX_%{#stat.count}" size="11"  theme="simple" readonly="false" 
+	                		<s:textfield value="%{#quantityV}" name="quantity_IDX_%{#count}" size="11"  theme="simple" readonly="false" 
 	                				onkeypress="return isQuantity(event)"
-	                				onkeyup="do_math(this.form, 'amount_IDX_%{#stat.count}', 'quantity_IDX_%{#stat.count}', 'amountUnit_IDX_%{#stat.count}'); summa(this.form, 'quantity_IDX_%{#stat.count}','sQuantity', %{#amo.periodBean.length}, 'quantity');" /> 
-	                		<s:hidden name="period_IDX_%{#stat.count}" value="%{#a.periodID}" />
+	                				onkeyup="do_math(this.form, 'amount_IDX_%{#count}', 'quantity_IDX_%{#count}', 'amountUnit_IDX_%{#count}'); summa(this.form, 'quantity_IDX_%{#count}','sQuantity', %{period.length}, 'quantity');" /> 
+	                		<s:hidden name="period_IDX_%{#count}" value="%{#periodV}" />
 	            		</td>
 	            		<td <%= selectPeriod %>>                             
-	                		<s:textfield value="%{#a.amountUnit}" name="amountUnit_IDX_%{#stat.count}" size="11"  theme="simple" readonly="false" 
+	                		<s:textfield value="%{#amountUnitV}" name="amountUnit_IDX_%{#count}" size="11"  theme="simple" readonly="false" 
 	                				onkeypress="return isAmountUnit(event)"
-	                				onkeyup="do_math(this.form, 'amount_IDX_%{#stat.count}', 'quantity_IDX_%{#stat.count}', 'amountUnit_IDX_%{#stat.count}'); summa(this.form, 'amount_IDX_%{#stat.count}','sAmount', %{#amo.periodBean.length}, 'amount');" />  
+	                				onkeyup="do_math(this.form, 'amount_IDX_%{#count}', 'quantity_IDX_%{#count}', 'amountUnit_IDX_%{#count}'); summa(this.form, 'amount_IDX_%{#count}','sAmount', %{period.length}, 'amount');" />  
 	            		</td>  
 	            		<td <%= selectPeriod %>>                             
-	                		<s:textfield value="%{#a.amount}" name="amount_IDX_%{#stat.count}" size="11" tabindex="-1" theme="simple" readonly="true" />  
+	                		<s:textfield value="%{#amountV}" name="amount_IDX_%{#count}" size="11" tabindex="-1" theme="simple" readonly="true" />  
 	            		</td>  
-	            		<td <%= selectPeriod %>><s:property value="%{#a.payment}" /></td>
+	            		<td <%= selectPeriod %>><%= p.getPayment() %></td>
 					</tr>
-				</s:iterator>
+				<% 
+					n++; 
+					} 
+				%>
 				<tr class="trLightBlue">
 			    	<th scope="col">Всего</th>
 			    	<th scope="col">&nbsp;</th>
@@ -141,10 +149,10 @@
 						<!--  <input type="submit" class="button btn-large-green" value="Внести изменения" />  -->
 						<input type="button" class="button btn-large-green" value="Внести изменения" onclick="sendForm('doUpdate');" />
 						<div align="right" id="searchResult" style="border:gray;"></div>
-						<input type="hidden" name="callID" value=<s:property value="callID" /> />
-						<input type="hidden" name="chargeID" value=<s:property value="chargeID" /> />
-						<input type="hidden" name="periodID" value=<s:property value="periodID" /> />
-						<input type="hidden" name="processID" value=<s:property value="processID" /> />
+						<input type="hidden" name="callID" value=<%= periodTotal.getCallID() %> />
+						<input type="hidden" name="chargeID" value=<%= periodTotal.getChargeID() %> />
+						<input type="hidden" name="periodID" value=<%= periodTotal.getPeriodID() %> />
+						<input type="hidden" name="processID" value=<%= periodTotal.getProcessID() %> />
 						<input type="hidden" name="tableID" value=<%= periodTotal.getTableID() %> />
 						<input type="hidden" name="recordID" value=<%= periodTotal.getRecordID() %> />
 						<input type="hidden" name="rowspan" value=<%= rowSpan %> />			
