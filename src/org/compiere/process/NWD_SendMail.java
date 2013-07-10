@@ -6,6 +6,8 @@ package org.compiere.process;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -33,7 +35,28 @@ public class NWD_SendMail extends SvrProcess {
 
 	@Override
 	protected String doIt() throws Exception {
-			sendMailAction();
+			
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = "SELECT BSC_Action_ID,DateTo FROM BSC_Action WHERE AD_Client_ID = "+Env.getAD_Client_ID(getCtx());
+		try{
+			pstmt = DB.prepareStatement(sql.toString(), get_TrxName());
+			rs = pstmt.executeQuery();
+			int t_BSC_Action_ID = 0;
+			while(rs.next()){
+				
+			}
+			
+		}catch(Exception e){
+			log.log(Level.SEVERE, sql.toString(), e);
+		}finally{
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
+		}
+		
+		
+		
+		//sendMailAction();
 		return Msg.translate(m_ctx, "Success");
 	}
 	private boolean sendMailAction() throws Exception{
