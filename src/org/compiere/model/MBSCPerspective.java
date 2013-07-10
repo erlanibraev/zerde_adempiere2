@@ -61,7 +61,7 @@ public class MBSCPerspective extends X_BSC_Perspective {
 		List<MBSCPerspective> result = new ArrayList<MBSCPerspective>();
 		int AD_Org_ID = Env.getAD_Org_ID(Env.getCtx());
 		int AD_Client_ID = Env.getAD_Client_ID(Env.getCtx());
-		String sql = "SELECT * FROM BSC_Perspective WHERE AD_Org_ID = ? AND AD_Cleint_ID = ? ANS IsActive ='Y'";
+		String sql = "SELECT * FROM BSC_Perspective WHERE AD_Org_ID = ? AND AD_Client_ID = ? AND IsActive ='Y'";
 	    PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try {
