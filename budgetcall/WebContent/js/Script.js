@@ -51,21 +51,19 @@ function do_math(f,edit,edit1,edit2)
     f.elements[edit].value = isNaN(res) ? '' : Math.round(res * 100) / 100;
 }
 
-function summa(f, edit, comp, count, type){
+function summa(f, quantityField, amountField, count){
 	
-	var q = 0;
-	var s = 0;
-	var t = type == 'quantity';
+	var q = 0;	var s = 0;
+	var qS = 0; var sS = 0; 
 	var idx = 1;
 	for(var i = 0; i < count; i++){
-		if(t)
-			s = isNaN(parseInt(f.elements[type+'_IDX_'+idx].value)) ? 0: parseInt(f.elements[type+'_IDX_'+idx].value);
-		else
-			s = isNaN(parseFloat(f.elements[type+'_IDX_'+idx].value)) ? 0: parseFloat(f.elements[type+'_IDX_'+idx].value); 
-
-		q = q + s;
 		
+			q = isNaN(parseInt(f.elements['quantity_IDX_'+idx].value)) ? 0: parseInt(f.elements['quantity_IDX_'+idx].value);
+			qS = qS + q;
+			s = isNaN(parseFloat(f.elements['amount_IDX_'+idx].value)) ? 0: parseFloat(f.elements['amount_IDX_'+idx].value);
+			sS = sS + s;
 		idx++;
 	}
-	f.elements[comp].value = isNaN(q) ? 0 : q;
+	f.elements[quantityField].value = isNaN(qS) ? 0 : qS;
+	f.elements[amountField].value = isNaN(sS) ? 0 : sS;
 }

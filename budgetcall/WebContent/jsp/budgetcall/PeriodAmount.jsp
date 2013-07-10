@@ -115,7 +115,7 @@
 						<td <%= selectPeriod %>>                             
 	                		<s:textfield value="%{#quantityV}" name="quantity_IDX_%{#count}" id="quantity_IDX_%{#count}" size="11"  theme="simple" readonly="false" 
 	                				onkeypress="return isQuantity(event)"
-	                				onkeyup="do_math(this.form, 'amount_IDX_%{#count}', 'quantity_IDX_%{#count}', 'amountUnit_IDX_%{#count}'); summa(this.form, 'quantity_IDX_%{#count}','sQuantity', %{period.length}, 'quantity');" 
+	                				onkeyup="do_math(this.form, 'amount_IDX_%{#count}', 'quantity_IDX_%{#count}', 'amountUnit_IDX_%{#count}'); summa(this.form, 'sQuantity', 'sAmount', %{period.length});" 
 	                				onchange="changeValue('quantity_IDX_%{#count}', this, 'quantity_Copy_%{#count}');" /> 
 	                		<s:hidden name="period_IDX_%{#count}" value="%{#periodV}" />
 	                		<s:hidden name="quantity_Copy_%{#count}" id="quantity_Copy_%{#count}" value="%{#quantityV}" />
@@ -123,7 +123,7 @@
 	            		<td <%= selectPeriod %>>                             
 	                		<s:textfield value="%{#amountUnitV}" name="amountUnit_IDX_%{#count}" id="amountUnit_IDX_%{#count}" size="11"  theme="simple" readonly="false" 
 	                				onkeypress="return isAmountUnit(event)"
-	                				onkeyup="do_math(this.form, 'amount_IDX_%{#count}', 'quantity_IDX_%{#count}', 'amountUnit_IDX_%{#count}'); summa(this.form, 'amount_IDX_%{#count}','sAmount', %{period.length}, 'amount');" 
+	                				onkeyup="do_math(this.form, 'amount_IDX_%{#count}', 'quantity_IDX_%{#count}', 'amountUnit_IDX_%{#count}'); summa(this.form, 'sQuantity', 'sAmount', %{period.length});" 
 	                				onchange="changeValue('amountUnit_IDX_%{#count}', this, 'amountUnit_Copy_%{#count}');" />
 	                		<s:hidden name="amountUnit_Copy_%{#count}" id="amountUnit_Copy_%{#count}" value="%{#amountUnitV}" />  
 	            		</td>  
