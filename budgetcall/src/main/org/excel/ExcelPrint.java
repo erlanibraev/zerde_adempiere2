@@ -19,6 +19,7 @@ import jxl.format.Colour;
 import jxl.format.VerticalAlignment;
 import jxl.write.Label;
 import jxl.write.Number;
+import jxl.write.NumberFormats;
 import jxl.write.WritableCell;
 import jxl.write.WritableCellFormat;
 import jxl.write.WritableFont;
@@ -69,13 +70,6 @@ public class ExcelPrint extends Budget {
 	//
 	private File temporaryFile = null;
 	private StringBuffer fullPath = null;
-	private WritableFont font12 = new WritableFont (WritableFont.TIMES, 10, WritableFont.BOLD);
-	private WritableFont font11 = new WritableFont (WritableFont.TIMES, 11, WritableFont.BOLD);
-	private WritableCellFormat borderStyle = new WritableCellFormat();
-	private WritableCellFormat borderStyleLeft = new WritableCellFormat(font12);
-	private WritableCellFormat borderStyleRight = new WritableCellFormat(font12);
-	private WritableCellFormat borderStyleCenter = new WritableCellFormat(font12);
-	private WritableCellFormat borderCenter11 = new WritableCellFormat(font11);
 	
 	public ExcelPrint(DownloadFileAction downloadAction) throws Exception{
 		
@@ -90,33 +84,7 @@ public class ExcelPrint extends Budget {
 		//
 		pi = new ProcessInfo ("Process for storing templates budget", processID);
 		period = Utils.getPeriod(callID);
-		
-		// Standart style cell
-		borderStyle.setBorder(Border.ALL, BorderLineStyle.THIN, Colour.BLACK);
-		borderStyle.setAlignment(Alignment.CENTRE);
-		borderStyle.setVerticalAlignment(VerticalAlignment.CENTRE);
-		borderStyle.setWrap(true);
-		// text align LEFT
-		borderStyleLeft.setBorder(Border.ALL, BorderLineStyle.THIN, Colour.BLACK);
-		borderStyleLeft.setAlignment(Alignment.LEFT);
-		borderStyleLeft.setVerticalAlignment(VerticalAlignment.CENTRE);
-		borderStyleLeft.setWrap(true);
-		// text align RIGHT
-		borderStyleRight.setBorder(Border.ALL, BorderLineStyle.THIN, Colour.BLACK);
-		borderStyleRight.setAlignment(Alignment.RIGHT);
-		borderStyleRight.setVerticalAlignment(VerticalAlignment.CENTRE);
-		borderStyleRight.setWrap(true);
-		// text align CENTER and font Bold
-		borderStyleCenter.setBorder(Border.ALL, BorderLineStyle.THIN, Colour.BLACK);
-		borderStyleCenter.setAlignment(Alignment.CENTRE);
-		borderStyleCenter.setVerticalAlignment(VerticalAlignment.CENTRE);
-		borderStyleCenter.setWrap(true);
-		// text align CENTER and font11 Bold
-		borderCenter11.setBorder(Border.ALL, BorderLineStyle.THIN, Colour.BLACK);
-		borderCenter11.setAlignment(Alignment.LEFT);
-		borderCenter11.setVerticalAlignment(VerticalAlignment.CENTRE);
-		borderCenter11.setWrap(true);
-		
+
 	}
 	
 	public synchronized String getFilePath() throws Exception{
@@ -154,6 +122,32 @@ public class ExcelPrint extends Budget {
 	}
 	
 	private String printFirstPage(MAttachmentEntry entry) throws Exception{
+		
+		// text align LEFT
+		WritableFont font10 = new WritableFont (WritableFont.TIMES, 10, WritableFont.BOLD);
+		WritableCellFormat borderStyleLeft = new WritableCellFormat(font10);
+		borderStyleLeft.setBorder(Border.ALL, BorderLineStyle.THIN, Colour.BLACK);
+		borderStyleLeft.setAlignment(Alignment.LEFT);
+		borderStyleLeft.setVerticalAlignment(VerticalAlignment.CENTRE);
+		borderStyleLeft.setWrap(true);
+		// text align RIGHT
+		WritableCellFormat borderStyleRight = new WritableCellFormat(font10, NumberFormats.THOUSANDS_FLOAT);
+		borderStyleRight.setBorder(Border.ALL, BorderLineStyle.THIN, Colour.BLACK);
+		borderStyleRight.setAlignment(Alignment.RIGHT);
+		borderStyleRight.setVerticalAlignment(VerticalAlignment.CENTRE);
+		borderStyleRight.setWrap(true);
+		// Standart style cell
+		WritableCellFormat borderStyle = new WritableCellFormat(NumberFormats.THOUSANDS_FLOAT);
+		borderStyle.setBorder(Border.ALL, BorderLineStyle.THIN, Colour.BLACK);
+		borderStyle.setAlignment(Alignment.CENTRE);
+		borderStyle.setVerticalAlignment(VerticalAlignment.CENTRE);
+		borderStyle.setWrap(true);
+		// text align CENTER and font Bold
+		WritableCellFormat borderStyleCenter = new WritableCellFormat(font10, NumberFormats.THOUSANDS_FLOAT);
+		borderStyleCenter.setBorder(Border.ALL, BorderLineStyle.THIN, Colour.BLACK);
+		borderStyleCenter.setAlignment(Alignment.CENTRE);
+		borderStyleCenter.setVerticalAlignment(VerticalAlignment.CENTRE);
+		borderStyleCenter.setWrap(true);
 		
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -251,6 +245,26 @@ public class ExcelPrint extends Budget {
 	
 	private String printSecondPage(MAttachmentEntry entry) throws Exception{
 		
+		// text align LEFT
+		WritableFont font10 = new WritableFont (WritableFont.TIMES, 10, WritableFont.BOLD);
+		WritableCellFormat borderStyleLeft = new WritableCellFormat(font10);
+		borderStyleLeft.setBorder(Border.ALL, BorderLineStyle.THIN, Colour.BLACK);
+		borderStyleLeft.setAlignment(Alignment.LEFT);
+		borderStyleLeft.setVerticalAlignment(VerticalAlignment.CENTRE);
+		borderStyleLeft.setWrap(true);
+		// Standart style cell
+		WritableCellFormat borderStyle = new WritableCellFormat(NumberFormats.THOUSANDS_FLOAT);
+		borderStyle.setBorder(Border.ALL, BorderLineStyle.THIN, Colour.BLACK);
+		borderStyle.setAlignment(Alignment.CENTRE);
+		borderStyle.setVerticalAlignment(VerticalAlignment.CENTRE);
+		borderStyle.setWrap(true);
+		// text align CENTER and font Bold
+		WritableCellFormat borderStyleCenter = new WritableCellFormat(font10);
+		borderStyleCenter.setBorder(Border.ALL, BorderLineStyle.THIN, Colour.BLACK);
+		borderStyleCenter.setAlignment(Alignment.CENTRE);
+		borderStyleCenter.setVerticalAlignment(VerticalAlignment.CENTRE);
+		borderStyleCenter.setWrap(true);
+		
 		ExcelCell cellProper =  Util.getCellStart(tableBook,">>");
 		printProperty(sheet, cellProper);
 		ExcelCell cellData =  Util.getCellStart(tableBook,">>>");
@@ -310,6 +324,33 @@ public class ExcelPrint extends Budget {
 	}
 	
 	private String printThreePage(MAttachmentEntry entry) throws Exception{
+		
+		// text align LEFT
+		WritableFont font10 = new WritableFont (WritableFont.TIMES, 10, WritableFont.BOLD);
+		WritableCellFormat borderStyleLeft = new WritableCellFormat(font10);
+		borderStyleLeft.setBorder(Border.ALL, BorderLineStyle.THIN, Colour.BLACK);
+		borderStyleLeft.setAlignment(Alignment.LEFT);
+		borderStyleLeft.setVerticalAlignment(VerticalAlignment.CENTRE);
+		borderStyleLeft.setWrap(true);
+		// Standart style cell
+		WritableCellFormat borderStyle = new WritableCellFormat();
+		borderStyle.setBorder(Border.ALL, BorderLineStyle.THIN, Colour.BLACK);
+		borderStyle.setAlignment(Alignment.CENTRE);
+		borderStyle.setVerticalAlignment(VerticalAlignment.CENTRE);
+		borderStyle.setWrap(true);
+		// text align CENTER and font Bold
+		WritableCellFormat borderStyleCenter = new WritableCellFormat(font10, NumberFormats.THOUSANDS_FLOAT);
+		borderStyleCenter.setBorder(Border.ALL, BorderLineStyle.THIN, Colour.BLACK);
+		borderStyleCenter.setAlignment(Alignment.CENTRE);
+		borderStyleCenter.setVerticalAlignment(VerticalAlignment.CENTRE);
+		borderStyleCenter.setWrap(true);
+		// text align CENTER and font11 Bold
+		WritableFont font11 = new WritableFont (WritableFont.TIMES, 11, WritableFont.BOLD);
+		WritableCellFormat borderCenter11 = new WritableCellFormat(font11);
+		borderCenter11.setBorder(Border.ALL, BorderLineStyle.THIN, Colour.BLACK);
+		borderCenter11.setAlignment(Alignment.LEFT);
+		borderCenter11.setVerticalAlignment(VerticalAlignment.CENTRE);
+		borderCenter11.setWrap(true);
 		
 		ExcelCell cellProper =  Util.getCellStart(tableBook,">>");
 		printProperty(sheet, cellProper);
@@ -389,6 +430,14 @@ public class ExcelPrint extends Budget {
 		MProject project = new MProject(Env.getCtx(), bCall.getC_Project_ID(), null); 
 		MCharge cha = new MCharge(Env.getCtx(), chargeID, null);
 		MPeriod year = new MPeriod(Env.getCtx(), periodID, null);
+		
+		// text align CENTER and font11 Bold
+		WritableFont font11 = new WritableFont (WritableFont.TIMES, 11, WritableFont.BOLD);
+		WritableCellFormat borderCenter11 = new WritableCellFormat(font11);
+		borderCenter11.setBorder(Border.ALL, BorderLineStyle.THIN, Colour.BLACK);
+		borderCenter11.setAlignment(Alignment.LEFT);
+		borderCenter11.setVerticalAlignment(VerticalAlignment.CENTRE);
+		borderCenter11.setWrap(true);
 		
 		int col = cellStart.getC();
 		int row = cellStart.getR();
