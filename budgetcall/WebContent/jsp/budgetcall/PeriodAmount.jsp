@@ -12,7 +12,7 @@
 	Period[] period = periodTotal.getPeriod();
 	int rowSpan = period.length;
 	MCharge charge = new MCharge(Env.getCtx(), periodTotal.getChargeID(), null);
-	String selectPeriod = "bgcolor=\"#DAE1EA\"";
+	String selectPeriod = "";
 %>
 
 <html>
