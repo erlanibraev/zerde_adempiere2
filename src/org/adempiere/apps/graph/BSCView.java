@@ -48,7 +48,7 @@ public class BSCView extends CPanel implements FormPanel, ActionListener {
 	 * 
 	 */
 	private static final long serialVersionUID = 4676814519138213648L;
-	private static CLogger log = CLogger.getCLogger (ViewPI.class);
+	private static CLogger log = CLogger.getCLogger (BSCView.class);
 	private int m_WindowNo = 0;
 	private FormFrame m_frame;
 	private ConfirmPanel confirmPanel = new ConfirmPanel();

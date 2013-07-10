@@ -24,7 +24,7 @@ import org.compiere.util.Env;
  */
 public class MBSCCardLine extends X_BSC_CardLine {
 	
-	protected static CLogger sLog = CLogger.getCLogger ("MBSCCardLine"); 
+	protected static CLogger sLog = CLogger.getCLogger(MBSCCardLine.class); 
 	
 	/**
 	 * 
