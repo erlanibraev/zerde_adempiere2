@@ -25,41 +25,15 @@ public class NWD_SendMail extends SvrProcess {
 	/** Current context */
 	private Properties m_ctx;
 	/** */
-	private String docstatus = null;
-	private String docaction = null;
 	MBSCNetWorkDiag m_netNetWorkDiag = null;
 	@Override
 	protected void prepare() {
-		m_ctx = Env.getCtx();
-		docstatus = Env.getContext(m_ctx, "2|0|DocStatus");
-		docaction = Env.getContext(m_ctx, "2|0|DocAction");
-		m_netNetWorkDiag = new MBSCNetWorkDiag(m_ctx, getRecord_ID(), get_TrxName());
+
 	}
 
 	@Override
 	protected String doIt() throws Exception {
-		if(docstatus.equals("DR") || docstatus.equals("NA")){
-			//System.out.println("Шуйпанова Айжан Мендыхановна");//
-			extend.org.compiere.utils.Util.sendMail(1000050, 100, "TEST when docstatus DR", " Шуйпанова Айжан Мендыхановна, Approve this document. DocNo - "+m_netNetWorkDiag.getDocumentNo(), false);
-		}
-		else if (docstatus.equals("WC")){
-			//System.out.println("Кенжигулова Динара Сансызбаевна");//
-			StringBuffer mailText = new StringBuffer();
-			mailText.append("Infom about approval for document # ");
-			mailText.append(m_netNetWorkDiag.getDocumentNo());
-			mailText.append(". Document is ");
-			if(docaction.equals("RJ"))
-				mailText.append("Not Approved");
-			else if (docaction.equals("AP"))
-				mailText.append("Approved");
-			else mailText.append("Invalid");
-			
-			if(docaction.equals("RJ") || docaction.equals("AP"))
-				extend.org.compiere.utils.Util.sendMail(1000052, 100, "BSC NetWork Diagram Informtask", mailText.toString(), false);
-		}
-		else if(docstatus.equals("AP")){
 			sendMailAction();
-		}
 		return Msg.translate(m_ctx, "Success");
 	}
 	private boolean sendMailAction() throws Exception{
