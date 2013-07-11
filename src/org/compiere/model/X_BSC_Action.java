@@ -33,7 +33,7 @@ public class X_BSC_Action extends PO implements I_BSC_Action, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130703L;
+	private static final long serialVersionUID = 20130711L;
 
     /** the default Constructor */
     public X_BSC_Action(Properties ctx)
@@ -50,8 +50,11 @@ public class X_BSC_Action extends PO implements I_BSC_Action, I_Persistent
 			setBSC_Action_ID (0);
 			setBSC_NetWorkDiagSubLine_ID (0);
 			setDateFrom (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
 			setDateTo (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
 			setName (null);
+			setSequence (Env.ZERO);
         } */
     }
 
@@ -304,4 +307,21 @@ public class X_BSC_Action extends PO implements I_BSC_Action, I_Persistent
     {
         return new KeyNamePair(get_ID(), getName());
     }
+
+	/** Set Sequence.
+		@param Sequence Sequence	  */
+	public void setSequence (BigDecimal Sequence)
+	{
+		set_Value (COLUMNNAME_Sequence, Sequence);
+	}
+
+	/** Get Sequence.
+		@return Sequence	  */
+	public BigDecimal getSequence () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Sequence);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
 }

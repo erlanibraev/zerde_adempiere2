@@ -228,6 +228,15 @@ public interface I_BSC_Action
 	  */
 	public String getName();
 
+    /** Column name Sequence */
+    public static final String COLUMNNAME_Sequence = "Sequence";
+
+	/** Set Sequence	  */
+	public void setSequence (BigDecimal Sequence);
+
+	/** Get Sequence	  */
+	public BigDecimal getSequence();
+
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
 
