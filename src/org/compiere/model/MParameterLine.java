@@ -69,7 +69,7 @@ public class MParameterLine extends X_BSC_ParameterLine {
     }
 	
 	public String getValue() {
-		String result = super.getValueNumber();
+		String result = (super.getValueNumber() == null ? "0" : super.getValueNumber());
 		if (isFormula()) {
 			result = calculate();
 			setValue(result);
