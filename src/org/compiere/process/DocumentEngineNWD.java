@@ -9,7 +9,11 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 
 import org.compiere.model.MBPartner;
+import org.compiere.model.MBSCAction;
 import org.compiere.model.MBSCNetWorkDiag;
+import org.compiere.model.MBSCNetWorkDiagLine;
+import org.compiere.model.MBSCNetWorkDiagSubLine;
+import org.compiere.model.MBSCResponsibleExecutor;
 import org.compiere.model.MUser;
 import org.compiere.model.X_BSC_NetWorkDiag;
 import org.compiere.util.CLogger;
@@ -129,9 +133,10 @@ public class DocumentEngineNWD extends DocumentEngine {
 					" WHERE AD_User_ID IS NOT NULL AND bsc_action_id IN (SELECT bsc_action_id FROM bsc_action WHERE bsc_networkdiagsubline_id IN \n"+ 
 					" (SELECT bsc_networkdiagsubline_id FROM bsc_networkdiagsubline WHERE bsc_networkdiagline_id IN \n"+
 			        " (SELECT bsc_networkdiagline_id FROM bsc_networkdiagline WHERE bsc_networkdiag_id ="+ m_BSCNetWorkDiag_ID+"))) \n GROUP BY AD_User_ID";
-		
+		//--
 		ArrayList<Integer> sendList = new ArrayList<Integer>();
-		
+		MBSCNetWorkDiag mbscNetWorkDiag = new MBSCNetWorkDiag(getCtx(), m_BSCNetWorkDiag_ID, get_TrxName());
+		//--
 		try{
 			pstmt = DB.prepareStatement(sql.toString(), get_TrxName());
 			rs = pstmt.executeQuery();
@@ -154,12 +159,27 @@ public class DocumentEngineNWD extends DocumentEngine {
 		int p_AD_User_ID = DB.getSQLValue(get_TrxName(), sqlGetZerdeAdmin);		
 		if(p_AD_User_ID < 0)
 			throw new Exception("User_ID not found");
+		
 		for(int i = 0; i < sendList.size(); i++){
+			
+			MBSCNetWorkDiagLine[] mbscNetWorkDiagLines = mbscNetWorkDiag.getLines(false);
+			for(MBSCNetWorkDiagLine line : mbscNetWorkDiagLines){
+				for(MBSCNetWorkDiagSubLine subline: line.getSubLines(false) ){
+					for(MBSCAction action: subline.getActions(false)){
+						for(MBSCResponsibleExecutor responsibleExecutor: action.getResponsible_Executors(false)){
+							if(responsibleExecutor.getBSC_Responsible_Executor_ID()==sendList.get(i).intValue()){
+								
+							}
+						}
+					}
+				}
+			}
 			extend.org.compiere.utils.Util.sendMail(sendList.get(i).intValue(), p_AD_User_ID, "Мероприятия", "Список мероприятии для "
 					+getRecipientName(sendList.get(i).intValue()), false);
 		}
 		return true;
 	}
+	
 	private String getRecipientName(int r_AD_User_ID){
 		
 		String recipientName = null;
@@ -172,5 +192,10 @@ public class DocumentEngineNWD extends DocumentEngine {
 				recipientName = recipientUser.getName();
 		
 		return recipientName;
+	}
+	
+	private MBSCAction[] getMbscActions(int t_AD_User_ID){
+		
+		return null;
 	}
 }
