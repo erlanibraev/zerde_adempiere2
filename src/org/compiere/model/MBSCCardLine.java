@@ -391,12 +391,13 @@ public class MBSCCardLine extends X_BSC_CardLine {
 		if (newCard != null && newCard.getBSC_Card_ID() > 0) {
 			MBSCCardLine newLine = new MBSCCardLine(Env.getCtx(),0,get_TrxName());
 			copyValues(this, newLine);
+			newLine.setBSC_Card_ID(BSC_Card_ID);
+			
 /*			
 			newLine.setAD_Client_ID(getAD_Client_ID());
 			newLine.setAD_Org_ID(getAD_Org_ID());
 			newLine.setName(getName());
 			newLine.setDescription(getDescription());
-			newLine.setBSC_Card_ID(BSC_Card_ID);
 			newLine.setBSC_Coefficient_ID(getBSC_Coefficient_ID());
 			newLine.setBSC_Formula_ID(getBSC_Formula_ID());
 			newLine.setUnit(getUnit());
