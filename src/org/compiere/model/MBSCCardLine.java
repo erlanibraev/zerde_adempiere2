@@ -228,14 +228,17 @@ public class MBSCCardLine extends X_BSC_CardLine {
 	}
 	
 	public MBSCCard getCard() {
-		if (card == null || card.getBSC_Card_ID() != getBSC_Card_ID()) {
+		if (getBSC_Card_ID() > 0 && (card == null || card.getBSC_Card_ID() != getBSC_Card_ID())) {
 			card = new MBSCCard(Env.getCtx(),getBSC_Card_ID(),get_TrxName());
 		}
 		return card;
 	}
 
-	public void setCard(MBSCCard card) {
-		this.card = card;
+	public void setCard(MBSCCard card1) {
+		this.card = card1;
+		if (card != null || card.getBSC_Card_ID() != getBSC_Card_ID()) {
+			setBSC_Card_ID(card.getBSC_Card_ID());
+		}
 	}
 	
 	@Override
@@ -296,19 +299,18 @@ public class MBSCCardLine extends X_BSC_CardLine {
 		if( getBSC_Parameter_Out_ID() > 0) {
 			param = getParameter_Out();
 			param.setPeriod(card.getPeriod());
-			MParameterLine paramLine = param.getCurrentParameterLine();
-			if (!paramLine.isFormula() && paramLine.getBSC_Formula_ID() != getBSC_Formula_ID()) {
-				paramLine.setIsFormula(true);
-				paramLine.setBSC_Formula_ID(getBSC_Formula_ID());
-				paramLine.save();
-			}
-			setVar(param);
 		} else {
 			param = MParameter.createParameter(getName(), getDescription(), card.getC_BPartner_ID(), card.getC_Period_ID());
 			param.setPeriod(card.getPeriod());
 			setParameter_Out(param);
-			setVar(param);
 		}
+		MParameterLine paramLine = param.getCurrentParameterLine();
+		if (!paramLine.isFormula() && paramLine.getBSC_Formula_ID() != getBSC_Formula_ID()) {
+			paramLine.setIsFormula(true);
+			paramLine.setBSC_Formula_ID(getBSC_Formula_ID());
+			paramLine.save();
+		}
+		setVar(param);
 	}
 	
 	protected void setVar(MParameter param) {
@@ -388,6 +390,8 @@ public class MBSCCardLine extends X_BSC_CardLine {
 		MBSCCard newCard = new MBSCCard(Env.getCtx(),BSC_Card_ID,get_TrxName());
 		if (newCard != null && newCard.getBSC_Card_ID() > 0) {
 			MBSCCardLine newLine = new MBSCCardLine(Env.getCtx(),0,get_TrxName());
+			copyValues(this, newLine);
+/*			
 			newLine.setAD_Client_ID(getAD_Client_ID());
 			newLine.setAD_Org_ID(getAD_Org_ID());
 			newLine.setName(getName());
@@ -402,6 +406,7 @@ public class MBSCCardLine extends X_BSC_CardLine {
 			newLine.setBSC_Parameter_ID(getBSC_Parameter_ID());
 			newLine.setBSC_Parameter_Out_ID(getBSC_Parameter_Out_ID());
 			newLine.setBSC_Perspective_ID(getBSC_Perspective_ID());
+*/			
 			newLine.setValue("0");
 			newLine.setValueNumber(new BigDecimal(0));
 			if(newLine.save()) {
@@ -418,4 +423,11 @@ public class MBSCCardLine extends X_BSC_CardLine {
 			}
 		}
 	}
+	@Override
+	protected boolean beforeSave(boolean newRecord) {
+		saveParameterOutValue();
+		return super.beforeSave(newRecord);
+	}
+	
+	
 }
