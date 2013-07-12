@@ -29,7 +29,7 @@
 
 
 <div id="printExcel" class="letterRight letter">
-		<s:a href="%{fileDownload}"><img src="images/excel.png" style="margin-left: 10px;" /></s:a>
+		<s:a href="%{fileDownload}" title="Выгрузка в Excel"><img src="images/excel.png" style="margin-left: 10px;" /></s:a>
 		<img src="images/separator.png" style="margin-left: 5px;" />
 	<!-- <s:a href="%{fileDownloadAll}"><img src="images/excelAll.png" style="margin-left: 10px;" /></s:a> -->
 		<a href='javascript:window.print(); void 0;' title="Печать"><img src="images/print.png" style="margin-left: 5px;" /></a>
