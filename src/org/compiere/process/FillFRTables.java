@@ -127,6 +127,18 @@ public class FillFRTables extends SvrProcess
 							}
 							i++;
 							sqlGroupBy.append(sColName);
+						} else if ("1".equals(sAT)) {
+							sColName="AVG("+sColName+")";
+						} else if ("2".equals(sAT)) {
+							sColName="COUNT("+sColName+")";
+						} else if ("3".equals(sAT)) {
+							sColName="FIRST("+sColName+")";
+						} else if ("4".equals(sAT)) {
+							sColName="LAST("+sColName+")";
+						} else if ("5".equals(sAT)) {
+							sColName="MAX("+sColName+")";
+						} else if ("6".equals(sAT)) {
+							sColName="MIN("+sColName+")";
 						} else if ("7".equals(sAT)) {
 							sColName="SUM("+sColName+")";
 						}

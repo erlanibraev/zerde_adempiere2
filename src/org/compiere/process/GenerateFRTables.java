@@ -120,7 +120,7 @@ public class GenerateFRTables extends SvrProcess
 				}
 				
 				sql2.setLength(0);
-				sql2.append("SELECT FR_Column_ID, AD_Element_ID, AD_Table_ID, AD_Column_ID FROM FR_Column "
+				sql2.append("SELECT FR_Column_ID, AD_Element_ID FROM FR_Column "
 							  + " WHERE FR_Table_ID = "+ p_main_FR_Table_ID + " AND IsActive = 'Y' "
 							  + " AND Counter='"+sCounter+"'");
 				try	{  // find AD_Element_ID
@@ -129,9 +129,8 @@ public class GenerateFRTables extends SvrProcess
 					while (rs2.next())	{
 						int iFRColumnID = rs2.getInt(1);
 						int iElementID = rs2.getInt(2);       	
-						iColumnID = rs2.getInt(4);
 						
-						if ((i_AD_Table_ID>0)&&(iColumnID==0)) {
+						if (i_AD_Table_ID>0) {
 							sql2.setLength(0);
 							sql2.append("SELECT AD_Column_ID FROM AD_Column "
 									  + " WHERE AD_Table_ID = "+ i_AD_Table_ID + " AND IsActive = 'Y' "
@@ -144,11 +143,6 @@ public class GenerateFRTables extends SvrProcess
 								rs3 = pstmt3.executeQuery();
 								while (rs3.next())	{
 									iColumnID = rs3.getInt(1);
-									sql2.setLength(0);
-									sql2.append("UPDATE FR_Column SET AD_Table_ID="+i_AD_Table_ID + 
-											    ", AD_Column_ID ="+iColumnID
-											  + " WHERE FR_Column_ID = "+iFRColumnID);
-									DB.executeUpdate(sql2.toString(), trxName);
 									break;
 								}
 							}
@@ -174,13 +168,15 @@ public class GenerateFRTables extends SvrProcess
 							extColumn.save(trxName);
 							if (extColumn.save()) {
 								//extColumn.syncDatabase();
-								sql2.setLength(0);
-								sql2.append("UPDATE FR_Column SET AD_Table_ID="+i_AD_Table_ID + 
-										    ", AD_Column_ID ="+extColumn.get_ID()
-										  + " WHERE FR_Column_ID = "+iFRColumnID);
-								DB.executeUpdate(sql2.toString(), trxName);
 							}
+							iColumnID=extColumn.get_ID();
 						}
+						sql2.setLength(0);
+						sql2.append("UPDATE FR_Column SET AD_Table_ID="+i_AD_Table_ID + 
+								    ", AD_Column_ID ="+iColumnID
+								  + " WHERE FR_Column_ID = "+iFRColumnID);
+						DB.executeUpdate(sql2.toString(), trxName);
+						
 							
 					}
 				}
