@@ -44,6 +44,9 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 
 	public void setParameter(MParameter parameter) {
 		this.parameter = parameter;
+		if (parameter != null && parameter.getBSC_Parameter_ID() != getBSC_Parameter_ID()) {
+			setBSC_Parameter_ID(parameter.getBSC_Parameter_ID());
+		}
 	}
 
 	public ArrayList<MBSCCardLine> getCardLine() {
@@ -109,11 +112,25 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 		for(MBSCCardLine line:getCardLine()) {
 			result = result.add(line.calculate());
 		}
-		if (getBSC_Parameter_ID() > 0 ) {
-			setValueNumber(result);
-			save();
-		}
+		if (getBSC_Parameter_ID() <= 0 ) {
+			createParameter();
+		} 
+		setValueNumber(result);
+		save();
 		return result;
+	}
+
+	/**
+	 * 
+	 */
+	private MParameter createParameter() {
+		MParameter param = getParameter();
+		if (param == null) { 
+			param = MParameter.createParameter(getName(), getDescription(), getC_BPartner_ID(), getC_Period_ID());
+			param.setPeriod(getPeriod());
+			setParameter(param);
+		}
+		return param;
 	}
 
 	/**	Process Message 			*/
@@ -422,7 +439,8 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 		if (b) {
 			setName(getCardName());
 		}
-		return super.beforeSave(newRecord) && b;
+		boolean b1 = createParameter() != null;
+		return super.beforeSave(newRecord) && b && b1;
 	}
 	
 	public void copyCard(MPeriod period) {
