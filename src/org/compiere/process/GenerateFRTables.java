@@ -18,6 +18,7 @@ package org.compiere.process;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -108,16 +109,39 @@ public class GenerateFRTables extends SvrProcess
 				catch (SQLException e)	{
 						log.log(Level.SEVERE, sql2.toString(), e);
 				}
-
+				
+				DB.executeUpdate("DROP TABLE IF EXISTS "+sETN, null);
+				createTable(sETN, sCounter);
+			
 				MTable extTable = new MTable(m_ctx, i_AD_Table_ID, trxName);
-				if (i_AD_Table_ID==0) {  //table is not exist
-					createTable(sETN, sCounter);
-					extTable.setName(sETN);
-					extTable.setTableName(sETN);
-					extTable.set_ValueOfColumn("AD_Client_ID", 0);
-					extTable.save(trxName);
+				/*if (i_AD_Table_ID>0) {
+					extTable.delete(true, trxName);
+				}*/
+				extTable.setName(sETN);
+				extTable.setTableName(sETN);
+				extTable.set_ValueOfColumn("AD_Client_ID", 0);
+				extTable.setAD_Org_ID(0);
+				extTable.setEntityType("U");
+				extTable.setAccessLevel("3"); // Client+Organization
+				if (extTable.save(trxName)) {
 					i_AD_Table_ID=extTable.get_ID();
+
+					ProcessInfo pi = new ProcessInfo("Test Import Model", 1000000);
+					pi.setAD_Client_ID(getAD_Client_ID());
+					pi.setAD_User_ID(getAD_User_ID());
+				
+					ArrayList<ProcessInfoParameter> list = new ArrayList<ProcessInfoParameter>();
+					list.add(new ProcessInfoParameter("EntityType", "U", null, null, null));
+					ProcessInfoParameter[] parameters = new ProcessInfoParameter[list.size()];
+					list.toArray(parameters);
+					pi.setParameter(parameters);
+					pi.setRecord_ID(i_AD_Table_ID);
+				
+					TableCreateColumns tcc = new TableCreateColumns();
+				
+					tcc.startProcess(Env.getCtx(), pi, null);
 				}
+				
 				
 				sql2.setLength(0);
 				sql2.append("SELECT FR_Column_ID, AD_Element_ID FROM FR_Column "
@@ -200,21 +224,17 @@ public class GenerateFRTables extends SvrProcess
 	private void createTable(String sETN, String sCounter) {
 		StringBuffer sqlCreate = new StringBuffer(
 				  "CREATE TABLE "+sETN+" \n"
-				 +"(\n"
-				 +"ad_client_id numeric(10,0) NOT NULL,\n"
+				 +"(\n");
+		if ("0".equals(sCounter)) {
+			sqlCreate.append(sETN+"_id numeric(10,0) NOT NULL,\n");
+		}
+		sqlCreate.append("ad_client_id numeric(10,0) NOT NULL,\n"
 				 +"ad_org_id numeric(10,0) NOT NULL,\n"
 				 +"created timestamp without time zone NOT NULL,\n"
 				 +"createdby numeric(10,0) NOT NULL,\n"
 				 +"isactive character(1) NOT NULL DEFAULT 'Y'::bpchar,\n"
 				 +"updated timestamp without time zone NOT NULL,\n"
 				 +"updatedby numeric(10,0) NOT NULL,\n");
-				//)
-				//WITH (
-				//OIDS=FALSE
-				//);
-				//ALTER TABLE adempiere.fr_budgetcall1
-				//OWNER TO adempiere;");"
-
 		StringBuffer sql=new StringBuffer("SELECT f.FR_Column_ID, f.AccumulationType,"
 				+" e.ColumnName, e.AD_Reference_ID, e.FieldLength" 
 				+" FROM FR_Column AS f"
@@ -239,7 +259,10 @@ public class GenerateFRTables extends SvrProcess
 					i++;
 				}
 				sqlCreate.append(sCN);
-				switch (iRID) {
+				if (sCN.endsWith("_ID")) {
+					sqlCreate.append(" numeric(10,0) NOT NULL,\n"); 
+				} else {
+					switch (iRID) {
 					case 11: // Integer
 					case 13: // ID
 					case 18: // Table
@@ -281,6 +304,7 @@ public class GenerateFRTables extends SvrProcess
 						sqlCreate.append(" character varying(500) NOT NULL,\n"); break;
 					case 40: // URL 
 						sqlCreate.append(" character varying(120),\n"); break;
+					}
 				}
 			}
 			rs.close();
@@ -288,12 +312,16 @@ public class GenerateFRTables extends SvrProcess
 		}
 		catch (SQLException e)	{
 			log.log(Level.SEVERE, sql.toString(), e);
-		}		
+		}
+		if ("0".equals(sCounter)) {
+			sKey.setLength(0);
+			sKey.append(sETN+"_id");
+		}
 		sqlCreate.append("CONSTRAINT "+sETN+"_pkey PRIMARY KEY ("+sKey+"),\n"
 			+"CONSTRAINT "+sETN+"_isactive_check CHECK (isactive = ANY "
 			+"(ARRAY['Y'::bpchar, 'N'::bpchar]))\n)"
 			+"WITH (OIDS=FALSE);");
-		DB.executeUpdate(sqlCreate.toString(), trxName);
+		DB.executeUpdate(sqlCreate.toString(),null);
 	}
 
 }	//	GenerateFRTables

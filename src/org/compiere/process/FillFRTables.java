@@ -21,13 +21,10 @@ import java.sql.SQLException;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.model.MColumn;
 import org.compiere.model.MTable;
-import org.compiere.model.M_Element;
 import org.compiere.model.PO;
 import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.DB;
-import org.compiere.util.Env;
 
 /**
  *	Create tables and copy columns from one table to other
@@ -101,10 +98,10 @@ public class FillFRTables extends SvrProcess
 					);
 				StringBuffer sqlUpdate = new StringBuffer("INSERT INTO "+updTable.getName()
 						+"( AD_Client_ID, AD_Org_ID, IsActive, Created, CreatedBy, Updated, UpdatedBy,");
-				StringBuffer sqlSelect = new StringBuffer("SELECT AD_Client_ID, AD_Org_ID, 'Y', SysDate," 
+				StringBuffer sqlSelect = new StringBuffer("SELECT "+getAD_Client_ID()+", AD_Org_ID, 'Y', SysDate," 
 						+getAD_User_ID()+", SysDate, "+getAD_User_ID()+", ");
 				StringBuffer sqlWhere = new StringBuffer(" WHERE IsActive = 'Y' ");
-				StringBuffer sqlGroupBy = new StringBuffer(" GROUP BY AD_Client_ID, AD_Org_ID,");
+				StringBuffer sqlGroupBy = new StringBuffer(" GROUP BY AD_Org_ID,");
 				
 				PreparedStatement pstmt2;
 				ResultSet rs2;
