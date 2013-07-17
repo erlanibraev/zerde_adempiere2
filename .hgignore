@@ -10,7 +10,7 @@ buildJava
 temp
 temp.*
 Thumbs.db
-buildCustomization.properties
+*.properties
 *.INF
 
 .settings/org.eclipse.core.resources.prefs
