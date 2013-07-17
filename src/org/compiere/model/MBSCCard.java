@@ -110,7 +110,10 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 	public BigDecimal calculate() {
 		BigDecimal result = new BigDecimal(0);
 		for(MBSCCardLine line:getCardLine()) {
-			result = result.add(line.calculate());
+			BigDecimal calculate  = line.calculate();
+			BigDecimal weight = line.getWeight();
+			calculate = (weight != null ? calculate.multiply(weight): calculate);
+			result = (calculate != null ? result.add(calculate) : result);
 		}
 		if (getBSC_Parameter_ID() <= 0 ) {
 			createParameter();

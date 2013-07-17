@@ -143,7 +143,7 @@ public class BSCIndicator extends JPanel implements MouseListener, ActionListene
 		JFreeChart chart = null;
 
 		m_line = s_width100;
-		double var = getParameter().getValueNumber().floatValue();
+		double var = (getParameter().getValueMax() != null && getParameter().getValueMax().floatValue() > 0 ? 100 * getParameter().getValueNumber().floatValue() / getParameter().getValueMax().floatValue() : getParameter().getValueNumber().floatValue());
 		DefaultValueDataset data = new DefaultValueDataset(var);
 		MeterPlot plot = new MeterPlot(data);
 		

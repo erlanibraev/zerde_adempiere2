@@ -209,6 +209,19 @@ public interface I_BSC_CardLine
 	  */
 	public boolean isFormula();
 
+    /** Column name LineValue */
+    public static final String COLUMNNAME_LineValue = "LineValue";
+
+	/** Set LineValue.
+	  * LineValue
+	  */
+	public void setLineValue (BigDecimal LineValue);
+
+	/** Get LineValue.
+	  * LineValue
+	  */
+	public BigDecimal getLineValue();
+
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";
 
@@ -221,6 +234,19 @@ public interface I_BSC_CardLine
 	  * Alphanumeric identifier of the entity
 	  */
 	public String getName();
+
+    /** Column name Q */
+    public static final String COLUMNNAME_Q = "Q";
+
+	/** Set Q.
+	  * Q
+	  */
+	public void setQ (BigDecimal Q);
+
+	/** Get Q.
+	  * Q
+	  */
+	public BigDecimal getQ();
 
     /** Column name Unit */
     public static final String COLUMNNAME_Unit = "Unit";

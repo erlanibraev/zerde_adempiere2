@@ -32,7 +32,7 @@ public class X_BSC_CardLine extends PO implements I_BSC_CardLine, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130530L;
+	private static final long serialVersionUID = 20130717L;
 
     /** the default Constructor */
     public X_BSC_CardLine(Properties ctx)
@@ -308,6 +308,25 @@ public class X_BSC_CardLine extends PO implements I_BSC_CardLine, I_Persistent
 		return false;
 	}
 
+	/** Set LineValue.
+		@param LineValue 
+		LineValue
+	  */
+	public void setLineValue (BigDecimal LineValue)
+	{
+		throw new IllegalArgumentException ("LineValue is virtual column");	}
+
+	/** Get LineValue.
+		@return LineValue
+	  */
+	public BigDecimal getLineValue () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_LineValue);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
 	/** Set Name.
 		@param Name 
 		Alphanumeric identifier of the entity
@@ -332,6 +351,26 @@ public class X_BSC_CardLine extends PO implements I_BSC_CardLine, I_Persistent
     {
         return new KeyNamePair(get_ID(), getName());
     }
+
+	/** Set Q.
+		@param Q 
+		Q
+	  */
+	public void setQ (BigDecimal Q)
+	{
+		set_Value (COLUMNNAME_Q, Q);
+	}
+
+	/** Get Q.
+		@return Q
+	  */
+	public BigDecimal getQ () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Q);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
 
 	/** Unit AD_Reference_ID=1000135 */
 	public static final int UNIT_AD_Reference_ID=1000135;

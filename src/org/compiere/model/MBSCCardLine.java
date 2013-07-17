@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.logging.Level;
 
 import org.apache.commons.lang.StringUtils;
@@ -36,7 +37,16 @@ public class MBSCCardLine extends X_BSC_CardLine {
 	private MBSCCard card = null;
 	private MParameter parameter = null;
 	private MParameter parameter_Out = null;
-
+	private MParameter parameter_Q = null;
+	
+	// Constatnts for formul
+	public static String CARDLINEVARIABLE_MAX = "Max";
+	public static String CARDLINEVARIABLE_MIN = "Min";
+	public static String CARDLINEVARIABLE_VALUE = "Value";
+	public static String CARDLINEVARIABLE_COEFFICIENT = "Coefficient";
+	public static String CARDLINEVARIABLE_WEIGHT = "Weight";
+	public static String CARDLINEVARIABLE_Q = "Q";
+	
 	public MParameter getParameter_Out() {
 		if (getBSC_Parameter_Out_ID() > 0 && (parameter_Out == null || parameter_Out.getBSC_Parameter_ID() != getBSC_Parameter_Out_ID())) {
 			parameter_Out = new MParameter(Env.getCtx(),getBSC_Parameter_Out_ID(),get_TrxName());
@@ -186,24 +196,26 @@ public class MBSCCardLine extends X_BSC_CardLine {
 	 */
 	private Object getValue(String varName) throws Exception {
 		Object result = null;
-		if (varName.equalsIgnoreCase("Max")) {
+		if (varName.equalsIgnoreCase(CARDLINEVARIABLE_MAX)) {
 			result  = getValueMax().toString();
-		} else if (varName.equalsIgnoreCase("Min")) {
+		} else if (varName.equalsIgnoreCase(CARDLINEVARIABLE_MIN)) {
 			result = getValueMin().toString();
-		} else if (varName.equalsIgnoreCase("Coefficient")) {
+		} else if (varName.equalsIgnoreCase(CARDLINEVARIABLE_COEFFICIENT)) {
 			if (getCoefficient() != null) {
 				result = getCoefficient().calcCoefficient(getValue(),getValueMax(),getValueMin()).toString();
 			} else {
 				throw new Exception("MBSCardLine: variable not found - "+varName);
 			}
-		} else if (varName.equalsIgnoreCase("Value")) {
+		} else if (varName.equalsIgnoreCase(CARDLINEVARIABLE_VALUE)) {
 			if (StringUtils.isNumeric(getValue())) {
 				result = new BigDecimal(getValue());
 			} else {
 				result = getValue();
 			}
-		} else if (varName.equalsIgnoreCase("Weight")) {
+		} else if (varName.equalsIgnoreCase(CARDLINEVARIABLE_WEIGHT)) {
 			result = getWeight().toString();
+		} else if (varName.equalsIgnoreCase(CARDLINEVARIABLE_Q)) {
+			result  = getQ();
 		} else {
 			log.log(Level.SEVERE,"MBSCardLine: variable not found - "+varName);
 			throw new Exception("MBSCardLine: variable not found - "+varName);
@@ -305,16 +317,25 @@ public class MBSCCardLine extends X_BSC_CardLine {
 			setParameter_Out(param);
 		}
 		MParameterLine paramLine = param.getCurrentParameterLine();
-		if (!paramLine.isFormula() && paramLine.getBSC_Formula_ID() != getBSC_Formula_ID()) {
+		paramLine.setValueMax(new BigDecimal(1));
+		paramLine.setValueMin(new BigDecimal(0));
+		if (!paramLine.isFormula() || (paramLine.getBSC_Formula_ID() != getCoefficient().getBSC_Formula_ID() && getCoefficient().getBSC_Formula_ID() > 0)) {
 			paramLine.setIsFormula(true);
-			paramLine.setBSC_Formula_ID(getBSC_Formula_ID());
+			paramLine.setBSC_Formula_ID(getCoefficient().getBSC_Formula_ID());
 			paramLine.save();
 		}
 		setVar(param);
 	}
 	
+	protected int getFormula_paramOutValue_ID() {
+		int result = 0;
+		String sql = "SELECT * FROM BSC_Formula WHERE Name like 'paramOutValue'";
+		result = DB.getSQLValue(get_TrxName(), sql);
+		return result;
+	}
+	
 	protected void setVar(MParameter param) {
-		//Тут установить переменные Value, Min, Max, Coefficient
+		//Тут установить переменные Value, Min, Max, Coefficient, Q
 		
 		MParameter valueParam = getParameter();
 		MParameterLine paramLine = param.getCurrentParameterLine();
@@ -335,27 +356,36 @@ public class MBSCCardLine extends X_BSC_CardLine {
 			
 			int formulaValue_ID = getFormulaValue_ID();
 			
-			if (key.equals("Value") && formulaValue_ID > 0) {
+			if (key.equals(CARDLINEVARIABLE_VALUE) && formulaValue_ID > 0) {
 				
 				MParameterLine pLine = paramVar.getCurrentParameterLine();
-				
-				if (pLine != null && getBSC_Parameter_ID() > 0 ) {
-					pLine.setIsFormula(true);
-					pLine.setBSC_Formula_ID(formulaValue_ID);
-					MVariable var = pLine.getVariables().get(key);
-					var.setBSC_Parameter_ID(valueParam.getBSC_Parameter_ID());
-					var.save();
-					pLine.save();
-				} else {
-					try {
-						pLine.setIsFormula(false);
-						paramVar.setValue(getValue(key).toString());
-					} catch (Exception e) {
-						sLog.log(Level.SEVERE, "setVar", e);
+				try {
+					if (getBSC_Parameter_ID() > 0 ) {
+						pLine.setIsFormula(true);
+						pLine.setBSC_Formula_ID(formulaValue_ID);
+						MVariable var = pLine.getVariables().get(key);
+						var.setBSC_Parameter_ID(valueParam.getBSC_Parameter_ID());
+						var.save();
+					} else {
+							pLine.setIsFormula(false);
+							paramVar.setValue(getValue(key).toString());
 					}
+					pLine.setValueMax(getValueMax());
+					pLine.setValueMin(getValueMin());
+					pLine.save();
+				} catch (Exception e) {
+					sLog.log(Level.SEVERE, "setVar", e);
 				}
-				
-			} else {
+			} else if (key.equals(CARDLINEVARIABLE_Q)) {
+				setParameter_Q(paramVar);
+				MParameterLine pLine = paramVar.getCurrentParameterLine();
+				pLine.setIsFormula(true);
+				pLine.setBSC_Formula_ID(getBSC_Formula_ID());
+				pLine.setValueMax(new BigDecimal(1));
+				pLine.setValueMin(new BigDecimal(0));
+				pLine.saveEx();
+				setVar(paramVar);
+			}else {
 				try {
 					paramVar.setValue(getValue(key).toString());
 				} catch (Exception e) {
@@ -424,11 +454,44 @@ public class MBSCCardLine extends X_BSC_CardLine {
 			}
 		}
 	}
+	
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
 		saveParameterOutValue();
 		return super.beforeSave(newRecord);
 	}
 	
+	@Override
+	public BigDecimal getQ() {
+		BigDecimal result = calcQ();
+		setQ(result);
+		return result;
+	}
 	
+	private BigDecimal calcQ() {
+		BigDecimal result = null;
+		MFormula formula = getFormula();
+		if (formula != null) {
+			HashMap<String, Object> map = new HashMap<String, Object>(); 
+			try {
+				for(String key: formula.getVariables()) {
+						map.put(key, getValue(key));
+						formula.setArguments(map);
+						result = new BigDecimal(getFormula().calculate()); 
+				}
+			} catch (Exception e) {
+				log.log(Level.SEVERE, "BSCCardLine.calcQ",e);
+			}
+		}
+		return result;
+	}
+	
+	public MParameter getParameter_Q() {
+		return parameter_Q;
+	}
+
+	public void setParameter_Q(MParameter parameter_Q) {
+		this.parameter_Q = parameter_Q;
+	}
+
 }
