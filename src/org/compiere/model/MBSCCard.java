@@ -124,7 +124,7 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 		setValueNumber(result);
 		save();
 		if (weightSum.doubleValue() > 100.00) {
-			String msg = "Сумма весов больше 100 - (%,6.2f)";
+			String msg = "Сумма весов больше 100 (%,6.2f)";
 			ADialog.info(25, null,  String.format(msg, weightSum.doubleValue()));
 		}
 		return result;
