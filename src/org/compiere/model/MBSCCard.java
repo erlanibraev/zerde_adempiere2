@@ -15,6 +15,7 @@ import java.util.logging.Level;
 
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.apps.ADialog;
 import org.compiere.process.DocAction;
 import org.compiere.process.BSCDocumentEngine;
 
@@ -109,9 +110,11 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 	
 	public BigDecimal calculate() {
 		BigDecimal result = new BigDecimal(0);
+		BigDecimal weightSum = new BigDecimal(0);
 		for(MBSCCardLine line:getCardLine()) {
 			BigDecimal calculate  = line.calculate();
 			BigDecimal weight = line.getWeight();
+			weightSum = (weight != null ? weightSum.add(weight): weightSum);
 			calculate = (weight != null ? calculate.multiply(weight): calculate);
 			result = (calculate != null ? result.add(calculate) : result);
 		}
@@ -120,6 +123,10 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 		} 
 		setValueNumber(result);
 		save();
+		if (weightSum.doubleValue() > 100.00) {
+			String msg = "Сумма весов больше 100 - (%,6.2f)";
+			ADialog.info(25, null,  String.format(msg, weightSum.doubleValue()));
+		}
 		return result;
 	}
 

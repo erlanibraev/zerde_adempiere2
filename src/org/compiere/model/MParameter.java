@@ -405,7 +405,8 @@ public class MParameter extends X_BSC_Parameter {
 	public String getValue() {
 		String result = "";
 		if (getCurrentParameterLine() != null) {
-			result = getCurrentParameterLine().getValue(); 
+			result = getCurrentParameterLine().getValue();
+			result = (result == null ? "0" : result);
 		}
 		return result;
 	}
