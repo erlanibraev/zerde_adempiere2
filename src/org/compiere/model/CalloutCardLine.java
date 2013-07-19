@@ -25,9 +25,20 @@ public class CalloutCardLine extends CalloutEngine {
 		String result = null;
 		if (value != null) {
 			log.info("--- CalloutCardLine.coefficient ---");
+			
+			// Установка формулы для расчета выходного параметра
 			MFormula formula = MBSCCardLine.getFormulaByUnit((String) value);
 			if (formula != null) {
 				mTab.setValue("BSC_Formula_ID", new Integer(formula.getBSC_Formula_ID()));
+			}
+			
+			// Установка коэффициента, в зависимости от периода
+			Integer C_Period_ID = new Integer(Env.getContext(ctx, WindowNo, "C_Period_ID"));
+			if (C_Period_ID > 0) {
+				MBSCCoefficent coefficent = MBSCCoefficent.getCoefficentByUnit(Env.getCtx(),(String) value, C_Period_ID.intValue());
+				if (coefficent != null) {
+					mTab.setValue("BSC_Coefficient_ID", coefficent.getBSC_Coefficient_ID());
+				}
 			}
 		}
 		return result;

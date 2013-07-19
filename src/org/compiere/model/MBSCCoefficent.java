@@ -4,10 +4,16 @@
 package org.compiere.model;
 
 import java.math.BigDecimal;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Properties;
+import java.util.logging.Level;
 
+import org.compiere.util.CLogger;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 
 /**
@@ -16,6 +22,7 @@ import org.compiere.util.Env;
  */
 public class MBSCCoefficent extends X_BSC_Coefficient {
 
+	protected static CLogger sLog = CLogger.getCLogger(MBSCCardLine.class); 
 	/**
 	 * 
 	 */
@@ -84,6 +91,57 @@ public class MBSCCoefficent extends X_BSC_Coefficient {
 			map.put("Min", min); // Magic name variable
 			getFormula().setArguments(map);
 			result = new BigDecimal(getFormula().calculate()); 
+		}
+		return result;
+	}
+	
+	public static MBSCCoefficent getCoefficentByUnit(Properties ctx  ,String unit, int C_Period_ID) {
+		String[] quarterField = {"quarter1","quarter2","quarter3","quarter4"};
+		MBSCCoefficent result = null;
+		int quarter = getQuarter(ctx,C_Period_ID);
+		if (quarter > 0) {
+			int AD_Org_ID = Env.getAD_Org_ID(ctx);
+			int AD_Client_ID = Env.getAD_Client_ID(ctx);
+			
+			String sql = "SELECT * FROM BSC_Coefficient \n"
+					   + "WHERE AD_Org_ID = ? \n"
+					   + "  AND AD_Client_ID = ? \n"
+					   + "  AND Unit = ? \n"
+					   + "  AND " + quarterField[quarter-1] + " = 'Y'";
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;		
+			try {
+				pstmt = DB.prepareStatement(sql,null);
+				pstmt.setInt(1, AD_Org_ID);
+				pstmt.setInt(2, AD_Client_ID);
+				pstmt.setString (3, unit);
+				rs = pstmt.executeQuery();
+				if (rs.next()) {
+					result = new MBSCCoefficent(ctx, rs, null);
+				}
+			} catch (SQLException e) {
+				sLog.log(Level.SEVERE, "getCoefficentByUnit", e);
+			} finally {
+				DB.close(rs, pstmt);
+				rs = null; pstmt = null;
+			}	
+		}
+		return result;
+	}
+
+	/**
+	 * @param c_Period_ID
+	 * @return
+	 */
+	private static int getQuarter(Properties ctx, int c_Period_ID) {
+		int result = 0;
+		MPeriod period = new MPeriod(ctx,c_Period_ID,null);
+		if (period != null) {
+			Timestamp startDate = period.getStartDate();
+			if (startDate != null) {
+				int month = startDate.getMonth() + 1;
+				result = month / 3 + 1;
+			}
 		}
 		return result;
 	}

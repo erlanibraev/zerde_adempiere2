@@ -30,7 +30,7 @@ public interface I_BSC_Coefficient
     /** TableName=BSC_Coefficient */
     public static final String Table_Name = "BSC_Coefficient";
 
-    /** AD_Table_ID=1000235 */
+    /** AD_Table_ID=1000223 */
     public static final int Table_ID = MTable.getTable_ID(Table_Name);
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
@@ -136,6 +136,58 @@ public interface I_BSC_Coefficient
 	  * Alphanumeric identifier of the entity
 	  */
 	public String getName();
+
+    /** Column name quarter1 */
+    public static final String COLUMNNAME_quarter1 = "quarter1";
+
+	/** Set quarter1.
+	  * quarter1
+	  */
+	public void setquarter1 (boolean quarter1);
+
+	/** Get quarter1.
+	  * quarter1
+	  */
+	public boolean isquarter1();
+
+    /** Column name quarter2 */
+    public static final String COLUMNNAME_quarter2 = "quarter2";
+
+	/** Set quarter2.
+	  * quarter2
+	  */
+	public void setquarter2 (boolean quarter2);
+
+	/** Get quarter2.
+	  * quarter2
+	  */
+	public boolean isquarter2();
+
+    /** Column name quarter3 */
+    public static final String COLUMNNAME_quarter3 = "quarter3";
+
+	/** Set quarter3.
+	  * quarter3
+	  */
+	public void setquarter3 (boolean quarter3);
+
+	/** Get quarter3.
+	  * quarter3
+	  */
+	public boolean isquarter3();
+
+    /** Column name quarter4 */
+    public static final String COLUMNNAME_quarter4 = "quarter4";
+
+	/** Set quarter4.
+	  * quarter4
+	  */
+	public void setquarter4 (boolean quarter4);
+
+	/** Get quarter4.
+	  * quarter4
+	  */
+	public boolean isquarter4();
 
     /** Column name Unit */
     public static final String COLUMNNAME_Unit = "Unit";

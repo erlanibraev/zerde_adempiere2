@@ -30,7 +30,7 @@ public class X_BSC_Coefficient extends PO implements I_BSC_Coefficient, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130409L;
+	private static final long serialVersionUID = 20130719L;
 
     /** the default Constructor */
     public X_BSC_Coefficient(Properties ctx)
@@ -44,7 +44,6 @@ public class X_BSC_Coefficient extends PO implements I_BSC_Coefficient, I_Persis
       super (ctx, BSC_Coefficient_ID, trxName);
       /** if (BSC_Coefficient_ID == 0)
         {
-			setBSC_Coefficient_ID (0);
         } */
     }
 
@@ -163,20 +162,116 @@ public class X_BSC_Coefficient extends PO implements I_BSC_Coefficient, I_Persis
         return new KeyNamePair(get_ID(), getName());
     }
 
-	/** Unit AD_Reference_ID=1000132 */
-	public static final int UNIT_AD_Reference_ID=1000132;
-	/** Yes/No = Yes/No */
-	public static final String UNIT_YesNo = "Yes/No";
-	/** in_time = in_time */
-	public static final String UNIT_In_time = "in_time";
+	/** Set quarter1.
+		@param quarter1 
+		quarter1
+	  */
+	public void setquarter1 (boolean quarter1)
+	{
+		set_Value (COLUMNNAME_quarter1, Boolean.valueOf(quarter1));
+	}
+
+	/** Get quarter1.
+		@return quarter1
+	  */
+	public boolean isquarter1 () 
+	{
+		Object oo = get_Value(COLUMNNAME_quarter1);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set quarter2.
+		@param quarter2 
+		quarter2
+	  */
+	public void setquarter2 (boolean quarter2)
+	{
+		set_Value (COLUMNNAME_quarter2, Boolean.valueOf(quarter2));
+	}
+
+	/** Get quarter2.
+		@return quarter2
+	  */
+	public boolean isquarter2 () 
+	{
+		Object oo = get_Value(COLUMNNAME_quarter2);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set quarter3.
+		@param quarter3 
+		quarter3
+	  */
+	public void setquarter3 (boolean quarter3)
+	{
+		set_Value (COLUMNNAME_quarter3, Boolean.valueOf(quarter3));
+	}
+
+	/** Get quarter3.
+		@return quarter3
+	  */
+	public boolean isquarter3 () 
+	{
+		Object oo = get_Value(COLUMNNAME_quarter3);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set quarter4.
+		@param quarter4 
+		quarter4
+	  */
+	public void setquarter4 (boolean quarter4)
+	{
+		set_Value (COLUMNNAME_quarter4, Boolean.valueOf(quarter4));
+	}
+
+	/** Get quarter4.
+		@return quarter4
+	  */
+	public boolean isquarter4 () 
+	{
+		Object oo = get_Value(COLUMNNAME_quarter4);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Unit AD_Reference_ID=1000135 */
+	public static final int UNIT_AD_Reference_ID=1000135;
 	/** % = % */
 	public static final String UNIT_ = "%";
-	/** qty = qty */
-	public static final String UNIT_Qty = "qty";
+	/** in_time = in_time */
+	public static final String UNIT_In_time = "in_time";
 	/** pcs = pcs */
 	public static final String UNIT_Pcs = "pcs";
+	/** qty = qty */
+	public static final String UNIT_Qty = "qty";
 	/** units = units */
 	public static final String UNIT_Units = "units";
+	/** Yes/No = Yes/No */
+	public static final String UNIT_YesNo = "Yes/No";
 	/** Set Unit.
 		@param Unit 
 		Unit
