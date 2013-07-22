@@ -133,7 +133,7 @@ public class BSCViewCardLine extends CPanel implements FormPanel, ActionListener
 			int BSC_Card_ID = Env.getContextAsInt(Env.getCtx(), "BSC_Card_ID");
 			int BSC_CardLine_ID = Env.getContextAsInt(Env.getCtx(), "BSC_CardLine_ID");
 			setCard(BSC_Card_ID);
-			setCardLine(BSC_Card_ID);
+			setCardLine(BSC_CardLine_ID);
 		} catch(Exception e) {
 			log.log(Level.SEVERE,"BSCViewCardLine: ",e);
 		}
