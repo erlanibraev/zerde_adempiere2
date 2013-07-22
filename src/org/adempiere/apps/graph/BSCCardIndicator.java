@@ -20,6 +20,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
 
+import org.compiere.model.MBSCCard;
 import org.compiere.model.MColorSchema;
 import org.compiere.model.MParameter;
 import org.compiere.swing.CMenuItem;
@@ -38,29 +39,13 @@ import org.jfree.ui.RectangleInsets;
  * @author Y.Ibrayev
  *
  */
-public class BSCIndicator extends JPanel implements MouseListener, ActionListener{
+public class BSCCardIndicator extends JPanel implements MouseListener, ActionListener {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6150525268087023997L;
-	
-	public BSCIndicator(MParameter aParameter) {
-		super();
-		setParameter(aParameter);
-		setName(getParameter().getName());
-		
-		init();
-		
-		setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
-		setOpaque(true);
-		mRefresh.addActionListener(this);
-		popupMenu.add(mRefresh);
-		addMouseListener(this);
-		
-		setPreferredSize(paneldimension);
-	}
-	
+	private static final long serialVersionUID = 8962910459260853329L;
+
 	private static double s_width100 = 150;
 	private static Color colorOK = Color.magenta;
 	private static Color colorNotOK = Color.lightGray;
@@ -71,22 +56,91 @@ public class BSCIndicator extends JPanel implements MouseListener, ActionListene
 	private CMenuItem mRefresh = new CMenuItem(Msg.getMsg(Env.getCtx(), "Refresh"), Env.getImageIcon("Refresh16.gif"));
 	private MParameter parameter = null;
 	private double m_line = 0;
+	private MBSCCard card = null;
+	private int BSC_Card_ID = 0;
 	
-	public MParameter getParameter() {
-		return parameter;
+	BSCCardIndicator(MBSCCard aCard) {
+		super();
+		setCard(aCard);
+		init();
 	}
+	
+	BSCCardIndicator(int aBSC_card_ID) {
+		super();
+		setBSC_Card_ID(aBSC_card_ID);
+		init();
+	}
+	
+	private void init() {
+		setName(getCard().getName());
+        chartPanel = new ChartPanel(createChart(), //chart
+									false, //boolean properties
+									false, // boolean save
+									false, //boolean print
+									false, //boolean zoom
+									true //boolean tooltips
+        						   );   
+        chartPanel.setPreferredSize(indicatordimension);
+		
+        chartPanel.addChartMouseListener( new org.jfree.chart.ChartMouseListener() 
+        {
+            public void chartMouseClicked(org.jfree.chart.ChartMouseEvent e) 
+            {
+                //plot p = (MeterPlot) e.getSource();
+               MouseEvent me = e.getTrigger();
+                if (SwingUtilities.isLeftMouseButton(me) && me.getClickCount() > 1)
+                        fireActionPerformed(me);
+                if (SwingUtilities.isRightMouseButton(me))
+                        popupMenu.show((Component)me.getSource(), me.getX(), me.getY());             
+                }            
+                public void chartMouseMoved(org.jfree.chart.ChartMouseEvent e) 
+                {
 
-	public void setParameter(MParameter parameter) {
-		this.parameter = parameter;
+                }
+            });
+
+        this.add(chartPanel, BorderLayout.CENTER);
+    	this.setMinimumSize(paneldimension);
+    	this.setMaximumSize(paneldimension);
+    	invalidate();
+		
+		setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
+		setOpaque(true);
+		mRefresh.addActionListener(this);
+		popupMenu.add(mRefresh);
+		addMouseListener(this);
+		
+		setPreferredSize(paneldimension);
+	}
+	
+	public MBSCCard getCard() {
+		return card;
+	}
+	
+	public void setCard(MBSCCard card) {
+		BSC_Card_ID = (card == null ? 0 : card.getBSC_Card_ID());
+		this.card = card;
 	}
 
 	/* (non-Javadoc)
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public int getBSC_Card_ID() {
+		return BSC_Card_ID;
+	}
+
+	public void setBSC_Card_ID(int bSC_Card_ID) {
+		if (bSC_Card_ID > 0 && getCard() == null) {
+			card = new MBSCCard(Env.getCtx(),bSC_Card_ID,null);
+		}
+		BSC_Card_ID = bSC_Card_ID;
 	}
 
 	/* (non-Javadoc)
@@ -134,16 +188,23 @@ public class BSCIndicator extends JPanel implements MouseListener, ActionListene
 		
 	}
 
-    public ActionListener[] getActionListeners() 
+	public void addActionListener(ActionListener l) 
     {
-        return (ActionListener[])(listenerList.getListeners(ActionListener.class));
-    }	//	getActionListeners
+    	if (l != null)
+    		listenerList.add(ActionListener.class, l);
+    }	//	addActionListener
 
+    public void removeActionListener(ActionListener l) 
+    {
+    	if (l != null)
+    		listenerList.remove(ActionListener.class, l);
+    }	//	removeActionListener
+	
 	private  JFreeChart createChart(){
 		JFreeChart chart = null;
 
 		m_line = s_width100;
-		double var = (getParameter().getValueMax() != null && getParameter().getValueMax().floatValue() > 0 ? 100 * getParameter().getValueNumber().floatValue() / getParameter().getValueMax().floatValue() : getParameter().getValueNumber().floatValue());
+		double var = 100;// TODO
 		DefaultValueDataset data = new DefaultValueDataset(var);
 		MeterPlot plot = new MeterPlot(data);
 		
@@ -173,7 +234,7 @@ public class BSCIndicator extends JPanel implements MouseListener, ActionListene
         }
         plot.setRange(new Range(0,rangeLo));
         plot.setDialBackgroundPaint(new Color(-13091716));//Color.GRAY);
-        plot.setUnits(getParameter().getName());
+        plot.setUnits(getCard().getName());
         plot.setDialShape(DialShape.CHORD);//CIRCLE);        
         //plot.setDialBackgroundPaint(new GradientPaint(0, 0, m_goal.getColor(), 0, 1000, Color.black));
         plot.setNeedlePaint(Color.white);  
@@ -182,23 +243,21 @@ public class BSCIndicator extends JPanel implements MouseListener, ActionListene
         plot.setTickLabelPaint(Color.white);
         plot.setInsets(new RectangleInsets(1.0, 2.0, 3.0, 4.0)); 
         
-        String message = getParameter().getName();
-        if (getParameter().getC_BPartner_ID() > 0) {
-        	message += "\n" + getParameter().getC_BPartner().getName();
+        String message = getCard().getName();
+        if (getCard().getC_BPartner_ID() > 0) {
+        	message += "\n" + getCard().getC_BPartner().getName();
         }
         chart = new JFreeChart( message, new Font("SansSerif", Font.BOLD, 15), plot,false);
         
 		return chart;
 	}
 	
-    protected void fireActionPerformed(MouseEvent event) 
-    {
+    protected void fireActionPerformed(MouseEvent event){
         // Guaranteed to return a non-null array
     	ActionListener[] listeners = getActionListeners();
         ActionEvent e = null;
         // Process the listeners first to last
-        for (int i = 0; i < listeners.length; i++) 
-        {
+        for (int i = 0; i < listeners.length; i++){
         	//	Lazily create the event:
         	if (e == null) 
         		e = new ActionEvent(this, ActionEvent.ACTION_PERFORMED,
@@ -207,49 +266,8 @@ public class BSCIndicator extends JPanel implements MouseListener, ActionListene
         }
     }	//	fireActionPerformed
 	
-	private void init() {
-        chartPanel = new ChartPanel(createChart(), //chart
-        						false, //boolean properties
-        						false, // boolean save
-        						false, //boolean print
-        						false, //boolean zoom
-        						true //boolean tooltips
-        		);   
-        chartPanel.setPreferredSize(indicatordimension);
+    public ActionListener[] getActionListeners(){
+        return (ActionListener[])(listenerList.getListeners(ActionListener.class));
+    }	//	getActionListeners
 
-        chartPanel.addChartMouseListener( new org.jfree.chart.ChartMouseListener() 
-        {
-            public void chartMouseClicked(org.jfree.chart.ChartMouseEvent e) 
-            {
-                //plot p = (MeterPlot) e.getSource();
-               MouseEvent me = e.getTrigger();
-                if (SwingUtilities.isLeftMouseButton(me) && me.getClickCount() > 1)
-                        fireActionPerformed(me);
-                if (SwingUtilities.isRightMouseButton(me))
-                        popupMenu.show((Component)me.getSource(), me.getX(), me.getY());             
-                }            
-                public void chartMouseMoved(org.jfree.chart.ChartMouseEvent e) 
-                {
-
-                }
-            });
-
-        this.add(chartPanel, BorderLayout.CENTER);
-    	this.setMinimumSize(paneldimension);
-    	this.setMaximumSize(paneldimension);
-    	invalidate();
-	}
-
-	public void addActionListener(ActionListener l) 
-    {
-    	if (l != null)
-    		listenerList.add(ActionListener.class, l);
-    }	//	addActionListener
-
-    public void removeActionListener(ActionListener l) 
-    {
-    	if (l != null)
-    		listenerList.remove(ActionListener.class, l);
-    }	//	removeActionListener
-	
 }

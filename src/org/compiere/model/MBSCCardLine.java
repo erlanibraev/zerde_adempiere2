@@ -7,7 +7,9 @@ import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -38,6 +40,7 @@ public class MBSCCardLine extends X_BSC_CardLine {
 	private MParameter parameter = null;
 	private MParameter parameter_Out = null;
 	private MParameter parameter_Q = null;
+	private MBSCCardLine[] linkLines = null;
 	
 	// Constatnts for formul
 	public static String CARDLINEVARIABLE_MAX = "Max";
@@ -493,5 +496,27 @@ public class MBSCCardLine extends X_BSC_CardLine {
 	public void setParameter_Q(MParameter parameter_Q) {
 		this.parameter_Q = parameter_Q;
 	}
+	
+	public MBSCCardLine[] getLinkLines(String whereClause) {
+		String whereClauseFinal = " BSC_CardLine_ID IN (SELECT BSC_CardLine_ID FROM BSC_CardLine_Link WHERE BSC_CardLine_Link_ID=? )";
+		if (whereClause != null)
+			whereClauseFinal += whereClause;
+		List<Mhrmpaymentlist> list = new Query(getCtx(), MBSCCardLine.Table_Name, whereClauseFinal, get_TrxName())
+										.setParameters(getBSC_CardLine_ID())
+										.list();
+		return list.toArray(new MBSCCardLine[list.size()]);
+	}
+	
+	public MBSCCardLine[] getLinkLines (boolean requery)
+	{
+		if (linkLines == null || linkLines.length == 0 || requery)
+			linkLines = getLinkLines(null);
+		set_TrxName(linkLines, get_TrxName());
+		return linkLines;
+	}	//	getLines
 
+	public MBSCCardLine[] getLinkLines () {
+		return getLinkLines(false);
+	}
+	
 }
