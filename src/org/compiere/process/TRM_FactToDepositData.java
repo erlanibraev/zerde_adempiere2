@@ -185,7 +185,6 @@ public class TRM_FactToDepositData extends SvrProcess implements ASyncProcess
 	@Override
 	public void lockUI(ProcessInfo pi) 
 	{
-		
 	}
 
 	@Override

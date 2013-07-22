@@ -8,7 +8,6 @@ import org.apache.catalina.Logger;
 import org.compiere.apps.DialogAgreement;
 import org.compiere.model.MAGRAgreement;
 import org.compiere.model.MAGRAgreementList;
-import org.compiere.model.MAGRApprovalList;
 import org.compiere.model.MAGRDispatcher;
 import org.compiere.model.MAGRNode;
 import org.compiere.model.MAGRStage;
