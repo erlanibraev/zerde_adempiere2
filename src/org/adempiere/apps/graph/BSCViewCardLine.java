@@ -88,6 +88,21 @@ public class BSCViewCardLine extends CPanel implements FormPanel, ActionListener
 			KeyNamePair[] pp = getBSCCardLine(cardLine.getBSC_Card_ID());			
 			cbCardLine.setModel(new DefaultComboBoxModel<KeyNamePair>(pp));
 			cbCardLine.setValue(cardLine.getBSC_CardLine_ID());
+		} else if (e.getSource() == bBack) {
+			goBack();
+			load((card == null ? 0 : card.getBSC_Card_ID()), (cardLine == null ? 0 : cardLine.getBSC_CardLine_ID()));
+		}
+	}
+
+	/**
+	 * 
+	 */
+	private void goBack() {
+		//TODO
+		if(cardLine == null) {
+			
+		} else {
+			
 		}
 	}
 
