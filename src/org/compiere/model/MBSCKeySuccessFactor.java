@@ -60,14 +60,14 @@ public class MBSCKeySuccessFactor extends X_BSC_KeySuccessFactor {
 		List<MBSCKeySuccessFactor> result = new ArrayList<MBSCKeySuccessFactor>();
 		int AD_Org_ID = Env.getAD_Org_ID(Env.getCtx());
 		int AD_Client_ID = Env.getAD_Client_ID(Env.getCtx());
-		String sql = "SELECT * FROM BSC_KeySuccessFactor WHERE AD_Org_ID = ? AND AD_Client_ID = ? AND IsActive ='Y' AND BSC_Perspective_ID = ?";
+		String sql = "SELECT * FROM BSC_KeySuccessFactor WHERE AD_Client_ID = ? AND IsActive ='Y' AND BSC_Perspective_ID = ?";
 	    PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try {
 			pstmt = DB.prepareStatement(sql,null);
-			pstmt.setInt(1, AD_Org_ID);
-			pstmt.setInt(2, AD_Client_ID);
-			pstmt.setInt(3, BSC_Perspective_ID);
+//			pstmt.setInt(1, AD_Org_ID);
+			pstmt.setInt(1, AD_Client_ID);
+			pstmt.setInt(2, BSC_Perspective_ID);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
 				MBSCKeySuccessFactor keySuccessFactor = new MBSCKeySuccessFactor(Env.getCtx(), rs, null);

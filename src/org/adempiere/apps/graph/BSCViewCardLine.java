@@ -82,12 +82,14 @@ public class BSCViewCardLine extends CPanel implements FormPanel, ActionListener
 			load(BSC_Card_ID,BSC_CardLine_ID);
 		} else if (e.getSource() instanceof BSCCardLineIndicator) {
 			BSCCardLineIndicator ind = (BSCCardLineIndicator) e.getSource();
-			MBSCCardLine cardLine = ind.getCardLine();
-			setCardLine(cardLine.getBSC_CardLine_ID());
-			load(cardLine.getBSC_Card_ID(),cardLine.getBSC_CardLine_ID());
+			MBSCCardLine _cardLine = ind.getCardLine();
+			setCardLine((_cardLine != null ? _cardLine.getBSC_CardLine_ID(): 0));
+			
 			KeyNamePair[] pp = getBSCCardLine(cardLine.getBSC_Card_ID());			
 			cbCardLine.setModel(new DefaultComboBoxModel<KeyNamePair>(pp));
 			cbCardLine.setValue(cardLine.getBSC_CardLine_ID());
+			
+			load(cardLine.getBSC_Card_ID(),cardLine.getBSC_CardLine_ID());
 		} else if (e.getSource() == bBack) {
 			goBack();
 			load((card == null ? 0 : card.getBSC_Card_ID()), (cardLine == null ? 0 : cardLine.getBSC_CardLine_ID()));
@@ -98,11 +100,12 @@ public class BSCViewCardLine extends CPanel implements FormPanel, ActionListener
 	 * 
 	 */
 	private void goBack() {
-		//TODO
-		if(cardLine == null) {
-			
+		if(cardLine != null) {
+			MBSCCardLine prevCardLine = cardLine.getLink();
+			int prevBSC_CardLine_ID = (prevCardLine != null ? prevCardLine.getBSC_CardLine_ID() : 0);
+			setCardLine(prevBSC_CardLine_ID);
 		} else {
-			
+			//TODO
 		}
 	}
 
@@ -244,7 +247,7 @@ public class BSCViewCardLine extends CPanel implements FormPanel, ActionListener
 	 */
 	private void addCardLines(MBSCCardLine[] cardLines, GridBagConstraints gbc) {
 		BSCLine tempLine = null;
-		int i = 0;
+		int i = 1;
 		for(MBSCCardLine line: cardLines) {
 			gbc = new GridBagConstraints();
 			

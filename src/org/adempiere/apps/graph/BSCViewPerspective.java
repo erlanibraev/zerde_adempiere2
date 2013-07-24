@@ -4,6 +4,7 @@
 package org.adempiere.apps.graph;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -91,7 +92,7 @@ public class BSCViewPerspective extends CPanel implements FormPanel, ActionListe
 			int i = 0;
 			for(MBSCPerspective perspective:getPerspectives()) {
 				gbc = new GridBagConstraints();
-				gbc.fill = GridBagConstraints.HORIZONTAL;
+				gbc.fill = GridBagConstraints.BOTH;
 				gbc.gridx = 0;
 				gbc.gridy = i++;
 				addPerpsective(perspective,gbc);
@@ -113,6 +114,7 @@ public class BSCViewPerspective extends CPanel implements FormPanel, ActionListe
 		
 		BSCPerspectivePanel panel = new BSCPerspectivePanel(perspective);
 		panel.addActionListener(this);
+//		panel.setBackground(Color.GREEN);
 		mainPanel.add(panel, gbc);
 	}
 

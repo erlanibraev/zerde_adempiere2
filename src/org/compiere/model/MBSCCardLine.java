@@ -41,6 +41,7 @@ public class MBSCCardLine extends X_BSC_CardLine {
 	private MParameter parameter_Out = null;
 	private MParameter parameter_Q = null;
 	private MBSCCardLine[] linkLines = null;
+	private MBSCCardLine link = null;
 	
 	// Constatnts for formul
 	public static String CARDLINEVARIABLE_MAX = "Max";
@@ -498,10 +499,10 @@ public class MBSCCardLine extends X_BSC_CardLine {
 	}
 	
 	public MBSCCardLine[] getLinkLines(String whereClause) {
-		String whereClauseFinal = " BSC_CardLine_ID IN (SELECT BSC_CardLine_ID FROM BSC_CardLine_Link WHERE BSC_CardLine_Link_ID=? )";
+		String whereClauseFinal = " BSC_CardLine_ID IN (SELECT link_BSC_CardLine_ID FROM BSC_CardLine_Link WHERE BSC_CardLine_ID=? )";
 		if (whereClause != null)
 			whereClauseFinal += whereClause;
-		List<Mhrmpaymentlist> list = new Query(getCtx(), MBSCCardLine.Table_Name, whereClauseFinal, get_TrxName())
+		List<MBSCCardLine> list = new Query(getCtx(), MBSCCardLine.Table_Name, whereClauseFinal, get_TrxName())
 										.setParameters(getBSC_CardLine_ID())
 										.list();
 		return list.toArray(new MBSCCardLine[list.size()]);
@@ -519,4 +520,24 @@ public class MBSCCardLine extends X_BSC_CardLine {
 		return getLinkLines(false);
 	}
 	
+	public MBSCCardLine getLink(boolean requery) {
+		if (link == null || requery)
+			link = getLink(null);
+//		set_TrxName(link, get_TrxName());
+		return link;
+	}
+	
+	public MBSCCardLine getLink() {
+		return getLink(false);
+	}
+	
+	public MBSCCardLine getLink(String whereClause) {
+		String whereClauseFinal = " BSC_CardLine_ID IN (SELECT BSC_CardLine_ID FROM BSC_CardLine_Link WHERE link_BSC_CardLine_ID=? )";
+		if (whereClause != null)
+			whereClauseFinal += whereClause;
+		List<MBSCCardLine> list = new Query(getCtx(), MBSCCardLine.Table_Name, whereClauseFinal, get_TrxName())
+		.setParameters(getBSC_CardLine_ID())
+		.list();
+		return (list.size() > 0 ? list.get(0) : null);
+	}
 }
