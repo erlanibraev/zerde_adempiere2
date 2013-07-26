@@ -3,6 +3,7 @@
  */
 package org.adempiere.apps.graph;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -44,6 +45,7 @@ public class BSCPerspectivePanel extends JPanel implements MouseListener, Action
 	private List<MBSCKeySuccessFactor> keySuccessFactors = new ArrayList<MBSCKeySuccessFactor>();
 	private CLabel label = null;
 	private GridBagLayout gbLayout = null;
+	private JPanel KSFpanel = null;
 	
 	public BSCPerspectivePanel(MBSCPerspective aPerspective) {
 		super();
@@ -51,16 +53,8 @@ public class BSCPerspectivePanel extends JPanel implements MouseListener, Action
 			setPerspective(aPerspective);
 			setName(getPerspective().getName());
 			setFocusable(true);
-			setPreferredSize(paneldimension);
-	    	setMinimumSize(paneldimension);
-	    	setMaximumSize(paneldimension);
-	    	invalidate();
-	    	gbLayout = new GridBagLayout(); 
-	    	gbLayout.preferredLayoutSize(this);
-	    	gbLayout.maximumLayoutSize(this);
-	    	gbLayout.minimumLayoutSize(this);
-	    	setLayout(gbLayout);
-	    	
+			setAlignmentX(LEFT_ALIGNMENT);
+			setAlignmentY(CENTER_ALIGNMENT);
 	    	Border border = BorderFactory.createLineBorder(Color.CYAN) ;
 	    			//createEmptyBorder(1, 1, getSize().width - 1, getSize().height - 1); 
 	    	setBorder(border);
@@ -72,32 +66,36 @@ public class BSCPerspectivePanel extends JPanel implements MouseListener, Action
 	    	JPanel panel = new JPanel();
 	    	panel.setBackground(Color.GRAY);
 	    	
-			gbc = new GridBagConstraints();
-			gbc.fill = GridBagConstraints.BOTH;
-			gbc.gridx = 0;
-			gbc.gridy = 0;
-			gbc.ipadx = 0;
-			gbc.ipady = 10;
-			gbc.insets = new Insets(0,0,0,0);
-			gbc.anchor = GridBagConstraints.PAGE_START;
-			gbc.gridwidth = GridBagConstraints.REMAINDER;
-//			gbc.gridwidth = gridWidth;
 			
 	    	label = new CLabel(getName());
 	    	label.setUI(new VerticalLabelUI(false));
-	    	label.setBorder(getBorder());
 	    	panel.setBorder(getBorder());
 	    	
 	    	Dimension labeldimension = new Dimension(100, 300);
-	    	panel.setPreferredSize(labeldimension);
-	    	panel.setMinimumSize(labeldimension);
-	    	panel.setMaximumSize(labeldimension);
-	    	label.setAlignmentX(RIGHT_ALIGNMENT);
-	    	label.setAlignmentY(BOTTOM_ALIGNMENT);
-	    	
+	    	label.setAlignmentX(CENTER_ALIGNMENT);
+	    	label.setAlignmentY(CENTER_ALIGNMENT);
 	    	panel.add(label);
-	    	gbLayout.setConstraints(panel, gbc);
-			add(panel);
+	    	panel.setAlignmentX(LEFT_ALIGNMENT);
+	    	panel.setAlignmentY(CENTER_ALIGNMENT);
+	    	add(panel,BorderLayout.WEST);
+	    	
+	    	KSFpanel = new JPanel();
+	    	
+			gbc = new GridBagConstraints();
+			
+			KSFpanel.setLayout(new GridBagLayout());
+			int i = 0;
+			for(MBSCKeySuccessFactor keySF : getKeySuccessFactors()) {
+	    		gbc = new GridBagConstraints();
+				gbc.fill = GridBagConstraints.BOTH;
+				gbc.gridx = 0;
+				gbc.gridy = i++;
+				panel = new JPanel();
+				CLabel label = new CLabel(keySF.getName());
+				panel.add(label);
+				KSFpanel.add(panel, gbc);
+			}
+			add(KSFpanel,BorderLayout.CENTER);
 /*			
 			int i = 0;
 			
