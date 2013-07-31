@@ -240,6 +240,19 @@ public interface I_TRM_Deposit
 	  */
 	public boolean isActive();
 
+    /** Column name isForce */
+    public static final String COLUMNNAME_isForce = "isForce";
+
+	/** Set isForce.
+	  * Принудительно
+	  */
+	public void setisForce (boolean isForce);
+
+	/** Get isForce.
+	  * Принудительно
+	  */
+	public boolean isForce();
+
     /** Column name isPartialWithdrawal */
     public static final String COLUMNNAME_isPartialWithdrawal = "isPartialWithdrawal";
 

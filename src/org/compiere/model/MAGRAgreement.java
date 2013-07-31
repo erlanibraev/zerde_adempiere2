@@ -57,33 +57,33 @@ public class MAGRAgreement extends X_AGR_Agreement
   			return false;
   		}
   		
-  		ArrayList<MAGRStage> stages = new ArrayList<MAGRStage>();
+  		if(getAD_Process() == null) 
+  		{
+  			errorsList.add("Agreement does not contain AD_Process_ID");
+  			return false;
+  		}
   		
-  		stages.addAll(MAGRStage.getOfAGR_StageList(Env.getCtx(), get_ID(), null));
+  		ArrayList<MAGRStage> stages = (ArrayList<MAGRStage>) MAGRStage.getOfAGR_Agreement(Env.getCtx(), get_ID(), null);
   		
-  		int stageCanBeAchived = 0;
+  		if(!stageCanBeAchived(stages))
+  			return false;
   		
   		for(int i = 0; i < stages.size(); i++)
   		{
-  			if(stageCanBeAchived(stages.get(i), stages))
-  				stageCanBeAchived++;
-  			else
+  			if(!hasNodes(stages.get(i)))
   			{
-  				errorsList.add(stages.get(i).getName() + " can not be achived from another stages");
+  				errorsList.add("Stage \"" + stages.get(i).getName() + "\" has invalid nodes");
+  				return false;
   			}
-  			
-  			if(!hasNodes(stages.get(i))) 
-  				stageCanBeAchived--;
   		}
-  		
-  		return stageCanBeAchived == stages.size();
+  		return true;
   	}
   	
   	private boolean hasExit()
   	{
   		ArrayList<MAGRStage> stages = new ArrayList<MAGRStage>();
   		
-  		stages.addAll(MAGRStage.getOfAGR_StageList(Env.getCtx(), get_ID(), null));
+  		stages.addAll(MAGRStage.getOfAGR_Agreement(Env.getCtx(), get_ID(), null));
   		
   		for(int i = 0; i < stages.size(); i++)
   		{
@@ -103,7 +103,8 @@ public class MAGRAgreement extends X_AGR_Agreement
   	{
   		errorsList = new ArrayList<String>();
   		
-  		if(!stageCheck() || !stageOptionCheck() || !hasExit()) return false;
+  		if(!stageCheck() || !stageOptionCheck() || !hasExit()) 
+  			return false;
   		
   		return true;
   	}
@@ -114,67 +115,48 @@ public class MAGRAgreement extends X_AGR_Agreement
   		
   		ArrayList<MAGRNode> nodes = (ArrayList<MAGRNode>) MAGRNode.getOfAGR_StageList(getCtx(), stage.get_ID(), get_TrxName());
   		
-  		if(stage.getStageType().equals(MAGRStage.STAGETYPE_Initial))
+  		if(nodes.size() == 2)
   		{
-  			if(nodes.size() == 1 && !nodes.get(0).isBack() && nodes.get(0).getAGR_NextStage_ID() != stage.get_ID())
+  			if(nodes.get(0).isBack() != nodes.get(1).isBack())
+  			{
   				retValue = true;
-  			else
-  			{
-  				errorsList.add("Initial stage has wrong nodes");
-  				retValue = false;
-  			}  			
+  			}
   		}
-  		else if(!stage.isLastStage())
+  		else if(nodes.size() == 1)
   		{
-  			if(nodes.size() == 2)
-  			{
-  				if(nodes.get(0).getAGR_NextStage_ID() != stage.get_ID() && nodes.get(1).getAGR_NextStage_ID() != stage.get_ID())
-  				{
-  					if(!nodes.get(0).isBack() && nodes.get(1).isBack() || !nodes.get(1).isBack() && nodes.get(0).isBack())
-  						retValue = true;
-  					else
-  					{
-  						errorsList.add(stage.getName() + " has two node with the same orientation");
-  					}
-  				}
-  				else
-  				{
-  					errorsList.add(stage.getName() + " has reference to itself in node");
-  				}
-  			}
-  			else
-  			{
-  				errorsList.add(stage.getName() + " has more or less than 2 nodes");
-  			}
+  			if(nodes.get(0).isBack() && stage.getStageType().equals(MAGRStage.STAGETYPE_Ordinary))
+  				retValue = true;
+  			else if(!nodes.get(0).isBack() && stage.getStageType().equals(MAGRStage.STAGETYPE_Initial))
+  				retValue = true;
   		}
-  		else retValue = true;
-  		
+
   		return retValue;
   	}
   	
-  	private boolean stageCanBeAchived(MAGRStage stage, ArrayList<MAGRStage> stages)
+  	private boolean stageCanBeAchived(ArrayList<MAGRStage> stages)
   	{		
-  		ArrayList<MAGRNode> nodes = new ArrayList<MAGRNode>();
+  		boolean retValue = true;
   		
+  		ArrayList<Integer> next_stages = MAGRNode.getNodes(getCtx(), this.get_ID(), "N", get_TrxName());
+  		  		
   		for(int i = 0; i < stages.size(); i++)
   		{
-  			ArrayList<MAGRNode> nodesFromCurrentStage = (ArrayList<MAGRNode>) MAGRNode.getOfAGR_StageList(getCtx(), stages.get(i).get_ID(), get_TrxName());
-  			nodes.addAll(nodesFromCurrentStage);
+  	  		if(!next_stages.contains(stages.get(i).get_ID()) && stages.get(i).getStageType() == MAGRStage.STAGETYPE_Ordinary)
+  	  		{
+  	  			errorsList.add("Stage \"" + stages.get(i).getName() + "\" can not be achived from another stages");
+  	  			retValue = false;
+  	  			break;
+  	  		}
+  	  		
+  	  		if(next_stages.indexOf(stages.get(i).get_ID()) != next_stages.lastIndexOf(stages.get(i).get_ID()))
+  	  		{
+  	  			errorsList.add("Stage \"" + stages.get(i).getName() + "\" can cause cycle");
+  	  			retValue = false;
+  	  			break;
+  	  		}
   		}
-  		
-  		boolean flag = false;
-  		
-  		if(stage.getStageType().equals(MAGRStage.STAGETYPE_Initial)) flag = true;
-  		
-  		for(int i = 0; i < nodes.size(); i++)
-  		{
-  			if(nodes.get(i).getAGR_NextStage_ID() == stage.get_ID() && !nodes.get(i).isBack() && !stage.getName().equals(MAGRStage.STAGETYPE_Initial))
-  			{
-  				flag = true;
-  			}
-  		}
-  		
-  		return flag;
+
+  		return retValue;
   	}
   	
   //Check for presence of persons
@@ -184,7 +166,7 @@ public class MAGRAgreement extends X_AGR_Agreement
   		
   		ArrayList<MAGRStage> stages = new ArrayList<MAGRStage>();
   		
-  		stages.addAll(MAGRStage.getOfAGR_StageList(Env.getCtx(), get_ID(), null));
+  		stages.addAll(MAGRStage.getOfAGR_Agreement(Env.getCtx(), get_ID(), null));
   		
   		for(int i = 0; i < stages.size(); i++)
   		{
@@ -232,13 +214,13 @@ public class MAGRAgreement extends X_AGR_Agreement
   	{
   		boolean flag = false;
   		
-  		if(option.getC_BPartner_ID() != -1 && option.isHeaderActive())
+  		if(option.getC_BPartner_ID() > 0 && option.isHeaderActive())
   			flag = true;
   		
-  		if(!flag && option.getAlternate_ID() != -1 && option.isAlternateActive())
+  		if(!flag && option.getAlternate_ID() > 0 && option.isAlternateActive())
   			flag = true;
   		
-  		if(!flag && option.getAlternate2_ID() != -1 && option.isAlternate2Active())
+  		if(!flag && option.getAlternate2_ID() > 0 && option.isAlternate2Active())
   			flag = true;
   		
   		return flag;

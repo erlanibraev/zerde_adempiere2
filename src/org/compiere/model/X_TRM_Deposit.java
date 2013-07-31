@@ -32,7 +32,7 @@ public class X_TRM_Deposit extends PO implements I_TRM_Deposit, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130625L;
+	private static final long serialVersionUID = 20130726L;
 
     /** the default Constructor */
     public X_TRM_Deposit(Properties ctx)
@@ -304,6 +304,30 @@ public class X_TRM_Deposit extends PO implements I_TRM_Deposit, I_Persistent
 		if (bd == null)
 			 return Env.ZERO;
 		return bd;
+	}
+
+	/** Set isForce.
+		@param isForce 
+		Принудительно
+	  */
+	public void setisForce (boolean isForce)
+	{
+		set_Value (COLUMNNAME_isForce, Boolean.valueOf(isForce));
+	}
+
+	/** Get isForce.
+		@return Принудительно
+	  */
+	public boolean isForce () 
+	{
+		Object oo = get_Value(COLUMNNAME_isForce);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	/** Set isPartialWithdrawal.

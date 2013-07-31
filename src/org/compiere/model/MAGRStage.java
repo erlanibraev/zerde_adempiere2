@@ -32,7 +32,7 @@ public class MAGRStage extends X_AGR_Stage
 		return retValue;
 	}
 	
-	public static List<MAGRStage> getOfAGR_StageList(Properties ctx, int AGR_Agreement_ID, String trxName)
+	public static List<MAGRStage> getOfAGR_Agreement(Properties ctx, int AGR_Agreement_ID, String trxName)
 	{
 		List<MAGRStage> list = new Query(ctx, I_AGR_Stage.Table_Name, "AGR_Agreement_ID=?", trxName)
 		.setParameters(AGR_Agreement_ID)

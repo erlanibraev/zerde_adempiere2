@@ -21,7 +21,13 @@ import org.compiere.model.X_C_ValidCombination;
 import org.compiere.util.ASyncProcess;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
-
+/**
+ * @author E.Maimanov
+ * Creates deposit lines from Fact_Acct for current deposit
+ * This lines usually is took from bank account of deposit
+ * Then lines is created the next process 'TRM_RewardFill' begin to calculate rewards for acct. period for current deposit,
+ * using deposit rate from deposit card "X_TRM_Deposit"
+ */
 public class TRM_FactToDepositData extends SvrProcess implements ASyncProcess 
 {
 	private int TRM_Deposit_ID = 0;
@@ -34,18 +40,17 @@ public class TRM_FactToDepositData extends SvrProcess implements ASyncProcess
 
 	@Override
 	protected String doIt() throws Exception 
-	{
-		int fact_acct_ID = getMaxFactAcct(TRM_Deposit_ID);
+	{		
+		if(TRM_Deposit_ID <= 0)
+			return "No deposit";
 		
-//		if(fact_acct_ID == -1) return "No fact_acct";		
-		
-		CreateLines(fact_acct_ID, TRM_Deposit_ID);
+		CreateLines(TRM_Deposit_ID);
 		
 		//StartRewardFill();
 		
 		StartRewardFill();
 		
-		return null;
+		return "Вычисления выполнены";
 	}	
 	
 	private String StartRewardFill()
@@ -72,6 +77,10 @@ public class TRM_FactToDepositData extends SvrProcess implements ASyncProcess
 		return "";
 	}
 	
+	/**
+	 * get AD_Process_ID for 'TRM_RewardFill' process
+	 * @return AD_Process_ID
+	 */
 	private int getProcess()
 	{
 		String sql = "select ad_process_id from ad_process where name like '%TRM_RewardFill%'";
@@ -81,18 +90,31 @@ public class TRM_FactToDepositData extends SvrProcess implements ASyncProcess
 		return ad_process_id;
 	}
 	
-	private void CreateLines(int fact_acct_ID, int TRM_Deposit_ID) throws SQLException
+	/**
+	 * Creates lines in 'X_TRM_DepositLine' table
+	 * This lines are transactions of current deposit's bank account in Fact_Acct table
+	 * This method takes all transactions from deposit sign date to current date
+	 * @param TRM_Deposit_ID
+	 * @throws SQLException
+	 */
+	private void CreateLines(int TRM_Deposit_ID) throws SQLException
 	{
 		MTRMDeposit deposit = new MTRMDeposit(getCtx(), TRM_Deposit_ID, get_TrxName());
+	
+		int fact_acct_ID = deposit.isForce() ? 0 : getMaxFactAcct(TRM_Deposit_ID);
+		
+		if(fact_acct_ID == 0)
+			ClearLines();
 		
 		String accountsInDeposit = Accounts(deposit.getC_BankAccount_ID());
 		
 		StringBuffer sql = new StringBuffer();
 		sql.append("SELECT e.Value, f.DateAcct, f.AmtSourceCr, f.AmtSourceDr, f.Fact_Acct_ID, f.AD_Table_ID, f.Record_ID \n\t");
 		sql.append("FROM Fact_Acct f INNER JOIN C_ElementValue e ON f.Account_ID = e.C_ElementValue_ID \n\t");
-		sql.append("WHERE f.Fact_Acct_ID > " + fact_acct_ID + " \n\t");
-		sql.append("AND e.Value LIKE '" + accountsInDeposit + "' ORDER BY DateAcct");
-		
+		sql.append("WHERE f.Fact_Acct_ID > ?");
+		sql.append("\n\t AND e.Value = ?");
+		sql.append("\n\t AND f.DateAcct BETWEEN ? AND ?");
+		sql.append("\n\t ORDER BY DateAcct");
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		
@@ -104,6 +126,10 @@ public class TRM_FactToDepositData extends SvrProcess implements ASyncProcess
 		try		
 		{
 			pstmt = DB.prepareStatement(sql.toString(), get_TrxName());
+			pstmt.setInt(1, fact_acct_ID);
+			pstmt.setString(2, accountsInDeposit);
+			pstmt.setTimestamp(3, deposit.getBeginningDate());
+			pstmt.setTimestamp(4, deposit.getEndDate());
 			rs = pstmt.executeQuery();
 			
 			while(rs.next())
@@ -150,6 +176,33 @@ public class TRM_FactToDepositData extends SvrProcess implements ASyncProcess
 		}
 	}
 	
+	@SuppressWarnings("deprecation")
+	private void ClearLines() throws SQLException
+	{
+		StringBuilder sql = new StringBuilder();
+		sql.append("DELETE FROM TRM_DepositLine WHERE TRM_Deposit_ID = ?");
+		
+		PreparedStatement pstmt = null;
+		
+		try
+		{
+			pstmt = DB.prepareStatement(sql.toString());
+			pstmt.setInt(1, TRM_Deposit_ID);
+			pstmt.executeUpdate();
+		}
+		catch(Exception ex) {}
+		finally
+		{
+			pstmt.close();
+			pstmt = null;
+		}
+	}
+	
+	/**
+	 * Take bank deposit account
+	 * @param C_BankAccount_ID
+	 * @return C_ElementValue.Value
+	 */
 	private String Accounts(int C_BankAccount_ID)
 	{
 		String retValue = "";
@@ -170,6 +223,15 @@ public class TRM_FactToDepositData extends SvrProcess implements ASyncProcess
 		return retValue;
 	}
 	
+	/**
+	 * Get the max Fact_Acct_ID from TRM_DepositLine
+	 * This max Fact_Acct_ID is took in order to avoid calculating the same fact lines
+	 * This is just for accelerating of time-working
+	 * Max fact_acct_id can be return as 0, if TRM_Deposit.isForce is true
+	 * Max fact_acct_Id = 0 means that process takes all fact accounts again
+	 * @param TRM_Deposit_ID
+	 * @return
+	 */
 	private int getMaxFactAcct(int TRM_Deposit_ID)
 	{
 		String sql = "SELECT MAX(Fact_Acct_ID) FROM TRM_DepositLine WHERE TRM_Deposit_ID = " + TRM_Deposit_ID;

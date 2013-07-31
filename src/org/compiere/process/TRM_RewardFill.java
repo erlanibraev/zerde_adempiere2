@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -19,6 +20,11 @@ public class TRM_RewardFill extends SvrProcess {
 
 	public int TRM_Deposit_ID = 0;
 	public int CMS_Contract_ID = 0;
+	
+	public Properties m_ctx;
+	public String trxName;
+	
+	private MTRMDeposit deposit;
 	
 	@Override
 	protected void prepare() 
@@ -37,7 +43,7 @@ public class TRM_RewardFill extends SvrProcess {
 			}				
 		}
 			
-		MTRMDeposit deposit = new MTRMDeposit(getCtx(), TRM_Deposit_ID, get_TrxName());
+		deposit = new MTRMDeposit(getCtx(), TRM_Deposit_ID, get_TrxName());
 		
 		CMS_Contract_ID = deposit.getCMS_Contract_ID();
 		
@@ -54,35 +60,51 @@ public class TRM_RewardFill extends SvrProcess {
 		
 		int maxID = DB.getSQLValue(trxName, sql);
 		
-		MTRMDeposit deposit = new MTRMDeposit(m_ctx, TRM_Deposit_ID, trxName);
-		
-		startPeriod = deposit.getBeginningDate();
-		endPeriod = deposit.getEndDate();
-		
-		if(maxID <= 0)
-			LoadRewardLines(TRM_Deposit_ID, startPeriod, endPeriod);//2013);
+		if(maxID <= 0 || deposit.isForce())
+		{
+			ClearLines();
+			LoadRewardLines(TRM_Deposit_ID, deposit.getBeginningDate(), deposit.getEndDate());
+		}
 		
 		UpdateReward(TRM_Deposit_ID);
 		
 		return null;
 	}
-
-	public Properties		m_ctx;
-	public String trxName;
+	
+	@SuppressWarnings("deprecation")
+	private void ClearLines() throws SQLException
+	{
+		StringBuilder sql = new StringBuilder();
+		sql.append("DELETE FROM TRM_Reward WHERE TRM_Deposit_ID = ?");
+		
+		PreparedStatement pstmt = null;
+		
+		try
+		{
+			pstmt = DB.prepareStatement(sql.toString());
+			pstmt.setInt(1, TRM_Deposit_ID);
+			pstmt.executeUpdate();
+		}
+		catch(Exception ex) {}
+		finally
+		{
+			pstmt.close();
+			pstmt = null;
+		}
+	}
+	
 	@SuppressWarnings("deprecation")
 	private void LoadRewardLines(int TRM_Deposit_ID, Timestamp startDate, Timestamp endDate)
 	{
 		int month = 0;
 	
-		Timestamp date = startDate;//new Timestamp(year - 1900, month, day + 1, 0, 0, 0, 0);
-		
-		MTRMDeposit deposit = new MTRMDeposit(m_ctx, TRM_Deposit_ID, trxName);
+		Timestamp date = startDate;
 		
 		BigDecimal depositSum = deposit.getSum();
 		
 		int index = 0;
 		
-		while(date.before(endDate))//while(date.getYear() == (year - 1900))
+		while(date.before(endDate))
 		{
 			X_TRM_Reward reward = new X_TRM_Reward(m_ctx, null, trxName);
 			reward.setTRM_Deposit_ID(TRM_Deposit_ID);
@@ -105,45 +127,18 @@ public class TRM_RewardFill extends SvrProcess {
 		}
 	}
 	
-	private Timestamp startPeriod;
-	private Timestamp endPeriod;
-	
-	private void loadWorkPeriod(int CMS_Contract_ID)
-	{
-		String sql = "SELECT BeginningDateExecution, EndDateExecution FROM CMS_Contract WHERE CMS_Contract_ID = " + CMS_Contract_ID;
-		
-		try
-		{
-			@SuppressWarnings("deprecation")
-			PreparedStatement pstmt = DB.prepareStatement(sql);
-			ResultSet rs = pstmt.executeQuery();
-			
-			if(rs.next())
-			{
-				startPeriod = rs.getTimestamp("BeginningDateExecution");
-				endPeriod = rs.getTimestamp("EndDateExecution");
-			}
-			
-			rs.close(); pstmt.close();
-			rs = null; pstmt = null;
-		}
-		catch(Exception ex)
-		{
-			
-		}
-	}
-	
 	@SuppressWarnings("deprecation")
 	private void UpdateReward(int TRM_Deposit_ID)
 	{
 		ArrayList<BigDecimal> lineSum = new ArrayList<BigDecimal>();
 		ArrayList<Timestamp> dates = new ArrayList<Timestamp>();
 		
-		String sql = "SELECT DateAcct, Sum(LineSum) FROM TRM_DepositLine WHERE TRM_Deposit_ID = " + TRM_Deposit_ID + " GROUP BY DateAcct ORDER BY DateAcct ";
+		String sql = "SELECT DateAcct, Sum(LineSum) FROM TRM_DepositLine WHERE TRM_Deposit_ID = ? GROUP BY DateAcct ORDER BY DateAcct ";
 		
 		try
 		{
 			PreparedStatement pstmt = DB.prepareStatement(sql, trxName);
+			pstmt.setInt(1, TRM_Deposit_ID);
 			ResultSet rs = pstmt.executeQuery();
 			
 			while(rs.next())
@@ -161,9 +156,9 @@ public class TRM_RewardFill extends SvrProcess {
 		
 		try
 		{
-			PreparedStatement pstmt = DB.prepareStatement("SELECT TRM_Reward_ID, DateReward FROM TRM_Reward WHERE isPrediction = 'Y' AND TRM_Deposit_ID = " + TRM_Deposit_ID + " ORDER BY DateReward", get_TrxName());
+			PreparedStatement pstmt = DB.prepareStatement("SELECT TRM_Reward_ID FROM TRM_Reward WHERE isPrediction = 'Y' AND TRM_Deposit_ID = ? ORDER BY DateReward", trxName);
+			pstmt.setInt(1, TRM_Deposit_ID);
 			ResultSet rs = pstmt.executeQuery();
-			
 			
 			while(rs.next())
 			{
@@ -174,13 +169,6 @@ public class TRM_RewardFill extends SvrProcess {
 			rs = null; pstmt = null;
 		}
 		catch(Exception e){}
-		/*
-		for(int i = 0; i < dates.size(); i++)
-		{			
-			DB.executeUpdate("UPDATE TRM_Reward SET LineNetAmt = " + lineSum.get(i) + " WHERE TRM_Deposit_ID = " + TRM_Deposit_ID);
-		}
-		*/
-		MTRMDeposit deposit = new MTRMDeposit(m_ctx, TRM_Deposit_ID, trxName);
 		
 		BigDecimal totalSum = deposit.getSum();
 		

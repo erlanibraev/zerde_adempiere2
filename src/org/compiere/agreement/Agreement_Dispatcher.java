@@ -21,7 +21,6 @@ import org.jfree.util.Log;
 
 public class Agreement_Dispatcher 
 {
-	
 	private MAGRStage currentStage = null;
 	private PO document;
 	
