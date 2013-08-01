@@ -11,7 +11,6 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import org.adempiere.plaf.AdempierePLAF;
-import org.compiere.apps.search.Find;
 import org.compiere.apps.search.FindValueRenderer;
 import org.compiere.model.MColumn;
 import org.compiere.model.MQuery;
@@ -76,7 +75,7 @@ public class QueryDialogValueRenderer extends DefaultTableCellRenderer
 	//	log.config( "FindValueRenderer.getTableCellRendererComponent", "r=" + row + ", c=" + col );
 		//	Column
 		m_columnName = null;
-		Object column = table.getModel().getValueAt(row, Find.INDEX_COLUMNNAME);
+		Object column = table.getModel().getValueAt(row, QueryDialog.INDEX_COLUMNNAME);
 		if (column != null) {
 			if (column instanceof ValueNamePair)
 				m_columnName = ((ValueNamePair)column).getValue();
@@ -86,7 +85,7 @@ public class QueryDialogValueRenderer extends DefaultTableCellRenderer
 
 		//	Between - enables valueToColumn
 		m_between = false;
-		Object betweenValue = table.getModel().getValueAt(row, Find.INDEX_OPERATOR);
+		Object betweenValue = table.getModel().getValueAt(row, QueryDialog.INDEX_OPERATOR);
 		if (m_valueToColumn && betweenValue != null 
 			&& betweenValue.equals(MQuery.OPERATORS[MQuery.BETWEEN_INDEX]))
 			m_between = true;

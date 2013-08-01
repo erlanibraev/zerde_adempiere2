@@ -29,7 +29,7 @@ public class X_PFR_WhereClause extends PO implements I_PFR_WhereClause, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130731L;
+	private static final long serialVersionUID = 20130801L;
 
     /** the default Constructor */
     public X_PFR_WhereClause(Properties ctx)
@@ -155,6 +155,26 @@ public class X_PFR_WhereClause extends PO implements I_PFR_WhereClause, I_Persis
 	public String getColumnName () 
 	{
 		return (String)get_Value(COLUMNNAME_ColumnName);
+	}
+
+	/** Set Line No.
+		@param Line 
+		Unique line for this document
+	  */
+	public void setLine (int Line)
+	{
+		set_Value (COLUMNNAME_Line, Integer.valueOf(Line));
+	}
+
+	/** Get Line No.
+		@return Unique line for this document
+	  */
+	public int getLine () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_Line);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set OpenBracket.

@@ -19,7 +19,7 @@ public class QuerySettings extends SvrProcess
 	@Override
 	protected String doIt() throws Exception 
 	{
-		QueryDialog dialog = new QueryDialog(Env.getFrame(Env.getWindow(0).getParent()), AD_Table_ID);
+		QueryDialog dialog = new QueryDialog(Env.getFrame(Env.getWindow(0).getParent()), AD_Table_ID, getRecord_ID());
 		
 		return null;
 	}

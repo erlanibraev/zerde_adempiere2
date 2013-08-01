@@ -6,8 +6,6 @@ import java.util.EventObject;
 import javax.swing.AbstractCellEditor;
 import javax.swing.JTable;
 import javax.swing.table.TableCellEditor;
-
-import org.compiere.apps.search.Find;
 import org.compiere.apps.search.FindValueEditor;
 import org.compiere.grid.ed.VEditor;
 import org.compiere.grid.ed.VEditorFactory;
@@ -52,7 +50,6 @@ public class QueryValueEditor extends AbstractCellEditor implements TableCellEdi
 
 	public boolean isCellEditable (EventObject e)
 	{
-	//	log.config( "FindValueEditor.isCellEditable");
 		return true;
 	}   //  isCellEditable
 
@@ -65,7 +62,6 @@ public class QueryValueEditor extends AbstractCellEditor implements TableCellEdi
 	public boolean shouldSelectCell (EventObject e) 
 	{
 		boolean retValue = !m_valueToColumn || (m_valueToColumn && m_between); 
-	//	log.config( "FindValueEditor.shouldSelectCell - " + retValue);
 		return retValue; 
 	}
 	
@@ -73,7 +69,7 @@ public class QueryValueEditor extends AbstractCellEditor implements TableCellEdi
 	public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int col) 
 	{
 		m_between = false;
-		Object betweenValue = table.getModel().getValueAt(row, Find.INDEX_OPERATOR);
+		Object betweenValue = table.getModel().getValueAt(row, QueryDialog.INDEX_OPERATOR);
 		if (m_valueToColumn &&  betweenValue != null 
 			&& betweenValue.equals(MQuery.OPERATORS[MQuery.BETWEEN_INDEX]))
 			m_between = true;
@@ -84,7 +80,7 @@ public class QueryValueEditor extends AbstractCellEditor implements TableCellEdi
 		if ( enabled )
 		{
 		String columnName = null;
-		Object column = table.getModel().getValueAt(row, Find.INDEX_COLUMNNAME);
+		Object column = table.getModel().getValueAt(row, QueryDialog.INDEX_COLUMNNAME);
 		if (column != null)
 			columnName = ((ValueNamePair)column).getValue();
 

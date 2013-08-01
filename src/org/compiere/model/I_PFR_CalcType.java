@@ -130,6 +130,19 @@ public interface I_PFR_CalcType
 	  */
 	public int getPFR_CalcType_ID();
 
+    /** Column name SqlValue */
+    public static final String COLUMNNAME_SqlValue = "SqlValue";
+
+	/** Set SqlValue.
+	  * Значение SQL
+	  */
+	public void setSqlValue (String SqlValue);
+
+	/** Get SqlValue.
+	  * Значение SQL
+	  */
+	public String getSqlValue();
+
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
 

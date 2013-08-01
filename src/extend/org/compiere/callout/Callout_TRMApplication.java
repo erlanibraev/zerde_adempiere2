@@ -2,18 +2,14 @@ package extend.org.compiere.callout;
 
 import java.util.Properties;
 
-import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.CalloutEngine;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.MCMSContract;
-import org.compiere.model.X_C_BankAccount;
-import org.compiere.model.X_cms_payment;
 import org.compiere.util.Env;
 
 public class Callout_TRMApplication extends CalloutEngine 
 {
-	@SuppressWarnings("unused")
 	public void setCurrentBalance(Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value) 
 	{		
 		if(value != null)

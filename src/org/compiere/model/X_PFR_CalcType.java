@@ -30,7 +30,7 @@ public class X_PFR_CalcType extends PO implements I_PFR_CalcType, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130729L;
+	private static final long serialVersionUID = 20130801L;
 
     /** the default Constructor */
     public X_PFR_CalcType(Properties ctx)
@@ -45,6 +45,7 @@ public class X_PFR_CalcType extends PO implements I_PFR_CalcType, I_Persistent
       /** if (PFR_CalcType_ID == 0)
         {
 			setPFR_CalcType_ID (0);
+			setSqlValue (null);
         } */
     }
 
@@ -139,5 +140,22 @@ public class X_PFR_CalcType extends PO implements I_PFR_CalcType, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set SqlValue.
+		@param SqlValue 
+		Значение SQL
+	  */
+	public void setSqlValue (String SqlValue)
+	{
+		set_Value (COLUMNNAME_SqlValue, SqlValue);
+	}
+
+	/** Get SqlValue.
+		@return Значение SQL
+	  */
+	public String getSqlValue () 
+	{
+		return (String)get_Value(COLUMNNAME_SqlValue);
 	}
 }
