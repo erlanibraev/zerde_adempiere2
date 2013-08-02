@@ -36,9 +36,7 @@ public class PFR_SQLParse extends SvrProcess
 		
 		Object obj = MPFRCalculation.getValueFromSQL(calc.get_ID());
 		
-		System.out.println("RetValue = " + String.valueOf(obj));
-		
-		return null;
+		return "Return Value = " + String.valueOf(obj);
 	}
 
 }

@@ -34,6 +34,7 @@ import javax.swing.table.TableRowSorter;
 
 import org.compiere.apps.AEnv;
 import org.compiere.apps.ConfirmPanel;
+import org.compiere.apps.DialogAgreement;
 import org.compiere.apps.StatusBar;
 import org.compiere.apps.search.Find;
 import org.compiere.apps.search.FindCellEditor;
@@ -45,6 +46,7 @@ import org.compiere.model.MPFRCalculation;
 import org.compiere.model.MPFRWhereClause;
 import org.compiere.model.MQuery;
 import org.compiere.model.MTable;
+import org.compiere.model.X_PFR_Calculation;
 import org.compiere.model.X_PFR_WhereClause;
 import org.compiere.swing.CButton;
 import org.compiere.swing.CComboBox;
@@ -153,6 +155,7 @@ public class QueryDialog extends CDialog implements ActionListener, ChangeListen
 	private CButton bSave = new CButton();
 	private CButton bNew = new CButton();
 	private CButton bDelete = new CButton();
+	private CButton bRefresh = new CButton();
 	
 	private CTable advancedTable = new CTable() {
 
@@ -222,11 +225,19 @@ public class QueryDialog extends CDialog implements ActionListener, ChangeListen
 		bDelete.setMargin(new Insets(2, 2, 2, 2));
 		bDelete.setToolTipText(Msg.getMsg(Env.getCtx(),"Delete"));
 		bDelete.addActionListener(this);
+		bRefresh.setIcon(new ImageIcon(org.compiere.Adempiere.class.getResource("images/Refresh24.gif")));
+		bRefresh.setMargin(new Insets(2, 2, 2, 2));
+		bRefresh.setToolTipText(Msg.getMsg(Env.getCtx(),"Refresh"));
+		bRefresh.addActionListener(this);
 		toolBar.add(bIgnore, null);
 		toolBar.addSeparator();
 		toolBar.add(bNew, null);
+		toolBar.addSeparator();
 		toolBar.add(bDelete, null);
-		toolBar.add(bSave, null);	
+		toolBar.addSeparator();
+		toolBar.add(bSave, null);
+		toolBar.addSeparator();
+		toolBar.add(bRefresh, null);
 		
 		southPanel.setLayout(southLayout);
 		southPanel.add(statusBar, BorderLayout.SOUTH);
@@ -310,12 +321,9 @@ public class QueryDialog extends CDialog implements ActionListener, ChangeListen
 			String columnName = column.getColumnName();
 			String header = columnName;
 			
+			header = Msg.translate(Env.getCtx(), columnName);
 			if (header == null || header.length() == 0)
-			{
-				header = Msg.translate(Env.getCtx(), columnName);
-				if (header == null || header.length() == 0)
 					continue;
-			}
 			if (column.isKey())
 				header += (" (ID)");
 			ValueNamePair pp = new ValueNamePair(columnName, header);
@@ -349,7 +357,7 @@ public class QueryDialog extends CDialog implements ActionListener, ChangeListen
 			}
 		});
 		tc.setCellEditor(dce);
-		tc.setHeaderValue(Msg.translate(Env.getCtx(), "AD_Column_ID"));
+		tc.setHeaderValue(Msg.translate(Env.getCtx(), X_PFR_Calculation.COLUMNNAME_AD_Column_ID));
 		
 		// 7 = LineNo
 		VString vs = new VString("Line", true, true, true, 120, 120, "", "");
@@ -358,7 +366,6 @@ public class QueryDialog extends CDialog implements ActionListener, ChangeListen
 		dce = new FindCellEditor(vs);
 		tc.setCellEditor(dce);
 		tc.setPreferredWidth(120);
-		//tc.setCellRenderer(new ProxyRenderer(new QueryDialogValueRenderer(this, false)));
 		tc.setHeaderValue("Line");
 		
 		// 0 = And/Or
@@ -447,6 +454,8 @@ public class QueryDialog extends CDialog implements ActionListener, ChangeListen
 			cmd_delete(true);
 		else if(e.getSource() == bIgnore)
 			cmd_ignore();
+		else if (e.getSource() == bRefresh)
+			cmd_refresh(false);
 	}	//	actionPerformed
 	
 	/**
@@ -455,152 +464,208 @@ public class QueryDialog extends CDialog implements ActionListener, ChangeListen
 	private void cmd_save()
 	{
 		advancedTable.stopEditor(true);
-		//
-		
 		MPFRWhereClause clause = null;
 		Object column = null;
 		String value = "";
-		
+		StringBuilder errorLog = new StringBuilder();
+		StringBuilder totalLog = new StringBuilder();
 		int AD_Reference_ID = 0;
 		
 		for (int row = 0; row < advancedTable.getRowCount(); row++)
 		{
 			//	Column LineNo
 			column = advancedTable.getValueAt(row, INDEX_LINEID);
-			if (column == null)
-				continue;
-						
+		
 			value = column instanceof ValueNamePair ? 
 				((ValueNamePair)column).getValue() : column.toString();
-			
+		
 			if(value != null && !value.isEmpty())
 				clause = new MPFRWhereClause(Env.getCtx(), Integer.parseInt(value), null);
 			else
 				clause = new MPFRWhereClause(Env.getCtx(), 0, null);
-			
 			//	Column LineNo
 			column = advancedTable.getValueAt(row, INDEX_LINENO);
-			if (column == null)
-				continue;
+		
+			if(column != null)
+			{
+				value = column instanceof ValueNamePair ? 
+						((ValueNamePair)column).getValue() : column.toString();
 						
-			value = column instanceof ValueNamePair ? 
-					((ValueNamePair)column).getValue() : column.toString();
-					
-			if(value != null && !value.isEmpty())
-				clause.setLine(Integer.parseInt(value));
-					
+				if(value != null && !value.isEmpty())
+					clause.setLine(Integer.parseInt(value));
+				else
+				{
+					errorLog.append(valueCheck(row, INDEX_LINENO, "не указано"));
+				}
+			}
+			else
+			{
+				errorLog.append(valueCheck(row, INDEX_LINENO, "не указано"));
+			}
 			//	Column AND_OR
 			if(row > 0)
 			{
-				column = advancedTable.getValueAt(row, INDEX_ANDOR);
-				if (column == null)
-					continue;
+				column = advancedTable.getValueAt(row, INDEX_ANDOR);	
 				
+				if(column != null)
+				{
+					value = column instanceof ValueNamePair ? 
+							((ValueNamePair)column).getValue() : column.toString();
+					
+					if(value != null && !value.isEmpty())
+						clause.setAndOr(value);
+					else
+					{
+						errorLog.append(valueCheck(row, INDEX_ANDOR, "не заполнено"));
+					}
+				}
+				else
+				{
+					errorLog.append(valueCheck(row, INDEX_ANDOR, "не заполнено"));
+				}
+			}
+			// Column Left Bracket
+			column = advancedTable.getValueAt(row, INDEX_LEFTBRACKET);	
+			value = advancedTable.getValueAt(row, INDEX_RIGHTBRACKET).toString();
+			if(column != null)
+			{
 				value = column instanceof ValueNamePair ? 
 						((ValueNamePair)column).getValue() : column.toString();
 				
-				if(value != null && !value.isEmpty())
-					clause.setAndOr(value);
+				if(value != null)
+					clause.setOpenBracket(value);
 			}
-			// Column Left Bracket
-			column = advancedTable.getValueAt(row, INDEX_LEFTBRACKET);
-			if (column == null)
-				continue;	
-			
-			value = column instanceof ValueNamePair ? 
-					((ValueNamePair)column).getValue() : column.toString();
-			
-			if(value != null)
-				clause.setOpenBracket(value);
-			
+			else if(value != null && value.isEmpty())
+			{
+				errorLog.append(valueCheck(row, INDEX_LEFTBRACKET, "обязательно, либо не указывайте закрывающую скобку"));
+			}
 			// Column ColumnName
-			column = advancedTable.getValueAt(row, INDEX_COLUMNNAME);
-			if (column == null)
-				continue;	
+			column = advancedTable.getValueAt(row, INDEX_COLUMNNAME);	
 			
-			value = column instanceof ValueNamePair ? 
-					((ValueNamePair)column).getValue() : column.toString();
-			
-			if(value == null)
-				continue;
-			
-			clause.setAD_Column_ID(MColumn.getColumn_ID(MTable.getTableName(Env.getCtx(), AD_Table_ID), value));
-			clause.setColumnName(value);
-			
+			if(column != null)
+			{
+				value = column instanceof ValueNamePair ? 
+						((ValueNamePair)column).getValue() : column.toString();
+				
+				if(value == null)
+				{
+					errorLog.append(valueCheck(row, INDEX_COLUMNNAME, "не заполнено"));
+				}
+				
+				clause.setAD_Column_ID(MColumn.getColumn_ID(MTable.getTableName(Env.getCtx(), AD_Table_ID), value));
+				clause.setColumnName(value);
+			}
+			else
+			{
+				errorLog.append(valueCheck(row, INDEX_COLUMNNAME, "не заполнено"));
+			}
 			// Column Operator
-			column = advancedTable.getValueAt(row, INDEX_OPERATOR);
-			if (column == null)
-				continue;	
+			column = advancedTable.getValueAt(row, INDEX_OPERATOR);	
 			
-			value = column instanceof ValueNamePair ? 
-					((ValueNamePair)column).getValue() : column.toString();
-			
-			if(value == null)
-				continue;
-			
-			clause.setOperation(value);
-			
+			if(column != null)
+			{
+				value = column instanceof ValueNamePair ? 
+						((ValueNamePair)column).getValue() : column.toString();
+				
+				if(value == null)
+				{
+					errorLog.append(valueCheck(row, INDEX_OPERATOR, "не заполнено"));
+				}
+				
+				clause.setOperation(value);
+			}
+			else
+			{
+				errorLog.append(valueCheck(row, INDEX_OPERATOR, "не заполнено"));
+			}
 			//Value2 
 			//if Operator = 'BETWEEN'
 			if(value.equals(MQuery.BETWEEN))
 			{
 				// Column
 				column = advancedTable.getValueAt(row, INDEX_VALUE2);
-				if (column == null)
-					continue;
-				
-				value = column instanceof ValueNamePair ? 
-						((ValueNamePair)column).getValue() : column.toString();
-				
-				if(value == null)
-					continue;
-				
-				clause.setValue2(value);
+
+				if(column != null)
+				{
+					value = column instanceof ValueNamePair ? 
+							((ValueNamePair)column).getValue() : column.toString();
+					
+					if(value == null)
+						errorLog.append(valueCheck(row, INDEX_VALUE2, "обязательно, либо выберите другой оператор"));
+					
+					clause.setValue2(value);
+				}
+				else 
+				{
+					errorLog.append(valueCheck(row, INDEX_VALUE2, "обязательно, либо выберите другой оператор"));
+				}
 			}
-			
 			// Column Value
 			column = advancedTable.getValueAt(row, INDEX_VALUE);
-			if (column == null)
-				continue;
 			
-			value = column instanceof ValueNamePair ? 
-					((ValueNamePair)column).getValue() : column.toString();
-					
-			if(value == null)
-				continue;
-			
-			AD_Reference_ID = MColumn.get(Env.getCtx(), clause.getAD_Column_ID()).getAD_Reference_ID();
-			
-			if(AD_Reference_ID == DisplayType.YesNo)
+			if(column != null)
 			{
-				value = value.equals("true") ? "Y" : "N";
+				value = column instanceof ValueNamePair ? 
+						((ValueNamePair)column).getValue() : column.toString();
+						
+				if(value == null)
+				{
+					errorLog.append(valueCheck(row, INDEX_VALUE, "не заполнено"));
+				}
+				
+				AD_Reference_ID = MColumn.get(Env.getCtx(), clause.getAD_Column_ID()).getAD_Reference_ID();
+				
+				if(AD_Reference_ID == DisplayType.YesNo)
+				{
+					value = value.equals("true") ? "Y" : "N";
+				}
+				
+				clause.setValue1(value);
 			}
-			
-			clause.setValue1(value);
-			
-			if(clause.getOpenBracket() != null)
+			else
+			{
+				errorLog.append(valueCheck(row, INDEX_VALUE, "не заполнено"));
+			}
+			if(clause.getOpenBracket() != null && !clause.getOpenBracket().isEmpty())
 			{
 				// Column
 				column = advancedTable.getValueAt(row, INDEX_RIGHTBRACKET);
-				if (column == null)
-					continue;	
-				
-				value = column instanceof ValueNamePair ? 
-						((ValueNamePair)column).getValue() : column.toString();
-				
-				if(value == null)
-					continue;
-				
-				clause.setCloseBracket(value);
+				if(column != null && !column.toString().isEmpty())
+				{
+					value = column instanceof ValueNamePair ? 
+							((ValueNamePair)column).getValue() : column.toString();
+					
+					if(value == null || value.isEmpty())
+						errorLog.append(valueCheck(row, INDEX_RIGHTBRACKET, "обязательно, либо не указывайте открывающуюся скобку"));
+					else
+						clause.setCloseBracket(value);
+				}
+				else
+				{
+					errorLog.append(valueCheck(row, INDEX_RIGHTBRACKET, "обязательно, либо не указывайте открывающуюся скобку"));
+				}
 			}
 			
-			clause.setPFR_Calculation_ID(PFR_Calculation_ID);
-			clause.saveEx();
-			
+			if(errorLog.length() == 0)
+			{
+				clause.setPFR_Calculation_ID(PFR_Calculation_ID);
+				clause.saveEx();
+			}
+			else
+			{
+				totalLog.append(errorLog).append("\n");
+				errorLog.setLength(0);
+			}
 		}
 		
-		cmd_cancel();
+		if(totalLog.length() == 0)
+			cmd_cancel();
+		else
+		{
+			DialogAgreement.dialogOK("Ошибка", totalLog.toString(), 0);
+		}
 	}
+	
 	/**
 	 *	New record
 	 */
@@ -667,18 +732,29 @@ public class QueryDialog extends CDialog implements ActionListener, ChangeListen
 		
 		if (row >= 0 && deleteRows > 0)
 			model.removeRow(row);
-		cmd_refresh();
+		cmd_refresh(true);
 		advancedTable.requestFocusInWindow();
 	}	//	cmd_delete
 	
 	/**
 	 *	Refresh
 	 */
-	private void cmd_refresh()
+	private void cmd_refresh(boolean del)
 	{
 		advancedTable.stopEditor(false);
+		
+		if(!del){
+			DefaultTableModel model = (DefaultTableModel)advancedTable.getModel();
+			int rowCount = advancedTable.getRowCount()-1;
+			for(int i = rowCount; i >= 0; i--){
+				model.removeRow(i);
+			}
+			
+			loadLines();
+		}
+		
 		setStatusDB (advancedTable.getRowCount());
-		statusBar.setStatusLine("");
+		statusBar.setStatusLine(Msg.translate(Env.getCtx(), "Success"));
 	}	//	cmd_refresh
 	
 	/**
@@ -689,24 +765,36 @@ public class QueryDialog extends CDialog implements ActionListener, ChangeListen
 		cmd_delete(false);
 	}	//	cmd_ignore
 	
-	private void loadLines()
+	private int loadLines()
 	{
 		MPFRWhereClause[] clauses = MPFRCalculation.getLinesWhere(Env.getCtx(), PFR_Calculation_ID, null);
 		
 		advancedTable.stopEditor(true);
 		DefaultTableModel model = (DefaultTableModel)advancedTable.getModel();
-		
+		int n = 0;
 		for(MPFRWhereClause wh : clauses)
 		{
+			String op = MQuery.OPERATORS[0].getValue();
+			for(ValueNamePair oper : MQuery.OPERATORS){
+				if(oper.getValue().equals(wh.getOperation()))
+					op = oper.getName();
+			}
+			
+			String columnName = wh.getColumnName();
+			String header = Msg.translate(Env.getCtx(), columnName);
+			if (header == null || header.length() == 0)
+					continue;
+			
 			model.addRow(new Object[] {wh.getLine(), 
 						wh.getAndOr(),
 						wh.getOpenBracket(), 
-						wh.getColumnName(), 
-						wh.getOperation(), 
-						wh.getValue1(), 
-						wh.getValue2(),
+						new ValueNamePair(columnName, header), 
+						new ValueNamePair(wh.getOperation(), op), 
+						new ValueNamePair(wh.getValue1(), wh.getValue1()), 
+						new ValueNamePair(wh.getValue2(), wh.getValue2()),
 						wh.getCloseBracket(),
 						wh.getPFR_WhereClause_ID()});
+			n++;
 		}
 
 		TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(advancedTable.getModel());
@@ -715,7 +803,15 @@ public class QueryDialog extends CDialog implements ActionListener, ChangeListen
 		advancedTable.setRowSorter(sorter);
 	
 		advancedTable.requestFocusInWindow();
+		
+		return n;
 	}
+	
+	private String valueCheck(int row, int column, String message)
+	 {
+	  StringBuilder errors = new StringBuilder();
+	  return errors.append("Строка[").append(row).append("], значение в столбце[").append(advancedTable.getColumnModel().getColumn(column).getHeaderValue().toString()).append("] ").append(message).append("\n") .toString();
+	 }
 	
 	/**
 	 *	Display current count
