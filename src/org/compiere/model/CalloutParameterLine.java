@@ -8,9 +8,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
+
+import org.compiere.apps.ADialog;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 
@@ -127,4 +130,27 @@ public class CalloutParameterLine extends CalloutEngine {
 		return currentVariable;
 	}
 
+	/**
+	 * @param ctx context
+	 * @param WindowNo current Window No
+	 * @param mTab Grid Tab
+	 * @param mField Grid Field
+	 * @param value New Value
+	 * @return null or error message
+	 */
+	public String testPeriod(Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value) {
+		String result = null;
+		if (value != null) {
+			BigDecimal C_Period_ID = new BigDecimal(value.toString());
+			int BSC_ParameterLine_ID = (mTab.getValue("BSC_ParameterLine_ID") == null ? 0 : (Integer) mTab.getValue("BSC_ParameterLine_ID")); 
+			int BSC_Parameter_ID = (mTab.getValue("BSC_Parameter_ID") == null ? 0 : (Integer) mTab.getValue("BSC_Parameter_ID"));
+			if (!MParameterLine.testPeriod(BSC_ParameterLine_ID, BSC_Parameter_ID, C_Period_ID.intValue())) {
+				ADialog.info(25, null, "Для данного периода уже есть значения!");
+				//mTab.setValue("C_Period_ID", 0);
+				mTab.dataRefresh();
+				mField.refreshLookup();
+			}
+		}
+		return result; 
+	}
 }

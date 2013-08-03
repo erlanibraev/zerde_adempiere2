@@ -30,7 +30,7 @@ public class X_BSC_Parameter extends PO implements I_BSC_Parameter, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130627L;
+	private static final long serialVersionUID = 20130803L;
 
     /** the default Constructor */
     public X_BSC_Parameter(Properties ctx)
@@ -74,6 +74,20 @@ public class X_BSC_Parameter extends PO implements I_BSC_Parameter, I_Persistent
         .append(get_ID()).append("]");
       return sb.toString();
     }
+
+	/** Set b_graph.
+		@param b_graph b_graph	  */
+	public void setb_graph (String b_graph)
+	{
+		set_Value (COLUMNNAME_b_graph, b_graph);
+	}
+
+	/** Get b_graph.
+		@return b_graph	  */
+	public String getb_graph () 
+	{
+		return (String)get_Value(COLUMNNAME_b_graph);
+	}
 
 	/** Set BSC_Parameter ID.
 		@param BSC_Parameter_ID BSC_Parameter ID	  */
@@ -138,6 +152,36 @@ public class X_BSC_Parameter extends PO implements I_BSC_Parameter, I_Persistent
 	public String getDescription () 
 	{
 		return (String)get_Value(COLUMNNAME_Description);
+	}
+
+	/** Modules AD_Reference_ID=1000171 */
+	public static final int MODULES_AD_Reference_ID=1000171;
+	/** BSC = BSC */
+	public static final String MODULES_BSC = "BSC";
+	/** BPM = BPM */
+	public static final String MODULES_BPM = "BPM";
+	/** FI = FI */
+	public static final String MODULES_FI = "FI";
+	/** HRM = HRM */
+	public static final String MODULES_HRM = "HRM";
+	/** MM = MM */
+	public static final String MODULES_MM = "MM";
+	/** Set Modules.
+		@param Modules 
+		Modules
+	  */
+	public void setModules (String Modules)
+	{
+
+		set_Value (COLUMNNAME_Modules, Modules);
+	}
+
+	/** Get Modules.
+		@return Modules
+	  */
+	public String getModules () 
+	{
+		return (String)get_Value(COLUMNNAME_Modules);
 	}
 
 	/** Set Name.

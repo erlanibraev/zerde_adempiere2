@@ -20,17 +20,17 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for BSC_Parameter
+/** Generated Interface for BSC_KeySuccessFactorLink
  *  @author Adempiere (generated) 
  *  @version Release 3.7.0LTS
  */
-public interface I_BSC_Parameter 
+public interface I_BSC_KeySuccessFactorLink 
 {
 
-    /** TableName=BSC_Parameter */
-    public static final String Table_Name = "BSC_Parameter";
+    /** TableName=BSC_KeySuccessFactorLink */
+    public static final String Table_Name = "BSC_KeySuccessFactorLink";
 
-    /** AD_Table_ID=1000217 */
+    /** AD_Table_ID=1000236 */
     public static final int Table_ID = MTable.getTable_ID(Table_Name);
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
@@ -62,38 +62,40 @@ public interface I_BSC_Parameter
 	  */
 	public int getAD_Org_ID();
 
-    /** Column name b_graph */
-    public static final String COLUMNNAME_b_graph = "b_graph";
+    /** Column name BSC_KeySuccessFactor_ID */
+    public static final String COLUMNNAME_BSC_KeySuccessFactor_ID = "BSC_KeySuccessFactor_ID";
 
-	/** Set b_graph	  */
-	public void setb_graph (String b_graph);
+	/** Set BSC_KeySuccessFactor ID	  */
+	public void setBSC_KeySuccessFactor_ID (int BSC_KeySuccessFactor_ID);
 
-	/** Get b_graph	  */
-	public String getb_graph();
+	/** Get BSC_KeySuccessFactor ID	  */
+	public int getBSC_KeySuccessFactor_ID();
 
-    /** Column name BSC_Parameter_ID */
-    public static final String COLUMNNAME_BSC_Parameter_ID = "BSC_Parameter_ID";
+	public I_BSC_KeySuccessFactor getBSC_KeySuccessFactor() throws RuntimeException;
 
-	/** Set BSC_Parameter ID	  */
-	public void setBSC_Parameter_ID (int BSC_Parameter_ID);
+    /** Column name BSC_KeySuccessFactor_Link_ID */
+    public static final String COLUMNNAME_BSC_KeySuccessFactor_Link_ID = "BSC_KeySuccessFactor_Link_ID";
 
-	/** Get BSC_Parameter ID	  */
-	public int getBSC_Parameter_ID();
-
-    /** Column name C_BPartner_ID */
-    public static final String COLUMNNAME_C_BPartner_ID = "C_BPartner_ID";
-
-	/** Set Business Partner .
-	  * Identifies a Business Partner
+	/** Set BSC_KeySuccessFactor_Link_ID.
+	  * BSC_KeySuccessFactor_Link_ID
 	  */
-	public void setC_BPartner_ID (int C_BPartner_ID);
+	public void setBSC_KeySuccessFactor_Link_ID (int BSC_KeySuccessFactor_Link_ID);
 
-	/** Get Business Partner .
-	  * Identifies a Business Partner
+	/** Get BSC_KeySuccessFactor_Link_ID.
+	  * BSC_KeySuccessFactor_Link_ID
 	  */
-	public int getC_BPartner_ID();
+	public int getBSC_KeySuccessFactor_Link_ID();
 
-	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
+	public I_BSC_KeySuccessFactor getBSC_KeySuccessFactor_Link() throws RuntimeException;
+
+    /** Column name BSC_KeySuccessFactorLink_ID */
+    public static final String COLUMNNAME_BSC_KeySuccessFactorLink_ID = "BSC_KeySuccessFactorLink_ID";
+
+	/** Set BSC_KeySuccessFactorLink ID	  */
+	public void setBSC_KeySuccessFactorLink_ID (int BSC_KeySuccessFactorLink_ID);
+
+	/** Get BSC_KeySuccessFactorLink ID	  */
+	public int getBSC_KeySuccessFactorLink_ID();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -111,19 +113,6 @@ public interface I_BSC_Parameter
 	  */
 	public int getCreatedBy();
 
-    /** Column name Description */
-    public static final String COLUMNNAME_Description = "Description";
-
-	/** Set Description.
-	  * Optional short description of the record
-	  */
-	public void setDescription (String Description);
-
-	/** Get Description.
-	  * Optional short description of the record
-	  */
-	public String getDescription();
-
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
 
@@ -136,32 +125,6 @@ public interface I_BSC_Parameter
 	  * The record is active in the system
 	  */
 	public boolean isActive();
-
-    /** Column name Modules */
-    public static final String COLUMNNAME_Modules = "Modules";
-
-	/** Set Modules.
-	  * Modules
-	  */
-	public void setModules (String Modules);
-
-	/** Get Modules.
-	  * Modules
-	  */
-	public String getModules();
-
-    /** Column name Name */
-    public static final String COLUMNNAME_Name = "Name";
-
-	/** Set Name.
-	  * Alphanumeric identifier of the entity
-	  */
-	public void setName (String Name);
-
-	/** Get Name.
-	  * Alphanumeric identifier of the entity
-	  */
-	public String getName();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

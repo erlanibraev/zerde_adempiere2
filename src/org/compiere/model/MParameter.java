@@ -120,9 +120,10 @@ public class MParameter extends X_BSC_Parameter {
 				pl.setAD_Client_ID(Env.getAD_Client_ID(getCtx()));
 				pl.setC_Period_ID(period.getC_Period_ID());
 				pl.setBSC_Parameter_ID(this.getBSC_Parameter_ID());
-				pl.save();
-				getParameterLine().add(pl);
-				setCurrentParameterLine(pl);
+				if (pl.save()) {
+					getParameterLine().add(pl);
+					setCurrentParameterLine(pl);
+				}
 			} catch(Exception e) {
 				log.log(Level.SEVERE, "setPeriod", e);
 			}
@@ -200,11 +201,17 @@ public class MParameter extends X_BSC_Parameter {
 	
 	protected static String runCalc(MParameter parameter, MPeriod period, Set<Integer> forCycle) throws Exception {
 		String result = null;
+		if (parameter == null || parameter.getParameterLine(period) == null) {
+			return "0";
+		}
 		if (forCycle == null) {
 			forCycle = new HashSet<Integer>();
 			forCycle.add(parameter.getBSC_Parameter_ID());
 		}
 		if (parameter.getParameterLine(period).isFormula()) {
+			MFormula formula = parameter.getParameterLine(period).getFormula();
+			HashMap<String,Object> args = new  HashMap<String,Object>();
+			
 			Map<String,MVariable> variable = parameter.getParameterLine(period).getVariables(); 
 			for(String key: variable.keySet()) {
 				MVariable var = variable.get(key);
@@ -215,12 +222,14 @@ public class MParameter extends X_BSC_Parameter {
 				}
 				String value = runCalc(param, period, forCycle);
 				param.getParameterLine(period).setValue(value);
+				args.put(key, value);
 			}
-			result = parameter.getParameterLine(period).calculate();
+			result = MFormula.calc(formula.getFormula(), args);
+			// result = parameter.getParameterLine(period).calculate();
 		} else {
 			result = parameter.getParameterLine(period).getValue();
 		}
-		return result;
+		return (result == null ? "0" : result);
 	}
 	
 	protected void addParameterLine(int c_Period_ID) {
@@ -403,10 +412,23 @@ public class MParameter extends X_BSC_Parameter {
 	 * @return
 	 */
 	public String getValue() {
-		String result = "";
-		if (getCurrentParameterLine() != null) {
-			result = getCurrentParameterLine().getValue();
-			result = (result == null ? "0" : result);
+		return getValue(getCurrentPeriod());
+	}
+
+	/**
+	 * @return
+	 */
+	public String getValue(MPeriod period) {
+		String result = "0";
+		setPeriod(period);
+		if (getParameterLine(period) != null) {
+			// result = getCurrentParameterLine().getValue();
+			try {
+				result = MParameter.runCalc(this, period, null);
+				result = (result == null ? "0" : result);
+			} catch(Exception e) {
+				log.log(Level.SEVERE,"MParameter.getValue() - ",e);
+			}
 		}
 		return result;
 	}

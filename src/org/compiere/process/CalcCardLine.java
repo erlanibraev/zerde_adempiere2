@@ -6,6 +6,7 @@ package org.compiere.process;
 import java.math.BigDecimal;
 import java.util.logging.Level;
 
+import org.compiere.apps.ADialog;
 import org.compiere.model.MBSCCardLine;
 import org.compiere.util.Env;
 
@@ -44,10 +45,14 @@ public class CalcCardLine extends SvrProcess {
 		log.log(Level.INFO,"CalcCardLine: BSC_CardLine_ID - "+BSC_CardLine_ID);
 		if (BSC_CardLine_ID > 0) {
 			MBSCCardLine cardLine = new MBSCCardLine(Env.getCtx(),BSC_CardLine_ID,null);
-			BigDecimal result = cardLine.calculate();
-			log.log(Level.INFO,"CalcCardLine: result - "+result.toString());
-			cardLine.setValueNumber(result);
-			cardLine.save();
+			if (cardLine.save()) {
+				BigDecimal result = cardLine.calculate();
+				log.log(Level.INFO,"CalcCardLine: result - "+result.toString());
+				cardLine.setValueNumber(result);
+				cardLine.save();
+			} else {
+				ADialog.info(25, null, "Но могу посчитать линию карты ССП");
+			}
 		}
 		return null;
 	}

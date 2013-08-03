@@ -9,6 +9,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,9 +20,11 @@ import java.util.List;
 import java.util.logging.Level;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 
+import org.compiere.apps.ConfirmPanel;
 import org.compiere.model.MBSCKeySuccessFactor;
 import org.compiere.model.MBSCPerspective;
 import org.compiere.swing.CLabel;
@@ -53,15 +56,8 @@ public class BSCPerspectivePanel extends JPanel implements MouseListener, Action
 			setPerspective(aPerspective);
 			setName(getPerspective().getName());
 			setFocusable(true);
-			setAlignmentX(LEFT_ALIGNMENT);
-			setAlignmentY(CENTER_ALIGNMENT);
 	    	Border border = BorderFactory.createLineBorder(Color.CYAN) ;
-	    			//createEmptyBorder(1, 1, getSize().width - 1, getSize().height - 1); 
 	    	setBorder(border);
-	    	
-	    	GridBagConstraints gbc;
-
-	    	int gridWidth = (getKeySuccessFactors() != null ? getKeySuccessFactors().size() : 0);
 	    	
 	    	JPanel panel = new JPanel();
 	    	panel.setBackground(Color.GRAY);
@@ -71,57 +67,19 @@ public class BSCPerspectivePanel extends JPanel implements MouseListener, Action
 	    	label.setUI(new VerticalLabelUI(false));
 	    	panel.setBorder(getBorder());
 	    	
-	    	Dimension labeldimension = new Dimension(100, 300);
-	    	label.setAlignmentX(CENTER_ALIGNMENT);
-	    	label.setAlignmentY(CENTER_ALIGNMENT);
 	    	panel.add(label);
-	    	panel.setAlignmentX(LEFT_ALIGNMENT);
-	    	panel.setAlignmentY(CENTER_ALIGNMENT);
 	    	add(panel,BorderLayout.WEST);
 	    	
 	    	KSFpanel = new JPanel();
 	    	
-			gbc = new GridBagConstraints();
 			
-			KSFpanel.setLayout(new GridBagLayout());
-			int i = 0;
+			KSFpanel.setLayout(new GridLayout(3,1));
 			for(MBSCKeySuccessFactor keySF : getKeySuccessFactors()) {
-	    		gbc = new GridBagConstraints();
-				gbc.fill = GridBagConstraints.BOTH;
-				gbc.gridx = 0;
-				gbc.gridy = i++;
-				panel = new JPanel();
 				CLabel label = new CLabel(keySF.getName());
 				panel.add(label);
-				KSFpanel.add(panel, gbc);
+				KSFpanel.add(panel);
 			}
 			add(KSFpanel,BorderLayout.CENTER);
-/*			
-			int i = 0;
-			
-			Dimension keySFdimension = new Dimension(SizeWidth / gridWidth, 40);
-			
-	    	for(MBSCKeySuccessFactor keySF : getKeySuccessFactors()) {
-	    		gbc = new GridBagConstraints();
-				gbc.fill = GridBagConstraints.HORIZONTAL;
-				gbc.gridx = i++;
-				gbc.insets = new Insets(10,0,0,0);
-				gbc.ipadx = 0;
-				gbc.ipady = 40;
-				gbc.anchor = GridBagConstraints.PAGE_START; 
-//	    		addKeySuccessFactor(gbc,keySF);
-				
-				panel = new JPanel();
-				CLabel label = new CLabel(keySF.getName());
-				panel.add(label);
-				panel.setBorder(getBorder());
-				panel.setPreferredSize(keySFdimension);
-				panel.setMinimumSize(keySFdimension);
-				panel.setMaximumSize(keySFdimension);
-				gbLayout.setConstraints(panel, gbc);
-				add(panel);
-	    	}
-*/	    	
 	    	invalidate();
 		} catch (Exception e) {
 			log.log(Level.SEVERE,"BSCPerspectivePanel",e);
@@ -173,7 +131,6 @@ public class BSCPerspectivePanel extends JPanel implements MouseListener, Action
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	/* (non-Javadoc)

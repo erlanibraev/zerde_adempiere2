@@ -3,10 +3,13 @@
  */
 package org.adempiere.apps.graph;
 
+import groovy.swing.impl.TableLayout;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -47,7 +50,8 @@ public class BSCViewPerspective extends CPanel implements FormPanel, ActionListe
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-		
+		if (e.getActionCommand().equals(ConfirmPanel.A_OK))
+			dispose();
 	}
 
 	/* (non-Javadoc)
@@ -66,6 +70,8 @@ public class BSCViewPerspective extends CPanel implements FormPanel, ActionListe
 				throw new Exception("BSCViewPerspective: Perspective not found");
 			}
 			
+			
+			confirmPanel.addActionListener(this);
 			initMainPanel();
 			
 			CScrollPane scroll =  new CScrollPane(mainPanel);
@@ -81,7 +87,9 @@ public class BSCViewPerspective extends CPanel implements FormPanel, ActionListe
 	 * 
 	 */
 	private void initMainPanel() {
-		mainPanel.setLayout(new GridBagLayout());
+        
+        GridLayout l = new GridLayout(4,1);
+		mainPanel.setLayout(l);//new GridBagLayout()
 		load();
 	}
 	
@@ -114,8 +122,8 @@ public class BSCViewPerspective extends CPanel implements FormPanel, ActionListe
 		
 		BSCPerspectivePanel panel = new BSCPerspectivePanel(perspective);
 		panel.addActionListener(this);
-//		panel.setBackground(Color.GREEN);
 		mainPanel.add(panel, gbc);
+//		mainPanel.add(panel);
 	}
 
 	/**
@@ -130,8 +138,10 @@ public class BSCViewPerspective extends CPanel implements FormPanel, ActionListe
 	 */
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
-		
+		if (m_frame != null)
+			m_frame.dispose();
+		m_frame = null;
+		removeAll();
 	}
 	
 	public List<MBSCPerspective> getPerspectives() {

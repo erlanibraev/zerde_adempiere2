@@ -31,7 +31,7 @@ public class X_BSC_ParameterLine extends PO implements I_BSC_ParameterLine, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130520L;
+	private static final long serialVersionUID = 20130803L;
 
     /** the default Constructor */
     public X_BSC_ParameterLine(Properties ctx)
@@ -240,6 +240,55 @@ public class X_BSC_ParameterLine extends PO implements I_BSC_ParameterLine, I_Pe
 			return "Y".equals(oo);
 		}
 		return false;
+	}
+
+	/** Set IsImported.
+		@param IsImported 
+		IsImported
+	  */
+	public void setIsImported (boolean IsImported)
+	{
+		set_Value (COLUMNNAME_IsImported, Boolean.valueOf(IsImported));
+	}
+
+	/** Get IsImported.
+		@return IsImported
+	  */
+	public boolean isImported () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsImported);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	public I_PFR_Calculation getPFR_Calculation() throws RuntimeException
+    {
+		return (I_PFR_Calculation)MTable.get(getCtx(), I_PFR_Calculation.Table_Name)
+			.getPO(getPFR_Calculation_ID(), get_TrxName());	}
+
+	/** Set PFR_Calculation ID.
+		@param PFR_Calculation_ID PFR_Calculation ID	  */
+	public void setPFR_Calculation_ID (int PFR_Calculation_ID)
+	{
+		if (PFR_Calculation_ID < 1) 
+			set_Value (COLUMNNAME_PFR_Calculation_ID, null);
+		else 
+			set_Value (COLUMNNAME_PFR_Calculation_ID, Integer.valueOf(PFR_Calculation_ID));
+	}
+
+	/** Get PFR_Calculation ID.
+		@return PFR_Calculation ID	  */
+	public int getPFR_Calculation_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_PFR_Calculation_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Max. Value.

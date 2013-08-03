@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -24,6 +25,34 @@ public class MParameterLine extends X_BSC_ParameterLine {
 	private Map<String,MVariable> variables = new HashMap<String,MVariable>();
 	private Map<String,MParameter> parameters = new HashMap<String,MParameter>();
 	private MFormula formula = null;
+	private MParameter parameter = null;
+	private MPeriod period = null;
+
+	public MPeriod getPeriod() {
+		if (period == null || getC_Period_ID() != period.getC_Period_ID()) {
+			if (getC_Period_ID() > 0) {
+				period = new MPeriod(getCtx(),getC_Period_ID(),get_TrxName());
+			}
+		}
+		return period;
+	}
+
+	public void setPeriod(MPeriod period) {
+		this.period = period;
+	}
+
+	public MParameter getParameter() {
+		if (parameter == null || getBSC_Parameter_ID() != parameter.getBSC_Parameter_ID()) {
+			if (getBSC_Parameter_ID() > 0) {
+				parameter = new MParameter(getCtx(),getBSC_Parameter_ID(),get_TrxName());
+			}
+		}
+		return parameter;
+	}
+
+	public void setParameter(MParameter parameter) {
+		this.parameter = parameter;
+	}
 
 	public Map<String, MParameter> getParameters() {
 		if (parameters.size() == 0 && isFormula()) {
@@ -89,11 +118,22 @@ public class MParameterLine extends X_BSC_ParameterLine {
 	public String calculate() {
 		String result = "0";
 		if (isFormula()) {
-			MFormula formula = new MFormula(getCtx(), getBSC_Formula_ID(), get_TrxName());
-			formula.setArguments(getArguments());
-			result = formula.calculate();
+//			MFormula formula = new MFormula(getCtx(), getBSC_Formula_ID(), get_TrxName());
+//			formula.setArguments(getArguments());
+//			result = formula.calculate();
+			
+			MParameter parameter = getParameter();
+			result = parameter.getValue(getPeriod());
 		}
-		return result;
+		if (isImported() && getPFR_Calculation_ID() > 0) {
+			try {
+				Object obj = MPFRCalculation.getValueFromSQL(getPFR_Calculation_ID());
+				result = obj.toString();
+			} catch(Exception e) {
+				log.log(Level.SEVERE,"BSCParameterLine.calculate - ", e);
+			}
+		}
+		return (result == null ? "0" : result);
 	}
 	
 	public HashMap<String,Object> getArguments() {
@@ -296,6 +336,37 @@ public class MParameterLine extends X_BSC_ParameterLine {
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
 		}	
+		return result;
+	}
+	
+	@Override
+	public void setIsImported (boolean IsImported) {
+		super.setIsImported(IsImported);
+		if (!IsImported) {
+			setPFR_Calculation_ID(0);
+		}
+	}
+	
+	@Override
+	protected boolean beforeSave(boolean newRecord) {
+		
+		if (!testPeriod(getBSC_ParameterLine_ID(), getBSC_Parameter_ID(), getC_Period_ID())) {
+			return false;
+		}
+		
+		if (!isImported()) {
+			setPFR_Calculation_ID(0);
+		}
+		return super.beforeSave(newRecord);
+	}
+	
+	public static boolean testPeriod(int BSC_ParameterLine_ID, int BSC_Parameter_ID, int C_Period_ID) {
+		boolean result = true;
+		String whereClauseFinal = "BSC_ParameterLine_ID <> ? AND BSC_Parameter_ID = ? AND C_Period_ID = ?";
+		List<MParameterLine> list = new Query(Env.getCtx(), MParameterLine.Table_Name, whereClauseFinal, null)
+		                               .setParameters(BSC_ParameterLine_ID, BSC_Parameter_ID, C_Period_ID)
+		                               .list();
+		result = (list == null) || (list.size() <= 0);
 		return result;
 	}
 }

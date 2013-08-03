@@ -30,7 +30,7 @@ public interface I_BSC_ParameterLine
     /** TableName=BSC_ParameterLine */
     public static final String Table_Name = "BSC_ParameterLine";
 
-    /** AD_Table_ID=1000214 */
+    /** AD_Table_ID=1000218 */
     public static final int Table_ID = MTable.getTable_ID(Table_Name);
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
@@ -175,6 +175,30 @@ public interface I_BSC_ParameterLine
 	  * IsFormula
 	  */
 	public boolean isFormula();
+
+    /** Column name IsImported */
+    public static final String COLUMNNAME_IsImported = "IsImported";
+
+	/** Set IsImported.
+	  * IsImported
+	  */
+	public void setIsImported (boolean IsImported);
+
+	/** Get IsImported.
+	  * IsImported
+	  */
+	public boolean isImported();
+
+    /** Column name PFR_Calculation_ID */
+    public static final String COLUMNNAME_PFR_Calculation_ID = "PFR_Calculation_ID";
+
+	/** Set PFR_Calculation ID	  */
+	public void setPFR_Calculation_ID (int PFR_Calculation_ID);
+
+	/** Get PFR_Calculation ID	  */
+	public int getPFR_Calculation_ID();
+
+	public I_PFR_Calculation getPFR_Calculation() throws RuntimeException;
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

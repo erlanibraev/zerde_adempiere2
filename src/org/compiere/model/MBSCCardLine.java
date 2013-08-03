@@ -103,7 +103,7 @@ public class MBSCCardLine extends X_BSC_CardLine {
 				calcParameter();
 			}
 			saveParameterOutValue();
-			result = new BigDecimal(getParameter_Out().getValue());
+			result = new BigDecimal(getParameter_Out().getValue(getCard().getPeriod()));
 			setValueNumber(result);
 			save();
 		}
@@ -141,7 +141,7 @@ public class MBSCCardLine extends X_BSC_CardLine {
 				param.setValue(Value);
 				param.save();
 			} else {
-				Value = param.getCurrentParameterLine().getValue();
+				Value = param.getValue(card.getPeriod());
 			}
 		}
 	}
@@ -151,8 +151,8 @@ public class MBSCCardLine extends X_BSC_CardLine {
 	 */
 	private void calcParameter() {
 		if (getBSC_Parameter_ID() != 0) {
-			getParameter().setPeriod(getCard().getPeriod());
-			setValue(getParameter().getValue());
+//			getParameter().setPeriod(getCard().getPeriod());
+			setValue(getParameter().getValue(getCard().getPeriod()));
 		} else {
 			setValue("");
 		}
@@ -314,12 +314,12 @@ public class MBSCCardLine extends X_BSC_CardLine {
 		MParameter param = null;
 		if( getBSC_Parameter_Out_ID() > 0) {
 			param = getParameter_Out();
-			param.setPeriod(card.getPeriod());
 		} else {
 			param = MParameter.createParameter(getName(), getDescription(), card.getC_BPartner_ID(), card.getC_Period_ID());
-			param.setPeriod(card.getPeriod());
+			param.save();
 			setParameter_Out(param);
 		}
+		param.setPeriod(card.getPeriod());
 		MParameterLine paramLine = param.getCurrentParameterLine();
 		paramLine.setValueMax(new BigDecimal(1));
 		paramLine.setValueMin(new BigDecimal(0));
@@ -329,6 +329,7 @@ public class MBSCCardLine extends X_BSC_CardLine {
 			paramLine.save();
 		}
 		setVar(param);
+		param.save();
 	}
 	
 	protected int getFormula_paramOutValue_ID() {
@@ -371,8 +372,8 @@ public class MBSCCardLine extends X_BSC_CardLine {
 						var.setBSC_Parameter_ID(valueParam.getBSC_Parameter_ID());
 						var.save();
 					} else {
-							pLine.setIsFormula(false);
-							paramVar.setValue(getValue(key).toString());
+						pLine.setIsFormula(false);
+						paramVar.setValue(getValue(key).toString());
 					}
 					pLine.setValueMax(getValueMax());
 					pLine.setValueMin(getValueMin());
@@ -387,7 +388,7 @@ public class MBSCCardLine extends X_BSC_CardLine {
 				pLine.setBSC_Formula_ID(getBSC_Formula_ID());
 				pLine.setValueMax(new BigDecimal(1));
 				pLine.setValueMin(new BigDecimal(0));
-				pLine.saveEx();
+				pLine.save();
 				setVar(paramVar);
 			}else {
 				try {
