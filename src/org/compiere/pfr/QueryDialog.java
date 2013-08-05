@@ -526,7 +526,7 @@ public class QueryDialog extends CDialog implements ActionListener, ChangeListen
 			}
 			// Column Left Bracket
 			column = advancedTable.getValueAt(row, INDEX_LEFTBRACKET);	
-			
+			value = (String)advancedTable.getValueAt(row, INDEX_RIGHTBRACKET);
 			if(column != null && !column.toString().isEmpty())
 			{
 				value = column instanceof ValueNamePair ? 
@@ -535,7 +535,7 @@ public class QueryDialog extends CDialog implements ActionListener, ChangeListen
 				if(value != null)
 					clause.setOpenBracket(value);
 			}
-			else if(advancedTable.getValueAt(row, INDEX_RIGHTBRACKET) != null && !value.isEmpty())
+			else if(value != null && !value.isEmpty())
 			{
 				hasError = true;
 				errorLog.append(valueCheck(clause.getLine(), INDEX_LEFTBRACKET, "required"));
@@ -648,6 +648,8 @@ public class QueryDialog extends CDialog implements ActionListener, ChangeListen
 			{
 				clause.setPFR_Calculation_ID(PFR_Calculation_ID);
 				clause.saveEx();
+				
+				advancedTable.setValueAt(clause.get_ID(), row, INDEX_LINEID);
 			}
 			else
 			{
