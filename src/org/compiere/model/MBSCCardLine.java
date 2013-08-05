@@ -316,6 +316,7 @@ public class MBSCCardLine extends X_BSC_CardLine {
 			param = getParameter_Out();
 		} else {
 			param = MParameter.createParameter(getName(), getDescription(), card.getC_BPartner_ID(), card.getC_Period_ID());
+			param.setModules("BSC");// TODO Пока так
 			param.save();
 			setParameter_Out(param);
 		}
