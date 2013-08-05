@@ -59,7 +59,6 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.ValueNamePair;
-import org.python.antlr.PythonParser.continue_stmt_return;
 
 public class QueryDialog extends CDialog implements ActionListener, ChangeListener, DataStatusListener 
 {
