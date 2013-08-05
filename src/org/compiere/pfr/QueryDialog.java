@@ -59,6 +59,7 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.ValueNamePair;
+import org.python.antlr.PythonParser.continue_stmt_return;
 
 public class QueryDialog extends CDialog implements ActionListener, ChangeListener, DataStatusListener 
 {
@@ -360,13 +361,13 @@ public class QueryDialog extends CDialog implements ActionListener, ChangeListen
 		tc.setHeaderValue(Msg.translate(Env.getCtx(), X_PFR_Calculation.COLUMNNAME_AD_Column_ID));
 		
 		// 7 = LineNo
-		VString vs = new VString("Line", true, true, true, 120, 120, "", "");
-		vs.setName ("Line");
+		VString vs = new VString(Msg.translate(Env.getCtx(), "Line"), true, true, true, 120, 120, "", "");
+		vs.setName (Msg.translate(Env.getCtx(), "Line"));
 		tc = advancedTable.getColumnModel().getColumn(INDEX_LINENO);	
 		dce = new FindCellEditor(vs);
 		tc.setCellEditor(dce);
 		tc.setPreferredWidth(120);
-		tc.setHeaderValue("Line");
+		tc.setHeaderValue(Msg.translate(Env.getCtx(), "Line"));
 		
 		// 0 = And/Or
 		andOr = new CComboBox(new String[] {"","AND","OR"});
@@ -417,13 +418,13 @@ public class QueryDialog extends CDialog implements ActionListener, ChangeListen
 		tc.setHeaderValue(")");
 		
 		// 8 = Line ID
-		vs = new VString("LineID", true, true, true, 0, 0, "", "");  
-		vs.setName ("LineID");
+		vs = new VString(Msg.translate(Env.getCtx(), "LineID"), true, true, true, 0, 0, "", "");  
+		vs.setName(Msg.translate(Env.getCtx(), "LineID"));
 		tc = advancedTable.getColumnModel().getColumn(INDEX_LINEID);	
 		dce = new FindCellEditor(vs);
 		tc.setCellEditor(dce);
 		tc.setPreferredWidth(120);
-		tc.setHeaderValue("LineID");
+		tc.setHeaderValue(Msg.translate(Env.getCtx(), "LineID"));
 				
 		//user query
 		refreshUserQueries();
@@ -445,7 +446,7 @@ public class QueryDialog extends CDialog implements ActionListener, ChangeListen
 		if (e.getActionCommand().equals(ConfirmPanel.A_CANCEL))
 			cmd_cancel();
 		else if (e.getActionCommand().equals(ConfirmPanel.A_OK))
-			cmd_cancel();
+			cmd_ok();
 		else if (e.getSource() == bNew)
 			cmd_new();
 		else if (e.getSource() == bSave)
@@ -470,9 +471,15 @@ public class QueryDialog extends CDialog implements ActionListener, ChangeListen
 		StringBuilder errorLog = new StringBuilder();
 		StringBuilder totalLog = new StringBuilder();
 		int AD_Reference_ID = 0;
+		boolean hasError = false;
+		
+		
+		sortByIndex(INDEX_LINENO);
 		
 		for (int row = 0; row < advancedTable.getRowCount(); row++)
 		{
+			errorLog.append(Msg.translate(Env.getCtx(), "Line")).append("[")
+			.append(advancedTable.getValueAt(row, INDEX_LINENO)).append("]: \n");
 			//	Column LineNo
 			column = advancedTable.getValueAt(row, INDEX_LINEID);
 		
@@ -486,48 +493,42 @@ public class QueryDialog extends CDialog implements ActionListener, ChangeListen
 			//	Column LineNo
 			column = advancedTable.getValueAt(row, INDEX_LINENO);
 		
-			if(column != null)
+			if(column != null && !column.toString().isEmpty())
 			{
 				value = column instanceof ValueNamePair ? 
 						((ValueNamePair)column).getValue() : column.toString();
 						
 				if(value != null && !value.isEmpty())
 					clause.setLine(Integer.parseInt(value));
-				else
-				{
-					errorLog.append(valueCheck(row, INDEX_LINENO, "не указано"));
-				}
 			}
 			else
-			{
-				errorLog.append(valueCheck(row, INDEX_LINENO, "не указано"));
+			{		
+				hasError = true;
+				errorLog.append(valueCheck(row, INDEX_ANDOR, "required"));
 			}
 			//	Column AND_OR
 			if(row > 0)
 			{
 				column = advancedTable.getValueAt(row, INDEX_ANDOR);	
 				
-				if(column != null)
+				if(column != null && !column.toString().isEmpty())
 				{
 					value = column instanceof ValueNamePair ? 
 							((ValueNamePair)column).getValue() : column.toString();
 					
 					if(value != null && !value.isEmpty())
 						clause.setAndOr(value);
-					else
-					{
-						errorLog.append(valueCheck(row, INDEX_ANDOR, "не заполнено"));
-					}
 				}
 				else
 				{
-					errorLog.append(valueCheck(row, INDEX_ANDOR, "не заполнено"));
+					hasError = true;
+					errorLog.append(valueCheck(clause.getLine(), INDEX_ANDOR, "required"));
 				}
 			}
 			// Column Left Bracket
 			column = advancedTable.getValueAt(row, INDEX_LEFTBRACKET);	
-			value = advancedTable.getValueAt(row, INDEX_RIGHTBRACKET).toString();
-			if(column != null)
+			
+			if(column != null && !column.toString().isEmpty())
 			{
 				value = column instanceof ValueNamePair ? 
 						((ValueNamePair)column).getValue() : column.toString();
@@ -535,48 +536,47 @@ public class QueryDialog extends CDialog implements ActionListener, ChangeListen
 				if(value != null)
 					clause.setOpenBracket(value);
 			}
-			else if(value != null && value.isEmpty())
+			else if(advancedTable.getValueAt(row, INDEX_RIGHTBRACKET) != null && !value.isEmpty())
 			{
-				errorLog.append(valueCheck(row, INDEX_LEFTBRACKET, "обязательно, либо не указывайте закрывающую скобку"));
+				hasError = true;
+				errorLog.append(valueCheck(clause.getLine(), INDEX_LEFTBRACKET, "required"));
 			}
 			// Column ColumnName
 			column = advancedTable.getValueAt(row, INDEX_COLUMNNAME);	
 			
-			if(column != null)
+			if(column != null && !column.toString().isEmpty())
 			{
 				value = column instanceof ValueNamePair ? 
 						((ValueNamePair)column).getValue() : column.toString();
 				
-				if(value == null)
-				{
-					errorLog.append(valueCheck(row, INDEX_COLUMNNAME, "не заполнено"));
+				if(value != null)
+				{				
+					clause.setAD_Column_ID(MColumn.getColumn_ID(MTable.getTableName(Env.getCtx(), AD_Table_ID), value));
+					clause.setColumnName(value);
 				}
-				
-				clause.setAD_Column_ID(MColumn.getColumn_ID(MTable.getTableName(Env.getCtx(), AD_Table_ID), value));
-				clause.setColumnName(value);
 			}
 			else
 			{
-				errorLog.append(valueCheck(row, INDEX_COLUMNNAME, "не заполнено"));
+				hasError = true;
+				errorLog.append(valueCheck(clause.getLine(), INDEX_COLUMNNAME, "required"));
 			}
 			// Column Operator
 			column = advancedTable.getValueAt(row, INDEX_OPERATOR);	
 			
-			if(column != null)
+			if(column != null && !column.toString().isEmpty())
 			{
 				value = column instanceof ValueNamePair ? 
 						((ValueNamePair)column).getValue() : column.toString();
 				
-				if(value == null)
+				if(value != null)
 				{
-					errorLog.append(valueCheck(row, INDEX_OPERATOR, "не заполнено"));
+					clause.setOperation(value);
 				}
-				
-				clause.setOperation(value);
 			}
 			else
 			{
-				errorLog.append(valueCheck(row, INDEX_OPERATOR, "не заполнено"));
+				hasError = true;
+				errorLog.append(valueCheck(clause.getLine(), INDEX_OPERATOR, "required"));
 			}
 			//Value2 
 			//if Operator = 'BETWEEN'
@@ -585,46 +585,46 @@ public class QueryDialog extends CDialog implements ActionListener, ChangeListen
 				// Column
 				column = advancedTable.getValueAt(row, INDEX_VALUE2);
 
-				if(column != null)
+				if(column != null && !column.toString().isEmpty())
 				{
 					value = column instanceof ValueNamePair ? 
 							((ValueNamePair)column).getValue() : column.toString();
 					
-					if(value == null)
-						errorLog.append(valueCheck(row, INDEX_VALUE2, "обязательно, либо выберите другой оператор"));
-					
-					clause.setValue2(value);
+					if(value != null)
+					{	
+						clause.setValue2(value);
+					}
 				}
 				else 
 				{
-					errorLog.append(valueCheck(row, INDEX_VALUE2, "обязательно, либо выберите другой оператор"));
+					hasError = true;
+					errorLog.append(valueCheck(clause.getLine(), INDEX_VALUE2, "required"));
 				}
 			}
 			// Column Value
 			column = advancedTable.getValueAt(row, INDEX_VALUE);
 			
-			if(column != null)
+			if(column != null && !column.toString().isEmpty())
 			{
 				value = column instanceof ValueNamePair ? 
 						((ValueNamePair)column).getValue() : column.toString();
 						
-				if(value == null)
+				if(value != null)
 				{
-					errorLog.append(valueCheck(row, INDEX_VALUE, "не заполнено"));
+					AD_Reference_ID = MColumn.get(Env.getCtx(), clause.getAD_Column_ID()).getAD_Reference_ID();
+					
+					if(AD_Reference_ID == DisplayType.YesNo)
+					{
+						value = value.equals("true") ? "Y" : "N";
+					}
+					
+					clause.setValue1(value);
 				}
-				
-				AD_Reference_ID = MColumn.get(Env.getCtx(), clause.getAD_Column_ID()).getAD_Reference_ID();
-				
-				if(AD_Reference_ID == DisplayType.YesNo)
-				{
-					value = value.equals("true") ? "Y" : "N";
-				}
-				
-				clause.setValue1(value);
 			}
 			else
 			{
-				errorLog.append(valueCheck(row, INDEX_VALUE, "не заполнено"));
+				hasError = true;
+				errorLog.append(valueCheck(clause.getLine(), INDEX_VALUE, "required"));
 			}
 			if(clause.getOpenBracket() != null && !clause.getOpenBracket().isEmpty())
 			{
@@ -635,18 +635,17 @@ public class QueryDialog extends CDialog implements ActionListener, ChangeListen
 					value = column instanceof ValueNamePair ? 
 							((ValueNamePair)column).getValue() : column.toString();
 					
-					if(value == null || value.isEmpty())
-						errorLog.append(valueCheck(row, INDEX_RIGHTBRACKET, "обязательно, либо не указывайте открывающуюся скобку"));
-					else
+					if(value != null)
 						clause.setCloseBracket(value);
 				}
 				else
 				{
-					errorLog.append(valueCheck(row, INDEX_RIGHTBRACKET, "обязательно, либо не указывайте открывающуюся скобку"));
+					hasError = true;
+					errorLog.append(valueCheck(clause.getLine(), INDEX_RIGHTBRACKET, "required"));
 				}
 			}
 			
-			if(errorLog.length() == 0)
+			if(!hasError)
 			{
 				clause.setPFR_Calculation_ID(PFR_Calculation_ID);
 				clause.saveEx();
@@ -654,15 +653,17 @@ public class QueryDialog extends CDialog implements ActionListener, ChangeListen
 			else
 			{
 				totalLog.append(errorLog).append("\n");
-				errorLog.setLength(0);
 			}
+			
+			errorLog.setLength(0);
+			hasError = false;
 		}
 		
 		if(totalLog.length() == 0)
 			cmd_cancel();
 		else
 		{
-			DialogAgreement.dialogOK("Ошибка", totalLog.toString(), 0);
+			DialogAgreement.dialogOK(Msg.translate(Env.getCtx(), "Error"), totalLog.toString(), 0);
 		}
 	}
 	
@@ -695,6 +696,17 @@ public class QueryDialog extends CDialog implements ActionListener, ChangeListen
 	}	//	cmd_ok
 	
 	/**
+	 *	Cancel Button pressed
+	 */
+	private void cmd_ok()
+	{
+		cmd_save();
+		advancedTable.stopEditor(false);
+		log.info("");
+		dispose();
+	}	//	cmd_ok
+	
+	/**
 	 *	Delete
 	 */
 	private void cmd_delete(boolean db)
@@ -705,9 +717,7 @@ public class QueryDialog extends CDialog implements ActionListener, ChangeListen
 		int deleteRows = 1;
 		
 		if(db)
-		{
-			boolean isDelete = false;
-			
+		{			
 			StringBuilder sql = new StringBuilder();
 			sql.append("DELETE FROM ");
 			sql.append(X_PFR_WhereClause.Table_Name);
@@ -715,16 +725,17 @@ public class QueryDialog extends CDialog implements ActionListener, ChangeListen
 			if(PFR_Calculation_ID > 0)
 			{
 				sql.append(" WHERE ").append(X_PFR_WhereClause.COLUMNNAME_PFR_Calculation_ID).append(" = ").append(PFR_Calculation_ID);
-				isDelete = true;
 			}
 			
 			Object value = advancedTable.getValueAt(row, INDEX_LINENO);
-			if(value != null && isDelete)
+			if(value != null)
 			{
 				sql.append(" AND ").append(X_PFR_WhereClause.COLUMNNAME_Line).append(" = ").append(value);
 			}
 			
-			if(isDelete)
+			String indexValue = advancedTable.getValueAt(row, INDEX_LINEID).toString();
+			
+			if(indexValue != null && !indexValue.isEmpty())
 			{
 				deleteRows = DB.executeUpdate(sql.toString(), null);
 			}
@@ -762,7 +773,37 @@ public class QueryDialog extends CDialog implements ActionListener, ChangeListen
 	 */
 	private void cmd_ignore()
 	{
-		cmd_delete(false);
+		int row = advancedTable.getSelectedRow();
+		String indexValue = advancedTable.getValueAt(row, INDEX_LINEID).toString();
+		
+		if(indexValue != null && !indexValue.isEmpty())
+		{
+			MPFRWhereClause clause = new MPFRWhereClause(Env.getCtx(), Integer.parseInt(indexValue), null);
+			
+			DefaultTableModel model = (DefaultTableModel)advancedTable.getModel();
+			
+			String columnName = clause.getColumnName();
+			String header = Msg.translate(Env.getCtx(), columnName);
+			
+			String op = MQuery.OPERATORS[0].getValue();
+			for(ValueNamePair oper : MQuery.OPERATORS){
+				if(oper.getValue().equals(clause.getOperation()))
+					op = oper.getName();
+			}
+			
+			model.setValueAt(clause.getLine(), row, INDEX_LINENO);
+			model.setValueAt(clause.getAndOr(), row, INDEX_ANDOR);
+			model.setValueAt(clause.getOpenBracket(), row, INDEX_LEFTBRACKET);
+			model.setValueAt(new ValueNamePair(columnName, header), row, INDEX_COLUMNNAME);
+			model.setValueAt(new ValueNamePair(clause.getOperation(), op), row, INDEX_OPERATOR);
+			model.setValueAt(new ValueNamePair(clause.getValue1(), clause.getValue1()), row, INDEX_VALUE);
+			model.setValueAt(new ValueNamePair(clause.getValue2(), clause.getValue2()), row, INDEX_VALUE2);
+			model.setValueAt(clause.getCloseBracket(), row, INDEX_RIGHTBRACKET);
+		}
+		else
+		{
+			cmd_delete(false);
+		}
 	}	//	cmd_ignore
 	
 	private int loadLines()
@@ -796,13 +837,8 @@ public class QueryDialog extends CDialog implements ActionListener, ChangeListen
 						wh.getPFR_WhereClause_ID()});
 			n++;
 		}
-
-		TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(advancedTable.getModel());
-		sorter.toggleSortOrder(INDEX_LINENO);
-		sorter.sort();
-		advancedTable.setRowSorter(sorter);
-	
-		advancedTable.requestFocusInWindow();
+		
+		sortByIndex(INDEX_LINENO);
 		
 		return n;
 	}
@@ -810,8 +846,19 @@ public class QueryDialog extends CDialog implements ActionListener, ChangeListen
 	private String valueCheck(int row, int column, String message)
 	 {
 	  StringBuilder errors = new StringBuilder();
-	  return errors.append("Строка[").append(row).append("], значение в столбце[").append(advancedTable.getColumnModel().getColumn(column).getHeaderValue().toString()).append("] ").append(message).append("\n") .toString();
+	  return errors.append(Msg.translate(Env.getCtx(), "Field").toLowerCase()).append(" \"").append(advancedTable.getColumnModel().getColumn(column).getHeaderValue()).append("\" ")
+				.append(Msg.translate(Env.getCtx(), message)).append("\n").toString();
 	 }
+	
+	private void sortByIndex(int index)
+	{
+		TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(advancedTable.getModel());
+		sorter.toggleSortOrder(index);
+		sorter.sort();
+		advancedTable.setRowSorter(sorter);
+	
+		advancedTable.requestFocusInWindow();
+	}
 	
 	/**
 	 *	Display current count
