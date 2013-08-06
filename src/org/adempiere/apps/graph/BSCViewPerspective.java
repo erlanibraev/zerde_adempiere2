@@ -39,10 +39,9 @@ public class BSCViewPerspective extends CPanel implements FormPanel, ActionListe
 	private static CLogger log = CLogger.getCLogger (BSCViewPerspective.class);
 
 	private int m_WindowNo = 0;
-	private CPanel mainPanel = new CPanel();
+	private BSCPerspectivePanel mainPanel = null;
 	private ConfirmPanel confirmPanel = new ConfirmPanel();
 	private FormFrame m_frame;
-	private List<MBSCPerspective> perspectives;
 
 	/* (non-Javadoc)
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
@@ -62,75 +61,18 @@ public class BSCViewPerspective extends CPanel implements FormPanel, ActionListe
 		log.fine("BSCViewPerspective");
 		m_WindowNo = WindowNo;
 		m_frame = frame;
-		
-		prepare();
-		
 		try {
-			if (getPerspectives() == null) {
-				throw new Exception("BSCViewPerspective: Perspective not found");
-			}
-			
-			
 			confirmPanel.addActionListener(this);
-			initMainPanel();
-			
-			CScrollPane scroll =  new CScrollPane(mainPanel);
-			m_frame.getContentPane().add(scroll, BorderLayout.CENTER);
-			m_frame.getContentPane().add(confirmPanel, BorderLayout.SOUTH);
-			
+			mainPanel = new BSCPerspectivePanel();
+			if (mainPanel != null) {
+				CScrollPane scroll =  new CScrollPane(mainPanel);
+				//mainPanel.addComponentsToPane();
+				m_frame.getContentPane().add(scroll, BorderLayout.CENTER);
+				m_frame.getContentPane().add(confirmPanel, BorderLayout.SOUTH);
+			}
 		} catch (Exception e) {
 			log.log(Level.SEVERE,e.getMessage());
 		}
-	}
-
-	/**
-	 * 
-	 */
-	private void initMainPanel() {
-        
-        GridLayout l = new GridLayout(4,1);
-		mainPanel.setLayout(l);//new GridBagLayout()
-		load();
-	}
-	
-	private void load() {
-		mainPanel.removeAll();
-		if (getPerspectives() != null) {
-			GridBagConstraints gbc;
-			int i = 0;
-			for(MBSCPerspective perspective:getPerspectives()) {
-				gbc = new GridBagConstraints();
-				gbc.fill = GridBagConstraints.BOTH;
-				gbc.gridx = 0;
-				gbc.gridy = i++;
-				addPerpsective(perspective,gbc);
-			}
-		}
-		
-		mainPanel.validate();
-		mainPanel.repaint();
-		mainPanel.updateUI();
-	}
-	/**
-	 * @param perspective
-	 */
-	private void addPerpsective(MBSCPerspective perspective, GridBagConstraints gbc) {
-		
-		if (perspective == null) {
-			return;
-		}
-		
-		BSCPerspectivePanel panel = new BSCPerspectivePanel(perspective);
-		panel.addActionListener(this);
-		mainPanel.add(panel, gbc);
-//		mainPanel.add(panel);
-	}
-
-	/**
-	 * 
-	 */
-	private void prepare() {
-		loadPerspectives();
 	}
 
 	/* (non-Javadoc)
@@ -144,15 +86,4 @@ public class BSCViewPerspective extends CPanel implements FormPanel, ActionListe
 		removeAll();
 	}
 	
-	public List<MBSCPerspective> getPerspectives() {
-		return perspectives;
-	}
-
-	public void setPerspectives(List<MBSCPerspective> perspective) {
-		this.perspectives = perspective;
-	}
-	
-	private void loadPerspectives() {
-		setPerspectives(MBSCPerspective.getPerspectives());
-	}
 }

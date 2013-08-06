@@ -30,7 +30,7 @@ public class X_BSC_Parameter extends PO implements I_BSC_Parameter, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130803L;
+	private static final long serialVersionUID = 20130806L;
 
     /** the default Constructor */
     public X_BSC_Parameter(Properties ctx)
@@ -154,12 +154,36 @@ public class X_BSC_Parameter extends PO implements I_BSC_Parameter, I_Persistent
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
+	/** Set IsExports.
+		@param IsExports 
+		IsExports
+	  */
+	public void setIsExports (boolean IsExports)
+	{
+		set_Value (COLUMNNAME_IsExports, Boolean.valueOf(IsExports));
+	}
+
+	/** Get IsExports.
+		@return IsExports
+	  */
+	public boolean isExports () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsExports);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
 	/** Modules AD_Reference_ID=1000171 */
 	public static final int MODULES_AD_Reference_ID=1000171;
-	/** BSC = BSC */
-	public static final String MODULES_BSC = "BSC";
 	/** BPM = BPM */
 	public static final String MODULES_BPM = "BPM";
+	/** BSC = BSC */
+	public static final String MODULES_BSC = "BSC";
 	/** FI = FI */
 	public static final String MODULES_FI = "FI";
 	/** HRM = HRM */

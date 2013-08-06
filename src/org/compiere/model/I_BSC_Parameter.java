@@ -137,6 +137,19 @@ public interface I_BSC_Parameter
 	  */
 	public boolean isActive();
 
+    /** Column name IsExports */
+    public static final String COLUMNNAME_IsExports = "IsExports";
+
+	/** Set IsExports.
+	  * IsExports
+	  */
+	public void setIsExports (boolean IsExports);
+
+	/** Get IsExports.
+	  * IsExports
+	  */
+	public boolean isExports();
+
     /** Column name Modules */
     public static final String COLUMNNAME_Modules = "Modules";
 
