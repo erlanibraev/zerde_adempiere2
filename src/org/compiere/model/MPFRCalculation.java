@@ -3,6 +3,7 @@ package org.compiere.model;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -92,6 +93,43 @@ public class MPFRCalculation extends X_PFR_Calculation
     	{
     		rs.close(); pstmt.close();
     		rs = null; pstmt = null;
+    	}
+    	
+    	if(retValue != null)
+    	{
+    		int C_Period_ID = MPeriod.getC_Period_ID(Env.getCtx(), new Timestamp(System.currentTimeMillis()), Env.getAD_Org_ID(Env.getCtx()));
+    		
+    		MPFRStorage storage = MPFRStorage.getLastStorage(Env.getCtx(), PFR_Calculation_ID, null);
+    		
+    		if(C_Period_ID > 0)
+    		{   
+    			MPeriod period = new MPeriod(Env.getCtx(), C_Period_ID, null);
+    			//Storage doesn't have history for this calculation ID
+    			//So, it creates new storage-value
+	    		if(storage  == null)
+	    		{
+	    			storage = new MPFRStorage(Env.getCtx(), 0, null);
+	    			storage.setStartDate(period.getStartDate());
+		    		storage.setPFR_Calculation_ID(PFR_Calculation_ID);
+		    		storage.setCalculatedValue(retValue.toString());
+	    		}
+	    		//Storage's last value contains different calculated_value
+	    		//So, this storage_value's end_date updated to current
+	    		//And in storage inserted new storage_value with current start_date date
+	    		else if(!storage.getCalculatedValue().equals(retValue.toString()))
+	    		{
+	    			storage.setEndDate(period.getStartDate());
+	    			storage.saveEx();
+	    			
+	    			storage = new MPFRStorage(Env.getCtx(), 0, null);
+	    			storage.setStartDate(period.getStartDate());
+		    		storage.setPFR_Calculation_ID(PFR_Calculation_ID);
+		    		storage.setCalculatedValue(retValue.toString());
+	    		}
+	    		storage.setEndDate(period.getEndDate());
+	    		
+	    		storage.saveEx();
+    		}
     	}
     	
     	return retValue;

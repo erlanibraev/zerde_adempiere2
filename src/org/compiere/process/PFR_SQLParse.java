@@ -1,9 +1,12 @@
 package org.compiere.process;
 
+import java.awt.Dialog;
 import java.math.BigDecimal;
 import java.util.logging.Level;
 
+import org.compiere.apps.ADialog;
 import org.compiere.model.MPFRCalculation;
+import org.compiere.util.Msg;
 
 public class PFR_SQLParse extends SvrProcess 
 {
@@ -35,6 +38,10 @@ public class PFR_SQLParse extends SvrProcess
 	{
 		
 		Object obj = MPFRCalculation.getValueFromSQL(calc.get_ID());
+		
+		ADialog dialog = new ADialog();
+		
+		dialog.ask(25, null, Msg.translate(getCtx(), "result") + ": " , String.valueOf(obj));
 		
 		return "Return Value = " + String.valueOf(obj);
 	}
