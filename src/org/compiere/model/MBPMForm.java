@@ -4,6 +4,7 @@
 package org.compiere.model;
 
 import java.sql.ResultSet;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -42,7 +43,20 @@ public class MBPMForm extends X_BPM_Form {
 		super(ctx, rs, trxName);
 	}
 	
-	
+	public static MBPMFormLine[] getLines(Properties ctx, int BPM_Form_ID, String trxName){
+		
+		List<MBPMFormLine> list = new Query(ctx, I_BPM_FormLine.Table_Name, "BPM_Form_ID=?", trxName)
+		.setParameters(BPM_Form_ID)
+		.setOnlyActiveRecords(true)
+		.list();
+		
+		MBPMFormLine[] retValue = new MBPMFormLine[list.size ()];
+		
+		list.toArray (retValue);
+		
+		return retValue;
+		
+	}
 
 
 

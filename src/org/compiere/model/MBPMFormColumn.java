@@ -4,6 +4,7 @@
 package org.compiere.model;
 
 import java.sql.ResultSet;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -42,5 +43,17 @@ public class MBPMFormColumn extends X_BPM_FormColumn {
 		super(ctx, rs, trxName);
 	}
 
-
+	public static MBPMFormColumn[] getLineFormCode(Properties ctx, int BPM_FormCode_ID, String trxName){
+		
+		List<MBPMFormColumn> list = new Query(ctx, I_BPM_FormColumn.Table_Name, "BPM_FormCode_ID=?", trxName)
+		.setParameters(BPM_FormCode_ID).setOrderBy(I_BPM_FormColumn.COLUMNNAME_OrderColumn)
+		.setOnlyActiveRecords(true)
+		.list();
+		
+		MBPMFormColumn[] retValue = new MBPMFormColumn[list.size ()];
+		list.toArray (retValue);
+	
+		return retValue;
+	}
+	
 }

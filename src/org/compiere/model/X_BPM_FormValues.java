@@ -22,10 +22,10 @@ import java.sql.ResultSet;
 import java.util.Properties;
 import org.compiere.util.Env;
 
-/** Generated Model for BPM_FormCell
+/** Generated Model for BPM_FormValues
  *  @author Adempiere (generated) 
  *  @version Release 3.7.0LTS - $Id$ */
-public class X_BPM_FormCell extends PO implements I_BPM_FormCell, I_Persistent 
+public class X_BPM_FormValues extends PO implements I_BPM_FormValues, I_Persistent 
 {
 
 	/**
@@ -34,28 +34,27 @@ public class X_BPM_FormCell extends PO implements I_BPM_FormCell, I_Persistent
 	private static final long serialVersionUID = 20130806L;
 
     /** the default Constructor */
-    public X_BPM_FormCell(Properties ctx)
+    public X_BPM_FormValues(Properties ctx)
     { 
       super (ctx, null, null);
     } 
 
     /** Standard Constructor */
-    public X_BPM_FormCell (Properties ctx, int BPM_FormCell_ID, String trxName)
+    public X_BPM_FormValues (Properties ctx, int BPM_FormValues_ID, String trxName)
     {
-      super (ctx, BPM_FormCell_ID, trxName);
-      /** if (BPM_FormCell_ID == 0)
+      super (ctx, BPM_FormValues_ID, trxName);
+      /** if (BPM_FormValues_ID == 0)
         {
-			setBPM_FormCell_ID (0);
 			setBPM_FormColumn_ID (0);
 			setBPM_FormLine_ID (0);
+			setBPM_FormValues_ID (0);
 			setCellValue (Env.ZERO);
 // 0
-			setOrderColumn (0);
         } */
     }
 
     /** Load Constructor */
-    public X_BPM_FormCell (Properties ctx, ResultSet rs, String trxName)
+    public X_BPM_FormValues (Properties ctx, ResultSet rs, String trxName)
     {
       super (ctx, rs, trxName);
     }
@@ -77,29 +76,23 @@ public class X_BPM_FormCell extends PO implements I_BPM_FormCell, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_BPM_FormCell[")
+      StringBuffer sb = new StringBuffer ("X_BPM_FormValues[")
         .append(get_ID()).append("]");
       return sb.toString();
     }
 
-	/** Set BPM_FormCell ID.
-		@param BPM_FormCell_ID BPM_FormCell ID	  */
-	public void setBPM_FormCell_ID (int BPM_FormCell_ID)
+	/** Set AlternateValue.
+		@param AlternateValue AlternateValue	  */
+	public void setAlternateValue (String AlternateValue)
 	{
-		if (BPM_FormCell_ID < 1) 
-			set_ValueNoCheck (COLUMNNAME_BPM_FormCell_ID, null);
-		else 
-			set_ValueNoCheck (COLUMNNAME_BPM_FormCell_ID, Integer.valueOf(BPM_FormCell_ID));
+		set_Value (COLUMNNAME_AlternateValue, AlternateValue);
 	}
 
-	/** Get BPM_FormCell ID.
-		@return BPM_FormCell ID	  */
-	public int getBPM_FormCell_ID () 
+	/** Get AlternateValue.
+		@return AlternateValue	  */
+	public String getAlternateValue () 
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_BPM_FormCell_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
+		return (String)get_Value(COLUMNNAME_AlternateValue);
 	}
 
 	public I_BPM_FormColumn getBPM_FormColumn() throws RuntimeException
@@ -152,26 +145,21 @@ public class X_BPM_FormCell extends PO implements I_BPM_FormCell, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_BSC_Parameter getBSC_Parameter() throws RuntimeException
-    {
-		return (I_BSC_Parameter)MTable.get(getCtx(), I_BSC_Parameter.Table_Name)
-			.getPO(getBSC_Parameter_ID(), get_TrxName());	}
-
-	/** Set BSC_Parameter ID.
-		@param BSC_Parameter_ID BSC_Parameter ID	  */
-	public void setBSC_Parameter_ID (int BSC_Parameter_ID)
+	/** Set BPM_FormValues ID.
+		@param BPM_FormValues_ID BPM_FormValues ID	  */
+	public void setBPM_FormValues_ID (int BPM_FormValues_ID)
 	{
-		if (BSC_Parameter_ID < 1) 
-			set_Value (COLUMNNAME_BSC_Parameter_ID, null);
+		if (BPM_FormValues_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_BPM_FormValues_ID, null);
 		else 
-			set_Value (COLUMNNAME_BSC_Parameter_ID, Integer.valueOf(BSC_Parameter_ID));
+			set_ValueNoCheck (COLUMNNAME_BPM_FormValues_ID, Integer.valueOf(BPM_FormValues_ID));
 	}
 
-	/** Get BSC_Parameter ID.
-		@return BSC_Parameter ID	  */
-	public int getBSC_Parameter_ID () 
+	/** Get BPM_FormValues ID.
+		@return BPM_FormValues ID	  */
+	public int getBPM_FormValues_ID () 
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_BSC_Parameter_ID);
+		Integer ii = (Integer)get_Value(COLUMNNAME_BPM_FormValues_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -192,22 +180,5 @@ public class X_BPM_FormCell extends PO implements I_BPM_FormCell, I_Persistent
 		if (bd == null)
 			 return Env.ZERO;
 		return bd;
-	}
-
-	/** Set OrderColumn.
-		@param OrderColumn OrderColumn	  */
-	public void setOrderColumn (int OrderColumn)
-	{
-		set_Value (COLUMNNAME_OrderColumn, Integer.valueOf(OrderColumn));
-	}
-
-	/** Get OrderColumn.
-		@return OrderColumn	  */
-	public int getOrderColumn () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_OrderColumn);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
 	}
 }
