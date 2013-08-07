@@ -4,13 +4,13 @@ import java.sql.ResultSet;
 import java.util.List;
 import java.util.Properties;
 
+import org.compiere.pfr.QueryDialog;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 
 public class MPFRWhereClause extends X_PFR_WhereClause 
 {
-
 	/**
 	 * 
 	 */
@@ -50,12 +50,11 @@ public class MPFRWhereClause extends X_PFR_WhereClause
     	StringBuilder sql = new StringBuilder();
     	MPFRWhereClause[] clauses = MPFRCalculation.getLinesWhere(Env.getCtx(), PFR_Calculation_ID, null);
     	
-    	if(clauses.length > 0)
-    		sql.append(" WHERE ");
+    	sql.append(" WHERE ");    	
     	
     	String quotesRequired = "";
-    	String dateRequiredOpen = "cast(";
-    	String dateRequiredClose = " as date)";
+    	String dateRequiredOpen = "";
+    	String dateRequiredClose = "";
     	
     	int counter = 0;    	
     	MColumn column = null;
@@ -91,10 +90,23 @@ public class MPFRWhereClause extends X_PFR_WhereClause
     		sql.append(clause.getOpenBracket()).append(" \n");
     		sql.append(clause.getColumnName()).append(" \n");
     		sql.append(clause.getOperation()).append(" \n");
-    		sql.append(dateRequiredOpen)
+    		if(clause.getOperation().trim().equals(QueryDialog.OPERATORS[QueryDialog.IN_INDEX].getName().trim()))
+    		{
+    			String subSql = MPFRCalculation.getSQLValue(Integer.parseInt(clause.getValue1()));
+        		
+    			sql.append(dateRequiredOpen)
+	    		.append(quotesRequired);
+    			sql.append("(").append(subSql).append(")");
+    		}
+    		else
+    		{
+        		sql.append(dateRequiredOpen)
 	    		.append(quotesRequired)
-	    		.append(clause.getValue1())
-	    		.append(quotesRequired)
+        		.append(clause.getValue1());
+    		}
+
+	    		
+	    		sql.append(quotesRequired)
 	    		.append(dateRequiredClose)
 	    		.append(" \n");
     		if(clause.getValue2() != null && !clause.getValue2().isEmpty())
@@ -111,6 +123,12 @@ public class MPFRWhereClause extends X_PFR_WhereClause
     		
     		counter++;
     	}
+    	
+    	if(clauses.length > 0)
+    		sql.append(" AND ");
+    	
+    	sql.append("AD_Client_ID = ").append(Env.getAD_Client_ID(Env.getCtx())).append(" \n")
+    	.append(" AND AD_Org_ID = ").append(Env.getAD_Org_ID(Env.getCtx()));
     	
     	return sql.toString();
     }
