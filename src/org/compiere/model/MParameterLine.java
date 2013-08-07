@@ -135,7 +135,7 @@ public class MParameterLine extends X_BSC_ParameterLine {
 		String result = "0";
 		if (isFormula()) {
 			MParameter parameter = getParameter();
-			result = parameter.getValue(getPeriod());
+			result = parameter.getValue(getPeriod(), sqlParam);
 		}
 		if (isImported() && getPFR_Calculation_ID() > 0) {
 			try {
