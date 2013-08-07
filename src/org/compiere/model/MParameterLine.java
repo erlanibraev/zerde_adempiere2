@@ -127,7 +127,7 @@ public class MParameterLine extends X_BSC_ParameterLine {
 		}
 		if (isImported() && getPFR_Calculation_ID() > 0) {
 			try {
-				Object obj = MPFRCalculation.getValueFromSQL(getPFR_Calculation_ID());
+				Object obj = MPFRCalculation.getValueFromSQL(getPFR_Calculation_ID(), null);
 				result = obj.toString();
 			} catch(Exception e) {
 				log.log(Level.SEVERE,"BSCParameterLine.calculate - ", e);
