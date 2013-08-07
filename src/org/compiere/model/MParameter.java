@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -199,7 +200,7 @@ public class MParameter extends X_BSC_Parameter {
 		}	
 	}
 	
-	protected static String runCalc(MParameter parameter, MPeriod period, Set<Integer> forCycle) throws Exception {
+	protected static String runCalc(MParameter parameter, MPeriod period, Set<Integer> forCycle, LinkedHashMap<String, Object> sqlParam) throws Exception {
 		String result = null;
 		if (parameter == null || parameter.getParameterLine(period) == null) {
 			return "0";
@@ -220,14 +221,14 @@ public class MParameter extends X_BSC_Parameter {
 					// Здесь вызваем исключение, что найден цикл!
 					throw new Exception("MParameter: detected cycle in "+parameter.getName()+"; ID - "+parameter.getBSC_Parameter_ID()+". "+param.getName()+" ID - "+param.getBSC_Parameter_ID()+" parameter exists");
 				}
-				String value = runCalc(param, period, forCycle);
+				String value = runCalc(param, period, forCycle,sqlParam);
 				param.getParameterLine(period).setValue(value);
 				args.put(key, value);
 			}
 			result = MFormula.calc(formula.getFormula(), args);
 			// result = parameter.getParameterLine(period).calculate();
 		} else {
-			result = parameter.getParameterLine(period).getValue();
+			result = parameter.getParameterLine(period).getValue(sqlParam);
 		}
 		return (result == null ? "0" : result);
 	}
@@ -415,16 +416,24 @@ public class MParameter extends X_BSC_Parameter {
 		return getValue(getCurrentPeriod());
 	}
 
+	public String getValue(LinkedHashMap<String, Object> sqlParam) {
+		return getValue(getCurrentPeriod(),sqlParam);
+	}
+
+	public String getValue(MPeriod period) {
+		return getValue(period,null);
+	}
+
 	/**
 	 * @return
 	 */
-	public String getValue(MPeriod period) {
+	public String getValue(MPeriod period, LinkedHashMap<String, Object> sqlParam) {
 		String result = "0";
 		setPeriod(period);
 		if (getParameterLine(period) != null) {
 			// result = getCurrentParameterLine().getValue();
 			try {
-				result = MParameter.runCalc(this, period, null);
+				result = MParameter.runCalc(this, period, null, sqlParam);
 				result = (result == null ? "0" : result);
 			} catch(Exception e) {
 				log.log(Level.SEVERE,"MParameter.getValue() - ",e);

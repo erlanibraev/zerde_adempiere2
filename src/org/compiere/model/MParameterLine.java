@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -106,6 +107,17 @@ public class MParameterLine extends X_BSC_ParameterLine {
 		return result;
 	}
 	
+	public String getValue(LinkedHashMap<String, Object> sqlParam) {
+		String result = (super.getValueNumber() == null ? "0" : super.getValueNumber());
+		if (isFormula()) {
+			result = calculate(sqlParam);
+			setValue(result);
+		} else if (isImported() ) {
+			result = calculate(sqlParam);
+			setValue(result);
+		}
+		return result;
+	}
 	public void setValue(String Value) {
 		if(!isFormula()) {
 			super.setValueNumber(Value);
@@ -116,18 +128,18 @@ public class MParameterLine extends X_BSC_ParameterLine {
 	}
 	
 	public String calculate() {
+		return calculate(null);
+	}
+	
+	public String calculate(LinkedHashMap<String, Object> sqlParam) {
 		String result = "0";
 		if (isFormula()) {
-//			MFormula formula = new MFormula(getCtx(), getBSC_Formula_ID(), get_TrxName());
-//			formula.setArguments(getArguments());
-//			result = formula.calculate();
-			
 			MParameter parameter = getParameter();
 			result = parameter.getValue(getPeriod());
 		}
 		if (isImported() && getPFR_Calculation_ID() > 0) {
 			try {
-				Object obj = MPFRCalculation.getValueFromSQL(getPFR_Calculation_ID(), null);
+				Object obj = MPFRCalculation.getValueFromSQL(getPFR_Calculation_ID(), sqlParam);
 				result = obj.toString();
 			} catch(Exception e) {
 				log.log(Level.SEVERE,"BSCParameterLine.calculate - ", e);

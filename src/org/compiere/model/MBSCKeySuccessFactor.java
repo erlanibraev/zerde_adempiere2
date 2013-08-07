@@ -82,4 +82,24 @@ public class MBSCKeySuccessFactor extends X_BSC_KeySuccessFactor {
 		return result;
 	}
 
+	public static MBSCKeySuccessFactor get(int ID) {
+		MBSCKeySuccessFactor result = null;
+		String sql = "SELECT * FROM BSC_KeySuccessFactor WHERE BSC_KeySuccessFactor_ID = ?";
+	    PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			pstmt = DB.prepareStatement(sql,null);
+			pstmt.setInt(1, ID);
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				result = new MBSCKeySuccessFactor(Env.getCtx(), rs, null);
+			}
+		} catch (SQLException e) {
+			log.log(Level.SEVERE, "MBSCKeySuccessFactor:", e);
+		} finally {
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
+		}	
+		return result;
+	}
 }
