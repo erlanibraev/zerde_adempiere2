@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -67,9 +68,12 @@ public class MPFRCalculation extends X_PFR_Calculation
 		return retValue;
 	}
     
-    public static Object getValueFromSQL(int PFR_Calculation_ID) throws SQLException
+    public static Object getValueFromSQL(int PFR_Calculation_ID, LinkedHashMap<String, Object> parameters) throws SQLException
     {
-    	String sql = getSQLValue(PFR_Calculation_ID);
+    	if(parameters == null)
+    		parameters = new LinkedHashMap<String, Object>();
+    	
+    	String sql = getSQLValue(PFR_Calculation_ID, parameters);
     	
     	PreparedStatement pstmt = null;
     	ResultSet rs = null;
@@ -138,7 +142,7 @@ public class MPFRCalculation extends X_PFR_Calculation
     /** 
      * 
      */
-    public static String getSQLValue(int PFR_Calculation_ID)
+    public static String getSQLValue(int PFR_Calculation_ID, LinkedHashMap<String, Object> parameters)
     {
     	//General Query
     	StringBuilder sql = new StringBuilder();
@@ -160,7 +164,7 @@ public class MPFRCalculation extends X_PFR_Calculation
     	// <<--    	
     	// -->> Generate 'WHERE PART' OF SQL
     	
-    	sqlWhere.append(MPFRWhereClause.getWhereClause(PFR_Calculation_ID));
+    	sqlWhere.append(MPFRWhereClause.getWhereClause(PFR_Calculation_ID, parameters));
     	
     	// <<--
     	// -->> Generate 'GROUP BY PART' OF SQL

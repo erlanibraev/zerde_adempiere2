@@ -1,9 +1,8 @@
 package org.compiere.model;
 
 import java.sql.ResultSet;
-import java.util.List;
+import java.util.LinkedHashMap;
 import java.util.Properties;
-
 import org.compiere.pfr.QueryDialog;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
@@ -45,7 +44,7 @@ public class MPFRWhereClause extends X_PFR_WhereClause
      * @param PFR_Calculation_ID
      * @return
      */
-    public static String getWhereClause(int PFR_Calculation_ID)
+    public static String getWhereClause(int PFR_Calculation_ID, LinkedHashMap<String, Object> parameters)
     {
     	StringBuilder sql = new StringBuilder();
     	MPFRWhereClause[] clauses = MPFRCalculation.getLinesWhere(Env.getCtx(), PFR_Calculation_ID, null);
@@ -59,9 +58,17 @@ public class MPFRWhereClause extends X_PFR_WhereClause
     	int counter = 0;    	
     	MColumn column = null;
     	
+    	String value1 = "";
+    	
     	for(MPFRWhereClause clause : clauses)
     	{
+    		
     		column = new MColumn(Env.getCtx(), clause.getAD_Column_ID(), null);
+    		
+    		if(parameters.get(clause.getColumnName()) != null)
+    			value1 = parameters.get(clause.getColumnName()).toString();
+    		else
+    			value1 = clause.getValue1();
     		
     		if(column.getAD_Reference_ID() == DisplayType.String
     				|| column.getAD_Reference_ID() == DisplayType.Text
@@ -92,7 +99,7 @@ public class MPFRWhereClause extends X_PFR_WhereClause
     		sql.append(clause.getOperation()).append(" \n");
     		if(clause.getOperation().trim().equals(QueryDialog.OPERATORS[QueryDialog.IN_INDEX].getName().trim()))
     		{
-    			String subSql = MPFRCalculation.getSQLValue(Integer.parseInt(clause.getValue1()));
+    			String subSql = MPFRCalculation.getSQLValue(Integer.parseInt(value1), parameters);
         		
     			sql.append(dateRequiredOpen)
 	    		.append(quotesRequired);
@@ -102,7 +109,7 @@ public class MPFRWhereClause extends X_PFR_WhereClause
     		{
         		sql.append(dateRequiredOpen)
 	    		.append(quotesRequired)
-        		.append(clause.getValue1());
+        		.append(value1);
     		}
 
 	    		
