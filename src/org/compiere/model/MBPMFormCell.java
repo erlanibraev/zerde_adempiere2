@@ -6,6 +6,7 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
+
 /**
  * @author V.Sokolov
  *
@@ -43,7 +44,13 @@ public class MBPMFormCell extends X_BPM_FormCell {
 	}
 	
 	
-
+	/* 
+	 */
+	@Override
+	protected boolean beforeDelete() {
+		// You can not delete records
+		return false;
+	}
 
 
 }

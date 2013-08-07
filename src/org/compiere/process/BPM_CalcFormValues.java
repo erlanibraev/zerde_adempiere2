@@ -7,9 +7,9 @@ import org.compiere.model.I_BSC_ParameterLine;
 import org.compiere.model.MBPMForm;
 import org.compiere.model.MBPMFormCell;
 import org.compiere.model.MBPMFormLine;
+import org.compiere.model.MBPMFormValues;
 import org.compiere.model.MParameterLine;
 import org.compiere.model.Query;
-import org.compiere.model.X_BPM_FormValues;
 import org.compiere.model.X_BSC_ParameterLine;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -41,7 +41,10 @@ public class BPM_CalcFormValues extends SvrProcess {
 			formCell = MBPMFormLine.getLines(m_ctx, l.getBPM_FormLine_ID(), get_TrxName());
 			for(MBPMFormCell cell: formCell){
 				
-				X_BPM_FormValues value = new X_BPM_FormValues(m_ctx, 0, get_TrxName());
+				MBPMFormValues value = MBPMFormValues.getFormValueLine(l.getBPM_FormLine_ID(), cell.getBPM_FormColumn_ID());
+				if(value == null)
+					value = new MBPMFormValues(m_ctx, 0, get_TrxName());
+				
 				value.setBPM_FormLine_ID(l.getBPM_FormLine_ID());
 				value.setBPM_FormColumn_ID(cell.getBPM_FormColumn_ID());
 				
@@ -51,14 +54,14 @@ public class BPM_CalcFormValues extends SvrProcess {
 						String result = par.calculate();
 						value.setAlternateValue(result);
 						try{
-							value.setCellValue(new BigDecimal(Double.parseDouble(result)));
+							value.setCellValue(new BigDecimal(result).setScale(2, BigDecimal.ROUND_HALF_UP));
 						}catch(Exception ex){ /* */ }
 						finally{
 							value.saveEx();
 						}
 					}
 				}else{
-					value.setCellValue(cell.getCellValue());
+					value.setCellValue(cell.getCellValue().setScale(2, BigDecimal.ROUND_HALF_UP));
 					value.saveEx();
 				}
 			}
@@ -70,7 +73,7 @@ public class BPM_CalcFormValues extends SvrProcess {
 	
 	private X_BSC_ParameterLine[] getLineParameter(int BSC_Parameter_ID){
 		
-		List<X_BSC_ParameterLine> list = new Query(m_ctx, I_BSC_ParameterLine.Table_Name, "BSC_Parameter_ID=?", null)
+		List<X_BSC_ParameterLine> list = new Query(m_ctx, I_BSC_ParameterLine.Table_Name, X_BSC_ParameterLine.COLUMNNAME_BSC_Parameter_ID+" = ? ", null)
 		.setParameters(BSC_Parameter_ID)
 		.setOnlyActiveRecords(true)
 		.list();

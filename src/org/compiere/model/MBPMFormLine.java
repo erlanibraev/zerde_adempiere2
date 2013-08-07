@@ -3,7 +3,6 @@
  */
 package org.compiere.model;
 
-import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.List;
 import java.util.Properties;
@@ -57,7 +56,7 @@ public class MBPMFormLine extends X_BPM_FormLine {
 		listColumn = MBPMFormColumn.getLineFormCode(getCtx(), form.getBPM_FormCode_ID(), get_TrxName());
 		
 		if(listColumn.length == 0){
-			DialogAgreement.dialogOK(Msg.translate(Env.getCtx(), "Error"), "Отсутствуют колонки по для [ "+form.getBPM_FormCode().getName()+" ]", 0);
+			DialogAgreement.dialogOK(Msg.translate(Env.getCtx(), "Error"), "Отсутствуют колонки для [ "+form.getBPM_FormCode().getName()+" ]", 0);
 			return false;
 		}
 			
