@@ -2,6 +2,7 @@ package org.compiere.process;
 
 import java.awt.Dialog;
 import java.math.BigDecimal;
+import java.util.LinkedHashMap;
 import java.util.logging.Level;
 
 import org.compiere.apps.ADialog;
@@ -36,8 +37,9 @@ public class PFR_SQLParse extends SvrProcess
 	@Override
 	protected String doIt() throws Exception 
 	{
-		
-		Object obj = MPFRCalculation.getValueFromSQL(calc.get_ID());
+		LinkedHashMap<String, Object> parameters = new LinkedHashMap<String, Object>();
+		parameters.put("C_Charge_ID", "1000087");
+		Object obj = MPFRCalculation.getValueFromSQL(calc.get_ID(), parameters);
 		
 		return "Return Value = " + String.valueOf(obj);
 	}
