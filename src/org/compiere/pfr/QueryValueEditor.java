@@ -11,10 +11,13 @@ import org.compiere.grid.ed.VEditor;
 import org.compiere.grid.ed.VEditorFactory;
 import org.compiere.grid.ed.VNumber;
 import org.compiere.grid.ed.VString;
+import org.compiere.model.I_PFR_Calculation;
 import org.compiere.model.MColumn;
 import org.compiere.model.MQuery;
+import org.compiere.model.X_PFR_Calculation;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
+import org.compiere.util.Env;
 import org.compiere.util.ValueNamePair;
 
 public class QueryValueEditor extends AbstractCellEditor implements TableCellEditor 
@@ -71,7 +74,7 @@ public class QueryValueEditor extends AbstractCellEditor implements TableCellEdi
 		m_between = false;
 		Object betweenValue = table.getModel().getValueAt(row, QueryDialog.INDEX_OPERATOR);
 		if (m_valueToColumn &&  betweenValue != null 
-			&& betweenValue.equals(MQuery.OPERATORS[MQuery.BETWEEN_INDEX]))
+			&& betweenValue.equals(QueryDialog.OPERATORS[MQuery.BETWEEN_INDEX]))
 			m_between = true;
 
 		boolean enabled = !m_valueToColumn || (m_valueToColumn && m_between); 
@@ -87,8 +90,14 @@ public class QueryValueEditor extends AbstractCellEditor implements TableCellEdi
 		MColumn field = queryDialog.getTargetMField(columnName);
 		if (field.isKey())
 			m_editor = new VNumber(columnName, false, false, true, DisplayType.Integer, columnName);
-		else
-			m_editor = VEditorFactory.getEditor(field, true);
+		else{
+			String validationSql = "";
+			if(betweenValue.equals(QueryDialog.OPERATORS[QueryDialog.IN_INDEX])){
+				field = MColumn.get(Env.getCtx(), MColumn.getColumn_ID(I_PFR_Calculation.Table_Name, X_PFR_Calculation.COLUMNNAME_PFR_Calculation_ID));
+				validationSql = X_PFR_Calculation.COLUMNNAME_isSubQuery+"='Y'";
+			}
+			m_editor = VEditorFactory.getEditor(field, true, validationSql);
+		}
 		if (m_editor == null)
 			m_editor = new VString();
 		

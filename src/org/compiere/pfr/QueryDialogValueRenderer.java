@@ -87,7 +87,7 @@ public class QueryDialogValueRenderer extends DefaultTableCellRenderer
 		m_between = false;
 		Object betweenValue = table.getModel().getValueAt(row, QueryDialog.INDEX_OPERATOR);
 		if (m_valueToColumn && betweenValue != null 
-			&& betweenValue.equals(MQuery.OPERATORS[MQuery.BETWEEN_INDEX]))
+			&& betweenValue.equals(QueryDialog.OPERATORS[MQuery.BETWEEN_INDEX]))
 			m_between = true;
 		boolean enabled = !m_valueToColumn || (m_valueToColumn && m_between); 
 

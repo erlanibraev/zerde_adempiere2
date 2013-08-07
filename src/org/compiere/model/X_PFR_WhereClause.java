@@ -29,7 +29,7 @@ public class X_PFR_WhereClause extends PO implements I_PFR_WhereClause, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130801L;
+	private static final long serialVersionUID = 20130807L;
 
     /** the default Constructor */
     public X_PFR_WhereClause(Properties ctx)
@@ -83,9 +83,9 @@ public class X_PFR_WhereClause extends PO implements I_PFR_WhereClause, I_Persis
 		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_Name)
 			.getPO(getAD_Column_ID(), get_TrxName());	}
 
-	/** Set AD_Column_ID.
+	/** Set Column.
 		@param AD_Column_ID 
-		Поле ограничение
+		Column in the table
 	  */
 	public void setAD_Column_ID (int AD_Column_ID)
 	{
@@ -95,8 +95,8 @@ public class X_PFR_WhereClause extends PO implements I_PFR_WhereClause, I_Persis
 			set_Value (COLUMNNAME_AD_Column_ID, Integer.valueOf(AD_Column_ID));
 	}
 
-	/** Get AD_Column_ID.
-		@return Поле ограничение
+	/** Get Column.
+		@return Column in the table
 	  */
 	public int getAD_Column_ID () 
 	{
@@ -106,12 +106,19 @@ public class X_PFR_WhereClause extends PO implements I_PFR_WhereClause, I_Persis
 		return ii.intValue();
 	}
 
+	/** AndOr AD_Reference_ID=204 */
+	public static final int ANDOR_AD_Reference_ID=204;
+	/** And = A */
+	public static final String ANDOR_And = "A";
+	/** Or = O */
+	public static final String ANDOR_Or = "O";
 	/** Set And/Or.
 		@param AndOr 
 		Logical operation: AND or OR
 	  */
 	public void setAndOr (String AndOr)
 	{
+
 		set_Value (COLUMNNAME_AndOr, AndOr);
 	}
 
@@ -194,12 +201,33 @@ public class X_PFR_WhereClause extends PO implements I_PFR_WhereClause, I_Persis
 		return (String)get_Value(COLUMNNAME_OpenBracket);
 	}
 
+	/** Operation AD_Reference_ID=205 */
+	public static final int OPERATION_AD_Reference_ID=205;
+	/**  = = == */
+	public static final String OPERATION_Eq = "==";
+	/** >= = >= */
+	public static final String OPERATION_GtEq = ">=";
+	/** > = >> */
+	public static final String OPERATION_Gt = ">>";
+	/** < = << */
+	public static final String OPERATION_Le = "<<";
+	/**  ~ = ~~ */
+	public static final String OPERATION_Like = "~~";
+	/** <= = <= */
+	public static final String OPERATION_LeEq = "<=";
+	/** |<x>| = AB */
+	public static final String OPERATION_X = "AB";
+	/** sql = SQ */
+	public static final String OPERATION_Sql = "SQ";
+	/** != = != */
+	public static final String OPERATION_NotEq = "!=";
 	/** Set Operation.
 		@param Operation 
 		Compare Operation
 	  */
 	public void setOperation (String Operation)
 	{
+
 		set_Value (COLUMNNAME_Operation, Operation);
 	}
 
@@ -231,6 +259,31 @@ public class X_PFR_WhereClause extends PO implements I_PFR_WhereClause, I_Persis
 	public int getPFR_Calculation_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PFR_Calculation_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public I_PFR_Calculation getPFR_CalculationSubQuery() throws RuntimeException
+    {
+		return (I_PFR_Calculation)MTable.get(getCtx(), I_PFR_Calculation.Table_Name)
+			.getPO(getPFR_CalculationSubQuery_ID(), get_TrxName());	}
+
+	/** Set PFR_CalculationSubQuery_ID.
+		@param PFR_CalculationSubQuery_ID PFR_CalculationSubQuery_ID	  */
+	public void setPFR_CalculationSubQuery_ID (int PFR_CalculationSubQuery_ID)
+	{
+		if (PFR_CalculationSubQuery_ID < 1) 
+			set_Value (COLUMNNAME_PFR_CalculationSubQuery_ID, null);
+		else 
+			set_Value (COLUMNNAME_PFR_CalculationSubQuery_ID, Integer.valueOf(PFR_CalculationSubQuery_ID));
+	}
+
+	/** Get PFR_CalculationSubQuery_ID.
+		@return PFR_CalculationSubQuery_ID	  */
+	public int getPFR_CalculationSubQuery_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_PFR_CalculationSubQuery_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

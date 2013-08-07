@@ -129,7 +129,25 @@ public class QueryDialog extends CDialog implements ActionListener, ChangeListen
 	public static final int		INDEX_RIGHTBRACKET = 7;
 	/** Index Line ID = 8	 		*/
 	public static final int		INDEX_LINEID = 8;
+	
+	/** IN	*/
+	public static final String	IN = " IN ";
+	/** IN - 8		*/
+	public static final int		IN_INDEX = 9;
 
+	/**	Operators for Strings				*/
+	public static final ValueNamePair[]	OPERATORS = new ValueNamePair[] {
+		new ValueNamePair (MQuery.EQUAL,			" = "),		//	0
+		new ValueNamePair (MQuery.NOT_EQUAL,		" != "),
+		new ValueNamePair (MQuery.LIKE,				" ~ "),
+		new ValueNamePair (MQuery.NOT_LIKE,			" !~ "),
+		new ValueNamePair (MQuery.GREATER,			" > "),
+		new ValueNamePair (MQuery.GREATER_EQUAL,	" >= "),	//	5
+		new ValueNamePair (MQuery.LESS,				" < "),
+		new ValueNamePair (MQuery.LESS_EQUAL,		" <= "),
+		new ValueNamePair (MQuery.BETWEEN,			" >-< "),	//	8
+		new ValueNamePair (IN,						" IN ")		// 	9
+	};
 	
 	private static CLogger log = CLogger.getCLogger(Find.class);
 	private ValueNamePair[] columnValueNamePairs;
@@ -385,7 +403,7 @@ public class QueryDialog extends CDialog implements ActionListener, ChangeListen
 		tc.setHeaderValue("(");
 
 		//	3 = Operators
-		operators = new CComboBox(MQuery.OPERATORS);
+		operators = new CComboBox(OPERATORS);
 		tc = advancedTable.getColumnModel().getColumn(INDEX_OPERATOR);
 		tc.setPreferredWidth(55);
 		dce = new FindCellEditor(operators);
@@ -683,9 +701,9 @@ public class QueryDialog extends CDialog implements ActionListener, ChangeListen
 		int rows = model.getRowCount();
 		
 		if(rows == 0)
-			model.addRow(new Object[] {String.valueOf(lineNo), "","", null, MQuery.OPERATORS[MQuery.EQUAL_INDEX], null, null,"", ""});
+			model.addRow(new Object[] {String.valueOf(lineNo), "","", null, OPERATORS[MQuery.EQUAL_INDEX], null, null,"", ""});
 		else
-			model.addRow(new Object[] {String.valueOf(lineNo), "AND","", null, MQuery.OPERATORS[MQuery.EQUAL_INDEX], null, null,"", ""});
+			model.addRow(new Object[] {String.valueOf(lineNo), "AND","", null, OPERATORS[MQuery.EQUAL_INDEX], null, null,"", ""});
 		
 		advancedTable.requestFocusInWindow();
 	}	//	cmd_new
@@ -792,8 +810,8 @@ public class QueryDialog extends CDialog implements ActionListener, ChangeListen
 			String columnName = clause.getColumnName();
 			String header = Msg.translate(Env.getCtx(), columnName);
 			
-			String op = MQuery.OPERATORS[0].getValue();
-			for(ValueNamePair oper : MQuery.OPERATORS){
+			String op = OPERATORS[0].getValue();
+			for(ValueNamePair oper : OPERATORS){
 				if(oper.getValue().equals(clause.getOperation()))
 					op = oper.getName();
 			}
@@ -822,8 +840,8 @@ public class QueryDialog extends CDialog implements ActionListener, ChangeListen
 		int n = 0;
 		for(MPFRWhereClause wh : clauses)
 		{
-			String op = MQuery.OPERATORS[0].getValue();
-			for(ValueNamePair oper : MQuery.OPERATORS){
+			String op = OPERATORS[0].getValue();
+			for(ValueNamePair oper : OPERATORS){
 				if(oper.getValue().equals(wh.getOperation()))
 					op = oper.getName();
 			}

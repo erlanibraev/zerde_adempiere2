@@ -17,11 +17,9 @@
 /** Generated Model - DO NOT CHANGE */
 package org.compiere.model;
 
-import java.math.BigDecimal;
 import java.sql.ResultSet;
-import java.sql.Timestamp;
 import java.util.Properties;
-import org.compiere.util.Env;
+import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PFR_Calculation
  *  @author Adempiere (generated) 
@@ -32,7 +30,7 @@ public class X_PFR_Calculation extends PO implements I_PFR_Calculation, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130730L;
+	private static final long serialVersionUID = 20130807L;
 
     /** the default Constructor */
     public X_PFR_Calculation(Properties ctx)
@@ -48,6 +46,9 @@ public class X_PFR_Calculation extends PO implements I_PFR_Calculation, I_Persis
         {
 			setAD_Column_ID (0);
 			setAD_Table_ID (0);
+			setisSubQuery (false);
+// N
+			setName (null);
 			setPFR_CalcType_ID (0);
 			setPFR_Calculation_ID (0);
         } */
@@ -137,109 +138,51 @@ public class X_PFR_Calculation extends PO implements I_PFR_Calculation, I_Persis
 		return ii.intValue();
 	}
 
-	/** Set columnDate.
-		@param columnDate 
-		Дата
-	  */
-	public void setcolumnDate (Timestamp columnDate)
+	/** Set isSubQuery.
+		@param isSubQuery isSubQuery	  */
+	public void setisSubQuery (boolean isSubQuery)
 	{
-		set_Value (COLUMNNAME_columnDate, columnDate);
+		set_Value (COLUMNNAME_isSubQuery, Boolean.valueOf(isSubQuery));
 	}
 
-	/** Get columnDate.
-		@return Дата
-	  */
-	public Timestamp getcolumnDate () 
+	/** Get isSubQuery.
+		@return isSubQuery	  */
+	public boolean isSubQuery () 
 	{
-		return (Timestamp)get_Value(COLUMNNAME_columnDate);
+		Object oo = get_Value(COLUMNNAME_isSubQuery);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
-	/** Set columnString.
-		@param columnString 
-		Строка
+	/** Set Name.
+		@param Name 
+		Alphanumeric identifier of the entity
 	  */
-	public void setcolumnString (String columnString)
+	public void setName (String Name)
 	{
-		set_Value (COLUMNNAME_columnString, columnString);
+		set_Value (COLUMNNAME_Name, Name);
 	}
 
-	/** Get columnString.
-		@return Строка
+	/** Get Name.
+		@return Alphanumeric identifier of the entity
 	  */
-	public String getcolumnString () 
+	public String getName () 
 	{
-		return (String)get_Value(COLUMNNAME_columnString);
+		return (String)get_Value(COLUMNNAME_Name);
 	}
 
-	/** Set columnSum.
-		@param columnSum 
-		Сумма. Число с плавающей точкой
-	  */
-	public void setcolumnSum (BigDecimal columnSum)
-	{
-		set_Value (COLUMNNAME_columnSum, columnSum);
-	}
-
-	/** Get columnSum.
-		@return Сумма. Число с плавающей точкой
-	  */
-	public BigDecimal getcolumnSum () 
-	{
-		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_columnSum);
-		if (bd == null)
-			 return Env.ZERO;
-		return bd;
-	}
-
-	/** columnYesNo AD_Reference_ID=319 */
-	public static final int COLUMNYESNO_AD_Reference_ID=319;
-	/** Yes = Y */
-	public static final String COLUMNYESNO_Yes = "Y";
-	/** No = N */
-	public static final String COLUMNYESNO_No = "N";
-	/** Set columnYesNo.
-		@param columnYesNo 
-		Логическая переменная
-	  */
-	public void setcolumnYesNo (String columnYesNo)
-	{
-
-		set_Value (COLUMNNAME_columnYesNo, columnYesNo);
-	}
-
-	/** Get columnYesNo.
-		@return Логическая переменная
-	  */
-	public String getcolumnYesNo () 
-	{
-		return (String)get_Value(COLUMNNAME_columnYesNo);
-	}
-
-	/** dstColumnType AD_Reference_ID=237 */
-	public static final int DSTCOLUMNTYPE_AD_Reference_ID=237;
-	/** Relative Period = R */
-	public static final String DSTCOLUMNTYPE_RelativePeriod = "R";
-	/** Calculation = C */
-	public static final String DSTCOLUMNTYPE_Calculation = "C";
-	/** Segment Value = S */
-	public static final String DSTCOLUMNTYPE_SegmentValue = "S";
-	/** Set dstColumnType.
-		@param dstColumnType 
-		Тип данных поля
-	  */
-	public void setdstColumnType (String dstColumnType)
-	{
-
-		set_Value (COLUMNNAME_dstColumnType, dstColumnType);
-	}
-
-	/** Get dstColumnType.
-		@return Тип данных поля
-	  */
-	public String getdstColumnType () 
-	{
-		return (String)get_Value(COLUMNNAME_dstColumnType);
-	}
+    /** Get Record ID/ColumnName
+        @return ID/ColumnName pair
+      */
+    public KeyNamePair getKeyNamePair() 
+    {
+        return new KeyNamePair(get_ID(), getName());
+    }
 
 	public I_PFR_CalcType getPFR_CalcType() throws RuntimeException
     {
@@ -287,5 +230,22 @@ public class X_PFR_Calculation extends PO implements I_PFR_Calculation, I_Persis
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Settings.
+		@param Settings 
+		Настройки
+	  */
+	public void setSettings (String Settings)
+	{
+		set_Value (COLUMNNAME_Settings, Settings);
+	}
+
+	/** Get Settings.
+		@return Настройки
+	  */
+	public String getSettings () 
+	{
+		return (String)get_Value(COLUMNNAME_Settings);
 	}
 }

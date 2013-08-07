@@ -30,7 +30,7 @@ public interface I_PFR_WhereClause
     /** TableName=PFR_WhereClause */
     public static final String Table_Name = "PFR_WhereClause";
 
-    /** AD_Table_ID=1000307 */
+    /** AD_Table_ID=1000309 */
     public static final int Table_ID = MTable.getTable_ID(Table_Name);
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
@@ -52,13 +52,13 @@ public interface I_PFR_WhereClause
     /** Column name AD_Column_ID */
     public static final String COLUMNNAME_AD_Column_ID = "AD_Column_ID";
 
-	/** Set AD_Column_ID.
-	  * Поле ограничение
+	/** Set Column.
+	  * Column in the table
 	  */
 	public void setAD_Column_ID (int AD_Column_ID);
 
-	/** Get AD_Column_ID.
-	  * Поле ограничение
+	/** Get Column.
+	  * Column in the table
 	  */
 	public int getAD_Column_ID();
 
@@ -194,6 +194,17 @@ public interface I_PFR_WhereClause
 	public int getPFR_Calculation_ID();
 
 	public I_PFR_Calculation getPFR_Calculation() throws RuntimeException;
+
+    /** Column name PFR_CalculationSubQuery_ID */
+    public static final String COLUMNNAME_PFR_CalculationSubQuery_ID = "PFR_CalculationSubQuery_ID";
+
+	/** Set PFR_CalculationSubQuery_ID	  */
+	public void setPFR_CalculationSubQuery_ID (int PFR_CalculationSubQuery_ID);
+
+	/** Get PFR_CalculationSubQuery_ID	  */
+	public int getPFR_CalculationSubQuery_ID();
+
+	public I_PFR_Calculation getPFR_CalculationSubQuery() throws RuntimeException;
 
     /** Column name PFR_WhereClause_ID */
     public static final String COLUMNNAME_PFR_WhereClause_ID = "PFR_WhereClause_ID";

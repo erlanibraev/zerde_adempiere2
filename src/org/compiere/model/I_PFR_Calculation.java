@@ -30,7 +30,7 @@ public interface I_PFR_Calculation
     /** TableName=PFR_Calculation */
     public static final String Table_Name = "PFR_Calculation";
 
-    /** AD_Table_ID=1000304 */
+    /** AD_Table_ID=1000306 */
     public static final int Table_ID = MTable.getTable_ID(Table_Name);
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
@@ -92,58 +92,6 @@ public interface I_PFR_Calculation
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
 
-    /** Column name columnDate */
-    public static final String COLUMNNAME_columnDate = "columnDate";
-
-	/** Set columnDate.
-	  * Дата
-	  */
-	public void setcolumnDate (Timestamp columnDate);
-
-	/** Get columnDate.
-	  * Дата
-	  */
-	public Timestamp getcolumnDate();
-
-    /** Column name columnString */
-    public static final String COLUMNNAME_columnString = "columnString";
-
-	/** Set columnString.
-	  * Строка
-	  */
-	public void setcolumnString (String columnString);
-
-	/** Get columnString.
-	  * Строка
-	  */
-	public String getcolumnString();
-
-    /** Column name columnSum */
-    public static final String COLUMNNAME_columnSum = "columnSum";
-
-	/** Set columnSum.
-	  * Сумма. Число с плавающей точкой
-	  */
-	public void setcolumnSum (BigDecimal columnSum);
-
-	/** Get columnSum.
-	  * Сумма. Число с плавающей точкой
-	  */
-	public BigDecimal getcolumnSum();
-
-    /** Column name columnYesNo */
-    public static final String COLUMNNAME_columnYesNo = "columnYesNo";
-
-	/** Set columnYesNo.
-	  * Логическая переменная
-	  */
-	public void setcolumnYesNo (String columnYesNo);
-
-	/** Get columnYesNo.
-	  * Логическая переменная
-	  */
-	public String getcolumnYesNo();
-
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
 
@@ -160,19 +108,6 @@ public interface I_PFR_Calculation
 	  */
 	public int getCreatedBy();
 
-    /** Column name dstColumnType */
-    public static final String COLUMNNAME_dstColumnType = "dstColumnType";
-
-	/** Set dstColumnType.
-	  * Тип данных поля
-	  */
-	public void setdstColumnType (String dstColumnType);
-
-	/** Get dstColumnType.
-	  * Тип данных поля
-	  */
-	public String getdstColumnType();
-
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
 
@@ -185,6 +120,28 @@ public interface I_PFR_Calculation
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name isSubQuery */
+    public static final String COLUMNNAME_isSubQuery = "isSubQuery";
+
+	/** Set isSubQuery	  */
+	public void setisSubQuery (boolean isSubQuery);
+
+	/** Get isSubQuery	  */
+	public boolean isSubQuery();
+
+    /** Column name Name */
+    public static final String COLUMNNAME_Name = "Name";
+
+	/** Set Name.
+	  * Alphanumeric identifier of the entity
+	  */
+	public void setName (String Name);
+
+	/** Get Name.
+	  * Alphanumeric identifier of the entity
+	  */
+	public String getName();
 
     /** Column name PFR_CalcType_ID */
     public static final String COLUMNNAME_PFR_CalcType_ID = "PFR_CalcType_ID";
@@ -209,6 +166,19 @@ public interface I_PFR_Calculation
 
 	/** Get PFR_Calculation ID	  */
 	public int getPFR_Calculation_ID();
+
+    /** Column name Settings */
+    public static final String COLUMNNAME_Settings = "Settings";
+
+	/** Set Settings.
+	  * Настройки
+	  */
+	public void setSettings (String Settings);
+
+	/** Get Settings.
+	  * Настройки
+	  */
+	public String getSettings();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
