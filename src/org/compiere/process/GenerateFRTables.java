@@ -22,13 +22,12 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.model.MColumn;
 import org.compiere.model.MTable;
-import org.compiere.model.M_Element;
 import org.compiere.model.PO;
 import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Trx;
 
 /**
  *	Create tables and copy columns from one table to other
@@ -86,12 +85,12 @@ public class GenerateFRTables extends SvrProcess
 		StringBuffer sql2=new StringBuffer();
 		log.fine("SQL=" + sql.toString());
 		try	{  // find counter
-			int iColumnID=0;
 			PreparedStatement pstmt = DB.prepareStatement(sql.toString(), trxName);
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next())	{
 				String sCounter = rs.getString(1);
-				String sETN = "FR_"+extTableName+sCounter;       	
+				String sETN = "FR_"+extTableName+sCounter;
+				sETN=sETN.replaceAll(" ", "_");
 				sql2.setLength(0);
 				sql2.append("SELECT AD_Table_ID FROM AD_Table "
 							  + " WHERE Name = '"+ sETN + "' AND IsActive = 'Y' ");
@@ -111,12 +110,9 @@ public class GenerateFRTables extends SvrProcess
 				}
 				
 				DB.executeUpdate("DROP TABLE IF EXISTS "+sETN, null);
-				createTable(sETN, sCounter);
+				if (createTable(sETN, sCounter)!=0) continue;
 			
 				MTable extTable = new MTable(m_ctx, i_AD_Table_ID, trxName);
-				/*if (i_AD_Table_ID>0) {
-					extTable.delete(true, trxName);
-				}*/
 				extTable.setName(sETN);
 				extTable.setTableName(sETN);
 				extTable.set_ValueOfColumn("AD_Client_ID", 0);
@@ -126,7 +122,7 @@ public class GenerateFRTables extends SvrProcess
 				if (extTable.save(trxName)) {
 					i_AD_Table_ID=extTable.get_ID();
 
-					ProcessInfo pi = new ProcessInfo("Test Import Model", 1000000);
+					ProcessInfo pi = new ProcessInfo("Generate Table", 1000000);
 					pi.setAD_Client_ID(getAD_Client_ID());
 					pi.setAD_User_ID(getAD_User_ID());
 				
@@ -136,81 +132,10 @@ public class GenerateFRTables extends SvrProcess
 					list.toArray(parameters);
 					pi.setParameter(parameters);
 					pi.setRecord_ID(i_AD_Table_ID);
-				
 					TableCreateColumns tcc = new TableCreateColumns();
-				
-					tcc.startProcess(Env.getCtx(), pi, null);
+					Trx m_trx = Trx.get(trxName, true);
+					tcc.startProcess(Env.getCtx(), pi, m_trx);
 				}
-				
-				
-				sql2.setLength(0);
-				sql2.append("SELECT FR_Column_ID, AD_Element_ID FROM FR_Column "
-							  + " WHERE FR_Table_ID = "+ p_main_FR_Table_ID + " AND IsActive = 'Y' "
-							  + " AND Counter='"+sCounter+"'");
-				try	{  // find AD_Element_ID
-					pstmt2 = DB.prepareStatement(sql2.toString(), trxName);
-					rs2 = pstmt2.executeQuery();
-					while (rs2.next())	{
-						int iFRColumnID = rs2.getInt(1);
-						int iElementID = rs2.getInt(2);       	
-						
-						if (i_AD_Table_ID>0) {
-							sql2.setLength(0);
-							sql2.append("SELECT AD_Column_ID FROM AD_Column "
-									  + " WHERE AD_Table_ID = "+ i_AD_Table_ID + " AND IsActive = 'Y' "
-									  + " AND AD_Element_ID = "+iElementID);
-
-							PreparedStatement pstmt3=null;
-							ResultSet rs3=null;
-							try	{  // find AD_Element_ID
-								pstmt3 = DB.prepareStatement(sql2.toString(), trxName);
-								rs3 = pstmt3.executeQuery();
-								while (rs3.next())	{
-									iColumnID = rs3.getInt(1);
-									break;
-								}
-							}
-							catch (SQLException e)	{
-									log.log(Level.SEVERE, sql2.toString(), e);
-							}		
-							rs3.close();
-							pstmt3.close();
-						}
-						
-						if (iColumnID==0) { // Column is not exist
-							M_Element extElement = new M_Element(m_ctx, iElementID, trxName);
-							MColumn extColumn = new MColumn(extTable, 
-								extElement.getName(), 
-								extElement.get_ValueAsInt("FieldLength"), 
-								extElement.get_ValueAsInt("AD_Reference_ID"),"");
-							extColumn.setAD_Element_ID(iElementID);
-							extColumn.setVersion(Env.ONE);
-							extColumn.setFieldLength(extElement.getFieldLength());
-							//extColumn.setIsKey(true);
-							extColumn.setIsMandatory(true);
-							extColumn.setIsAlwaysUpdateable(true);
-							extColumn.save(trxName);
-							if (extColumn.save()) {
-								//extColumn.syncDatabase();
-							}
-							iColumnID=extColumn.get_ID();
-						}
-						sql2.setLength(0);
-						sql2.append("UPDATE FR_Column SET AD_Table_ID="+i_AD_Table_ID + 
-								    ", AD_Column_ID ="+iColumnID
-								  + " WHERE FR_Column_ID = "+iFRColumnID);
-						DB.executeUpdate(sql2.toString(), trxName);
-						
-							
-					}
-				}
-				catch (SQLException e)	{
-						log.log(Level.SEVERE, sql2.toString(), e);
-				}
-				
-				//MColumn col = new MColumn(extTable);
-				//if (col!=null)
-				//  col.syncDatabase();
 			}
 			rs.close();
 			pstmt.close();
@@ -221,7 +146,7 @@ public class GenerateFRTables extends SvrProcess
 		return "#" + m_count;
 	}
 
-	private void createTable(String sETN, String sCounter) {
+	private int createTable(String sETN, String sCounter) {
 		StringBuffer sqlCreate = new StringBuffer(
 				  "CREATE TABLE "+sETN+" \n"
 				 +"(\n");
@@ -321,7 +246,7 @@ public class GenerateFRTables extends SvrProcess
 			+"CONSTRAINT "+sETN+"_isactive_check CHECK (isactive = ANY "
 			+"(ARRAY['Y'::bpchar, 'N'::bpchar]))\n)"
 			+"WITH (OIDS=FALSE);");
-		DB.executeUpdate(sqlCreate.toString(),null);
+		return DB.executeUpdate(sqlCreate.toString(),trxName);
 	}
 
 }	//	GenerateFRTables

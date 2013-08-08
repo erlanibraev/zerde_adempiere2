@@ -72,31 +72,37 @@ public class FillFRTables extends SvrProcess
 		PO p_po = frTable.getPO(p_FR_Table_ID, trxName);
 		int index = p_po.get_ColumnIndex("AD_Table_ID");
 		if (index != -1) p_main_AD_Table_ID = (Integer)p_po.get_Value(index);
+		index = p_po.get_ColumnIndex("Name");
+		String extTableName=null;
+		if (index != -1) extTableName = (String)p_po.get_Value(index);
+		
 		MTable mainTable = new MTable(m_ctx, p_main_AD_Table_ID, trxName);
 
 		StringBuffer sql = new StringBuffer(
-				  "SELECT AD_Table_ID FROM FR_Column "
+				  "SELECT Counter FROM FR_Column "
 				  + " WHERE FR_Table_ID = "+ p_FR_Table_ID + " AND IsActive = 'Y' "
 				  + " AND AD_Client_ID ="+getAD_Client_ID()
-				  + " GROUP BY AD_Table_ID");
+				  + " GROUP BY Counter");
 		StringBuffer sql2=new StringBuffer();
 		log.fine("SQL=" + sql.toString());
 		try	{  // find counter
 			PreparedStatement pstmt = DB.prepareStatement(sql.toString(), trxName);
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next())	{
-				int i_AD_Table_ID=rs.getInt(1);
-				MTable updTable = new MTable(m_ctx, i_AD_Table_ID, trxName);
+				String sCounter=rs.getString(1);
+				String sTableName="FR_"+extTableName+sCounter;
+				sTableName=sTableName.replaceAll(" ", "_");
 				sql2.setLength(0);
 				sql2.append("SELECT a.FR_Column_ID, a.AccumulationType, b.ColumnName"
 					+" FROM FR_Column AS a"
 					+" LEFT JOIN AD_Element AS b"
 					+" ON  b.AD_Element_ID = a.AD_Element_ID"
-					+" WHERE a.AD_Table_ID = " + i_AD_Table_ID
+					+" WHERE a.counter = " + sCounter
+					+" AND a.FR_Table_ID =" + p_FR_Table_ID 
 					+" AND a.IsActive = 'Y' "
 					+" AND a.AD_Client_ID ="+getAD_Client_ID()
 					);
-				StringBuffer sqlUpdate = new StringBuffer("INSERT INTO "+updTable.getName()
+				StringBuffer sqlUpdate = new StringBuffer("INSERT INTO "+sTableName
 						+"( AD_Client_ID, AD_Org_ID, IsActive, Created, CreatedBy, Updated, UpdatedBy,");
 				StringBuffer sqlSelect = new StringBuffer("SELECT "+getAD_Client_ID()+", AD_Org_ID, 'Y', SysDate," 
 						+getAD_User_ID()+", SysDate, "+getAD_User_ID()+", ");
@@ -110,7 +116,6 @@ public class FillFRTables extends SvrProcess
 					rs2 = pstmt2.executeQuery();
 					int i=0;
 					while (rs2.next())	{
-						//int i_FR_Column_ID = rs2.getInt(1);
 						String sAT = rs2.getString(2);
 						String sColName = rs2.getString(3);
 						if (rs2.getRow()>1) {
@@ -139,17 +144,15 @@ public class FillFRTables extends SvrProcess
 						} else if ("7".equals(sAT)) {
 							sColName="SUM("+sColName+")";
 						}
-						sqlSelect.append(sColName);
+						sqlSelect.append("COALESCE("+sColName+",0)");
 					}
 				}
 				catch (SQLException e)	{
 						log.log(Level.SEVERE, sql2.toString(), e);
 				}
 				sqlSelect.append(" FROM "+mainTable.getTableName()+sqlWhere+sqlGroupBy);
-				//sqlUpdate.append("DELETE FROM TABLE "+mainTable.getName());
-				//sqlUpdate.setLength(0);
 				sqlUpdate.append(") "+sqlSelect);
-				DB.executeUpdate("DELETE FROM "+updTable.getName()+
+				DB.executeUpdate("DELETE FROM "+sTableName+
 						" WHERE AD_Client_ID="+getAD_Client_ID(),trxName);
 				DB.executeUpdate(sqlUpdate.toString(),trxName);
 			}
