@@ -30,6 +30,56 @@ public class DSR_DataCollection
 		getValues();
 	}
 	
+	public DSR_Row getHeader()
+	{
+		return header;
+	}
+	
+	public DSR_Row getRow(int index)
+	{
+		if(index >= 0 && index < elementData.size())
+			return elementData.get(index);
+		else
+			return null;
+	}
+	
+	public int size()
+	{
+		return elementData.size();
+	}
+	
+	public String toString()
+	{
+		int size = this.size();
+		int cellSize = 0;
+		
+		StringBuilder builder = new StringBuilder();
+		
+		DSR_Row header = this.getHeader();
+		
+		builder.append(header);
+		builder.append("\n");
+		
+		for(int i = 0; i < size; i++)
+		{			
+			DSR_Row row = this.getRow(i);
+			cellSize = row.size();
+			
+			for(int j = 0; j < cellSize; j++)
+			{
+				DSR_Cell cell = row.getCell(j);
+				
+				String formatValue = String.format("%-20s", cell.getValue());
+				
+				builder.append(formatValue);
+			}
+			
+			builder.append("\n");
+		}
+		
+		return builder.toString();
+	}
+	
 	/**
 	 * Get header of current report
 	 * Header is a set of column's name
@@ -75,23 +125,5 @@ public class DSR_DataCollection
 		{
 			e.printStackTrace();
 		}
-	}
-	
-	public DSR_Row getHeader()
-	{
-		return header;
-	}
-	
-	public DSR_Row getRow(int index)
-	{
-		if(index >= 0 && index < elementData.size())
-			return elementData.get(index);
-		else
-			return null;
-	}
-	
-	public int size()
-	{
-		return elementData.size();
 	}
 }
