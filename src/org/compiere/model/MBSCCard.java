@@ -375,8 +375,8 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 	}
 	
 	public MBSCCardLine[] getLines(boolean requery) {
-		MBSCCardLine[] result = null;
-		
+		ArrayList<MBSCCardLine> cardLine = getCardLine(); 
+		MBSCCardLine[] result = ( cardLine != null ? cardLine.toArray( new MBSCCardLine[cardLine.size()]) :null);
 		return result;
 	}
 	

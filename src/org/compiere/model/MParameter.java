@@ -222,7 +222,9 @@ public class MParameter extends X_BSC_Parameter {
 					throw new Exception("MParameter: detected cycle in "+parameter.getName()+"; ID - "+parameter.getBSC_Parameter_ID()+". "+param.getName()+" ID - "+param.getBSC_Parameter_ID()+" parameter exists");
 				}
 				String value = runCalc(param, period, forCycle,sqlParam);
-				param.getParameterLine(period).setValue(value);
+				if (param != null && param.getParameterLine(period) != null) {
+					param.getParameterLine(period).setValue(value);
+				}
 				args.put(key, value);
 			}
 			result = MFormula.calc(formula.getFormula(), args);
