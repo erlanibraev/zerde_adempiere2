@@ -12,7 +12,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
-
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
@@ -31,8 +30,6 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
-
-import org.compiere.agreement.Agreement_Dispatcher;
 import org.compiere.apps.AEnv;
 import org.compiere.apps.ConfirmPanel;
 import org.compiere.apps.DialogAgreement;
@@ -448,13 +445,13 @@ public class QueryDialog extends CDialog implements ActionListener, ChangeListen
 		tc.setHeaderValue(Msg.translate(Env.getCtx(), "LineID"));
 		
 		//
-		VCheckBox check = new VCheckBox("Static", false, false, true, "Static", "", true);
-		check.setName ("Static");
+		VCheckBox check = new VCheckBox(Msg.translate(Env.getCtx(), "Static"), false, false, true, "", "", true);
+		check.setName (Msg.translate(Env.getCtx(), "Static"));
 		tc = advancedTable.getColumnModel().getColumn(INDEX_STATIC);	
 		dce = new FindCellEditor(check);
 		tc.setCellEditor(dce);
 		tc.setPreferredWidth(120);
-		tc.setHeaderValue("Static");
+		tc.setHeaderValue(Msg.translate(Env.getCtx(), "Static"));
 				
 		//user query
 		refreshUserQueries();
