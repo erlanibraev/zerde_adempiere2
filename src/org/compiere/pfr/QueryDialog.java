@@ -721,9 +721,9 @@ public class QueryDialog extends CDialog implements ActionListener, ChangeListen
 		int rows = model.getRowCount();
 		
 		if(rows == 0)
-			model.addRow(new Object[] {String.valueOf(lineNo), "","", null, OPERATORS[MQuery.EQUAL_INDEX], null, null,"", ""});
+			model.addRow(new Object[] {String.valueOf(lineNo), "","", null, OPERATORS[MQuery.EQUAL_INDEX], null, null,"", "", true});
 		else
-			model.addRow(new Object[] {String.valueOf(lineNo), "AND","", null, OPERATORS[MQuery.EQUAL_INDEX], null, null,"", ""});
+			model.addRow(new Object[] {String.valueOf(lineNo), "AND","", null, OPERATORS[MQuery.EQUAL_INDEX], null, null,"", "", true});
 		
 		advancedTable.requestFocusInWindow();
 	}	//	cmd_new

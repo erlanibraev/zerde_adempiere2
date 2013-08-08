@@ -35,7 +35,7 @@ public class MPFRCalculation extends X_PFR_Calculation
     public static MPFRWhereClause[] getLinesWhere(Properties ctx, int PFR_Calculation_ID, String trxName)
 	{
 		List<MPFRWhereClause> list = new Query(ctx, I_PFR_WhereClause.Table_Name, "PFR_Calculation_ID=?", trxName)
-		.setParameters(PFR_Calculation_ID)
+		.setParameters(PFR_Calculation_ID).setOrderBy(X_PFR_WhereClause.COLUMNNAME_Line)
 		.setOnlyActiveRecords(true)
 		.list();
 		

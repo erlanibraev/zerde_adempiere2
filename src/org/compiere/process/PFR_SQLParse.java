@@ -1,13 +1,9 @@
 package org.compiere.process;
 
-import java.awt.Dialog;
 import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 import java.util.logging.Level;
-
-import org.compiere.apps.ADialog;
 import org.compiere.model.MPFRCalculation;
-import org.compiere.util.Msg;
 
 public class PFR_SQLParse extends SvrProcess 
 {
