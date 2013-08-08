@@ -44,7 +44,7 @@ public class BPM_CalcFormValues extends SvrProcess {
 				MBPMFormValues value = MBPMFormValues.getFormValueLine(l.getBPM_FormLine_ID(), cell.getBPM_FormColumn_ID());
 				if(value == null)
 					value = new MBPMFormValues(m_ctx, 0, get_TrxName());
-				
+				value.setBPM_Form_ID(l.getBPM_Form_ID());
 				value.setBPM_FormLine_ID(l.getBPM_FormLine_ID());
 				value.setBPM_FormColumn_ID(cell.getBPM_FormColumn_ID());
 				
