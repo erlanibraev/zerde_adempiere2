@@ -65,7 +65,7 @@ public class MPFRWhereClause extends X_PFR_WhereClause
     		
     		column = new MColumn(Env.getCtx(), clause.getAD_Column_ID(), null);
     		
-    		if(parameters.get(clause.getColumnName()) != null)
+    		if(parameters.get(clause.getColumnName()) != null && !clause.isStatic())
     			value1 = parameters.get(clause.getColumnName()).toString();
     		else
     			value1 = clause.getValue1();

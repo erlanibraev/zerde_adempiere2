@@ -29,7 +29,7 @@ public class X_PFR_WhereClause extends PO implements I_PFR_WhereClause, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130807L;
+	private static final long serialVersionUID = 20130808L;
 
     /** the default Constructor */
     public X_PFR_WhereClause(Properties ctx)
@@ -44,6 +44,8 @@ public class X_PFR_WhereClause extends PO implements I_PFR_WhereClause, I_Persis
       /** if (PFR_WhereClause_ID == 0)
         {
 			setColumnName (null);
+			setisStatic (false);
+// N
 			setOperation (null);
 			setPFR_WhereClause_ID (0);
 			setValue1 (null);
@@ -164,6 +166,27 @@ public class X_PFR_WhereClause extends PO implements I_PFR_WhereClause, I_Persis
 		return (String)get_Value(COLUMNNAME_ColumnName);
 	}
 
+	/** Set isStatic.
+		@param isStatic isStatic	  */
+	public void setisStatic (boolean isStatic)
+	{
+		set_Value (COLUMNNAME_isStatic, Boolean.valueOf(isStatic));
+	}
+
+	/** Get isStatic.
+		@return isStatic	  */
+	public boolean isStatic () 
+	{
+		Object oo = get_Value(COLUMNNAME_isStatic);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
 	/** Set Line No.
 		@param Line 
 		Unique line for this document
@@ -259,31 +282,6 @@ public class X_PFR_WhereClause extends PO implements I_PFR_WhereClause, I_Persis
 	public int getPFR_Calculation_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PFR_Calculation_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_PFR_Calculation getPFR_CalculationSubQuery() throws RuntimeException
-    {
-		return (I_PFR_Calculation)MTable.get(getCtx(), I_PFR_Calculation.Table_Name)
-			.getPO(getPFR_CalculationSubQuery_ID(), get_TrxName());	}
-
-	/** Set PFR_CalculationSubQuery_ID.
-		@param PFR_CalculationSubQuery_ID PFR_CalculationSubQuery_ID	  */
-	public void setPFR_CalculationSubQuery_ID (int PFR_CalculationSubQuery_ID)
-	{
-		if (PFR_CalculationSubQuery_ID < 1) 
-			set_Value (COLUMNNAME_PFR_CalculationSubQuery_ID, null);
-		else 
-			set_Value (COLUMNNAME_PFR_CalculationSubQuery_ID, Integer.valueOf(PFR_CalculationSubQuery_ID));
-	}
-
-	/** Get PFR_CalculationSubQuery_ID.
-		@return PFR_CalculationSubQuery_ID	  */
-	public int getPFR_CalculationSubQuery_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_PFR_CalculationSubQuery_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

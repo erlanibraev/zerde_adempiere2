@@ -32,12 +32,14 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
+import org.compiere.agreement.Agreement_Dispatcher;
 import org.compiere.apps.AEnv;
 import org.compiere.apps.ConfirmPanel;
 import org.compiere.apps.DialogAgreement;
 import org.compiere.apps.StatusBar;
 import org.compiere.apps.search.Find;
 import org.compiere.apps.search.FindCellEditor;
+import org.compiere.grid.ed.VCheckBox;
 import org.compiere.grid.ed.VString;
 import org.compiere.model.DataStatusEvent;
 import org.compiere.model.DataStatusListener;
@@ -129,6 +131,8 @@ public class QueryDialog extends CDialog implements ActionListener, ChangeListen
 	public static final int		INDEX_RIGHTBRACKET = 7;
 	/** Index Line ID = 8	 		*/
 	public static final int		INDEX_LINEID = 8;
+	/** Index Check static = 9		*/
+	public static final int		INDEX_STATIC = 9;
 	
 	/** IN	*/
 	public static final String	IN = " IN ";
@@ -288,7 +292,7 @@ public class QueryDialog extends CDialog implements ActionListener, ChangeListen
 	private void initFindAdvanced()
 	{
 		log.config("");
-		advancedTable.setModel(new DefaultTableModel(0, 9));
+		advancedTable.setModel(new DefaultTableModel(0, 10));
 		advancedTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		advancedTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		advancedTable.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
@@ -377,7 +381,7 @@ public class QueryDialog extends CDialog implements ActionListener, ChangeListen
 		tc.setCellEditor(dce);
 		tc.setHeaderValue(Msg.translate(Env.getCtx(), X_PFR_Calculation.COLUMNNAME_AD_Column_ID));
 		
-		// 7 = LineNo
+		// 0 = LineNo
 		VString vs = new VString(Msg.translate(Env.getCtx(), "Line"), true, true, true, 120, 120, "", "");
 		vs.setName (Msg.translate(Env.getCtx(), "Line"));
 		tc = advancedTable.getColumnModel().getColumn(INDEX_LINENO);	
@@ -386,7 +390,7 @@ public class QueryDialog extends CDialog implements ActionListener, ChangeListen
 		tc.setPreferredWidth(120);
 		tc.setHeaderValue(Msg.translate(Env.getCtx(), "Line"));
 		
-		// 0 = And/Or
+		// 1 = And/Or
 		andOr = new CComboBox(new String[] {"","AND","OR"});
 		tc = advancedTable.getColumnModel().getColumn(INDEX_ANDOR);
 		tc.setPreferredWidth(60);
@@ -394,7 +398,7 @@ public class QueryDialog extends CDialog implements ActionListener, ChangeListen
 		tc.setCellEditor(dce);
 		tc.setHeaderValue(Msg.getMsg(Env.getCtx(), "And/Or"));
 		
-		// 1 = Left Bracket
+		// 2 = Left Bracket
 		leftBrackets = new CComboBox(new String[] {"","(","((","((("});
 		tc = advancedTable.getColumnModel().getColumn(INDEX_LEFTBRACKET);
 		tc.setPreferredWidth(60);
@@ -442,6 +446,15 @@ public class QueryDialog extends CDialog implements ActionListener, ChangeListen
 		tc.setCellEditor(dce);
 		tc.setPreferredWidth(120);
 		tc.setHeaderValue(Msg.translate(Env.getCtx(), "LineID"));
+		
+		//
+		VCheckBox check = new VCheckBox("Static", false, false, true, "Static", "", true);
+		check.setName ("Static");
+		tc = advancedTable.getColumnModel().getColumn(INDEX_STATIC);	
+		dce = new FindCellEditor(check);
+		tc.setCellEditor(dce);
+		tc.setPreferredWidth(120);
+		tc.setHeaderValue("Static");
 				
 		//user query
 		refreshUserQueries();
@@ -632,7 +645,7 @@ public class QueryDialog extends CDialog implements ActionListener, ChangeListen
 					
 					if(AD_Reference_ID == DisplayType.YesNo)
 					{
-						value = value.equals("true") ? "Y" : "N";
+						value = (value.equals("true") || value.equals("Y")) ? "Y" : "N";
 					}
 					
 					clause.setValue1(value);
@@ -662,6 +675,16 @@ public class QueryDialog extends CDialog implements ActionListener, ChangeListen
 				}
 			}
 			
+			// Column static
+			column = advancedTable.getValueAt(row, INDEX_STATIC);
+			if(column != null)
+				value = column instanceof ValueNamePair ? ((ValueNamePair)column).getValue() : column.toString();
+			else
+				value = "false";
+			
+			if(value != null)
+				clause.setisStatic((value.equals("true") || value.equals("Y")) ? true : false);
+		
 			if(!hasError)
 			{
 				clause.setPFR_Calculation_ID(PFR_Calculation_ID);
@@ -799,6 +822,9 @@ public class QueryDialog extends CDialog implements ActionListener, ChangeListen
 	private void cmd_ignore()
 	{
 		int row = advancedTable.getSelectedRow();
+		if(row == -1)
+			DialogAgreement.dialogOK(Msg.translate(Env.getCtx(), "Error"), "Row not selected", 0);
+		
 		String indexValue = advancedTable.getValueAt(row, INDEX_LINEID).toString();
 		
 		if(indexValue != null && !indexValue.isEmpty())
@@ -851,6 +877,8 @@ public class QueryDialog extends CDialog implements ActionListener, ChangeListen
 			if (header == null || header.length() == 0)
 					continue;
 			
+			String statCheck = wh.isStatic() ? "Y" : "N";
+			
 			model.addRow(new Object[] {wh.getLine(), 
 						wh.getAndOr(),
 						wh.getOpenBracket(), 
@@ -859,7 +887,8 @@ public class QueryDialog extends CDialog implements ActionListener, ChangeListen
 						new ValueNamePair(wh.getValue1(), wh.getValue1()), 
 						new ValueNamePair(wh.getValue2(), wh.getValue2()),
 						wh.getCloseBracket(),
-						wh.getPFR_WhereClause_ID()});
+						wh.getPFR_WhereClause_ID(),
+						statCheck  });
 			n++;
 		}
 		

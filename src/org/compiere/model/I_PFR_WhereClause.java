@@ -145,6 +145,15 @@ public interface I_PFR_WhereClause
 	  */
 	public boolean isActive();
 
+    /** Column name isStatic */
+    public static final String COLUMNNAME_isStatic = "isStatic";
+
+	/** Set isStatic	  */
+	public void setisStatic (boolean isStatic);
+
+	/** Get isStatic	  */
+	public boolean isStatic();
+
     /** Column name Line */
     public static final String COLUMNNAME_Line = "Line";
 
@@ -194,17 +203,6 @@ public interface I_PFR_WhereClause
 	public int getPFR_Calculation_ID();
 
 	public I_PFR_Calculation getPFR_Calculation() throws RuntimeException;
-
-    /** Column name PFR_CalculationSubQuery_ID */
-    public static final String COLUMNNAME_PFR_CalculationSubQuery_ID = "PFR_CalculationSubQuery_ID";
-
-	/** Set PFR_CalculationSubQuery_ID	  */
-	public void setPFR_CalculationSubQuery_ID (int PFR_CalculationSubQuery_ID);
-
-	/** Get PFR_CalculationSubQuery_ID	  */
-	public int getPFR_CalculationSubQuery_ID();
-
-	public I_PFR_Calculation getPFR_CalculationSubQuery() throws RuntimeException;
 
     /** Column name PFR_WhereClause_ID */
     public static final String COLUMNNAME_PFR_WhereClause_ID = "PFR_WhereClause_ID";
