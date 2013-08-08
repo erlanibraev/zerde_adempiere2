@@ -3,7 +3,9 @@ package org.compiere.process;
 import java.math.BigDecimal;
 import java.util.logging.Level;
 
+import org.compiere.dsr.DSR_Cell;
 import org.compiere.dsr.DSR_DataCollection;
+import org.compiere.dsr.DSR_Row;
 
 public class DSR_GenerateReport extends SvrProcess 
 {
@@ -34,12 +36,29 @@ public class DSR_GenerateReport extends SvrProcess
 		DSR_DataCollection collection = new DSR_DataCollection(BPM_Form_ID);
 		
 		int size = collection.size();
+		int cellSize = 0;
 		
 		StringBuilder builder = new StringBuilder();
 		
+		DSR_Row header = collection.getHeader();
+		
+		builder.append(header);
+		builder.append("\n");
+		
 		for(int i = 0; i < size; i++)
-		{
-			builder.append(collection.getRow(i));
+		{			
+			DSR_Row row = collection.getRow(i);
+			cellSize = row.size();
+			
+			for(int j = 0; j < cellSize; j++)
+			{
+				DSR_Cell cell = row.getCell(j);
+				
+				String formatValue = String.format("%-20s", cell.getValue());
+				
+				builder.append(formatValue);
+			}
+			
 			builder.append("\n");
 		}
 		

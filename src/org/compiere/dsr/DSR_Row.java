@@ -10,15 +10,32 @@ import org.compiere.util.Env;
 public class DSR_Row 
 {
 	private ArrayList<DSR_Cell> elementData = new ArrayList<DSR_Cell>();
-	
+
 	public DSR_Row(int BPM_FormLine_ID)
 	{
-		getCells(BPM_FormLine_ID);
+		getCells(BPM_FormLine_ID);		
+	}
+	
+	public DSR_Row()
+	{
+	}
+	
+	public void add(DSR_Cell cell)
+	{
+		if(cell != null)
+			elementData.add(cell);
 	}
 	
 	private void getCells(int BPM_FormLine_ID)
 	{
 		MBPMFormValues[] lines = MBPMFormValues.getValues(Env.getCtx(), BPM_FormLine_ID, null);
+		
+		MBPMFormLine rowLine = new MBPMFormLine(Env.getCtx(), BPM_FormLine_ID, null);
+		
+		//The row's name
+		DSR_Cell lineCell = new DSR_Cell("", rowLine.getName(), null);
+		lineCell.setRow(true);
+		elementData.add(lineCell);
 		
 		for(MBPMFormValues line : lines)
 		{
@@ -35,7 +52,7 @@ public class DSR_Row
 	
 	public DSR_Cell getCell(int index)
 	{
-		if(index > 0 && index < elementData.size())
+		if(index >= 0 && index < elementData.size())
 			return elementData.get(index);
 		else 
 			return null;
@@ -52,9 +69,8 @@ public class DSR_Row
 		
 		for(int i = 0; i < elementData.size(); i++)
 		{
-			builder.append(elementData.get(i));
-			builder.append("|");
-			builder.append("\t\t");
+			String value = String.format("%-20s", elementData.get(i));
+			builder.append(value);
 		}
 		
 		return builder.toString();

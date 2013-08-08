@@ -84,7 +84,11 @@ public class MBPMFormValues extends X_BPM_FormValues {
 	
 	public static Integer[] getRows(Properties ctx, int BPM_Form_ID, String trxName) throws SQLException
 	{
-		String sql = "SELECT BPM_FormLine_ID FROM BPM_FormValues WHERE BPM_Form_ID = " + BPM_Form_ID;
+		String sql = "SELECT l.BPM_FormLine_ID FROM BPM_FormLine l \n" +
+				"INNER JOIN BPM_FormValues v ON l.BPM_FormLine_ID = v.BPM_FormLine_ID \n" +
+				" WHERE v.BPM_Form_ID = ? \n" +
+				"GROUP BY l.BPM_FormLine_ID \n" +
+				"ORDER BY l.LineNo";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		
@@ -93,6 +97,7 @@ public class MBPMFormValues extends X_BPM_FormValues {
 		try
 		{
 			pstmt = DB.prepareStatement(sql, null);
+			pstmt.setInt(1, BPM_Form_ID);
 			rs = pstmt.executeQuery();
 			
 			while(rs.next())

@@ -6,25 +6,48 @@ public class DSR_Cell
 	private String rowName = "";
 	private Object value = null;
 	
+	private boolean isHeader = false;
+	private boolean isRow = false;
+	
 	public DSR_Cell(String columnName, String rowName, Object value)
 	{
 		this.columnName = columnName;
 		this.rowName = rowName;
 		this.value = value;
 	}
-
-	public String getColumnName() 
+	
+	private String getColumnName() 
 	{
 		return columnName;
 	}
 
-	public String getRowName() 
+	private String getRowName() 
 	{
 		return rowName;
 	}
-
+	
 	public Object getValue() 
 	{
-		return value;
+		if(isHeader)
+			return getColumnName();
+		else if(isRow)
+			return getRowName();
+		else
+			return value;
+	}
+	
+	public String toString()
+	{
+		return getValue().toString();
+	}
+
+	public void setHeader(boolean isHeader) 
+	{
+		this.isHeader = isHeader;
+	}
+
+	public void setRow(boolean isRow) 
+	{
+		this.isRow = isRow;
 	}
 }
