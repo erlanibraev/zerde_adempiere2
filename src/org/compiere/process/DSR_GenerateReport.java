@@ -22,6 +22,7 @@ public class DSR_GenerateReport extends SvrProcess
 			{
 				BigDecimal tmp = (BigDecimal) para[i].getParameter();
 				BPM_Form_ID = tmp.intValue();
+				
 			} 
 			else 
 			{
