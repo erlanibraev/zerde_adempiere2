@@ -819,8 +819,10 @@ public class QueryDialog extends CDialog implements ActionListener, ChangeListen
 	private void cmd_ignore()
 	{
 		int row = advancedTable.getSelectedRow();
-		if(row == -1)
+		if(row == -1){
 			DialogAgreement.dialogOK(Msg.translate(Env.getCtx(), "Error"), "Row not selected", 0);
+			return;
+		}
 		
 		String indexValue = advancedTable.getValueAt(row, INDEX_LINEID).toString();
 		
