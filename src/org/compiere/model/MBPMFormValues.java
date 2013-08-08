@@ -6,6 +6,8 @@ package org.compiere.model;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -80,5 +82,47 @@ public class MBPMFormValues extends X_BPM_FormValues {
 		return value;
 	}
 	
+	public static Integer[] getRows(Properties ctx, int BPM_Form_ID, String trxName) throws SQLException
+	{
+		String sql = "SELECT BPM_FormLine_ID FROM BPM_FormValues WHERE BPM_Form_ID = " + BPM_Form_ID;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		ArrayList<Integer> rows = new ArrayList<Integer>();
+		
+		try
+		{
+			pstmt = DB.prepareStatement(sql, null);
+			rs = pstmt.executeQuery();
+			
+			while(rs.next())
+			{
+				rows.add(rs.getInt(1));
+			}
+		}
+		catch(Exception ex){}
+		finally
+		{
+			rs.close(); pstmt.close();
+			rs = null; pstmt = null;
+		}
+		
+		Integer[] retValue = new Integer[rows.size()];
+		rows.toArray(retValue);
+		
+		return retValue;
+	}
+	
+	public static MBPMFormValues[] getValues(Properties ctx, int BPM_FormLine_ID, String trxName)
+	{
+		List<MBPMFormValues> list = new Query(ctx, I_BPM_FormValues.Table_Name, "BPM_FormLine_ID=?", trxName)
+		.setParameters(BPM_FormLine_ID)
+		.setOnlyActiveRecords(true)
+		.list();
+		
+		MBPMFormValues[] retValue = new MBPMFormValues[list.size ()];
+		list.toArray (retValue);
+		return retValue;
+	}
 
 }

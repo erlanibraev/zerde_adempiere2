@@ -71,6 +71,17 @@ public interface I_BPM_FormValues
 	/** Get AlternateValue	  */
 	public String getAlternateValue();
 
+    /** Column name BPM_Form_ID */
+    public static final String COLUMNNAME_BPM_Form_ID = "BPM_Form_ID";
+
+	/** Set BPM_Form ID	  */
+	public void setBPM_Form_ID (int BPM_Form_ID);
+
+	/** Get BPM_Form ID	  */
+	public int getBPM_Form_ID();
+
+	public I_BPM_Form getBPM_Form() throws RuntimeException;
+
     /** Column name BPM_FormColumn_ID */
     public static final String COLUMNNAME_BPM_FormColumn_ID = "BPM_FormColumn_ID";
 
