@@ -124,15 +124,6 @@ public interface I_BPM_FormLine
 	  */
 	public boolean isActive();
 
-    /** Column name LineCode */
-    public static final String COLUMNNAME_LineCode = "LineCode";
-
-	/** Set LineCode	  */
-	public void setLineCode (String LineCode);
-
-	/** Get LineCode	  */
-	public String getLineCode();
-
     /** Column name LineNo */
     public static final String COLUMNNAME_LineNo = "LineNo";
 

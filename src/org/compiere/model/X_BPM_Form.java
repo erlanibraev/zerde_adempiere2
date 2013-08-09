@@ -30,7 +30,7 @@ public class X_BPM_Form extends PO implements I_BPM_Form, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130806L;
+	private static final long serialVersionUID = 20130809L;
 
     /** the default Constructor */
     public X_BPM_Form(Properties ctx)
@@ -47,6 +47,8 @@ public class X_BPM_Form extends PO implements I_BPM_Form, I_Persistent
 			setBPM_Form_ID (0);
 			setBPM_FormCode_ID (0);
 			setName (null);
+			setProcessing (false);
+// N
         } */
     }
 
@@ -147,4 +149,25 @@ public class X_BPM_Form extends PO implements I_BPM_Form, I_Persistent
     {
         return new KeyNamePair(get_ID(), getName());
     }
+
+	/** Set Process Now.
+		@param Processing Process Now	  */
+	public void setProcessing (boolean Processing)
+	{
+		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
+	}
+
+	/** Get Process Now.
+		@return Process Now	  */
+	public boolean isProcessing () 
+	{
+		Object oo = get_Value(COLUMNNAME_Processing);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
 }

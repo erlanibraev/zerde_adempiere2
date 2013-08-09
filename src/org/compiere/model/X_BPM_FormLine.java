@@ -30,7 +30,7 @@ public class X_BPM_FormLine extends PO implements I_BPM_FormLine, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130806L;
+	private static final long serialVersionUID = 20130809L;
 
     /** the default Constructor */
     public X_BPM_FormLine(Properties ctx)
@@ -138,20 +138,6 @@ public class X_BPM_FormLine extends PO implements I_BPM_FormLine, I_Persistent
 	public String getDescription () 
 	{
 		return (String)get_Value(COLUMNNAME_Description);
-	}
-
-	/** Set LineCode.
-		@param LineCode LineCode	  */
-	public void setLineCode (String LineCode)
-	{
-		set_Value (COLUMNNAME_LineCode, LineCode);
-	}
-
-	/** Get LineCode.
-		@return LineCode	  */
-	public String getLineCode () 
-	{
-		return (String)get_Value(COLUMNNAME_LineCode);
 	}
 
 	/** Set Line.
