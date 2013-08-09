@@ -52,10 +52,11 @@ public class BPM_CalcFormValues extends SvrProcess {
 					for(X_BSC_ParameterLine parLine: getLineParameter(cell.getBSC_Parameter_ID())){
 						MParameterLine par = new MParameterLine(m_ctx, parLine.getBSC_ParameterLine_ID(), get_TrxName());
 						String result = par.calculate();
-						value.setAlternateValue(result);
 						try{
 							value.setCellValue(new BigDecimal(result).setScale(2, BigDecimal.ROUND_HALF_UP));
-						}catch(Exception ex){ /* */ }
+						}catch(Exception ex){
+							value.setAlternateValue(result);
+						}
 						finally{
 							value.saveEx();
 						}

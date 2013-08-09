@@ -2,6 +2,8 @@ package org.compiere.process;
 
 import java.math.BigDecimal;
 import java.util.logging.Level;
+
+import org.compiere.apps.DialogAgreement;
 import org.compiere.dsr.DSR_DataCollection;
 
 public class DSR_GenerateReport extends SvrProcess 
@@ -32,6 +34,7 @@ public class DSR_GenerateReport extends SvrProcess
 	protected String doIt() throws Exception 
 	{
 		DSR_DataCollection collection = new DSR_DataCollection(BPM_Form_ID);
+		DialogAgreement.dialogOK("Result", collection.toString(), 0);
 		System.out.println(collection);
 		
 		return null;

@@ -34,10 +34,16 @@ public class PFR_SQLParse extends SvrProcess
 	protected String doIt() throws Exception 
 	{
 		LinkedHashMap<String, Object> parameters = new LinkedHashMap<String, Object>();
-		parameters.put("C_Charge_ID", "1000087");
+		
 		Object obj = MPFRCalculation.getValueFromSQL(calc.get_ID(), parameters);
 		
-		return "Return Value = " + String.valueOf(obj);
+		BigDecimal result = (BigDecimal) obj;
+		try{
+			return "Return Value = " + result.setScale(2, BigDecimal.ROUND_HALF_UP);
+		}catch(Exception ex){
+			return "Return Value = " + String.valueOf(obj);
+		}
+		
 	}
 
 }
