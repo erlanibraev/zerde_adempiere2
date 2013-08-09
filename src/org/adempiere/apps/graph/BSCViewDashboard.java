@@ -6,19 +6,27 @@ package org.adempiere.apps.graph;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import layout.TableLayout;
 
+import org.adempiere.apps.graph.BSCPerspectivePanel.ValueComparator;
 import org.compiere.apps.ConfirmPanel;
 import org.compiere.apps.form.FormFrame;
 import org.compiere.apps.form.FormPanel;
 import org.compiere.grid.ed.AutoCompletion;
 import org.compiere.grid.ed.VComboBox;
 import org.compiere.model.MBSCCard;
+import org.compiere.model.MBSCDashboard;
+import org.compiere.model.MBSCKeySuccessFactor;
+import org.compiere.model.MBSCPerspective;
+import org.compiere.model.MPeriod;
 import org.compiere.model.MRole;
 import org.compiere.swing.CComboBox;
 import org.compiere.swing.CPanel;
@@ -43,7 +51,6 @@ public class BSCViewDashboard extends CPanel implements FormPanel, ActionListene
 	private FormFrame m_frame;
 	private ConfirmPanel confirmPanel = new ConfirmPanel();
 	private CPanel mainPanel = new CPanel();
-	private GridBagLayout mainLayout = new GridBagLayout();
 	private CPanel loadPanel = new CPanel(new FlowLayout(FlowLayout.LEADING));
 	private VComboBox cbPeriod = new VComboBox();
 	
@@ -51,6 +58,7 @@ public class BSCViewDashboard extends CPanel implements FormPanel, ActionListene
 	private Dimension mainPanelDimension = null;
 	
 	private ArrayList<MBSCCard> cards = new ArrayList<MBSCCard>();
+	private MPeriod period = null;
 
 	/* (non-Javadoc)
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
@@ -59,6 +67,12 @@ public class BSCViewDashboard extends CPanel implements FormPanel, ActionListene
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().equals(ConfirmPanel.A_OK))
 			dispose();
+		else if (e.getSource() == cbPeriod && cbPeriod.getSelectedItem() != null) {
+			KeyNamePair knp = (KeyNamePair) cbPeriod.getSelectedItem();
+			period = new MPeriod(Env.getCtx(),knp.getKey(),null);
+			initCards();
+			initMainPanel();
+		}
 	}
 
 	/* (non-Javadoc)
@@ -69,6 +83,9 @@ public class BSCViewDashboard extends CPanel implements FormPanel, ActionListene
 		log.fine(this.getName());
 		m_WindowNo = WindowNo;
 		m_frame = frame;
+		m_frame.setSize(1200, 600);
+		m_frame.setPreferredSize(new Dimension(1200,600));
+		m_frame.setMinimumSize(new Dimension(1200,600));
 		initCards();
 		
 		initLoadPanel();
@@ -88,17 +105,59 @@ public class BSCViewDashboard extends CPanel implements FormPanel, ActionListene
 	 * 
 	 */
 	private void initCards() {
+
+		if (period == null) {
+			return;
+		}
+		
+		MBSCDashboard[] listDB = MBSCDashboard.getDashboard(period.getC_Period_ID());
+		
+		ValueComparator bvc =  new ValueComparator(listDB);
+
+		TreeMap<MBSCDashboard,MBSCCard> dbmap = new TreeMap<MBSCDashboard,MBSCCard>(bvc);  
+		for(MBSCDashboard item : listDB) {
+			dbmap.put(item, item.getCard());
+		}
+		
+		
 		cards.clear();
-		cards.add(new MBSCCard(Env.getCtx(),1000000,null));
-		cards.add(new MBSCCard(Env.getCtx(),1000001,null));
-		cards.add(new MBSCCard(Env.getCtx(),1000002,null));
+		
+		for(MBSCDashboard item: dbmap.keySet()) {
+			if(item.getCard() != null) {
+				cards.add(item.getCard());
+			}
+		}
+//		cards.add(new MBSCCard(Env.getCtx(),1000000,null));
+//		cards.add(new MBSCCard(Env.getCtx(),1000001,null));
+//		cards.add(new MBSCCard(Env.getCtx(),1000002,null));
+	}
+
+	class ValueComparator implements Comparator<MBSCDashboard> {
+
+		MBSCDashboard[] base;
+	    public ValueComparator(MBSCDashboard[] base) {
+	        this.base = base;
+	    }
+
+	    // Note: this comparator imposes orderings that are inconsistent with equals.    
+	    public int compare(MBSCDashboard a, MBSCDashboard b) {
+	    	if (a != null && b != null) {
+	    		if (a.getNumberOfRuns() < b.getNumberOfRuns())
+	    			return -1;
+	    		else if (a.getNumberOfRuns() > b.getNumberOfRuns())
+	    			return 1;
+	    		else
+	    			return 0;
+	    	} else {
+	    		return 0;
+	    	}
+	    }
 	}
 
 	/**
 	 * 
 	 */
 	private void initLoadPanel() {
-		// TODO Auto-generated method stub
 		loadPanel.add(initCbPeriod());
 	}
 
@@ -107,26 +166,22 @@ public class BSCViewDashboard extends CPanel implements FormPanel, ActionListene
 	 */
 	private void initMainPanel() {
 		mainPanel.removeAll();
-		
 		initPanels();
-		
 		double[][] tableSize = getMainPanetTableSize();
 		TableLayout tableLayout = new TableLayout(tableSize);
-		
-		
-		
 		mainPanel.setLayout(tableLayout);
 		mainPanel.setSize(mainPanelDimension);
 		mainPanel.setPreferredSize(mainPanelDimension);
 		mainPanel.setMaximumSize(mainPanelDimension);
 		mainPanel.setMinimumSize(mainPanelDimension);
-		
 		for(int i = 0; i < panels.size(); i ++){
 			BSCCardPanel panel = panels.get(i);
 			int j = i % 2;
 			String pos = Integer.toString(j) + "," +Integer.toString(i / 2);
 			mainPanel.add(panel, pos);
 		}
+		
+		repaint();
 	}
 
 	/**

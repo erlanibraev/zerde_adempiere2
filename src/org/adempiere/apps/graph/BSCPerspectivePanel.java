@@ -588,14 +588,16 @@ public class BSCPerspectivePanel extends JPanel implements MouseListener, MouseM
 	 * @param g
 	 */
 	private void paintLinks(Graphics g) {
-		for(int[] item:links) {
-			int fromKSF = item[0];
-			int toKSF = item[1];
-			Rectangle from = coords.get(fromKSF);
-			Rectangle to = coords.get(toKSF);
-			if (from != null && to != null) {
-				g.setColor(Color.RED);
-				g.drawLine(from.x + from.width /2, from.y + from.height / 2, to.x + to.width / 2, to.y + to.height /2);
+		if (links != null) {
+			for(int[] item:links) {
+				int fromKSF = item[0];
+				int toKSF = item[1];
+				Rectangle from = coords.get(fromKSF);
+				Rectangle to = coords.get(toKSF);
+				if (from != null && to != null) {
+					g.setColor(Color.RED);
+					g.drawLine(from.x + from.width /2, from.y + from.height / 2, to.x + to.width / 2, to.y + to.height /2);
+				}
 			}
 		}
 	}
