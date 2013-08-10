@@ -17,6 +17,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
 
+import org.compiere.apps.ADialog;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -219,11 +220,19 @@ public class MParameter extends X_BSC_Parameter {
 				MParameter param = new MParameter(Env.getCtx(),var.getBSC_Parameter_ID(),null);
 				if( !forCycle.add(param.getBSC_Parameter_ID())) {
 					// Здесь вызваем исключение, что найден цикл!
+//					ADialog.info(25, null, "MParameter: detected cycle in "+parameter.getName()+"; ID - "+parameter.getBSC_Parameter_ID()+". "+param.getName()+" ID - "+param.getBSC_Parameter_ID()+" parameter exists");
 					throw new Exception("MParameter: detected cycle in "+parameter.getName()+"; ID - "+parameter.getBSC_Parameter_ID()+". "+param.getName()+" ID - "+param.getBSC_Parameter_ID()+" parameter exists");
 				}
 				String value = runCalc(param, period, forCycle,sqlParam);
 				if (param != null && param.getParameterLine(period) != null) {
 					param.getParameterLine(period).setValue(value);
+				} else {
+					if (param == null) {
+//						ADialog.info(25, null, "");
+						throw new Exception(" Variable not set: ("+ var.getBSC_Variable_ID() + ") "+var.getName());
+					} else if (param.getParameterLine(period) == null) {
+						throw new Exception(" Period not set for parameter: ("+ param.getBSC_Parameter_ID() + ") "+param.getName() + " - " + period.getName());
+					}
 				}
 				args.put(key, value);
 			}
