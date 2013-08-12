@@ -106,7 +106,7 @@ public class MBSCCardLine extends X_BSC_CardLine {
 				saveParameterOutValue();
 				result = new BigDecimal(getParameter_Out().getValue(getCard().getPeriod()));
 				setValueNumber(result);
-				save();
+				saveParameterOutValue();
 			}
 		}
 		return result;
