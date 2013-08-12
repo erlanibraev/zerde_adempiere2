@@ -6,8 +6,8 @@ public class DSR_Cell
 	private String rowName = "";
 	private Object value = null;
 	
-	private boolean isHeader = false;
-	private boolean isRow = false;
+	public boolean isHeader = false;
+	public boolean isRow = false;
 	
 	public DSR_Cell(String columnName, String rowName, Object value)
 	{

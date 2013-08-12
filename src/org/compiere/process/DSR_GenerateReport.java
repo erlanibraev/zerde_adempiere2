@@ -5,6 +5,11 @@ import java.util.logging.Level;
 
 import org.compiere.apps.DialogAgreement;
 import org.compiere.dsr.DSR_DataCollection;
+import org.compiere.dsr.DSR_ExcelImport;
+import org.compiere.model.MAttachmentEntry;
+import org.joda.time.DateTime;
+
+import extend.org.compiere.utils.Util;
 
 public class DSR_GenerateReport extends SvrProcess 
 {
@@ -34,8 +39,14 @@ public class DSR_GenerateReport extends SvrProcess
 	protected String doIt() throws Exception 
 	{
 		DSR_DataCollection collection = new DSR_DataCollection(BPM_Form_ID);
-		DialogAgreement.dialogOK("Result", collection.toString(), 0);
+		//DialogAgreement.dialogOK("Result", collection.toString(), 0);
 		System.out.println(collection);
+		
+		String path = Util.localFilePath + "pattern" + new DateTime() + ".xls";
+		
+		MAttachmentEntry entry = Util.getAttachment(getProcessInfo(), getCtx(), path);
+		
+		DSR_ExcelImport.collectionImport(entry, collection);
 		
 		return null;
 	}
