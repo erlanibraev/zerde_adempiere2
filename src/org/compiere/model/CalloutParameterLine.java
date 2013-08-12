@@ -49,7 +49,7 @@ public class CalloutParameterLine extends CalloutEngine {
 				result = "";
 			} else {
 				try {
-					mTab.dataSave(true);
+					mTab.dataSave(false);
 					int BSC_ParameterLine_ID = mTab.getRecord_ID(); 
 					if (mTab.getValue("BSC_ParameterLine_ID") != null) {
 						BSC_ParameterLine_ID = (Integer) mTab.getValue("BSC_ParameterLine_ID");
@@ -57,6 +57,7 @@ public class CalloutParameterLine extends CalloutEngine {
 					MFormula formula = new MFormula(Env.getCtx(),BSC_Formula_ID.intValue(),getTrxName());
 					Set<String> variables = formula.getVariables();
 					fill(BSC_ParameterLine_ID,variables);
+					mTab.dataRefresh();
 				} catch(Exception e) {
 					result = e.getMessage();
 					log.log(Level.SEVERE,"CalloutParameterLine: ",e);
@@ -85,7 +86,7 @@ public class CalloutParameterLine extends CalloutEngine {
 				MVariable newVar = new MVariable(Env.getCtx(),0,getTrxName());
 				newVar.setBSC_ParameterLine_ID(BSC_ParameterLine_ID);
 				newVar.setName(var);
-				newVar.save();
+				newVar.saveEx();
 			}
 		}
 		// Удаляем не нужные
