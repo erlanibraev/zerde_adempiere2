@@ -94,7 +94,8 @@ public class MPFRWhereClause extends X_PFR_WhereClause
     		}
     		if(counter > 0)
     			sql.append(clause.getAndOr()).append(" \n");
-    		sql.append(clause.getOpenBracket()).append(" \n");
+    		if(clause.getOpenBracket() != null)
+    			sql.append(clause.getOpenBracket()).append(" \n");
     		sql.append(clause.getColumnName()).append(" \n");
     		sql.append(clause.getOperation()).append(" \n");
     		if(clause.getOperation().trim().equals(QueryDialog.OPERATORS[QueryDialog.IN_INDEX].getName().trim()))
@@ -125,7 +126,8 @@ public class MPFRWhereClause extends X_PFR_WhereClause
 	    			.append(dateRequiredClose)
 	    			.append(" \n");
     		
-    		sql.append(clause.getCloseBracket())
+    		if(clause.getCloseBracket() != null)
+    			sql.append(clause.getCloseBracket())
     			.append(" \n"); 		
     		
     		counter++;
