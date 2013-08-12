@@ -16,7 +16,9 @@ import javax.swing.ComboBoxModel;
 import javax.swing.JLabel;
 
 import org.adempiere.plaf.AdempierePLAF;
+import org.apache.tools.ant.types.FlexInteger;
 import org.compiere.apps.ALayout;
+import org.compiere.apps.ALayoutConstraint;
 import org.compiere.grid.ed.VDate;
 import org.compiere.minigrid.IDColumn;
 import org.compiere.model.MParameter;
@@ -166,33 +168,34 @@ public class InfoBSCParameter extends Info {
 	 *  @throws Exception if Lookups cannot be created
 	 */
 	private void statInit() throws Exception{
-		lParameter_Modules.setHorizontalAlignment(JLabel.LEADING);
+		lParameter_Modules.setHorizontalAlignment(JLabel.RIGHT );
 		lParameter_Modules.setLabelFor(fParameter_Modules);
 		fParameter_Modules.setBackground(AdempierePLAF.getInfoBackground());
 		fParameter_Modules.addActionListener(this);
 		
-		lName.setHorizontalAlignment(JLabel.LEADING);
+		lName.setHorizontalAlignment(JLabel.RIGHT);
 		lName.setLabelFor(fName);
 		fName.setBackground(AdempierePLAF.getInfoBackground());
 		fName.addActionListener(this);
 		
-		lIsExports.setHorizontalAlignment(JLabel.LEADING);
+		lIsExports.setHorizontalAlignment(JLabel.RIGHT);
 		lIsExports.setLabelFor(fIsExports);
 		fIsExports.setBackground(AdempierePLAF.getInfoBackground());
+		fIsExports.setValue(true);
 		fIsExports.addActionListener(this);
 		
-		lBPartner.setHorizontalAlignment(JLabel.LEADING);
+		lBPartner.setHorizontalAlignment(JLabel.RIGHT);
 		lBPartner.setLabelFor(fBPartner);
 		fBPartner.setBackground(AdempierePLAF.getInfoBackground());
 		fBPartner.addActionListener(this);
 		
 		parameterPanel.setLayout(new ALayout(2,2,true));
 		//
-		parameterPanel.add(lName, null);
+		parameterPanel.add(lName, new ALayoutConstraint(0,0));
 		parameterPanel.add(fName, null);
 		parameterPanel.add(lParameter_Modules,null);
 		parameterPanel.add(fParameter_Modules,null);
-		parameterPanel.add(lIsExports,null);
+		parameterPanel.add(lIsExports,new ALayoutConstraint(1,0));
 		parameterPanel.add(fIsExports,null);
 		parameterPanel.add(lBPartner,null);
 		parameterPanel.add(fBPartner,null);
