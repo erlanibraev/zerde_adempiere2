@@ -1,6 +1,5 @@
 package org.compiere.model;
 
-import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,7 +14,6 @@ import java.util.logging.Level;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
-import org.hibernate.util.GetGeneratedKeysHelper;
 
 public class MParameterLine extends X_BSC_ParameterLine {
 

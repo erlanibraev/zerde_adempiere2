@@ -5,31 +5,23 @@ package org.compiere.apps.search;
 
 import java.awt.Frame;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
-import javax.swing.ComboBoxModel;
 import javax.swing.JLabel;
 
 import org.adempiere.plaf.AdempierePLAF;
-import org.apache.tools.ant.types.FlexInteger;
 import org.compiere.apps.ALayout;
 import org.compiere.apps.ALayoutConstraint;
-import org.compiere.grid.ed.VDate;
 import org.compiere.minigrid.IDColumn;
 import org.compiere.model.MParameter;
 import org.compiere.swing.CCheckBox;
 import org.compiere.swing.CComboBox;
 import org.compiere.swing.CLabel;
-import org.compiere.swing.CPanel;
 import org.compiere.swing.CTextField;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
-import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;

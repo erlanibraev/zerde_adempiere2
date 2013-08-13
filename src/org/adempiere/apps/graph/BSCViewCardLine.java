@@ -87,6 +87,8 @@ public class BSCViewCardLine extends CPanel implements FormPanel, ActionListener
 			
 			KeyNamePair[] pp = getBSCCardLine(cardLine.getBSC_Card_ID());			
 			cbCardLine.setModel(new DefaultComboBoxModel<KeyNamePair>(pp));
+			if (_cardLine != null && cardLine == null)
+				setCardLine((_cardLine != null ? _cardLine.getBSC_CardLine_ID(): 0));
 			cbCardLine.setValue(cardLine.getBSC_CardLine_ID());
 			
 			load(cardLine.getBSC_Card_ID(),cardLine.getBSC_CardLine_ID());
@@ -194,24 +196,33 @@ public class BSCViewCardLine extends CPanel implements FormPanel, ActionListener
 		return cbCardLine;
 	}
 	
-	private void load(int BSC_Card_ID, int BSC_CardLine_ID) {
+	public void load(int BSC_Card_ID, int BSC_CardLine_ID) {
 		
 		log.fine("BSC_Card_ID=" + BSC_Card_ID+" \n BSC_CardLine_ID=" + BSC_CardLine_ID);
 
+		cbCard.setValue(BSC_Card_ID);
+		cbCardLine.setValue(BSC_CardLine_ID);
+		
 		mainPanel.removeAll();
 		
 		if (BSC_Card_ID == 0 ) {
 			return;
 		}
 		
-		setCard(BSC_Card_ID);
-		setCardLine(BSC_CardLine_ID);
+		if (BSC_Card_ID > 0)
+			setCard(BSC_Card_ID);
+		if (BSC_CardLine_ID > 0)
+			setCardLine(BSC_CardLine_ID);
 		
 		if (card != null && cardLine == null) {
 			viewCard();
 		} else if (card != null && cardLine != null) {
 			viewCardLine();
 		}
+
+		mainPanel.validate();
+		mainPanel.repaint();
+		mainPanel.updateUI();
 		
 		return ;
 	}
