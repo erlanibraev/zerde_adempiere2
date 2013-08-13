@@ -41,7 +41,7 @@ public class DSR_ExcelStyles
 	public static CellStyle getRowHeader(HSSFWorkbook wb)
 	{
 		HSSFFont font = wb.createFont();
-		font.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+		//font.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
 		
 		CellStyle rowHeader = wb.createCellStyle();
 		rowHeader.setBorderBottom((short)1);
@@ -50,7 +50,7 @@ public class DSR_ExcelStyles
 		rowHeader.setBorderRight((short)1);
 		rowHeader.setWrapText(true);
 		rowHeader.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
-		rowHeader.setAlignment(CellStyle.ALIGN_CENTER);
+		rowHeader.setAlignment(CellStyle.ALIGN_LEFT);
 		rowHeader.setFont(font);
 		return rowHeader;
 	}

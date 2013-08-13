@@ -17,8 +17,10 @@
 /** Generated Model - DO NOT CHANGE */
 package org.compiere.model;
 
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PFR_Calculation
@@ -30,7 +32,7 @@ public class X_PFR_Calculation extends PO implements I_PFR_Calculation, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130807L;
+	private static final long serialVersionUID = 20130813L;
 
     /** the default Constructor */
     public X_PFR_Calculation(Properties ctx)
@@ -159,6 +161,26 @@ public class X_PFR_Calculation extends PO implements I_PFR_Calculation, I_Persis
 		return false;
 	}
 
+	/** Set Koeff.
+		@param Koeff 
+		Коэффициент
+	  */
+	public void setKoeff (BigDecimal Koeff)
+	{
+		set_Value (COLUMNNAME_Koeff, Koeff);
+	}
+
+	/** Get Koeff.
+		@return Коэффициент
+	  */
+	public BigDecimal getKoeff () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Koeff);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
 	/** Set Name.
 		@param Name 
 		Alphanumeric identifier of the entity
@@ -183,6 +205,36 @@ public class X_PFR_Calculation extends PO implements I_PFR_Calculation, I_Persis
     {
         return new KeyNamePair(get_ID(), getName());
     }
+
+	/** Operator AD_Reference_ID=1000150 */
+	public static final int OPERATOR_AD_Reference_ID=1000150;
+	/** Division = / */
+	public static final String OPERATOR_Division = "/";
+	/** Multiplication = * */
+	public static final String OPERATOR_Multiplication = "*";
+	/** Plus = + */
+	public static final String OPERATOR_Plus = "+";
+	/** Minus = - */
+	public static final String OPERATOR_Minus = "-";
+	/** Percent = % */
+	public static final String OPERATOR_Percent = "%";
+	/** Set Operator.
+		@param Operator 
+		Арифметический оператор
+	  */
+	public void setOperator (String Operator)
+	{
+
+		set_Value (COLUMNNAME_Operator, Operator);
+	}
+
+	/** Get Operator.
+		@return Арифметический оператор
+	  */
+	public String getOperator () 
+	{
+		return (String)get_Value(COLUMNNAME_Operator);
+	}
 
 	public I_PFR_CalcType getPFR_CalcType() throws RuntimeException
     {

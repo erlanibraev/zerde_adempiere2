@@ -118,6 +118,46 @@ public class MBPMFormValues extends X_BPM_FormValues {
 		return retValue;
 	}
 	
+	public static MBPMFormValues[] getValuesOrdered(Properties ctx, int BPM_FormLine_ID, String trxName)
+	{
+		List<MBPMFormValues> list = new ArrayList<MBPMFormValues>();
+		String sql = "SELECT v.BPM_FormValues_ID FROM BPM_FormValues v \n" +
+				"INNER JOIN BPM_FormColumn c ON v.BPM_FormColumn_ID = c.BPM_FormColumn_ID \n" +
+				"WHERE v.BPM_FormLine_ID = ? \n AND c.isActive = 'Y'" +
+				"ORDER BY c.OrderColumn";
+		
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		try
+		{
+			pstmt = DB.prepareStatement(sql, null);
+			pstmt.setInt(1, BPM_FormLine_ID);
+			rs = pstmt.executeQuery();
+			
+			while(rs.next())
+			{
+				MBPMFormValues value = new MBPMFormValues(Env.getCtx(), rs.getInt(1), null);
+				
+				list.add(value);
+			}
+		}
+		catch(Exception ex){}
+		finally
+		{
+			try 
+			{
+				rs.close();
+				pstmt.close();
+			} catch (SQLException e) {e.printStackTrace();}
+			rs = null; pstmt = null;
+		}
+		
+		MBPMFormValues[] retValue = new MBPMFormValues[list.size ()];
+		list.toArray (retValue);
+		return retValue;
+	}
+	
 	public static MBPMFormValues[] getValues(Properties ctx, int BPM_FormLine_ID, String trxName)
 	{
 		List<MBPMFormValues> list = new Query(ctx, I_BPM_FormValues.Table_Name, "BPM_FormLine_ID=?", trxName)

@@ -30,7 +30,7 @@ public interface I_PFR_Calculation
     /** TableName=PFR_Calculation */
     public static final String Table_Name = "PFR_Calculation";
 
-    /** AD_Table_ID=1000306 */
+    /** AD_Table_ID=1000257 */
     public static final int Table_ID = MTable.getTable_ID(Table_Name);
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
@@ -130,6 +130,19 @@ public interface I_PFR_Calculation
 	/** Get isSubQuery	  */
 	public boolean isSubQuery();
 
+    /** Column name Koeff */
+    public static final String COLUMNNAME_Koeff = "Koeff";
+
+	/** Set Koeff.
+	  * Коэффициент
+	  */
+	public void setKoeff (BigDecimal Koeff);
+
+	/** Get Koeff.
+	  * Коэффициент
+	  */
+	public BigDecimal getKoeff();
+
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";
 
@@ -142,6 +155,19 @@ public interface I_PFR_Calculation
 	  * Alphanumeric identifier of the entity
 	  */
 	public String getName();
+
+    /** Column name Operator */
+    public static final String COLUMNNAME_Operator = "Operator";
+
+	/** Set Operator.
+	  * Арифметический оператор
+	  */
+	public void setOperator (String Operator);
+
+	/** Get Operator.
+	  * Арифметический оператор
+	  */
+	public String getOperator();
 
     /** Column name PFR_CalcType_ID */
     public static final String COLUMNNAME_PFR_CalcType_ID = "PFR_CalcType_ID";

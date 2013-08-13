@@ -158,6 +158,13 @@ public class MPFRCalculation extends X_PFR_Calculation
     	sqlSelect.append("SELECT ");
     	sqlSelect.append(calculation.getPFR_CalcType().getSqlValue()).append("(");
     	sqlSelect.append(MColumn.getColumnName(Env.getCtx(), calculation.getAD_Column_ID())).append(")");
+    	
+    	if(calculation.getOperator() != null && calculation.getKoeff() != null)
+    	{
+    		sqlSelect.append(calculation.getOperator());
+    		sqlSelect.append(calculation.getKoeff());
+    	}
+    	
     	sqlSelect.append(" FROM ");
     	sqlSelect.append(MTable.getTableName(Env.getCtx(), calculation.getAD_Table_ID()));    	
     	

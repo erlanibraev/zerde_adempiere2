@@ -28,7 +28,7 @@ public class DSR_Row
 	
 	private void getCells(int BPM_FormLine_ID)
 	{
-		MBPMFormValues[] lines = MBPMFormValues.getValues(Env.getCtx(), BPM_FormLine_ID, null);
+		MBPMFormValues[] lines = MBPMFormValues.getValuesOrdered(Env.getCtx(), BPM_FormLine_ID, null);
 		
 		MBPMFormLine rowLine = new MBPMFormLine(Env.getCtx(), BPM_FormLine_ID, null);
 		
