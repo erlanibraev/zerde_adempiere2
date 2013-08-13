@@ -20,17 +20,17 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for BPM_FormCell
+/** Generated Interface for BPM_FormParameters
  *  @author Adempiere (generated) 
  *  @version Release 3.7.0LTS
  */
-public interface I_BPM_FormCell 
+public interface I_BPM_FormParameters 
 {
 
-    /** TableName=BPM_FormCell */
-    public static final String Table_Name = "BPM_FormCell";
+    /** TableName=BPM_FormParameters */
+    public static final String Table_Name = "BPM_FormParameters";
 
-    /** AD_Table_ID=1000266 */
+    /** AD_Table_ID=1000268 */
     public static final int Table_ID = MTable.getTable_ID(Table_Name);
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
@@ -71,47 +71,31 @@ public interface I_BPM_FormCell
 	/** Get BPM_FormCell ID	  */
 	public int getBPM_FormCell_ID();
 
-    /** Column name BPM_FormColumn_ID */
-    public static final String COLUMNNAME_BPM_FormColumn_ID = "BPM_FormColumn_ID";
+	public I_BPM_FormCell getBPM_FormCell() throws RuntimeException;
 
-	/** Set BPM_FormColumn ID	  */
-	public void setBPM_FormColumn_ID (int BPM_FormColumn_ID);
+    /** Column name BPM_FormParameters_ID */
+    public static final String COLUMNNAME_BPM_FormParameters_ID = "BPM_FormParameters_ID";
 
-	/** Get BPM_FormColumn ID	  */
-	public int getBPM_FormColumn_ID();
+	/** Set BPM_FormParameters ID	  */
+	public void setBPM_FormParameters_ID (int BPM_FormParameters_ID);
 
-	public I_BPM_FormColumn getBPM_FormColumn() throws RuntimeException;
+	/** Get BPM_FormParameters ID	  */
+	public int getBPM_FormParameters_ID();
 
-    /** Column name BPM_FormLine_ID */
-    public static final String COLUMNNAME_BPM_FormLine_ID = "BPM_FormLine_ID";
+    /** Column name C_Charge_ID */
+    public static final String COLUMNNAME_C_Charge_ID = "C_Charge_ID";
 
-	/** Set BPM_FormLine ID	  */
-	public void setBPM_FormLine_ID (int BPM_FormLine_ID);
+	/** Set Charge.
+	  * Additional document charges
+	  */
+	public void setC_Charge_ID (int C_Charge_ID);
 
-	/** Get BPM_FormLine ID	  */
-	public int getBPM_FormLine_ID();
+	/** Get Charge.
+	  * Additional document charges
+	  */
+	public int getC_Charge_ID();
 
-	public I_BPM_FormLine getBPM_FormLine() throws RuntimeException;
-
-    /** Column name BSC_Parameter_ID */
-    public static final String COLUMNNAME_BSC_Parameter_ID = "BSC_Parameter_ID";
-
-	/** Set BSC_Parameter ID	  */
-	public void setBSC_Parameter_ID (int BSC_Parameter_ID);
-
-	/** Get BSC_Parameter ID	  */
-	public int getBSC_Parameter_ID();
-
-	public I_BSC_Parameter getBSC_Parameter() throws RuntimeException;
-
-    /** Column name CellValue */
-    public static final String COLUMNNAME_CellValue = "CellValue";
-
-	/** Set CellValue	  */
-	public void setCellValue (BigDecimal CellValue);
-
-	/** Get CellValue	  */
-	public BigDecimal getCellValue();
+	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

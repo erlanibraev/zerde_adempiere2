@@ -97,11 +97,21 @@ public class MPFRWhereClause extends X_PFR_WhereClause
     		if(clause.getOpenBracket() != null)
     			sql.append(clause.getOpenBracket()).append(" \n");
     		sql.append(clause.getColumnName()).append(" \n");
+    		
+    		String chargeIN = (parameters.get(I_BPM_FormParameters.COLUMNNAME_C_Charge_ID) == null) ? "" : (String) parameters.get(I_BPM_FormParameters.COLUMNNAME_C_Charge_ID);
+    		if(chargeIN.indexOf(",") != -1)
+    			clause.setOperation(QueryDialog.OPERATORS[QueryDialog.IN_INDEX].getName());
+    		
     		sql.append(clause.getOperation()).append(" \n");
+    		
     		if(clause.getOperation().trim().equals(QueryDialog.OPERATORS[QueryDialog.IN_INDEX].getName().trim()))
     		{
-    			String subSql = MPFRCalculation.getSQLValue(Integer.parseInt(value1), parameters);
-        		
+    			String subSql = "";
+    			if(chargeIN.indexOf(",") == -1)
+    				subSql = MPFRCalculation.getSQLValue(Integer.parseInt(value1), parameters);
+    			else
+    				subSql = (String) parameters.get(I_BPM_FormParameters.COLUMNNAME_C_Charge_ID);
+    			
     			sql.append(dateRequiredOpen)
 	    		.append(quotesRequired);
     			sql.append("(").append(subSql).append(")");

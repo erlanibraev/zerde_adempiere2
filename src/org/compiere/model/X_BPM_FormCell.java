@@ -31,7 +31,7 @@ public class X_BPM_FormCell extends PO implements I_BPM_FormCell, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130806L;
+	private static final long serialVersionUID = 20130813L;
 
     /** the default Constructor */
     public X_BPM_FormCell(Properties ctx)
@@ -50,7 +50,6 @@ public class X_BPM_FormCell extends PO implements I_BPM_FormCell, I_Persistent
 			setBPM_FormLine_ID (0);
 			setCellValue (Env.ZERO);
 // 0
-			setOrderColumn (0);
         } */
     }
 
@@ -192,22 +191,5 @@ public class X_BPM_FormCell extends PO implements I_BPM_FormCell, I_Persistent
 		if (bd == null)
 			 return Env.ZERO;
 		return bd;
-	}
-
-	/** Set OrderColumn.
-		@param OrderColumn OrderColumn	  */
-	public void setOrderColumn (int OrderColumn)
-	{
-		set_Value (COLUMNNAME_OrderColumn, Integer.valueOf(OrderColumn));
-	}
-
-	/** Get OrderColumn.
-		@return OrderColumn	  */
-	public int getOrderColumn () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_OrderColumn);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
 	}
 }

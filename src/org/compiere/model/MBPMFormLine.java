@@ -71,7 +71,6 @@ public class MBPMFormLine extends X_BPM_FormLine {
 			MBPMFormCell cell = new MBPMFormCell(getCtx(), 0, get_TrxName());
 			cell.setBPM_FormColumn_ID(column.getBPM_FormColumn_ID());
 			cell.setBPM_FormLine_ID(getBPM_FormLine_ID());
-			cell.setOrderColumn(column.getOrderColumn());
 			cell.saveEx();
 			
 		}

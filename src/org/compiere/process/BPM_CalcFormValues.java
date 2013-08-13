@@ -1,12 +1,14 @@
 package org.compiere.process;
 
 import java.math.BigDecimal;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Properties;
 import org.compiere.model.I_BSC_ParameterLine;
 import org.compiere.model.MBPMForm;
 import org.compiere.model.MBPMFormCell;
 import org.compiere.model.MBPMFormLine;
+import org.compiere.model.MBPMFormParameters;
 import org.compiere.model.MBPMFormValues;
 import org.compiere.model.MParameterLine;
 import org.compiere.model.Query;
@@ -49,9 +51,25 @@ public class BPM_CalcFormValues extends SvrProcess {
 				value.setBPM_FormColumn_ID(cell.getBPM_FormColumn_ID());
 				
 				if(cell.getBSC_Parameter_ID() != 0){
+					
+					MBPMFormParameters[] parameters = MBPMFormParameters.getLines(getCtx(), cell.getBPM_FormCell_ID(), get_TrxName());
+					LinkedHashMap<String, Object> obj = new LinkedHashMap<String, Object>();
+					String in = "";
+					int n = 0;
+					for(MBPMFormParameters par: parameters){
+						if(parameters.length > 1){
+							if(n != 0) in += ",";
+							in += par.getC_Charge_ID();
+							obj.put(MBPMFormParameters.COLUMNNAME_C_Charge_ID, in);
+						}
+						else
+							obj.put(MBPMFormParameters.COLUMNNAME_C_Charge_ID, String.valueOf(par.getC_Charge_ID()));
+						n++;
+					}
+					
 					for(X_BSC_ParameterLine parLine: getLineParameter(cell.getBSC_Parameter_ID())){
 						MParameterLine par = new MParameterLine(m_ctx, parLine.getBSC_ParameterLine_ID(), get_TrxName());
-						String result = par.calculate();
+						String result = par.calculate(obj);
 						try{
 							value.setCellValue(new BigDecimal(result).setScale(2, BigDecimal.ROUND_HALF_UP));
 						}catch(Exception ex){

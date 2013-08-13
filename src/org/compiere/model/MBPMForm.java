@@ -46,7 +46,7 @@ public class MBPMForm extends X_BPM_Form {
 	public static MBPMFormLine[] getLines(Properties ctx, int BPM_Form_ID, String trxName){
 		
 		List<MBPMFormLine> list = new Query(ctx, I_BPM_FormLine.Table_Name, "BPM_Form_ID=?", trxName)
-		.setParameters(BPM_Form_ID)
+		.setParameters(BPM_Form_ID).setOrderBy(I_BPM_FormLine.COLUMNNAME_LineNo)
 		.setOnlyActiveRecords(true)
 		.list();
 		
