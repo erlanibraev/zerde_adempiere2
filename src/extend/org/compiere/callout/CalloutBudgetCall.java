@@ -10,6 +10,8 @@ import org.compiere.apps.ADialog;
 import org.compiere.model.CalloutEngine;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
+import org.compiere.model.I_BPM_VersionBudget;
+import org.compiere.model.I_BPM_VersionBudgetLine;
 import org.compiere.model.MBPMABP;
 import org.compiere.model.MBPMBudgetCall;
 import org.compiere.model.MBPMVersionBudget;
@@ -41,12 +43,12 @@ public class CalloutBudgetCall extends CalloutEngine {
 	}
 	
 	/**
-	 * The current version
+	 * The current version line
 	 * Used in the column BPM_VersionBudgetLine_ID
 	 */
-	public void setVersion(Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value) {
+	public void setVersionLine(Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value) {
 		
-		mTab.setValue("BPM_VersionBudgetLine_ID", MBPMVersionBudget.getCurrentVersion());
+		mTab.setValue(I_BPM_VersionBudgetLine.COLUMNNAME_BPM_VersionBudgetLine_ID, MBPMVersionBudget.getCurrentVersion());
 		
 	}
 	
@@ -125,6 +127,17 @@ public class CalloutBudgetCall extends CalloutEngine {
 			mTab.getParentTab().dataRefreshAll();
 			mTab.navigate(currentRow);
 		}
+		
+	}
+	
+	/**
+	 * The current version
+	 * Used in the column BPM_VersionBudget_ID
+	 */
+	public void setVersion(Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value) {
+		
+		X_BPM_VersionBudget budget = MBPMVersionBudget.getVersionBudget();
+		mTab.setValue(I_BPM_VersionBudget.COLUMNNAME_BPM_VersionBudget_ID, budget.getBPM_VersionBudget_ID());
 		
 	}
 

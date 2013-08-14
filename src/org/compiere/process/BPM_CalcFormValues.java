@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Properties;
+import org.compiere.model.I_BPM_Form;
+import org.compiere.model.I_BPM_Project;
 import org.compiere.model.I_BSC_ParameterLine;
 import org.compiere.model.MBPMForm;
 import org.compiere.model.MBPMFormCell;
@@ -21,6 +23,10 @@ public class BPM_CalcFormValues extends SvrProcess {
 	/** Current context		*/
 	private Properties m_ctx;
 	/** */
+	private int BPM_Form_ID = 0;
+	/** */
+	private int BPM_Project_ID = 0;
+	/** */
 	private MBPMForm form = null;
 	private MBPMFormLine formLine[] = null;
 	private MBPMFormCell formCell[] = null;
@@ -30,7 +36,22 @@ public class BPM_CalcFormValues extends SvrProcess {
 
 		m_ctx = Env.getCtx();
 		
-		form = new MBPMForm(m_ctx, getRecord_ID(), get_TrxName());
+		ProcessInfoParameter[] para = getParameter();
+		for (int i = 0; i < para.length; i++)	{
+			String name = para[i].getParameterName();
+			if (name == null); 
+				//
+			else if (name.compareTo(I_BPM_Form.COLUMNNAME_BPM_Form_ID) == 0 && para[i].getParameter() != null)
+				BPM_Form_ID = new BigDecimal(Integer.parseInt(para[i].getParameter().toString())).intValue();
+			else if (name.compareTo(I_BPM_Project.COLUMNNAME_BPM_Project_ID) == 0 && para[i].getParameter() != null)
+				BPM_Project_ID = new BigDecimal(Integer.parseInt(para[i].getParameter().toString())).intValue();
+			else
+			{
+				BPM_Form_ID = getRecord_ID();
+			}
+		}
+		
+		form = new MBPMForm(m_ctx, BPM_Form_ID, get_TrxName());
 		formLine = MBPMForm.getLines(m_ctx, form.getBPM_Form_ID(), get_TrxName());
 
 	}
@@ -48,6 +69,7 @@ public class BPM_CalcFormValues extends SvrProcess {
 					value = new MBPMFormValues(m_ctx, 0, get_TrxName());
 				value.setBPM_Form_ID(l.getBPM_Form_ID());
 				value.setBPM_FormLine_ID(l.getBPM_FormLine_ID());
+				value.setBPM_VersionBudget_ID(form.getBPM_VersionBudget_ID());
 				value.setBPM_FormColumn_ID(cell.getBPM_FormColumn_ID());
 				
 				if(cell.getBSC_Parameter_ID() != 0){

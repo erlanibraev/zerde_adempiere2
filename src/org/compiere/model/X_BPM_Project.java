@@ -21,10 +21,10 @@ import java.sql.ResultSet;
 import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Model for BPM_Form
+/** Generated Model for BPM_Project
  *  @author Adempiere (generated) 
  *  @version Release 3.7.0LTS - $Id$ */
-public class X_BPM_Form extends PO implements I_BPM_Form, I_Persistent 
+public class X_BPM_Project extends PO implements I_BPM_Project, I_Persistent 
 {
 
 	/**
@@ -33,29 +33,29 @@ public class X_BPM_Form extends PO implements I_BPM_Form, I_Persistent
 	private static final long serialVersionUID = 20130814L;
 
     /** the default Constructor */
-    public X_BPM_Form(Properties ctx)
+    public X_BPM_Project(Properties ctx)
     { 
       super (ctx, null, null);
     } 
 
     /** Standard Constructor */
-    public X_BPM_Form (Properties ctx, int BPM_Form_ID, String trxName)
+    public X_BPM_Project (Properties ctx, int BPM_Project_ID, String trxName)
     {
-      super (ctx, BPM_Form_ID, trxName);
-      /** if (BPM_Form_ID == 0)
+      super (ctx, BPM_Project_ID, trxName);
+      /** if (BPM_Project_ID == 0)
         {
-			setBPM_Form_ID (0);
-			setBPM_FormCode_ID (0);
+			setBPM_Project_ID (0);
 			setBPM_VersionBudget_ID (0);
-// 1000010
 			setName (null);
+			setProcessed (false);
+// N
 			setProcessing (false);
 // N
         } */
     }
 
     /** Load Constructor */
-    public X_BPM_Form (Properties ctx, ResultSet rs, String trxName)
+    public X_BPM_Project (Properties ctx, ResultSet rs, String trxName)
     {
       super (ctx, rs, trxName);
     }
@@ -77,51 +77,26 @@ public class X_BPM_Form extends PO implements I_BPM_Form, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_BPM_Form[")
+      StringBuffer sb = new StringBuffer ("X_BPM_Project[")
         .append(get_ID()).append("]");
       return sb.toString();
     }
 
-	/** Set BPM_Form ID.
-		@param BPM_Form_ID BPM_Form ID	  */
-	public void setBPM_Form_ID (int BPM_Form_ID)
+	/** Set BPM_Project ID.
+		@param BPM_Project_ID BPM_Project ID	  */
+	public void setBPM_Project_ID (int BPM_Project_ID)
 	{
-		if (BPM_Form_ID < 1) 
-			set_ValueNoCheck (COLUMNNAME_BPM_Form_ID, null);
+		if (BPM_Project_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_BPM_Project_ID, null);
 		else 
-			set_ValueNoCheck (COLUMNNAME_BPM_Form_ID, Integer.valueOf(BPM_Form_ID));
+			set_ValueNoCheck (COLUMNNAME_BPM_Project_ID, Integer.valueOf(BPM_Project_ID));
 	}
 
-	/** Get BPM_Form ID.
-		@return BPM_Form ID	  */
-	public int getBPM_Form_ID () 
+	/** Get BPM_Project ID.
+		@return BPM_Project ID	  */
+	public int getBPM_Project_ID () 
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_BPM_Form_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_BPM_FormCode getBPM_FormCode() throws RuntimeException
-    {
-		return (I_BPM_FormCode)MTable.get(getCtx(), I_BPM_FormCode.Table_Name)
-			.getPO(getBPM_FormCode_ID(), get_TrxName());	}
-
-	/** Set BPM_FormCode ID.
-		@param BPM_FormCode_ID BPM_FormCode ID	  */
-	public void setBPM_FormCode_ID (int BPM_FormCode_ID)
-	{
-		if (BPM_FormCode_ID < 1) 
-			set_Value (COLUMNNAME_BPM_FormCode_ID, null);
-		else 
-			set_Value (COLUMNNAME_BPM_FormCode_ID, Integer.valueOf(BPM_FormCode_ID));
-	}
-
-	/** Get BPM_FormCode ID.
-		@return BPM_FormCode ID	  */
-	public int getBPM_FormCode_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_BPM_FormCode_ID);
+		Integer ii = (Integer)get_Value(COLUMNNAME_BPM_Project_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -176,6 +151,30 @@ public class X_BPM_Form extends PO implements I_BPM_Form, I_Persistent
     {
         return new KeyNamePair(get_ID(), getName());
     }
+
+	/** Set Processed.
+		@param Processed 
+		The document has been processed
+	  */
+	public void setProcessed (boolean Processed)
+	{
+		set_Value (COLUMNNAME_Processed, Boolean.valueOf(Processed));
+	}
+
+	/** Get Processed.
+		@return The document has been processed
+	  */
+	public boolean isProcessed () 
+	{
+		Object oo = get_Value(COLUMNNAME_Processed);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
 
 	/** Set Process Now.
 		@param Processing Process Now	  */

@@ -30,7 +30,7 @@ public interface I_BPM_Form
     /** TableName=BPM_Form */
     public static final String Table_Name = "BPM_Form";
 
-    /** AD_Table_ID=1000315 */
+    /** AD_Table_ID=1000264 */
     public static final int Table_ID = MTable.getTable_ID(Table_Name);
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
@@ -81,6 +81,17 @@ public interface I_BPM_Form
 	public int getBPM_FormCode_ID();
 
 	public I_BPM_FormCode getBPM_FormCode() throws RuntimeException;
+
+    /** Column name BPM_VersionBudget_ID */
+    public static final String COLUMNNAME_BPM_VersionBudget_ID = "BPM_VersionBudget_ID";
+
+	/** Set BPM_VersionBudget ID	  */
+	public void setBPM_VersionBudget_ID (int BPM_VersionBudget_ID);
+
+	/** Get BPM_VersionBudget ID	  */
+	public int getBPM_VersionBudget_ID();
+
+	public I_BPM_VersionBudget getBPM_VersionBudget() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

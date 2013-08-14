@@ -31,7 +31,7 @@ public class X_BPM_FormValues extends PO implements I_BPM_FormValues, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130808L;
+	private static final long serialVersionUID = 20130814L;
 
     /** the default Constructor */
     public X_BPM_FormValues(Properties ctx)
@@ -49,6 +49,7 @@ public class X_BPM_FormValues extends PO implements I_BPM_FormValues, I_Persiste
 			setBPM_FormColumn_ID (0);
 			setBPM_FormLine_ID (0);
 			setBPM_FormValues_ID (0);
+			setBPM_VersionBudget_ID (0);
 			setCellValue (Env.ZERO);
 // 0
         } */
@@ -186,6 +187,31 @@ public class X_BPM_FormValues extends PO implements I_BPM_FormValues, I_Persiste
 	public int getBPM_FormValues_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_BPM_FormValues_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public I_BPM_VersionBudget getBPM_VersionBudget() throws RuntimeException
+    {
+		return (I_BPM_VersionBudget)MTable.get(getCtx(), I_BPM_VersionBudget.Table_Name)
+			.getPO(getBPM_VersionBudget_ID(), get_TrxName());	}
+
+	/** Set BPM_VersionBudget ID.
+		@param BPM_VersionBudget_ID BPM_VersionBudget ID	  */
+	public void setBPM_VersionBudget_ID (int BPM_VersionBudget_ID)
+	{
+		if (BPM_VersionBudget_ID < 1) 
+			set_Value (COLUMNNAME_BPM_VersionBudget_ID, null);
+		else 
+			set_Value (COLUMNNAME_BPM_VersionBudget_ID, Integer.valueOf(BPM_VersionBudget_ID));
+	}
+
+	/** Get BPM_VersionBudget ID.
+		@return BPM_VersionBudget ID	  */
+	public int getBPM_VersionBudget_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_BPM_VersionBudget_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

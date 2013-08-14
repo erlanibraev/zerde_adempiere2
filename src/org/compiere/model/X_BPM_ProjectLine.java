@@ -19,12 +19,11 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
-import org.compiere.util.KeyNamePair;
 
-/** Generated Model for BPM_Form
+/** Generated Model for BPM_ProjectLine
  *  @author Adempiere (generated) 
  *  @version Release 3.7.0LTS - $Id$ */
-public class X_BPM_Form extends PO implements I_BPM_Form, I_Persistent 
+public class X_BPM_ProjectLine extends PO implements I_BPM_ProjectLine, I_Persistent 
 {
 
 	/**
@@ -33,29 +32,29 @@ public class X_BPM_Form extends PO implements I_BPM_Form, I_Persistent
 	private static final long serialVersionUID = 20130814L;
 
     /** the default Constructor */
-    public X_BPM_Form(Properties ctx)
+    public X_BPM_ProjectLine(Properties ctx)
     { 
       super (ctx, null, null);
     } 
 
     /** Standard Constructor */
-    public X_BPM_Form (Properties ctx, int BPM_Form_ID, String trxName)
+    public X_BPM_ProjectLine (Properties ctx, int BPM_ProjectLine_ID, String trxName)
     {
-      super (ctx, BPM_Form_ID, trxName);
-      /** if (BPM_Form_ID == 0)
+      super (ctx, BPM_ProjectLine_ID, trxName);
+      /** if (BPM_ProjectLine_ID == 0)
         {
 			setBPM_Form_ID (0);
-			setBPM_FormCode_ID (0);
-			setBPM_VersionBudget_ID (0);
-// 1000010
-			setName (null);
+			setBPM_Project_ID (0);
+			setBPM_ProjectLine_ID (0);
+			setProcessed (false);
+// N
 			setProcessing (false);
 // N
         } */
     }
 
     /** Load Constructor */
-    public X_BPM_Form (Properties ctx, ResultSet rs, String trxName)
+    public X_BPM_ProjectLine (Properties ctx, ResultSet rs, String trxName)
     {
       super (ctx, rs, trxName);
     }
@@ -77,19 +76,24 @@ public class X_BPM_Form extends PO implements I_BPM_Form, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_BPM_Form[")
+      StringBuffer sb = new StringBuffer ("X_BPM_ProjectLine[")
         .append(get_ID()).append("]");
       return sb.toString();
     }
+
+	public I_BPM_Form getBPM_Form() throws RuntimeException
+    {
+		return (I_BPM_Form)MTable.get(getCtx(), I_BPM_Form.Table_Name)
+			.getPO(getBPM_Form_ID(), get_TrxName());	}
 
 	/** Set BPM_Form ID.
 		@param BPM_Form_ID BPM_Form ID	  */
 	public void setBPM_Form_ID (int BPM_Form_ID)
 	{
 		if (BPM_Form_ID < 1) 
-			set_ValueNoCheck (COLUMNNAME_BPM_Form_ID, null);
+			set_Value (COLUMNNAME_BPM_Form_ID, null);
 		else 
-			set_ValueNoCheck (COLUMNNAME_BPM_Form_ID, Integer.valueOf(BPM_Form_ID));
+			set_Value (COLUMNNAME_BPM_Form_ID, Integer.valueOf(BPM_Form_ID));
 	}
 
 	/** Get BPM_Form ID.
@@ -102,80 +106,74 @@ public class X_BPM_Form extends PO implements I_BPM_Form, I_Persistent
 		return ii.intValue();
 	}
 
-	public I_BPM_FormCode getBPM_FormCode() throws RuntimeException
+	public I_BPM_Project getBPM_Project() throws RuntimeException
     {
-		return (I_BPM_FormCode)MTable.get(getCtx(), I_BPM_FormCode.Table_Name)
-			.getPO(getBPM_FormCode_ID(), get_TrxName());	}
+		return (I_BPM_Project)MTable.get(getCtx(), I_BPM_Project.Table_Name)
+			.getPO(getBPM_Project_ID(), get_TrxName());	}
 
-	/** Set BPM_FormCode ID.
-		@param BPM_FormCode_ID BPM_FormCode ID	  */
-	public void setBPM_FormCode_ID (int BPM_FormCode_ID)
+	/** Set BPM_Project ID.
+		@param BPM_Project_ID BPM_Project ID	  */
+	public void setBPM_Project_ID (int BPM_Project_ID)
 	{
-		if (BPM_FormCode_ID < 1) 
-			set_Value (COLUMNNAME_BPM_FormCode_ID, null);
+		if (BPM_Project_ID < 1) 
+			set_Value (COLUMNNAME_BPM_Project_ID, null);
 		else 
-			set_Value (COLUMNNAME_BPM_FormCode_ID, Integer.valueOf(BPM_FormCode_ID));
+			set_Value (COLUMNNAME_BPM_Project_ID, Integer.valueOf(BPM_Project_ID));
 	}
 
-	/** Get BPM_FormCode ID.
-		@return BPM_FormCode ID	  */
-	public int getBPM_FormCode_ID () 
+	/** Get BPM_Project ID.
+		@return BPM_Project ID	  */
+	public int getBPM_Project_ID () 
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_BPM_FormCode_ID);
+		Integer ii = (Integer)get_Value(COLUMNNAME_BPM_Project_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
 	}
 
-	public I_BPM_VersionBudget getBPM_VersionBudget() throws RuntimeException
-    {
-		return (I_BPM_VersionBudget)MTable.get(getCtx(), I_BPM_VersionBudget.Table_Name)
-			.getPO(getBPM_VersionBudget_ID(), get_TrxName());	}
-
-	/** Set BPM_VersionBudget ID.
-		@param BPM_VersionBudget_ID BPM_VersionBudget ID	  */
-	public void setBPM_VersionBudget_ID (int BPM_VersionBudget_ID)
+	/** Set BPM_ProjectLine ID.
+		@param BPM_ProjectLine_ID BPM_ProjectLine ID	  */
+	public void setBPM_ProjectLine_ID (int BPM_ProjectLine_ID)
 	{
-		if (BPM_VersionBudget_ID < 1) 
-			set_Value (COLUMNNAME_BPM_VersionBudget_ID, null);
+		if (BPM_ProjectLine_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_BPM_ProjectLine_ID, null);
 		else 
-			set_Value (COLUMNNAME_BPM_VersionBudget_ID, Integer.valueOf(BPM_VersionBudget_ID));
+			set_ValueNoCheck (COLUMNNAME_BPM_ProjectLine_ID, Integer.valueOf(BPM_ProjectLine_ID));
 	}
 
-	/** Get BPM_VersionBudget ID.
-		@return BPM_VersionBudget ID	  */
-	public int getBPM_VersionBudget_ID () 
+	/** Get BPM_ProjectLine ID.
+		@return BPM_ProjectLine ID	  */
+	public int getBPM_ProjectLine_ID () 
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_BPM_VersionBudget_ID);
+		Integer ii = (Integer)get_Value(COLUMNNAME_BPM_ProjectLine_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
 	}
 
-	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
+	/** Set Processed.
+		@param Processed 
+		The document has been processed
 	  */
-	public void setName (String Name)
+	public void setProcessed (boolean Processed)
 	{
-		set_Value (COLUMNNAME_Name, Name);
+		set_Value (COLUMNNAME_Processed, Boolean.valueOf(Processed));
 	}
 
-	/** Get Name.
-		@return Alphanumeric identifier of the entity
+	/** Get Processed.
+		@return The document has been processed
 	  */
-	public String getName () 
+	public boolean isProcessed () 
 	{
-		return (String)get_Value(COLUMNNAME_Name);
+		Object oo = get_Value(COLUMNNAME_Processed);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
 	}
-
-    /** Get Record ID/ColumnName
-        @return ID/ColumnName pair
-      */
-    public KeyNamePair getKeyNamePair() 
-    {
-        return new KeyNamePair(get_ID(), getName());
-    }
 
 	/** Set Process Now.
 		@param Processing Process Now	  */

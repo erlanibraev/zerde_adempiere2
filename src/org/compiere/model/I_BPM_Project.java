@@ -20,17 +20,17 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for BPM_FormValues
+/** Generated Interface for BPM_Project
  *  @author Adempiere (generated) 
  *  @version Release 3.7.0LTS
  */
-public interface I_BPM_FormValues 
+public interface I_BPM_Project 
 {
 
-    /** TableName=BPM_FormValues */
-    public static final String Table_Name = "BPM_FormValues";
+    /** TableName=BPM_Project */
+    public static final String Table_Name = "BPM_Project";
 
-    /** AD_Table_ID=1000267 */
+    /** AD_Table_ID=1000269 */
     public static final int Table_ID = MTable.getTable_ID(Table_Name);
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
@@ -62,56 +62,14 @@ public interface I_BPM_FormValues
 	  */
 	public int getAD_Org_ID();
 
-    /** Column name AlternateValue */
-    public static final String COLUMNNAME_AlternateValue = "AlternateValue";
+    /** Column name BPM_Project_ID */
+    public static final String COLUMNNAME_BPM_Project_ID = "BPM_Project_ID";
 
-	/** Set AlternateValue	  */
-	public void setAlternateValue (String AlternateValue);
+	/** Set BPM_Project ID	  */
+	public void setBPM_Project_ID (int BPM_Project_ID);
 
-	/** Get AlternateValue	  */
-	public String getAlternateValue();
-
-    /** Column name BPM_Form_ID */
-    public static final String COLUMNNAME_BPM_Form_ID = "BPM_Form_ID";
-
-	/** Set BPM_Form ID	  */
-	public void setBPM_Form_ID (int BPM_Form_ID);
-
-	/** Get BPM_Form ID	  */
-	public int getBPM_Form_ID();
-
-	public I_BPM_Form getBPM_Form() throws RuntimeException;
-
-    /** Column name BPM_FormColumn_ID */
-    public static final String COLUMNNAME_BPM_FormColumn_ID = "BPM_FormColumn_ID";
-
-	/** Set BPM_FormColumn ID	  */
-	public void setBPM_FormColumn_ID (int BPM_FormColumn_ID);
-
-	/** Get BPM_FormColumn ID	  */
-	public int getBPM_FormColumn_ID();
-
-	public I_BPM_FormColumn getBPM_FormColumn() throws RuntimeException;
-
-    /** Column name BPM_FormLine_ID */
-    public static final String COLUMNNAME_BPM_FormLine_ID = "BPM_FormLine_ID";
-
-	/** Set BPM_FormLine ID	  */
-	public void setBPM_FormLine_ID (int BPM_FormLine_ID);
-
-	/** Get BPM_FormLine ID	  */
-	public int getBPM_FormLine_ID();
-
-	public I_BPM_FormLine getBPM_FormLine() throws RuntimeException;
-
-    /** Column name BPM_FormValues_ID */
-    public static final String COLUMNNAME_BPM_FormValues_ID = "BPM_FormValues_ID";
-
-	/** Set BPM_FormValues ID	  */
-	public void setBPM_FormValues_ID (int BPM_FormValues_ID);
-
-	/** Get BPM_FormValues ID	  */
-	public int getBPM_FormValues_ID();
+	/** Get BPM_Project ID	  */
+	public int getBPM_Project_ID();
 
     /** Column name BPM_VersionBudget_ID */
     public static final String COLUMNNAME_BPM_VersionBudget_ID = "BPM_VersionBudget_ID";
@@ -123,15 +81,6 @@ public interface I_BPM_FormValues
 	public int getBPM_VersionBudget_ID();
 
 	public I_BPM_VersionBudget getBPM_VersionBudget() throws RuntimeException;
-
-    /** Column name CellValue */
-    public static final String COLUMNNAME_CellValue = "CellValue";
-
-	/** Set CellValue	  */
-	public void setCellValue (BigDecimal CellValue);
-
-	/** Get CellValue	  */
-	public BigDecimal getCellValue();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -161,6 +110,41 @@ public interface I_BPM_FormValues
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name Name */
+    public static final String COLUMNNAME_Name = "Name";
+
+	/** Set Name.
+	  * Alphanumeric identifier of the entity
+	  */
+	public void setName (String Name);
+
+	/** Get Name.
+	  * Alphanumeric identifier of the entity
+	  */
+	public String getName();
+
+    /** Column name Processed */
+    public static final String COLUMNNAME_Processed = "Processed";
+
+	/** Set Processed.
+	  * The document has been processed
+	  */
+	public void setProcessed (boolean Processed);
+
+	/** Get Processed.
+	  * The document has been processed
+	  */
+	public boolean isProcessed();
+
+    /** Column name Processing */
+    public static final String COLUMNNAME_Processing = "Processing";
+
+	/** Set Process Now	  */
+	public void setProcessing (boolean Processing);
+
+	/** Get Process Now	  */
+	public boolean isProcessing();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
