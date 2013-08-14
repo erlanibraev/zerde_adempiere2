@@ -467,7 +467,7 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 		MBSCCard newCard = new MBSCCard(Env.getCtx(),0,get_TrxName());
 		copyValues(this, newCard);
 		newCard.setC_Period_ID(C_Period_ID);
-		newCard.setBSC_Parameter_ID(0);
+		newCard.set_ValueNoCheck (MBSCCard.COLUMNNAME_BSC_Card_ID, I_ZERO);	// new
 		
 		newCard.getParameter().createNewLine(getC_Period_ID(),C_Period_ID);
 		
