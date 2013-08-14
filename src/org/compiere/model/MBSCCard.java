@@ -465,16 +465,10 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 	private int createNewCard(int C_Period_ID) {
 		int result = 0;
 		MBSCCard newCard = new MBSCCard(Env.getCtx(),0,get_TrxName());
-		newCard.setC_BPartner_ID(getC_BPartner_ID());
-		newCard.setName(getName());
-		newCard.setBSC_Parameter_ID(getBSC_Parameter_ID());
-		newCard.setDescription(getDescription());
-		newCard.setAD_Client_ID(getAD_Client_ID());
-		newCard.setAD_Org_ID(getAD_Org_ID());
+		copyValues(this, newCard);
 		newCard.setC_Period_ID(C_Period_ID);
-		newCard.setC_DocType_ID(getC_DocType_ID());
-		newCard.setC_DocTypeTarget_ID(getC_DocTypeTarget_ID());
-		newCard.setCalcButton(getCalcButton());
+		newCard.setBSC_Parameter_ID(0);
+		
 		newCard.getParameter().createNewLine(getC_Period_ID(),C_Period_ID);
 		
 		if (newCard.save()) {

@@ -427,23 +427,8 @@ public class MBSCCardLine extends X_BSC_CardLine {
 		if (newCard != null && newCard.getBSC_Card_ID() > 0) {
 			MBSCCardLine newLine = new MBSCCardLine(Env.getCtx(),0,get_TrxName());
 			copyValues(this, newLine);
+			newLine.set_ValueNoCheck (MBSCCardLine.COLUMNNAME_BSC_CardLine_ID, I_ZERO);	// new
 			newLine.setBSC_Card_ID(BSC_Card_ID);
-			
-/*			
-			newLine.setAD_Client_ID(getAD_Client_ID());
-			newLine.setAD_Org_ID(getAD_Org_ID());
-			newLine.setName(getName());
-			newLine.setDescription(getDescription());
-			newLine.setBSC_Coefficient_ID(getBSC_Coefficient_ID());
-			newLine.setBSC_Formula_ID(getBSC_Formula_ID());
-			newLine.setUnit(getUnit());
-			newLine.setWeight(getWeight());
-			newLine.setValueMax(getValueMax());
-			newLine.setValueMin(getValueMin());
-			newLine.setBSC_Parameter_ID(getBSC_Parameter_ID());
-			newLine.setBSC_Parameter_Out_ID(getBSC_Parameter_Out_ID());
-			newLine.setBSC_Perspective_ID(getBSC_Perspective_ID());
-*/			
 			newLine.setValue("0");
 			newLine.setValueNumber(new BigDecimal(0));
 			if(newLine.save()) {
