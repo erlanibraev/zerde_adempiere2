@@ -51,7 +51,7 @@ public class MBPMFormValues extends X_BPM_FormValues {
 		super(ctx, rs, trxName);
 	}
 	
-	public static MBPMFormValues getFormValueLine(int BPM_FormLine_ID, int BPM_FormColumn_ID){
+	public static MBPMFormValues getFormValueLine(int BPM_FormLine_ID, int BPM_FormColumn_ID, int BPM_VersionBudget_ID, int BPM_Project_ID){
 		
 		MBPMFormValues value = null;
 		PreparedStatement pstmt = null;
@@ -60,7 +60,9 @@ public class MBPMFormValues extends X_BPM_FormValues {
 		// Model Form values
 		String sql_ = "SELECT * FROM "+I_BPM_FormValues.Table_Name+" \n" +
 					  "WHERE  "+X_BPM_FormValues.COLUMNNAME_BPM_FormLine_ID+"="+BPM_FormLine_ID+" \n" +
-					  "AND "+X_BPM_FormValues.COLUMNNAME_BPM_FormColumn_ID+"="+BPM_FormColumn_ID;
+					  "AND "+X_BPM_FormValues.COLUMNNAME_BPM_FormColumn_ID+"="+BPM_FormColumn_ID+" \n" +
+					  "AND "+X_BPM_FormValues.COLUMNNAME_BPM_VersionBudget_ID+"="+BPM_VersionBudget_ID+" \n" +
+					  "AND "+X_BPM_FormValues.COLUMNNAME_BPM_Project_ID+"="+BPM_Project_ID;
 		
 		try
 		{
@@ -82,11 +84,12 @@ public class MBPMFormValues extends X_BPM_FormValues {
 		return value;
 	}
 	
-	public static Integer[] getRows(Properties ctx, int BPM_Form_ID, String trxName) throws SQLException
+	public static Integer[] getRows(Properties ctx, int BPM_Form_ID, int BMP_Project_ID, String trxName) throws SQLException
 	{
 		String sql = "SELECT l.BPM_FormLine_ID FROM BPM_FormLine l \n" +
 				"INNER JOIN BPM_FormValues v ON l.BPM_FormLine_ID = v.BPM_FormLine_ID \n" +
 				" WHERE v.BPM_Form_ID = ? \n" +
+				" AND v.BPM_Project_ID = ? \n" +
 				"GROUP BY l.BPM_FormLine_ID \n" +
 				"ORDER BY l.LineNo";
 		PreparedStatement pstmt = null;
@@ -98,6 +101,7 @@ public class MBPMFormValues extends X_BPM_FormValues {
 		{
 			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, BPM_Form_ID);
+			pstmt.setInt(2, BMP_Project_ID);
 			rs = pstmt.executeQuery();
 			
 			while(rs.next())

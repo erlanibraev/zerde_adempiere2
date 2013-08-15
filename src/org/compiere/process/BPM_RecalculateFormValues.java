@@ -3,6 +3,7 @@
  */
 package org.compiere.process;
 
+import java.awt.Container;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,9 +12,12 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import javax.swing.JFrame;
+
 import org.compiere.apps.IProcessParameter;
 import org.compiere.apps.ProcessCtl;
 import org.compiere.apps.ProcessParameterPanel;
+import org.compiere.apps.Waiting;
 import org.compiere.model.I_BPM_Form;
 import org.compiere.model.I_BPM_Project;
 import org.compiere.model.MBPMProject;
@@ -43,14 +47,15 @@ public class BPM_RecalculateFormValues extends SvrProcess implements ASyncProces
 		
 		m_ctx = Env.getCtx();
 		BPM_Project_ID = getRecord_ID();
+		String nameProcess = "CalcForm";
 		
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		
 		// The name must start with a report hrm_order
 		String sql_ = "select distinct t.ad_process_id from ad_process t "+ 
-					  "where (lower(t.value) like lower('%CalcForm%') or lower(t.name) like lower('%CalcForm%')) "+ 
-				      "and (lower(t.value) like lower('%CalcForm%') or lower(t.name) like lower('%CalcForm%'))";
+					  "where (lower(t.value) like lower('%"+nameProcess+"%') or lower(t.name) like lower('%"+nameProcess+"%')) "+ 
+				      "and (lower(t.value) like lower('%"+nameProcess+"%') or lower(t.name) like lower('%"+nameProcess+"%'))";
 		try
 		{
 			pstmt = DB.prepareStatement(sql_, null);
@@ -102,18 +107,25 @@ public class BPM_RecalculateFormValues extends SvrProcess implements ASyncProces
 		return Msg.translate(m_ctx, "Success");
 	}
 
+	private Waiting         m_waiting;
+	/**/
+	ASyncProcess m_parent;
+	
 	/* 
 	 */
 	@Override
 	public void lockUI(ProcessInfo pi) {
-		
+		JFrame frame = Env.getFrame((Container)m_parent);
+		m_waiting = new Waiting (frame, Msg.getMsg(Env.getCtx(), "Processing"), false, pi.getEstSeconds());
 	}
 
 	/* 
 	 */
 	@Override
 	public void unlockUI(ProcessInfo pi) {
-		
+		if (m_waiting != null)
+			m_waiting.dispose();
+		m_waiting = null;
 	}
 
 	/* 

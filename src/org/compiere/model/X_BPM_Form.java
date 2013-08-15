@@ -30,7 +30,7 @@ public class X_BPM_Form extends PO implements I_BPM_Form, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130814L;
+	private static final long serialVersionUID = 20130815L;
 
     /** the default Constructor */
     public X_BPM_Form(Properties ctx)

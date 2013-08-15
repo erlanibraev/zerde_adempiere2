@@ -65,6 +65,13 @@ public class MBPMProject extends X_BPM_Project {
 				currentProject.setProcessed(true);
 				currentProject.setIsActive(false);
 				currentProject.saveEx();
+				
+				MBPMProjectLine[] pLine = MBPMProject.getLines(getCtx(), currentProject.getBPM_Project_ID(), get_TrxName());
+				for(MBPMProjectLine p : pLine){
+					p.setProcessed(true);
+					p.setIsActive(false);
+					p.saveEx();
+				}
 			}
 		}
 		
