@@ -26,6 +26,8 @@ public class BPM_RecalculateFormValues extends SvrProcess {
 	
 	/** Current context		*/
 	private Properties m_ctx;
+	/**	Optional Transaction 	*/
+	private String	m_trxName = null;
 	/** */
 	private int BPM_Project_ID = 0;
 	/**/
@@ -36,12 +38,13 @@ public class BPM_RecalculateFormValues extends SvrProcess {
 	@Override
 	protected void prepare() {
 		
-		m_ctx = Env.getCtx();
+		m_ctx = getCtx();
+		m_trxName = get_TrxName();
 		BPM_Project_ID = getRecord_ID();
-		String nameProcess = "BPM_CalcForm";
+		String nameProcess = BPM_CalcFormValues.class.getName();
 		
 		// org.compiere.process.BPM_CalcFormValues
-		AD_Process_ID = Util.getAD_Process(nameProcess);
+		AD_Process_ID = Util.getAD_Process(nameProcess.substring(nameProcess.lastIndexOf(".")+1, nameProcess.length()));
 
 	}
 
@@ -58,7 +61,7 @@ public class BPM_RecalculateFormValues extends SvrProcess {
 		pi.setAD_User_ID (Env.getAD_User_ID(m_ctx));
 		pi.setAD_Client_ID(Env.getAD_Client_ID(m_ctx));
 		
-		MBPMProjectLine[] pLine = MBPMProject.getLines(m_ctx, BPM_Project_ID, get_TrxName()); 
+		MBPMProjectLine[] pLine = MBPMProject.getLines(m_ctx, BPM_Project_ID, m_trxName); 
 
 		List<ProcessInfoParameter> po = new ArrayList<ProcessInfoParameter>();
 		for(MBPMProjectLine l: pLine){

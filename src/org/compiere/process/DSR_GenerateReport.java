@@ -1,25 +1,32 @@
 package org.compiere.process;
 
 import java.math.BigDecimal;
+import java.util.Properties;
 import java.util.logging.Level;
 import org.compiere.dsr.DSR_DataCollection;
 import org.compiere.dsr.DSR_ExcelImport;
 import org.compiere.model.I_BPM_Form;
 import org.compiere.model.I_BPM_Project;
 import org.compiere.model.MAttachmentEntry;
+import org.compiere.model.MBPMProject;
+import org.compiere.util.Msg;
 import org.joda.time.DateTime;
 
 import extend.org.compiere.utils.Util;
 
 public class DSR_GenerateReport extends SvrProcess 
 {
-	private int BPM_Form_ID = 0;
+	/** Current context			*/
+	private Properties m_ctx;
 	/** */
-	private int BPM_Project_ID = BPM_CalcFormValues.Project_ID;  
+	private int BPM_Form_ID = 0;
+	private int BPM_Project_ID = MBPMProject.TempProjectID;  
 	
 	@Override
 	protected void prepare() 
 	{
+		m_ctx = getCtx();
+		
 		ProcessInfoParameter[] para = getParameter();
 		for(int i=0; i < para.length; i++) 
 		{
@@ -48,7 +55,7 @@ public class DSR_GenerateReport extends SvrProcess
 		MAttachmentEntry entry = Util.getAttachment(getProcessInfo(), getCtx(), path);
 		DSR_ExcelImport.collectionImport(entry, collection);
 		
-		return null;
+		return Msg.translate(m_ctx, "Success");
 	}
 
 }

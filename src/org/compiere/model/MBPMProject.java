@@ -24,6 +24,8 @@ public class MBPMProject extends X_BPM_Project implements DocAction{
 	 * 
 	 */
 	private static final long serialVersionUID = -7041996758972564192L;
+	/** */
+	public static final int TempProjectID = 1000;  // TODO The temp project to preliminary calculations
 
 	/**
 	 * @param ctx

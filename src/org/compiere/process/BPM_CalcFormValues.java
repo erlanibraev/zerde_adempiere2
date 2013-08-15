@@ -17,23 +17,26 @@ import org.compiere.model.MBPMFormCell;
 import org.compiere.model.MBPMFormLine;
 import org.compiere.model.MBPMFormParameters;
 import org.compiere.model.MBPMFormValues;
+import org.compiere.model.MBPMProject;
 import org.compiere.model.MParameterLine;
 import org.compiere.model.Query;
 import org.compiere.model.X_BSC_ParameterLine;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Trx;
 
 import extend.org.compiere.utils.Util;
 
 public class BPM_CalcFormValues extends SvrProcess {
 
-	/** Current context		*/
+	/** Current context			*/
 	private Properties m_ctx;
+	/**	Optional Transaction 	*/
+	private String	m_trxName = null;
 	/** */
 	private int BPM_Form_ID = 0;
 	/** */
-	public static final int Project_ID = 1000;  // TODO The test project to preliminary calculations
-	public int BPM_Project_ID = Project_ID;  
+	public int BPM_Project_ID = MBPMProject.TempProjectID;  
 	/** */
 	private MBPMForm form = null;
 	private MBPMFormLine formLine[] = null;
@@ -44,7 +47,8 @@ public class BPM_CalcFormValues extends SvrProcess {
 	@Override
 	protected void prepare() {
 
-		m_ctx = Env.getCtx();
+		m_ctx = getCtx();
+		m_trxName = get_TrxName();
 		BPM_Form_ID = getRecord_ID();
 		
 		ProcessInfoParameter[] para = getParameter();
@@ -62,8 +66,8 @@ public class BPM_CalcFormValues extends SvrProcess {
 			}
 		}
 		
-		form = new MBPMForm(m_ctx, BPM_Form_ID, get_TrxName());
-		formLine = MBPMForm.getLines(m_ctx, form.getBPM_Form_ID(), get_TrxName());
+		form = new MBPMForm(m_ctx, BPM_Form_ID, m_trxName);
+		formLine = MBPMForm.getLines(m_ctx, form.getBPM_Form_ID(), m_trxName);
 		
 
 	}
@@ -73,12 +77,12 @@ public class BPM_CalcFormValues extends SvrProcess {
 		
 		for(MBPMFormLine l: formLine){
 			
-			formCell = MBPMFormLine.getLines(m_ctx, l.getBPM_FormLine_ID(), get_TrxName());
+			formCell = MBPMFormLine.getLines(m_ctx, l.getBPM_FormLine_ID(), m_trxName);
 			for(MBPMFormCell cell: formCell){
 				
 				MBPMFormValues value = MBPMFormValues.getFormValueLine(l.getBPM_FormLine_ID(), cell.getBPM_FormColumn_ID(), form.getBPM_VersionBudget_ID(), BPM_Project_ID);
 				if(value == null)
-					value = new MBPMFormValues(m_ctx, 0, get_TrxName());
+					value = new MBPMFormValues(m_ctx, 0, m_trxName);
 				value.setBPM_Form_ID(l.getBPM_Form_ID());
 				value.setBPM_FormLine_ID(l.getBPM_FormLine_ID());
 				value.setBPM_FormColumn_ID(cell.getBPM_FormColumn_ID());
@@ -87,7 +91,7 @@ public class BPM_CalcFormValues extends SvrProcess {
 				
 				if(cell.getBSC_Parameter_ID() != 0){
 					
-					MBPMFormParameters[] parameters = MBPMFormParameters.getLines(getCtx(), cell.getBPM_FormCell_ID(), get_TrxName());
+					MBPMFormParameters[] parameters = MBPMFormParameters.getLines(getCtx(), cell.getBPM_FormCell_ID(), m_trxName);
 					LinkedHashMap<String, Object> obj = new LinkedHashMap<String, Object>();
 					String in = "";
 					int n = 0;
@@ -106,7 +110,7 @@ public class BPM_CalcFormValues extends SvrProcess {
 					value.setAlternateValue("");
 					
 					for(X_BSC_ParameterLine parLine: getLineParameter(cell.getBSC_Parameter_ID())){
-						MParameterLine par = new MParameterLine(m_ctx, parLine.getBSC_ParameterLine_ID(), get_TrxName());
+						MParameterLine par = new MParameterLine(m_ctx, parLine.getBSC_ParameterLine_ID(), m_trxName);
 						String result = par.calculate(obj);
 						try{
 							value.setCellValue(new BigDecimal(result).setScale(2, BigDecimal.ROUND_HALF_UP));
@@ -125,8 +129,13 @@ public class BPM_CalcFormValues extends SvrProcess {
 			
 		}
 		
+		// 
+		Trx trx = Trx.get(m_trxName, false);
+		trx.commit();
+		trx.close();
+		
 		// Run Excel
-		if(BPM_Project_ID == Project_ID)
+		if(BPM_Project_ID == MBPMProject.TempProjectID)
 			return runExcel(BPM_Form_ID, BPM_Project_ID);
 		else
 			return Msg.translate(m_ctx, "Success");
@@ -149,10 +158,10 @@ public class BPM_CalcFormValues extends SvrProcess {
 	
 	private String runExcel(int BPM_Form_ID, int BPM_Project_ID){
 		
-		String nameProcess = "DSR_Generate";
+		String nameProcess = DSR_GenerateReport.class.getName();		
 		
 		// org.compiere.process.DSR_GenerateReport
-		AD_Process_ID = Util.getAD_Process(nameProcess);
+		AD_Process_ID = Util.getAD_Process(nameProcess.substring(nameProcess.lastIndexOf(".")+1, nameProcess.length()));
 		
 		if(AD_Process_ID == 0)
 			return  "The process can not be found";
