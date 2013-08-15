@@ -3,20 +3,16 @@
  */
 package org.compiere.process;
 
-import java.awt.Container;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import javax.swing.JFrame;
 import org.compiere.apps.IProcessParameter;
 import org.compiere.apps.ProcessCtl;
 import org.compiere.apps.ProcessParameterPanel;
-import org.compiere.apps.Waiting;
 import org.compiere.model.I_BPM_Form;
 import org.compiere.model.I_BPM_Project;
 import org.compiere.model.MBPMProject;
 import org.compiere.model.MBPMProjectLine;
-import org.compiere.util.ASyncProcess;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
@@ -26,7 +22,7 @@ import extend.org.compiere.utils.Util;
  * @author V.Sokolov
  *
  */
-public class BPM_RecalculateFormValues extends SvrProcess implements ASyncProcess {
+public class BPM_RecalculateFormValues extends SvrProcess {
 	
 	/** Current context		*/
 	private Properties m_ctx;
@@ -42,8 +38,9 @@ public class BPM_RecalculateFormValues extends SvrProcess implements ASyncProces
 		
 		m_ctx = Env.getCtx();
 		BPM_Project_ID = getRecord_ID();
-		String nameProcess = "CalcForm";
+		String nameProcess = "BPM_CalcForm";
 		
+		// org.compiere.process.BPM_CalcFormValues
 		AD_Process_ID = Util.getAD_Process(nameProcess);
 
 	}
@@ -74,45 +71,10 @@ public class BPM_RecalculateFormValues extends SvrProcess implements ASyncProces
 			pi.setParameter(pp);
 			//	Execute Process
 			ProcessParameterPanel pu = new ProcessParameterPanel(0, pi);
-			ProcessCtl.process(this, 0, (IProcessParameter) pu, pi, null);
+			ProcessCtl.process(null, 0, (IProcessParameter) pu, pi, null);
 		}
 		
 		return Msg.translate(m_ctx, "Success");
-	}
-
-	private Waiting         m_waiting;
-	/**/
-	ASyncProcess m_parent;
-	
-	/* 
-	 */
-	@Override
-	public void lockUI(ProcessInfo pi) {
-		JFrame frame = Env.getFrame((Container)m_parent);
-		m_waiting = new Waiting (frame, Msg.getMsg(Env.getCtx(), "Processing"), false, pi.getEstSeconds());
-	}
-
-	/* 
-	 */
-	@Override
-	public void unlockUI(ProcessInfo pi) {
-		if (m_waiting != null)
-			m_waiting.dispose();
-		m_waiting = null;
-	}
-
-	/* 
-	 */
-	@Override
-	public boolean isUILocked() {
-		return false;
-	}
-
-	/*
-	 */
-	@Override
-	public void executeASync(ProcessInfo pi) {
-		
 	}
 
 }

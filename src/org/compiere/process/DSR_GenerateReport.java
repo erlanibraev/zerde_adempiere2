@@ -44,13 +44,8 @@ public class DSR_GenerateReport extends SvrProcess
 	protected String doIt() throws Exception 
 	{
 		DSR_DataCollection collection = new DSR_DataCollection(BPM_Form_ID, BPM_Project_ID);
-		//DialogAgreement.dialogOK("Result", collection.toString(), 0);
-		System.out.println(collection);
-		
 		String path = Util.localFilePath + "pattern" + new DateTime() + ".xls";
-		
 		MAttachmentEntry entry = Util.getAttachment(getProcessInfo(), getCtx(), path);
-		
 		DSR_ExcelImport.collectionImport(entry, collection);
 		
 		return null;
