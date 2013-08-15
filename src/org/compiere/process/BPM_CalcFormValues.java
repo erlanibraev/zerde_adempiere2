@@ -161,7 +161,6 @@ public class BPM_CalcFormValues extends SvrProcess {
 		pi.setAD_Client_ID(Env.getAD_Client_ID(m_ctx));
 
 		List<ProcessInfoParameter> po = new ArrayList<ProcessInfoParameter>();
-		po.clear();
 		po.add(new ProcessInfoParameter(I_BPM_Form.COLUMNNAME_BPM_Form_ID, BPM_Form_ID,null,"",""));
 		po.add(new ProcessInfoParameter(I_BPM_Project.COLUMNNAME_BPM_Project_ID, BPM_Project_ID,null,"",""));
 		ProcessInfoParameter[] pp = new ProcessInfoParameter[po.size()];
