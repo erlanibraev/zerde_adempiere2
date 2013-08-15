@@ -10,10 +10,14 @@ import org.compiere.util.Env;
 public class DSR_Row 
 {
 	private ArrayList<DSR_Cell> elementData = new ArrayList<DSR_Cell>();
-
-	public DSR_Row(int BPM_FormLine_ID)
+	private int BMP_Project_ID;
+	private int BPM_FormLine_ID;
+	
+	public DSR_Row(int BPM_FormLine_ID, int BMP_Project_ID)
 	{
-		getCells(BPM_FormLine_ID);		
+		this.BMP_Project_ID = BMP_Project_ID;
+		this.BPM_FormLine_ID = BPM_FormLine_ID;
+		getCells();		
 	}
 	
 	public DSR_Row()
@@ -26,9 +30,9 @@ public class DSR_Row
 			elementData.add(cell);
 	}
 	
-	private void getCells(int BPM_FormLine_ID)
+	private void getCells()
 	{
-		MBPMFormValues[] lines = MBPMFormValues.getValuesOrdered(Env.getCtx(), BPM_FormLine_ID, null);
+		MBPMFormValues[] lines = MBPMFormValues.getValuesOrdered(Env.getCtx(), BPM_FormLine_ID, BMP_Project_ID, null);
 		
 		MBPMFormLine rowLine = new MBPMFormLine(Env.getCtx(), BPM_FormLine_ID, null);
 		

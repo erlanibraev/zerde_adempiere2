@@ -122,12 +122,12 @@ public class MBPMFormValues extends X_BPM_FormValues {
 		return retValue;
 	}
 	
-	public static MBPMFormValues[] getValuesOrdered(Properties ctx, int BPM_FormLine_ID, String trxName)
+	public static MBPMFormValues[] getValuesOrdered(Properties ctx, int BPM_FormLine_ID, int BMP_Project_ID, String trxName)
 	{
 		List<MBPMFormValues> list = new ArrayList<MBPMFormValues>();
 		String sql = "SELECT v.BPM_FormValues_ID FROM BPM_FormValues v \n" +
 				"INNER JOIN BPM_FormColumn c ON v.BPM_FormColumn_ID = c.BPM_FormColumn_ID \n" +
-				"WHERE v.BPM_FormLine_ID = ? \n AND c.isActive = 'Y'" +
+				"WHERE v.BPM_FormLine_ID = ? \n AND v.BPM_Project_ID = ? AND c.isActive = 'Y'" +
 				"ORDER BY c.OrderColumn";
 		
 		PreparedStatement pstmt = null;
@@ -137,6 +137,7 @@ public class MBPMFormValues extends X_BPM_FormValues {
 		{
 			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, BPM_FormLine_ID);
+			pstmt.setInt(2, BMP_Project_ID);
 			rs = pstmt.executeQuery();
 			
 			while(rs.next())
