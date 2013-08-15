@@ -30,7 +30,7 @@ public class X_BPM_Project extends PO implements I_BPM_Project, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130814L;
+	private static final long serialVersionUID = 20130815L;
 
     /** the default Constructor */
     public X_BPM_Project(Properties ctx)
@@ -125,6 +125,62 @@ public class X_BPM_Project extends PO implements I_BPM_Project, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** DocAction AD_Reference_ID=1000151 */
+	public static final int DOCACTION_AD_Reference_ID=1000151;
+	/** Approved = AP */
+	public static final String DOCACTION_Approved = "AP";
+	/** Closed = CL */
+	public static final String DOCACTION_Closed = "CL";
+	/** Complete = CO */
+	public static final String DOCACTION_Complete = "CO";
+	/** Project = PR */
+	public static final String DOCACTION_Project = "PR";
+	/** Set Document Action.
+		@param DocAction 
+		The targeted status of the document
+	  */
+	public void setDocAction (String DocAction)
+	{
+
+		set_Value (COLUMNNAME_DocAction, DocAction);
+	}
+
+	/** Get Document Action.
+		@return The targeted status of the document
+	  */
+	public String getDocAction () 
+	{
+		return (String)get_Value(COLUMNNAME_DocAction);
+	}
+
+	/** DocStatus AD_Reference_ID=1000151 */
+	public static final int DOCSTATUS_AD_Reference_ID=1000151;
+	/** Approved = AP */
+	public static final String DOCSTATUS_Approved = "AP";
+	/** Closed = CL */
+	public static final String DOCSTATUS_Closed = "CL";
+	/** Complete = CO */
+	public static final String DOCSTATUS_Complete = "CO";
+	/** Project = PR */
+	public static final String DOCSTATUS_Project = "PR";
+	/** Set Document Status.
+		@param DocStatus 
+		The current status of the document
+	  */
+	public void setDocStatus (String DocStatus)
+	{
+
+		set_Value (COLUMNNAME_DocStatus, DocStatus);
+	}
+
+	/** Get Document Status.
+		@return The current status of the document
+	  */
+	public String getDocStatus () 
+	{
+		return (String)get_Value(COLUMNNAME_DocStatus);
 	}
 
 	/** Set Name.
