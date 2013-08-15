@@ -9,7 +9,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
-
 import org.compiere.apps.IProcessParameter;
 import org.compiere.apps.ProcessCtl;
 import org.compiere.apps.ProcessParameterPanel;
@@ -129,7 +128,7 @@ public class BPM_CalcFormValues extends SvrProcess {
 		}
 		
 		// Run Excel
-		if(BPM_Project_ID == 1000)
+		if(BPM_Project_ID == Project_ID)
 			return runExcel(BPM_Form_ID, BPM_Project_ID);
 		else
 			return Msg.translate(m_ctx, "Success");
