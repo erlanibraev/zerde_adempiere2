@@ -1,9 +1,6 @@
 package org.compiere.process;
 
 import java.math.BigDecimal;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -23,9 +20,10 @@ import org.compiere.model.MBPMFormValues;
 import org.compiere.model.MParameterLine;
 import org.compiere.model.Query;
 import org.compiere.model.X_BSC_ParameterLine;
-import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+
+import extend.org.compiere.utils.Util;
 
 public class BPM_CalcFormValues extends SvrProcess {
 
@@ -153,29 +151,7 @@ public class BPM_CalcFormValues extends SvrProcess {
 		
 		String nameProcess = "DSR_Generate";
 		
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		
-		// The name must start with a report hrm_order
-		String sql_ = "select distinct t.ad_process_id from ad_process t "+ 
-					  "where (lower(t.value) like lower('%"+nameProcess+"%') or lower(t.name) like lower('%"+nameProcess+"%')) "+ 
-				      "and (lower(t.value) like lower('%"+nameProcess+"%') or lower(t.name) like lower('%"+nameProcess+"%'))";
-		try
-		{
-			pstmt = DB.prepareStatement(sql_, null);
-			rs = pstmt.executeQuery();
-			if (rs.next())
-				AD_Process_ID = rs.getInt(1);
-		}
-		catch (SQLException e)
-		{
-			log.log(Level.SEVERE, "product", e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
-		}
+		AD_Process_ID = Util.getAD_Process(nameProcess);
 		
 		if(AD_Process_ID == 0)
 			return  "The process can not be found";

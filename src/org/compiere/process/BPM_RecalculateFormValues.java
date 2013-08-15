@@ -4,16 +4,10 @@
 package org.compiere.process;
 
 import java.awt.Container;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.logging.Level;
-
 import javax.swing.JFrame;
-
 import org.compiere.apps.IProcessParameter;
 import org.compiere.apps.ProcessCtl;
 import org.compiere.apps.ProcessParameterPanel;
@@ -23,9 +17,10 @@ import org.compiere.model.I_BPM_Project;
 import org.compiere.model.MBPMProject;
 import org.compiere.model.MBPMProjectLine;
 import org.compiere.util.ASyncProcess;
-import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+
+import extend.org.compiere.utils.Util;
 
 /**
  * @author V.Sokolov
@@ -49,29 +44,7 @@ public class BPM_RecalculateFormValues extends SvrProcess implements ASyncProces
 		BPM_Project_ID = getRecord_ID();
 		String nameProcess = "CalcForm";
 		
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		
-		// The name must start with a report hrm_order
-		String sql_ = "select distinct t.ad_process_id from ad_process t "+ 
-					  "where (lower(t.value) like lower('%"+nameProcess+"%') or lower(t.name) like lower('%"+nameProcess+"%')) "+ 
-				      "and (lower(t.value) like lower('%"+nameProcess+"%') or lower(t.name) like lower('%"+nameProcess+"%'))";
-		try
-		{
-			pstmt = DB.prepareStatement(sql_, null);
-			rs = pstmt.executeQuery();
-			if (rs.next())
-				AD_Process_ID = rs.getInt(1);
-		}
-		catch (SQLException e)
-		{
-			log.log(Level.SEVERE, "product", e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
-		}
+		AD_Process_ID = Util.getAD_Process(nameProcess);
 
 	}
 
