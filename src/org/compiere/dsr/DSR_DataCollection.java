@@ -22,12 +22,12 @@ public class DSR_DataCollection
 	private ArrayList<DSR_Row> elementData = new ArrayList<DSR_Row>();
 	private DSR_Row header;
 	private MBPMForm form;
-	private int BMP_Project_ID;
+	private int BPM_Project_ID;
 	
 	public DSR_DataCollection(int BPM_Form_ID, int BPM_Project_ID) 
 	{
 		form = new MBPMForm(Env.getCtx(), BPM_Form_ID, null);
-		this.BMP_Project_ID = BPM_Project_ID;
+		this.BPM_Project_ID = BPM_Project_ID;
 		setHeader();
 		getValues();
 	}
@@ -114,11 +114,11 @@ public class DSR_DataCollection
 	{		
 		try 
 		{
-			Integer[] rows = MBPMFormValues.getRows(Env.getCtx(), form.get_ID(), BMP_Project_ID, null);
+			Integer[] rows = MBPMFormValues.getRows(Env.getCtx(), form.get_ID(), BPM_Project_ID, null);
 			
 			for(int row : rows)
 			{
-				DSR_Row dsrRow = new DSR_Row(row);
+				DSR_Row dsrRow = new DSR_Row(row, BPM_Project_ID);
 				
 				elementData.add(dsrRow);
 			}
