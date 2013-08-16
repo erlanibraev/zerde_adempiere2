@@ -141,7 +141,7 @@ public class MBPMProject extends X_BPM_Project implements DocAction{
 	@Override
 	public void setDocStatus(String newStatus) 
 	{
-		// TODO Auto-generated method stub
+		super.setDocStatus(newStatus);
 	}
 
 	@Override
@@ -168,32 +168,20 @@ public class MBPMProject extends X_BPM_Project implements DocAction{
 		// TODO Auto-generated method stub
 		return false;
 	}
-	/**	Just Prepared Flag			*/
-	private boolean		m_justPrepared = false;
+	
 	@Override
-	public String prepareIt() {
-		log.info(toString());
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_PREPARE);
-		if (m_processMsg != null)
-			return DocAction.STATUS_Invalid;
-
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_PREPARE);
-		if (m_processMsg != null)
-			return DocAction.STATUS_Invalid;
-
-		//	Add up Amounts
-		m_justPrepared = true;
-		if (!DOCACTION_Complete.equals(getDocAction()))
-			setDocAction(DOCACTION_Complete);
-		return DocAction.STATUS_InProgress;
+	public String prepareIt() 
+	{
+		setProcessed(false);
+		return STATUS_InProgress;
 	}
 
 	@Override
 	public boolean approveIt() 
 	{
 		setDocStatus(MBPMProject.STATUS_Approved);
-		// TODO Auto-generated method stub
-		return false;
+		setProcessed(true);
+		return true;
 	}
 
 	@Override
@@ -205,11 +193,14 @@ public class MBPMProject extends X_BPM_Project implements DocAction{
 	@Override
 	public String completeIt() {
 		String result = DocAction.ACTION_Complete;
-		if (STATUS_WaitingConfirmation.equals(getDocStatus())) {
+		if (ACTION_Prepare.equals(getDocStatus())) {
 			setDocStatus(ACTION_Complete);
 //			result = STATUS_Completed;
 			result = ACTION_Complete;
 		}
+		
+		setProcessed(true);
+		
 		return result;
 	}
 
@@ -226,7 +217,7 @@ public class MBPMProject extends X_BPM_Project implements DocAction{
 			return false;
 
 		setProcessed(true);
-		setDocAction(DocAction.ACTION_None);
+		setDocAction(DocAction.ACTION_Close);
 
 		// After Close
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_CLOSE);
@@ -251,8 +242,9 @@ public class MBPMProject extends X_BPM_Project implements DocAction{
 
 	@Override
 	public boolean reActivateIt() {
+		setDocStatus(MBPMProject.ACTION_Prepare);
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
@@ -282,7 +274,7 @@ public class MBPMProject extends X_BPM_Project implements DocAction{
 	@Override
 	public String getProcessMsg() {
 		// TODO Auto-generated method stub
-		return null;
+		return "";
 	}
 
 	@Override
