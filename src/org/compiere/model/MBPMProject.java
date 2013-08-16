@@ -173,6 +173,7 @@ public class MBPMProject extends X_BPM_Project implements DocAction{
 	public String prepareIt() 
 	{
 		setProcessed(false);
+		setIsActive(true);
 		return STATUS_InProgress;
 	}
 
@@ -181,6 +182,7 @@ public class MBPMProject extends X_BPM_Project implements DocAction{
 	{
 		setDocStatus(MBPMProject.STATUS_Approved);
 		setProcessed(true);
+		setIsActive(false);
 		return true;
 	}
 
@@ -192,15 +194,8 @@ public class MBPMProject extends X_BPM_Project implements DocAction{
 
 	@Override
 	public String completeIt() {
+		
 		String result = DocAction.ACTION_Complete;
-		if (ACTION_Prepare.equals(getDocStatus())) {
-			setDocStatus(ACTION_Complete);
-//			result = STATUS_Completed;
-			result = ACTION_Complete;
-		}
-		
-		setProcessed(true);
-		
 		return result;
 	}
 
@@ -217,6 +212,7 @@ public class MBPMProject extends X_BPM_Project implements DocAction{
 			return false;
 
 		setProcessed(true);
+		setIsActive(false);
 		setDocAction(DocAction.ACTION_Close);
 
 		// After Close
