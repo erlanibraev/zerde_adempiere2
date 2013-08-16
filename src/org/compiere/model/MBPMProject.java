@@ -168,11 +168,24 @@ public class MBPMProject extends X_BPM_Project implements DocAction{
 		// TODO Auto-generated method stub
 		return false;
 	}
-
+	/**	Just Prepared Flag			*/
+	private boolean		m_justPrepared = false;
 	@Override
 	public String prepareIt() {
-		// TODO Auto-generated method stub
-		return null;
+		log.info(toString());
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_PREPARE);
+		if (m_processMsg != null)
+			return DocAction.STATUS_Invalid;
+
+		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_PREPARE);
+		if (m_processMsg != null)
+			return DocAction.STATUS_Invalid;
+
+		//	Add up Amounts
+		m_justPrepared = true;
+		if (!DOCACTION_Complete.equals(getDocAction()))
+			setDocAction(DOCACTION_Complete);
+		return DocAction.STATUS_InProgress;
 	}
 
 	@Override
@@ -191,11 +204,11 @@ public class MBPMProject extends X_BPM_Project implements DocAction{
 
 	@Override
 	public String completeIt() {
-		String result = DocAction.STATUS_Invalid;
+		String result = DocAction.ACTION_Complete;
 		if (STATUS_WaitingConfirmation.equals(getDocStatus())) {
-			setDocStatus(STATUS_InProgress);
+			setDocStatus(ACTION_Complete);
 //			result = STATUS_Completed;
-			result = STATUS_InProgress;
+			result = ACTION_Complete;
 		}
 		return result;
 	}
