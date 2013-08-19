@@ -3,23 +3,15 @@
  */
 package org.compiere.model;
 
-import java.io.File;
-import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.List;
 import java.util.Properties;
-
-import org.compiere.process.BPMDocumentEngine;
-import org.compiere.process.DocAction;
-import org.compiere.process.DocumentEngine;
 
 /**
  * @author V.Sokolov
  *
  */
-public class MBPMProject extends X_BPM_Project implements DocAction{
-	
-	private String		m_processMsg = null;
+public class MBPMProject extends X_BPM_Project{
 	/**
 	 * 
 	 */
@@ -137,163 +129,4 @@ public class MBPMProject extends X_BPM_Project implements DocAction{
 		
 		return project;
 	}
-
-	@Override
-	public void setDocStatus(String newStatus) 
-	{
-		super.setDocStatus(newStatus);
-	}
-
-	@Override
-	public String getDocStatus() {
-		return super.getDocStatus();
-	}
-
-	@Override
-	public boolean processIt(String action) throws Exception 
-	{
-		BPMDocumentEngine engine = new BPMDocumentEngine(this, getDocStatus());
-		//DocumentEngine engine = new DocumentEngine (this, getDocStatus());
-		return engine.processIt (action, getDocAction());
-	}
-
-	@Override
-	public boolean unlockIt() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean invalidateIt() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	
-	@Override
-	public String prepareIt() 
-	{
-		setProcessed(false);
-		setIsActive(true);
-		return STATUS_InProgress;
-	}
-
-	@Override
-	public boolean approveIt() 
-	{
-		setDocStatus(MBPMProject.STATUS_Approved);
-		setProcessed(true);
-		setIsActive(false);
-		return true;
-	}
-
-	@Override
-	public boolean rejectIt() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public String completeIt() {
-		
-		String result = DocAction.ACTION_Complete;
-		return result;
-	}
-
-	@Override
-	public boolean voidIt() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean closeIt() {
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_CLOSE);
-		if (m_processMsg != null)
-			return false;
-
-		setProcessed(true);
-		setIsActive(false);
-		setDocAction(DocAction.ACTION_Close);
-
-		// After Close
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_CLOSE);
-		if (m_processMsg != null)
-			return false;
-		setDocStatus(MBPMProject.STATUS_Closed);
-		// TODO Auto-generated method stub
-		return true;
-	}
-
-	@Override
-	public boolean reverseCorrectIt() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean reverseAccrualIt() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean reActivateIt() {
-		setDocStatus(MBPMProject.ACTION_Prepare);
-		// TODO Auto-generated method stub
-		return true;
-	}
-
-	@Override
-	public String getSummary() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getDocumentNo() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getDocumentInfo() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public File createPDF() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getProcessMsg() {
-		// TODO Auto-generated method stub
-		return "";
-	}
-
-	@Override
-	public int getDoc_User_ID() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int getC_Currency_ID() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public BigDecimal getApprovalAmt() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getDocAction() {
-		return super.getDocAction();
-	}
-
 }
