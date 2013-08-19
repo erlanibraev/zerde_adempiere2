@@ -3,13 +3,16 @@ package org.compiere.dsr;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 
 import net.sf.jasperreports.engine.JRException;
 
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.compiere.model.MAttachmentEntry;
+import org.compiere.model.MBPMFormLine;
 
 import extend.org.compiere.utils.Util;
 
@@ -52,20 +55,49 @@ public class DSR_ExcelImport
 		DSR_Cell dsrCell = null;		
 		Cell xlsCell = null;
 		xlsRow.setHeight((short)600);
-		int cellCount = dsrRow.size();	
+		int cellCount = dsrRow.size();
+		int tempIndex = 0;
 		for(int j = 0; j < cellCount; j++)
 		{
 			dsrCell = dsrRow.getCell(j);
-			xlsCell = xlsRow.createCell(j);
+			xlsCell = xlsRow.createCell(j + tempIndex);
 			
-			if(dsrCell.isHeader)
-				xlsCell.setCellStyle(headerStyle);
-			else if(dsrCell.isRow)
-				xlsCell.setCellStyle(rowHeader);
+			if(dsrCell.isRow)
+			{
+				for(int i = 0; i < 4; i++)
+				{
+					Cell innerCell = xlsRow.createCell(j + i);
+					innerCell.setCellStyle(rowHeader);
+				}
+				if(dsrCell.Level_Type != null && dsrCell.Level_Type.equals(MBPMFormLine.LEVELTYPE_Category))
+				{
+					sheet.addMergedRegion(new CellRangeAddress(index, index, j, j + 3));
+					xlsRow.getCell(j).setCellValue(dsrCell.getValue().toString());
+				}
+				else if(dsrCell.Level_Type != null && dsrCell.Level_Type.equals(MBPMFormLine.LEVELTYPE_Class))
+				{
+					sheet.addMergedRegion(new CellRangeAddress(index, index, j + 1, j + 3));
+					xlsRow.getCell(j+1).setCellValue(dsrCell.getValue().toString());
+				}
+				else if(dsrCell.Level_Type != null && dsrCell.Level_Type.equals(MBPMFormLine.LEVELTYPE_SubClass))
+				{
+					sheet.addMergedRegion(new CellRangeAddress(index, index, j + 2, j + 3));
+					xlsRow.getCell(j+2).setCellValue(dsrCell.getValue().toString());
+				}
+				else
+				{
+					xlsRow.getCell(j+3).setCellValue(dsrCell.getValue().toString());
+				}
+				tempIndex = 3;
+			}
 			else
-				xlsCell.setCellStyle(commonStyle);
-			
-			xlsCell.setCellValue(dsrCell.getValue().toString());
+				{
+					if(dsrCell.isHeader)
+						xlsCell.setCellStyle(headerStyle);
+					else
+						xlsCell.setCellStyle(commonStyle);
+					xlsCell.setCellValue(dsrCell.getValue().toString());
+				}
 		}
 	}
 	

@@ -30,7 +30,7 @@ public class X_BPM_Project extends PO implements I_BPM_Project, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130815L;
+	private static final long serialVersionUID = 20130819L;
 
     /** the default Constructor */
     public X_BPM_Project(Properties ctx)
@@ -82,6 +82,98 @@ public class X_BPM_Project extends PO implements I_BPM_Project, I_Persistent
       return sb.toString();
     }
 
+	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
+			.getPO(getAD_Table_ID(), get_TrxName());	}
+
+	/** Set Table.
+		@param AD_Table_ID 
+		Database Table information
+	  */
+	public void setAD_Table_ID (int AD_Table_ID)
+	{
+		if (AD_Table_ID < 1) 
+			set_Value (COLUMNNAME_AD_Table_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_Table_ID, Integer.valueOf(AD_Table_ID));
+	}
+
+	/** Get Table.
+		@return Database Table information
+	  */
+	public int getAD_Table_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Table_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public I_AGR_Dispatcher getAGR_Dispatcher() throws RuntimeException
+    {
+		return (I_AGR_Dispatcher)MTable.get(getCtx(), I_AGR_Dispatcher.Table_Name)
+			.getPO(getAGR_Dispatcher_ID(), get_TrxName());	}
+
+	/** Set AGR_Dispatcher ID.
+		@param AGR_Dispatcher_ID AGR_Dispatcher ID	  */
+	public void setAGR_Dispatcher_ID (int AGR_Dispatcher_ID)
+	{
+		if (AGR_Dispatcher_ID < 1) 
+			set_Value (COLUMNNAME_AGR_Dispatcher_ID, null);
+		else 
+			set_Value (COLUMNNAME_AGR_Dispatcher_ID, Integer.valueOf(AGR_Dispatcher_ID));
+	}
+
+	/** Get AGR_Dispatcher ID.
+		@return AGR_Dispatcher ID	  */
+	public int getAGR_Dispatcher_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AGR_Dispatcher_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public I_AGR_Stage getAGR_Stage() throws RuntimeException
+    {
+		return (I_AGR_Stage)MTable.get(getCtx(), I_AGR_Stage.Table_Name)
+			.getPO(getAGR_Stage_ID(), get_TrxName());	}
+
+	/** Set AGR_Stage ID.
+		@param AGR_Stage_ID AGR_Stage ID	  */
+	public void setAGR_Stage_ID (int AGR_Stage_ID)
+	{
+		if (AGR_Stage_ID < 1) 
+			set_Value (COLUMNNAME_AGR_Stage_ID, null);
+		else 
+			set_Value (COLUMNNAME_AGR_Stage_ID, Integer.valueOf(AGR_Stage_ID));
+	}
+
+	/** Get AGR_Stage ID.
+		@return AGR_Stage ID	  */
+	public int getAGR_Stage_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AGR_Stage_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set AGRApprove.
+		@param AGRApprove AGRApprove	  */
+	public void setAGRApprove (String AGRApprove)
+	{
+		set_Value (COLUMNNAME_AGRApprove, AGRApprove);
+	}
+
+	/** Get AGRApprove.
+		@return AGRApprove	  */
+	public String getAGRApprove () 
+	{
+		return (String)get_Value(COLUMNNAME_AGRApprove);
+	}
+
 	/** Set BPM_Project ID.
 		@param BPM_Project_ID BPM_Project ID	  */
 	public void setBPM_Project_ID (int BPM_Project_ID)
@@ -127,42 +219,12 @@ public class X_BPM_Project extends PO implements I_BPM_Project, I_Persistent
 		return ii.intValue();
 	}
 
-	/** DocAction AD_Reference_ID=1000151 */
-	public static final int DOCACTION_AD_Reference_ID=1000151;
-	/** Approved = AP */
-	public static final String DOCACTION_Approved = "AP";
-	/** Closed = CL */
-	public static final String DOCACTION_Closed = "CL";
-	/** Complete = CO */
-	public static final String DOCACTION_Complete = "CO";
-	/** Project = PR */
-	public static final String DOCACTION_Project = "PR";
-	/** Set Document Action.
-		@param DocAction 
-		The targeted status of the document
-	  */
-	public void setDocAction (String DocAction)
-	{
-
-		set_Value (COLUMNNAME_DocAction, DocAction);
-	}
-
-	/** Get Document Action.
-		@return The targeted status of the document
-	  */
-	public String getDocAction () 
-	{
-		return (String)get_Value(COLUMNNAME_DocAction);
-	}
-
 	/** DocStatus AD_Reference_ID=1000151 */
 	public static final int DOCSTATUS_AD_Reference_ID=1000151;
 	/** Approved = AP */
 	public static final String DOCSTATUS_Approved = "AP";
 	/** Closed = CL */
 	public static final String DOCSTATUS_Closed = "CL";
-	/** Complete = CO */
-	public static final String DOCSTATUS_Complete = "CO";
 	/** Project = PR */
 	public static final String DOCSTATUS_Project = "PR";
 	/** Set Document Status.

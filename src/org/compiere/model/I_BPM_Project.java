@@ -62,6 +62,52 @@ public interface I_BPM_Project
 	  */
 	public int getAD_Org_ID();
 
+    /** Column name AD_Table_ID */
+    public static final String COLUMNNAME_AD_Table_ID = "AD_Table_ID";
+
+	/** Set Table.
+	  * Database Table information
+	  */
+	public void setAD_Table_ID (int AD_Table_ID);
+
+	/** Get Table.
+	  * Database Table information
+	  */
+	public int getAD_Table_ID();
+
+	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
+
+    /** Column name AGR_Dispatcher_ID */
+    public static final String COLUMNNAME_AGR_Dispatcher_ID = "AGR_Dispatcher_ID";
+
+	/** Set AGR_Dispatcher ID	  */
+	public void setAGR_Dispatcher_ID (int AGR_Dispatcher_ID);
+
+	/** Get AGR_Dispatcher ID	  */
+	public int getAGR_Dispatcher_ID();
+
+	public I_AGR_Dispatcher getAGR_Dispatcher() throws RuntimeException;
+
+    /** Column name AGR_Stage_ID */
+    public static final String COLUMNNAME_AGR_Stage_ID = "AGR_Stage_ID";
+
+	/** Set AGR_Stage ID	  */
+	public void setAGR_Stage_ID (int AGR_Stage_ID);
+
+	/** Get AGR_Stage ID	  */
+	public int getAGR_Stage_ID();
+
+	public I_AGR_Stage getAGR_Stage() throws RuntimeException;
+
+    /** Column name AGRApprove */
+    public static final String COLUMNNAME_AGRApprove = "AGRApprove";
+
+	/** Set AGRApprove	  */
+	public void setAGRApprove (String AGRApprove);
+
+	/** Get AGRApprove	  */
+	public String getAGRApprove();
+
     /** Column name BPM_Project_ID */
     public static final String COLUMNNAME_BPM_Project_ID = "BPM_Project_ID";
 
@@ -97,19 +143,6 @@ public interface I_BPM_Project
 	  * User who created this records
 	  */
 	public int getCreatedBy();
-
-    /** Column name DocAction */
-    public static final String COLUMNNAME_DocAction = "DocAction";
-
-	/** Set Document Action.
-	  * The targeted status of the document
-	  */
-	public void setDocAction (String DocAction);
-
-	/** Get Document Action.
-	  * The targeted status of the document
-	  */
-	public String getDocAction();
 
     /** Column name DocStatus */
     public static final String COLUMNNAME_DocStatus = "DocStatus";

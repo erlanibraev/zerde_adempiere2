@@ -30,7 +30,7 @@ public interface I_BPM_FormLine
     /** TableName=BPM_FormLine */
     public static final String Table_Name = "BPM_FormLine";
 
-    /** AD_Table_ID=1000316 */
+    /** AD_Table_ID=1000265 */
     public static final int Table_ID = MTable.getTable_ID(Table_Name);
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
@@ -123,6 +123,19 @@ public interface I_BPM_FormLine
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name LevelType */
+    public static final String COLUMNNAME_LevelType = "LevelType";
+
+	/** Set LevelType.
+	  * Тип уровня
+	  */
+	public void setLevelType (String LevelType);
+
+	/** Get LevelType.
+	  * Тип уровня
+	  */
+	public String getLevelType();
 
     /** Column name LineNo */
     public static final String COLUMNNAME_LineNo = "LineNo";

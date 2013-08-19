@@ -39,6 +39,7 @@ public class DSR_Row
 		//The row's name
 		DSR_Cell lineCell = new DSR_Cell("", rowLine.getName(), null);
 		lineCell.setRow(true);
+		lineCell.Level_Type = rowLine.getLevelType();
 		elementData.add(lineCell);
 		
 		for(MBPMFormValues line : lines)
@@ -49,7 +50,6 @@ public class DSR_Row
 			Object cellValue = line.getAlternateValue() == null || line.getAlternateValue().toString().isEmpty() ? line.getCellValue() : line.getAlternateValue();
 			
 			DSR_Cell cell = new DSR_Cell(formColumn.getName(), formLine.getName(), cellValue);
-			
 			elementData.add(cell);
 		}
 	}
