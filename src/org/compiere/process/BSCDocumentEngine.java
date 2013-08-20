@@ -26,9 +26,9 @@ public class BSCDocumentEngine extends DocumentEngine {
 		} 
 		
 		if (ACTION_WaitComplete.equals(docAction)) {
-			result = STATUS_Completed.equals(prepareIt());
+			result = STATUS_WaitingConfirmation.equals(prepareIt());
 		} else if (ACTION_Complete.equals(docAction)) {
-			result = STATUS_Completed.equals(completeIt());
+			result = STATUS_InProgress.equals(completeIt());
 		} else if (ACTION_Approve.equals(docAction)) {
 			result = approveIt();
 		} else if (ACTION_Reject.equals(docAction)) {
@@ -38,7 +38,7 @@ public class BSCDocumentEngine extends DocumentEngine {
 		} else if (ACTION_ReActivate.equals(docAction)) {
 			result = reActivateIt();
 		} else {
-			result = false;
+//			result = false;
 		}
 		return result;
 	}

@@ -185,7 +185,7 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 	@Override
 	public String prepareIt() {
 		log.severe("BSC_Card: prepareIt()");
-		String result = DocAction.STATUS_Invalid;
+		String result = (STATUS_WaitingConfirmation.equals(getDocStatus())  ? STATUS_WaitingConfirmation : DocAction.STATUS_Invalid);
 		if (STATUS_NotApproved.equals(getDocStatus()) || STATUS_Drafted.equals(getDocStatus())) {
 			setDocStatus(STATUS_WaitingConfirmation);
 //			result = STATUS_Completed;
@@ -220,10 +220,9 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 	@Override
 	public String completeIt() {
 		log.severe("BSC_Card: completeIt()");
-		String result = DocAction.STATUS_Invalid;
+		String result = (STATUS_InProgress.equals(getDocStatus()) ? STATUS_InProgress : DocAction.STATUS_Invalid);
 		if (STATUS_WaitingConfirmation.equals(getDocStatus())) {
 			setDocStatus(STATUS_InProgress);
-//			result = STATUS_Completed;
 			result = STATUS_InProgress;
 		}
 		return result;
