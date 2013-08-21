@@ -113,9 +113,6 @@ public class BSCPerspectivePanel extends JPanel implements MouseListener, MouseM
 	 * 
 	 */
 	private void initCoords(Graphics g) {
-		if (coords.size() > 0) {
-			return;
-		}
 		int x = 0;
 		int y = 0;
 		for(MBSCPerspective key:sortedStrategicMap.keySet()) {
@@ -125,17 +122,24 @@ public class BSCPerspectivePanel extends JPanel implements MouseListener, MouseM
 			x = borderSize + lbl.getX() + lbl.getWidth();
 			for(MBSCKeySuccessFactor ksf: list) {
 				x += borderSize;
-				
 				int width = 0;
 				int height =  0;
-				
-				FontMetrics metric = g.getFontMetrics();
-				width = metric.stringWidth(ksf.getName()) + borderSize * 2;
-				height = metric.getHeight() + borderSize * 2;
-				coords.put(ksf.getBSC_KeySuccessFactor_ID(), new Rectangle(x,y,width,height));
-				
-				x += width;
-				y += borderSize + lbl.getHeight() / list.size();
+				if (coords.get(ksf.getBSC_KeySuccessFactor_ID()) == null) {
+					
+					FontMetrics metric = g.getFontMetrics();
+					width = metric.stringWidth(ksf.getName()) + borderSize * 2;
+					height = metric.getHeight() + borderSize * 2;
+					coords.put(ksf.getBSC_KeySuccessFactor_ID(), new Rectangle(x,y,width,height));
+					
+					x += width;
+					y += borderSize + lbl.getHeight() / list.size();
+				} else {
+					FontMetrics metric = g.getFontMetrics();
+					width = metric.stringWidth(ksf.getName()) + borderSize * 2;
+					height = metric.getHeight() + borderSize * 2;
+					coords.get(ksf.getBSC_KeySuccessFactor_ID()).height = height;
+					coords.get(ksf.getBSC_KeySuccessFactor_ID()).width = width;
+				}
 			}
 		}
 	}
@@ -719,7 +723,7 @@ public class BSCPerspectivePanel extends JPanel implements MouseListener, MouseM
 			}
 		}
 		for(MBSCKeySuccessFactorLink item : MBSCKeySuccessFactorLink.getKeySuccessFactorLink(null)) {
-			if (!haveLink(item.getBSC_KeySuccessFactor_ID(), item.getBSC_KeySuccessFactorLink_ID())) {
+			if (!haveLink(item.getBSC_KeySuccessFactor_ID(), item.getBSC_KeySuccessFactor_Link_ID())) {
 				item.delete(true);
 			}
 		}
