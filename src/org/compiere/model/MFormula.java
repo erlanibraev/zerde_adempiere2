@@ -19,6 +19,7 @@ import org.apache.commons.jexl2.JexlEngine;
 import org.apache.commons.jexl2.MapContext;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 
 public class MFormula extends X_BSC_Formula {
 
@@ -217,6 +218,11 @@ public class MFormula extends X_BSC_Formula {
 			rs = null; pstmt = null;
 		}	
 		return result;
+	}
+	
+	public static Set<String> getVariables(int BSC_Formula_ID) {
+		MFormula formula = new MFormula(Env.getCtx(), BSC_Formula_ID, null);
+		return formula.getVariables();
 	}
 	
 }
