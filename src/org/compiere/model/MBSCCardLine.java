@@ -102,8 +102,6 @@ public class MBSCCardLine extends X_BSC_CardLine {
 			}
 			if (save() ) {
 				saveParameterOutValue();
-				getParameter_Out().getValue(getCard().getPeriod());
-				saveParameterOutValue();
 				result = new BigDecimal(getParameter_Out().getValue(getCard().getPeriod()));
 				setValueNumber(result);
 				saveParameterOutValue();
@@ -320,7 +318,7 @@ public class MBSCCardLine extends X_BSC_CardLine {
 			param = MParameter.createParameter(getName(), getDescription(), card.getC_BPartner_ID(), card.getC_Period_ID());
 			param.setModules("BSC");// TODO Пока так
 			param.save();
-			setParameter_Out(param);
+			setBSC_Parameter_Out_ID(param.getBSC_Parameter_ID());
 		}
 		param.setPeriod(card.getPeriod());
 		MParameterLine paramLine = param.getCurrentParameterLine();
@@ -331,6 +329,7 @@ public class MBSCCardLine extends X_BSC_CardLine {
 			paramLine.setBSC_Formula_ID(getCoefficient().getBSC_Formula_ID());
 			paramLine.save();
 		}
+		param.save();
 		setVar(param);
 		param.save();
 	}
@@ -360,23 +359,24 @@ public class MBSCCardLine extends X_BSC_CardLine {
 			} else {
 				paramVar = new MParameter(Env.getCtx(),vBSC_Parameter_ID, get_TrxName());
 			}
+
 			paramVar.setPeriod(card.getPeriod());
-			
+			MParameterLine pLine = paramVar.getCurrentParameterLine();
 			int formulaValue_ID = MFormula.getFormulaValue_ID();
 			
 			if (key.equals(CARDLINEVARIABLE_VALUE) && formulaValue_ID > 0) {
-				
-				MParameterLine pLine = paramVar.getCurrentParameterLine();
 				try {
 					if (getBSC_Parameter_ID() > 0 ) {
 						pLine.setIsFormula(true);
 						pLine.setBSC_Formula_ID(formulaValue_ID);
 						MVariable var = pLine.getVariables().get(key);
+						valueParam.setPeriod(card.getPeriod());
 						var.setBSC_Parameter_ID(valueParam.getBSC_Parameter_ID());
 						var.save();
+						pLine.setValue(valueParam.getValue());
 					} else {
 						pLine.setIsFormula(false);
-						paramVar.setValue(getValue(key).toString());
+						pLine.setValue(getValue(key).toString());
 					}
 					pLine.setValueMax(getValueMax());
 					pLine.setValueMin(getValueMin());
@@ -386,16 +386,17 @@ public class MBSCCardLine extends X_BSC_CardLine {
 				}
 			} else if (key.equals(CARDLINEVARIABLE_Q)) {
 				setParameter_Q(paramVar);
-				MParameterLine pLine = paramVar.getCurrentParameterLine();
 				pLine.setIsFormula(true);
 				pLine.setBSC_Formula_ID(getBSC_Formula_ID());
 				pLine.setValueMax(new BigDecimal(1));
 				pLine.setValueMin(new BigDecimal(0));
 				pLine.save();
 				setVar(paramVar);
+				pLine.set_ValueNoCheck("ValueNumber", paramVar.getValue(card.getPeriod()));
+				pLine.save();
 			}else {
 				try {
-					paramVar.setValue(getValue(key).toString());
+					paramVar.setValue(getValue(key).toString(),card.getPeriod());
 				} catch (Exception e) {
 					sLog.log(Level.SEVERE, "setVar", e);
 				}
@@ -514,9 +515,22 @@ public class MBSCCardLine extends X_BSC_CardLine {
 	protected boolean beforeDelete ()
 	{
 		boolean result = true;
-		
+		result = deleteOutParam();
 		result = result && super.beforeDelete();
 		return result;
 	} 	//	beforeDelete
+
+	/**
+	 * @return
+	 */
+	private boolean deleteOutParam() {
+		boolean result = true;
+		int BSC_Parameter_ID  = getBSC_Parameter_Out_ID();
+		if (BSC_Parameter_ID > 0) {
+			
+		}
+		return result;
+	}
+	
 	
 }

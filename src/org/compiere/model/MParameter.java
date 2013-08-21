@@ -106,7 +106,10 @@ public class MParameter extends X_BSC_Parameter {
 		if (period == null) {
 			setCurrentPeriod(null);
 			period = getPeriod();
-		}	
+		}
+		if (parameterLine.size() == 0) {
+			loadParameterLine();
+		}
 		for(MParameterLine line:parameterLine) {
 			if (period.equals((MPeriod)line.getC_Period())) {
 				setCurrentPeriod(period);
@@ -364,6 +367,21 @@ public class MParameter extends X_BSC_Parameter {
 		return result;
 	}
 	
+	public static MParameterLine createParameterLine(MParameter param, int C_Period_ID) {
+		MParameterLine result = null;
+		MParameterLine paramLine = new MParameterLine(Env.getCtx(),0,null);
+		paramLine.setAD_Client_ID(Env.getAD_Client_ID(Env.getCtx()));
+		paramLine.setAD_Org_ID(Env.getAD_Org_ID(Env.getCtx()));
+		paramLine.setBSC_Parameter_ID(param.getBSC_Parameter_ID());
+		paramLine.setC_Period_ID(C_Period_ID);
+		paramLine.setGoal(true);
+		paramLine.setIsActive(true);
+		if(paramLine.save()) {
+			result = paramLine;
+		}
+		return result;
+	}
+	
 	protected static boolean createVariable(MParameter param, MFormula formula, int C_Period_ID) {
 		boolean result = false;
 		HashMap<String, Object> arg = formula.getArguments();
@@ -398,7 +416,6 @@ public class MParameter extends X_BSC_Parameter {
 			param.setName(Name);
 			param.setDescription(Description);
 			param.setC_BPartner_ID(C_BPartner_ID);
-			param.setPeriod(new MPeriod(Env.getCtx(),C_Period_ID,null));
 			if (param.save()) { //TODO Переделать на Exception
 				MParameterLine paramLine = new MParameterLine(Env.getCtx(),0,null);
 				paramLine.setAD_Client_ID(Env.getAD_Client_ID(Env.getCtx()));
@@ -414,6 +431,8 @@ public class MParameter extends X_BSC_Parameter {
 					param.delete(true);
 				}
 			}
+			param.loadParameterLine();
+			param.setPeriod(new MPeriod(Env.getCtx(),C_Period_ID,null));
 		} catch(Exception e) {
 			sLog.log(Level.SEVERE, "createParameter: "+Name+" - ", e);
 		}
@@ -457,6 +476,14 @@ public class MParameter extends X_BSC_Parameter {
 		if (getCurrentParameterLine() != null) {
 			getCurrentParameterLine().setValue(value);
 		}
+	}
+	
+	public void setValue(String value, MPeriod period) {
+		MParameterLine pLine = getParameterLine(period);
+		if (pLine == null) {
+			pLine = createParameterLine(this,period.getC_Period_ID());
+		}
+		pLine.setValue(value);
 	}
 
 	/**

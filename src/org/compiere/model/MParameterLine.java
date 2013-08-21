@@ -138,7 +138,7 @@ public class MParameterLine extends X_BSC_ParameterLine {
 		if (isImported() && getPFR_Calculation_ID() > 0) {
 			try {
 				Object obj = MPFRCalculation.getValueFromSQL(getPFR_Calculation_ID(), sqlParam);
-				result = obj.toString();
+				result = (obj == null ? "0" : obj.toString());
 			} catch(Exception e) {
 				log.log(Level.SEVERE,"BSCParameterLine.calculate - ", e);
 			}
@@ -296,18 +296,8 @@ public class MParameterLine extends X_BSC_ParameterLine {
 		MParameterLine nextPL = MParameterLine.get(getBSC_Parameter_ID(), c_Period_ID);
 		if (nextPL == null) {
 			nextPL = new MParameterLine(Env.getCtx(),0,get_TrxName());
-			nextPL.setBSC_Parameter_ID(getBSC_Parameter_ID());
-			nextPL.setAD_Client_ID(getAD_Org_ID());
-			nextPL.setAD_Org_ID(getAD_Org_ID());
+			copyValues(this, nextPL);
 			nextPL.setC_Period_ID(c_Period_ID);
-			nextPL.setCalcButton(getCalcButton());
-			nextPL.setBSC_Formula_ID(getBSC_Formula_ID());
-			nextPL.setGoal(isGoal());
-			nextPL.setIsActive(isActive());
-			nextPL.setValueMax(getValueMax());
-			nextPL.setValueMin(getValueMin());
-			nextPL.setIsFormula(isFormula());
-//			nextPL.setValue("0");
 			nextPL.setValueNumber("0");
 			if (nextPL.save()) {
 				if (nextPL.isFormula()) {
@@ -358,6 +348,14 @@ public class MParameterLine extends X_BSC_ParameterLine {
 	}
 	
 	@Override
+	public void setIsFormula (boolean IsFormula) {
+		super.setIsFormula(IsFormula);
+		if (!IsFormula) {
+			setBSC_Formula_ID(0);
+		}
+	}
+	
+	@Override
 	protected boolean beforeSave(boolean newRecord) {
 		
 		if (!testPeriod(getBSC_ParameterLine_ID(), getBSC_Parameter_ID(), getC_Period_ID())) {
@@ -366,6 +364,9 @@ public class MParameterLine extends X_BSC_ParameterLine {
 		
 		if (!isImported()) {
 			setPFR_Calculation_ID(0);
+		}
+		if (!isFormula()) {
+			setBSC_Formula_ID(0);
 		}
 		return super.beforeSave(newRecord);
 	}
