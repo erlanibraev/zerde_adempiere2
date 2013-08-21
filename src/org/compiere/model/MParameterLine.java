@@ -146,6 +146,27 @@ public class MParameterLine extends X_BSC_ParameterLine {
 		return (result == null ? "0" : result);
 	}
 	
+	public String calculate2(LinkedHashMap<String, LinkedHashMap<String,Object>> sqlParam) {
+		String result = "0";
+		MFormula formula = getFormula();
+		if (isFormula() && formula != null) {
+			Map<String,MVariable> varList = getVariables();
+			HashMap<String,Object> args = new HashMap<String,Object>(); 
+			for(String key:varList.keySet()) {
+				MVariable var = varList.get(key);
+				MParameter parameter = var.getParameter();
+				MPeriod period = getPeriod();
+				LinkedHashMap<String,Object> sqlP = sqlParam.get(key);
+				String value = (parameter == null ? "0" : parameter.getValue(period, sqlP));
+				args.put(key, value);
+			}
+			result = MFormula.calc(formula.getFormula(), args);
+		} else {
+			result = calculate();
+		}
+		return (result == null ? "0" : result);
+	}
+	
 	public HashMap<String,Object> getArguments() {
 		HashMap<String,Object> result = new HashMap<String,Object>();
 		for(String key:getVariables().keySet()) {
@@ -317,7 +338,7 @@ public class MParameterLine extends X_BSC_ParameterLine {
 	}
 	
 	public static MParameterLine get(int BSC_Parameter_ID, int C_Period_ID) {
-		CLogger log = CLogger.getCLogger (MParameterLine.class);;
+		CLogger log = CLogger.getCLogger (MParameterLine.class);
 		MParameterLine result = null;
 		String sql = "SELECT * FROM BSC_ParameterLine WHERE isActive = 'Y' AND BSC_Parameter_ID = ? AND C_Period_ID = ?";
 		PreparedStatement pstmt = null;

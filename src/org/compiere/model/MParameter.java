@@ -217,7 +217,7 @@ public class MParameter extends X_BSC_Parameter {
 			MFormula formula = parameter.getParameterLine(period).getFormula();
 			HashMap<String,Object> args = new  HashMap<String,Object>();
 			
-			Map<String,MVariable> variable = parameter.getParameterLine(period).getVariables(); 
+			Map<String,MVariable> variable = parameter.getParameterLine(period).getVariables();
 			for(String key: variable.keySet()) {
 				MVariable var = variable.get(key);
 				MParameter param = new MParameter(Env.getCtx(),var.getBSC_Parameter_ID(),null);
@@ -227,6 +227,7 @@ public class MParameter extends X_BSC_Parameter {
 					throw new Exception("MParameter: detected cycle in "+parameter.getName()+"; ID - "+parameter.getBSC_Parameter_ID()+". "+param.getName()+" ID - "+param.getBSC_Parameter_ID()+" parameter exists");
 				}
 				String value = runCalc(param, period, forCycle,sqlParam);
+				forCycle.remove(param.getBSC_Parameter_ID());
 				if (param != null && param.getParameterLine(period) != null) {
 					param.getParameterLine(period).setValue(value);
 				} else {
@@ -471,7 +472,7 @@ public class MParameter extends X_BSC_Parameter {
 		}
 		return result;
 	}
-
+	
 	public void setValue(String value) {
 		if (getCurrentParameterLine() != null) {
 			getCurrentParameterLine().setValue(value);
