@@ -4,15 +4,21 @@ package org.compiere.model;
  */
 
 import java.math.BigDecimal;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
+import java.util.logging.Level;
+
 import org.apache.commons.jexl2.Expression;
 import org.apache.commons.jexl2.JexlContext;
 import org.apache.commons.jexl2.JexlEngine;
 import org.apache.commons.jexl2.MapContext;
+import org.compiere.util.CLogger;
+import org.compiere.util.DB;
 
 public class MFormula extends X_BSC_Formula {
 
@@ -193,4 +199,24 @@ public class MFormula extends X_BSC_Formula {
 		}
 	}
 
+	public static int getFormulaValue_ID() {
+		int result = 0;
+		String sql = "SELECT * FROM BSC_Formula WHERE Name like 'Value' "; //"and AD_Client_ID = " +Env.getAD_Client_ID(Env.getCtx());
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;		
+		try {
+			pstmt = DB.prepareStatement(sql,null);
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				result = rs.getInt(X_BSC_Formula.COLUMNNAME_BSC_Formula_ID);
+			}
+		} catch (SQLException e) {
+			CLogger.get().log(Level.SEVERE, "getFormulaValue_ID", e);
+		} finally {
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
+		}	
+		return result;
+	}
+	
 }

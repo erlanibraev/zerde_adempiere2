@@ -102,6 +102,8 @@ public class MBSCCardLine extends X_BSC_CardLine {
 			}
 			if (save() ) {
 				saveParameterOutValue();
+				getParameter_Out().getValue(getCard().getPeriod());
+				saveParameterOutValue();
 				result = new BigDecimal(getParameter_Out().getValue(getCard().getPeriod()));
 				setValueNumber(result);
 				saveParameterOutValue();
@@ -360,7 +362,7 @@ public class MBSCCardLine extends X_BSC_CardLine {
 			}
 			paramVar.setPeriod(card.getPeriod());
 			
-			int formulaValue_ID = getFormulaValue_ID();
+			int formulaValue_ID = MFormula.getFormulaValue_ID();
 			
 			if (key.equals(CARDLINEVARIABLE_VALUE) && formulaValue_ID > 0) {
 				
@@ -400,26 +402,6 @@ public class MBSCCardLine extends X_BSC_CardLine {
 			}
 			paramVar.save();
 		}
-	}
-	
-	protected static int getFormulaValue_ID() {
-		int result = 0;
-		String sql = "SELECT * FROM BSC_Formula WHERE Name like 'Value' "; //"and AD_Client_ID = " +Env.getAD_Client_ID(Env.getCtx());
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;		
-		try {
-			pstmt = DB.prepareStatement(sql,null);
-			rs = pstmt.executeQuery();
-			if (rs.next()) {
-				result = rs.getInt(X_BSC_Formula.COLUMNNAME_BSC_Formula_ID);
-			}
-		} catch (SQLException e) {
-			sLog.log(Level.SEVERE, "getFormulaValue_ID", e);
-		} finally {
-			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
-		}	
-		return result;
 	}
 	
 	public void copyCardLine(int BSC_Card_ID, int C_Period_ID) {
@@ -527,4 +509,14 @@ public class MBSCCardLine extends X_BSC_CardLine {
 		.list();
 		return (list.size() > 0 ? list.get(0) : null);
 	}
+	
+	@Override
+	protected boolean beforeDelete ()
+	{
+		boolean result = true;
+		
+		result = result && super.beforeDelete();
+		return result;
+	} 	//	beforeDelete
+	
 }
