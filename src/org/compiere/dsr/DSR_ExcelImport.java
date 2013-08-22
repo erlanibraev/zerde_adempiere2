@@ -3,7 +3,6 @@ package org.compiere.dsr;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 
 import net.sf.jasperreports.engine.JRException;
 
@@ -33,7 +32,7 @@ public class DSR_ExcelImport
 		
 		int rowCount = collection.size();
 		
-		createRow(sheet, collection.getHeader(), 0);
+		createHeader(sheet, collection.getHeader(), 0);
 		
 		for(int i = 0; i < rowCount; i++)
 		{
@@ -47,6 +46,38 @@ public class DSR_ExcelImport
 		fileOut.close();
 		
 		Util.launchFile(new File(fileOutPath));
+	}
+	
+	private static void createHeader(HSSFSheet sheet, DSR_Row dsrRow, int index)
+	{
+		Row xlsRow = sheet.createRow(index);
+		DSR_Cell dsrCell = null;		
+		Cell xlsCell = null;
+		xlsRow.setHeight((short)600);
+		int cellCount = dsrRow.size();
+		int tempIndex = 0;
+		
+		for(int i = 0; i < cellCount; i++)
+		{
+			dsrCell = dsrRow.getCell(i);
+			xlsCell = xlsRow.createCell(i + tempIndex);
+			if(MBPMFormLine.LEVELTYPE_Category.equals(dsrCell.Level_Type))
+			{
+				for(int j = 0; j < 4; j++)
+				{
+					Cell innerCell = xlsRow.createCell(j + i);
+					innerCell.setCellStyle(headerStyle);
+				}
+				sheet.addMergedRegion(new CellRangeAddress(index, index, i, i + 3));
+				xlsRow.getCell(i).setCellValue(dsrCell.getValue().toString());
+				tempIndex += 3;
+			}
+			else
+			{
+				xlsCell.setCellStyle(headerStyle);
+				xlsCell.setCellValue(dsrCell.getValue().toString());
+			}
+		}
 	}
 	
 	private static void createRow(HSSFSheet sheet, DSR_Row dsrRow, int index)
@@ -69,17 +100,17 @@ public class DSR_ExcelImport
 					Cell innerCell = xlsRow.createCell(j + i);
 					innerCell.setCellStyle(rowHeader);
 				}
-				if(dsrCell.Level_Type != null && dsrCell.Level_Type.equals(MBPMFormLine.LEVELTYPE_Category))
+				if(MBPMFormLine.LEVELTYPE_Category.equals(dsrCell.Level_Type))
 				{
 					sheet.addMergedRegion(new CellRangeAddress(index, index, j, j + 3));
 					xlsRow.getCell(j).setCellValue(dsrCell.getValue().toString());
 				}
-				else if(dsrCell.Level_Type != null && dsrCell.Level_Type.equals(MBPMFormLine.LEVELTYPE_Class))
+				else if(MBPMFormLine.LEVELTYPE_Class.equals(dsrCell.Level_Type))
 				{
 					sheet.addMergedRegion(new CellRangeAddress(index, index, j + 1, j + 3));
 					xlsRow.getCell(j+1).setCellValue(dsrCell.getValue().toString());
 				}
-				else if(dsrCell.Level_Type != null && dsrCell.Level_Type.equals(MBPMFormLine.LEVELTYPE_SubClass))
+				else if(MBPMFormLine.LEVELTYPE_SubClass.equals(dsrCell.Level_Type))
 				{
 					sheet.addMergedRegion(new CellRangeAddress(index, index, j + 2, j + 3));
 					xlsRow.getCell(j+2).setCellValue(dsrCell.getValue().toString());
@@ -91,13 +122,10 @@ public class DSR_ExcelImport
 				tempIndex = 3;
 			}
 			else
-				{
-					if(dsrCell.isHeader)
-						xlsCell.setCellStyle(headerStyle);
-					else
-						xlsCell.setCellStyle(commonStyle);
-					xlsCell.setCellValue(dsrCell.getValue().toString());
-				}
+			{
+				xlsCell.setCellStyle(commonStyle);
+				xlsCell.setCellValue(dsrCell.getValue().toString());
+			}
 		}
 	}
 	
