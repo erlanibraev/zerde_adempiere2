@@ -4,6 +4,7 @@
 package org.compiere.model;
 
 import java.sql.ResultSet;
+import java.util.List;
 import java.util.Properties;
 
 
@@ -50,6 +51,21 @@ public class MBPMFormCell extends X_BPM_FormCell {
 	protected boolean beforeDelete() {
 		// You can not delete records
 		return false;
+	}
+	
+	public static MBPMFormCell[] getLinesParameter(Properties ctx, int BSC_Parameter_ID, String trxName){
+		
+		List<MBPMFormCell> list = new Query(ctx, I_BPM_FormCell.Table_Name, "BSC_Parameter_ID=?", trxName)
+		.setParameters(BSC_Parameter_ID)
+		.setOnlyActiveRecords(true)
+		.list();
+		
+		MBPMFormCell[] retValue = new MBPMFormCell[list.size ()];
+		
+		list.toArray (retValue);
+		
+		return retValue;
+		
 	}
 
 

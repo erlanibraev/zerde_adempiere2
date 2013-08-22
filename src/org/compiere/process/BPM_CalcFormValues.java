@@ -1,9 +1,13 @@
 package org.compiere.process;
 
 import java.math.BigDecimal;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 import org.compiere.apps.IProcessParameter;
@@ -19,8 +23,11 @@ import org.compiere.model.MBPMFormParameters;
 import org.compiere.model.MBPMFormValues;
 import org.compiere.model.MBPMProject;
 import org.compiere.model.MParameterLine;
+import org.compiere.model.MVariable;
 import org.compiere.model.Query;
 import org.compiere.model.X_BSC_ParameterLine;
+import org.compiere.util.CLogger;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
@@ -89,37 +96,42 @@ public class BPM_CalcFormValues extends SvrProcess {
 				value.setBPM_VersionBudget_ID(form.getBPM_VersionBudget_ID());
 				value.setBPM_Project_ID(BPM_Project_ID);
 				
-				if(cell.getBSC_Parameter_ID() != 0){
+				if(cell.getCellValue().doubleValue() == 0){
 					
-					MBPMFormParameters[] parameters = MBPMFormParameters.getLines(getCtx(), cell.getBPM_FormCell_ID(), m_trxName);
-					LinkedHashMap<String, Object> obj = new LinkedHashMap<String, Object>();
-					String in = "";
-					int n = 0;
-					for(MBPMFormParameters par: parameters){
-						if(parameters.length > 1){
-							if(n != 0) in += ",";
-							in += par.getC_Charge_ID();
-							obj.put(MBPMFormParameters.COLUMNNAME_C_Charge_ID, in);
-						}
-						else
-							obj.put(MBPMFormParameters.COLUMNNAME_C_Charge_ID, String.valueOf(par.getC_Charge_ID()));
-						n++;
-					}
+					LinkedHashMap<String, Object> obj = getParameters(cell.getBPM_FormCell_ID());
 					
 					value.setCellValue(new BigDecimal(0));
 					value.setAlternateValue("");
 					
-					for(X_BSC_ParameterLine parLine: getLineParameter(cell.getBSC_Parameter_ID())){
-						MParameterLine par = new MParameterLine(m_ctx, parLine.getBSC_ParameterLine_ID(), m_trxName);
-						String result = par.calculate(obj);
-						try{
-							value.setCellValue(new BigDecimal(result).setScale(2, BigDecimal.ROUND_HALF_UP));
-						}catch(Exception ex){
-							value.setAlternateValue(result);
+					MParameterLine parLine = getLineParameter(cell.getBSC_Parameter_ID());
+					
+					//
+					String result = "0";
+					if(obj.size() == 0){
+						Map<String, MVariable> map = parLine.getVariables();
+						LinkedHashMap<String, LinkedHashMap<String, Object>> prs = new LinkedHashMap<String, LinkedHashMap<String, Object>>();
+						for(String key: map.keySet()){
+							MVariable var = map.get(key);  
+							if(var.getBSC_Parameter_ID() > 0) {
+								MBPMFormCell[] fCell = MBPMFormCell.getLinesParameter(m_ctx, var.getBSC_Parameter_ID(), m_trxName);
+								for(MBPMFormCell ce: fCell){
+									obj = getParameters(ce.getBPM_FormCell_ID());
+									prs.put(var.getName(), obj);
+								}
+							}
 						}
-						finally{
-							value.saveEx();
-						}
+						result = parLine.calculate2(prs);
+					}else{
+						result = parLine.calculate(obj);
+					}
+					
+					try{
+						value.setCellValue(new BigDecimal(result).setScale(2, BigDecimal.ROUND_HALF_UP));
+					}catch(Exception ex){
+						value.setAlternateValue(result);
+					}
+					finally{
+						value.saveEx();
 					}
 				}else{
 					value.setCellValue(cell.getCellValue().setScale(2, BigDecimal.ROUND_HALF_UP));
@@ -141,19 +153,28 @@ public class BPM_CalcFormValues extends SvrProcess {
 			return Msg.translate(m_ctx, "Success");
 	}
 	
-	private X_BSC_ParameterLine[] getLineParameter(int BSC_Parameter_ID){
+	private MParameterLine getLineParameter(int BSC_Parameter_ID){
 		
-		List<X_BSC_ParameterLine> list = new Query(m_ctx, I_BSC_ParameterLine.Table_Name, X_BSC_ParameterLine.COLUMNNAME_BSC_Parameter_ID+" = ? ", null)
-		.setParameters(BSC_Parameter_ID)
-		.setOnlyActiveRecords(true)
-		.list();
-		
-		X_BSC_ParameterLine[] retValue = new X_BSC_ParameterLine[list.size()];
-		
-		list.toArray(retValue);
-		
-		return retValue;
-		
+		CLogger log = CLogger.getCLogger (MParameterLine.class);
+		MParameterLine result = new MParameterLine(m_ctx, 0, m_trxName);
+		String sql = "SELECT * FROM BSC_ParameterLine WHERE isActive = 'Y' AND BSC_Parameter_ID = ? ";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;		
+		try {
+			pstmt = DB.prepareStatement(sql,null);
+			pstmt.setInt (1, BSC_Parameter_ID);
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				result = new MParameterLine(Env.getCtx(),rs,null);
+			}
+		} catch (SQLException e) {
+			log.log(Level.SEVERE, "MParameterLine: ", e);
+		} finally {
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
+		}	
+	
+		return result;
 	}
 	
 	private String runExcel(int BPM_Form_ID, int BPM_Project_ID){
@@ -181,6 +202,27 @@ public class BPM_CalcFormValues extends SvrProcess {
 		ProcessCtl.process(null, 0, (IProcessParameter) pu, pi, null);
 		
 		return Msg.translate(m_ctx, "Success");
+	}
+	
+	private LinkedHashMap<String, Object> getParameters(int BPM_FormCell_ID){
+		
+		MBPMFormParameters[] parameters = MBPMFormParameters.getLines(m_ctx, BPM_FormCell_ID, m_trxName);
+		LinkedHashMap<String, Object> param = new LinkedHashMap<String, Object>();
+		String in = "";
+		int n = 0;
+		for(MBPMFormParameters par: parameters){
+			if(parameters.length > 1){
+				if(n != 0) in += ",";
+				in += par.getC_Charge_ID();
+				param.put(MBPMFormParameters.COLUMNNAME_C_Charge_ID, in);
+			}
+			else
+				param.put(MBPMFormParameters.COLUMNNAME_C_Charge_ID, String.valueOf(par.getC_Charge_ID()));
+			n++;
+		}
+		
+		return param;
+		
 	}
 
 }

@@ -4,11 +4,15 @@
 package org.compiere.model;
 
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
+
 import org.compiere.apps.DialogAgreement;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.joda.time.DateTime;
 
 /**
  * @author V.Sokolov
@@ -66,13 +70,35 @@ public class MBPMFormLine extends X_BPM_FormLine {
 	@Override
 	protected boolean afterSave(boolean newRecord, boolean success) {
 
+		MPeriod period = MPeriod.findByCalendar(getCtx(), new Timestamp(new DateTime().getMillis()), form.getBPM_VersionBudget().getC_Calendar_ID(), null);
 		for(MBPMFormColumn column: listColumn){
 			
 			MBPMFormCell cell = new MBPMFormCell(getCtx(), 0, get_TrxName());
 			cell.setBPM_FormColumn_ID(column.getBPM_FormColumn_ID());
 			cell.setBPM_FormLine_ID(getBPM_FormLine_ID());
+			// create Parameter
+				MParameter param = new MParameter(getCtx(), 0, get_TrxName());
+				param.setName(form.getBPM_FormCode().getName()+" - L{"+getName()+"} C{"+column.getName()+"}");
+				param.setModules(X_BSC_Parameter.MODULES_BPM);
+				param.setIsExports(true);
+				param.saveEx();
+				// create Parameter line
+					MParameterLine paramLine = new MParameterLine(getCtx(), 0, get_TrxName());
+					paramLine.setC_Period_ID(period.getC_Period_ID());
+					paramLine.setBSC_Parameter_ID(param.getBSC_Parameter_ID());
+					paramLine.setIsFormula(true);
+					paramLine.setBSC_Formula_ID(MFormula.getFormulaValue_ID());
+					paramLine.saveEx();
+					// Variables parameter line
+						Set<String> set = MFormula.getVariables(MFormula.getFormulaValue_ID());
+						for(String s: set){
+							MVariable variable = new MVariable(getCtx(), 0, get_TrxName());
+							variable.setBSC_ParameterLine_ID(paramLine.getBSC_ParameterLine_ID());
+							variable.setName(s);
+							variable.saveEx();
+						}
+			cell.setBSC_Parameter_ID(param.getBSC_Parameter_ID());
 			cell.saveEx();
-			
 		}
 		
 		return true;
