@@ -11,6 +11,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
 
+import org.compiere.apps.ADialog;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -91,8 +92,7 @@ public class MParameterLine extends X_BSC_ParameterLine {
 		super(ctx, BSC_ParameterLine_ID, trxName);
 	}
 
-	public MParameterLine(Properties ctx, ResultSet rs, String trxName)
-    {
+	public MParameterLine(Properties ctx, ResultSet rs, String trxName) {
       super (ctx, rs, trxName);
     }
 	
@@ -117,12 +117,15 @@ public class MParameterLine extends X_BSC_ParameterLine {
 		return result;
 	}
 	public void setValue(String Value) {
+		setValueNumber(Value);
+/*		
 		if(!isFormula()) {
 			super.setValueNumber(Value);
 		} else {
 			super.setValueNumber(calculate());
 		}
-		save();
+*/		
+//		save();
 	}
 	
 	public String calculate() {
@@ -132,8 +135,12 @@ public class MParameterLine extends X_BSC_ParameterLine {
 	public String calculate(LinkedHashMap<String, Object> sqlParam) {
 		String result = "0";
 		if (isFormula()) {
-			MParameter parameter = getParameter();
-			result = parameter.getValue(getPeriod(), sqlParam);
+			try {
+				MParameter parameter = getParameter();
+				result = parameter.runCalc(parameter, getC_Period_ID(),null,sqlParam);
+			} catch(Exception e) {
+				log.log(Level.SEVERE,"MBSCParameterLine.calculate: ",e);
+			}
 		}
 		if (isImported() && getPFR_Calculation_ID() > 0) {
 			try {
@@ -155,10 +162,15 @@ public class MParameterLine extends X_BSC_ParameterLine {
 			for(String key:varList.keySet()) {
 				MVariable var = varList.get(key);
 				MParameter parameter = var.getParameter();
-				MPeriod period = getPeriod();
 				LinkedHashMap<String,Object> sqlP = sqlParam.get(key);
-				String value = (parameter == null ? "0" : parameter.getValue(period, sqlP));
-				args.put(key, value);
+				String value = "0";
+				try {
+					value = (parameter == null ? "0" : parameter.runCalc(parameter, getC_Period_ID(),null,sqlP));
+				} catch(Exception e) {
+					log.log(Level.SEVERE,"MBSCParameterLine.calculate2: ",e);
+				} finally {
+					args.put(key, (value == null ? "0" : value));
+				}
 			}
 			result = MFormula.calc(formula.getFormula(), args);
 		} else {
@@ -340,13 +352,14 @@ public class MParameterLine extends X_BSC_ParameterLine {
 	public static MParameterLine get(int BSC_Parameter_ID, int C_Period_ID) {
 		CLogger log = CLogger.getCLogger (MParameterLine.class);
 		MParameterLine result = null;
-		String sql = "SELECT * FROM BSC_ParameterLine WHERE isActive = 'Y' AND BSC_Parameter_ID = ? AND C_Period_ID = ?";
+		String sql = "SELECT * FROM BSC_ParameterLine WHERE isActive = 'Y' AND BSC_Parameter_ID = ? AND C_Period_ID = ?)";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;		
 		try {
 			pstmt = DB.prepareStatement(sql,null);
 			pstmt.setInt (1, BSC_Parameter_ID);
 			pstmt.setInt (2, C_Period_ID);
+			pstmt.setInt (3, C_Period_ID);
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
 				result = new MParameterLine(Env.getCtx(),rs,null);
@@ -399,6 +412,22 @@ public class MParameterLine extends X_BSC_ParameterLine {
 		                               .setParameters(BSC_ParameterLine_ID, BSC_Parameter_ID, C_Period_ID)
 		                               .list();
 		result = (list == null) || (list.size() <= 0);
+		return result;
+	}
+	
+	public static boolean copyLine(MParameterLine from, MParameterLine to){
+		boolean result = true;
+		MParameterLine.copyValues(from, to);
+		if (from.isFormula()) {
+			for(String key: from.getVariables().keySet()) {
+				MVariable var = from.getVariables().get(key);
+				MVariable newVar = new MVariable(Env.getCtx(),0,null);
+				MVariable.copyValues(var, newVar);
+				newVar.setBSC_ParameterLine_ID(to.getBSC_ParameterLine_ID());
+				newVar.set_ValueNoCheck("BSC_Variable_ID", I_ZERO);
+				result = result && newVar.save();
+			}
+		}
 		return result;
 	}
 }

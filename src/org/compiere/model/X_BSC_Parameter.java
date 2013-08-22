@@ -30,7 +30,7 @@ public class X_BSC_Parameter extends PO implements I_BSC_Parameter, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130806L;
+	private static final long serialVersionUID = 20130822L;
 
     /** the default Constructor */
     public X_BSC_Parameter(Properties ctx)
@@ -232,4 +232,28 @@ public class X_BSC_Parameter extends PO implements I_BSC_Parameter, I_Persistent
     {
         return new KeyNamePair(get_ID(), getName());
     }
+
+	/** Set without_period.
+		@param without_period 
+		without_period
+	  */
+	public void setwithout_period (boolean without_period)
+	{
+		set_Value (COLUMNNAME_without_period, Boolean.valueOf(without_period));
+	}
+
+	/** Get without_period.
+		@return without_period
+	  */
+	public boolean iswithout_period () 
+	{
+		Object oo = get_Value(COLUMNNAME_without_period);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
 }

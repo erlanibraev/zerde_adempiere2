@@ -191,4 +191,17 @@ public interface I_BSC_Parameter
 	  * User who updated this records
 	  */
 	public int getUpdatedBy();
+
+    /** Column name without_period */
+    public static final String COLUMNNAME_without_period = "without_period";
+
+	/** Set without_period.
+	  * without_period
+	  */
+	public void setwithout_period (boolean without_period);
+
+	/** Get without_period.
+	  * without_period
+	  */
+	public boolean iswithout_period();
 }

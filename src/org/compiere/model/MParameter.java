@@ -103,9 +103,15 @@ public class MParameter extends X_BSC_Parameter {
 	
 	public void setPeriod(MPeriod period) {
 		boolean haveP = false;
-		if (period == null) {
+		if (!iswithout_period()) {
+			if (period == null) {
+				setCurrentPeriod(null);
+				period = getPeriod();
+			}
+		} else {
 			setCurrentPeriod(null);
-			period = getPeriod();
+			currentParameterLine = getZeroParameterLine();
+			return;
 		}
 		if (parameterLine.size() == 0) {
 			loadParameterLine();
@@ -204,20 +210,29 @@ public class MParameter extends X_BSC_Parameter {
 		}	
 	}
 	
-	protected static String runCalc(MParameter parameter, MPeriod period, Set<Integer> forCycle, LinkedHashMap<String, Object> sqlParam) throws Exception {
+	
+	protected static String runCalc(MParameter parameter, int BSC_Period_ID, Set<Integer> forCycle, LinkedHashMap<String, Object> sqlParam) throws Exception {
 		String result = null;
-		if (parameter == null || parameter.getParameterLine(period) == null) {
+		MParameterLine parameterLine = null;
+		MPeriod period = null;
+		if (BSC_Period_ID > 0) {
+			period = new MPeriod(Env.getCtx(),BSC_Period_ID, parameter.get_TrxName());
+			parameterLine = parameter.getParameterLine(period);
+		} else if (parameter.iswithout_period()) {
+			parameterLine = parameter.getZeroParameterLine(); 
+		}
+		if (parameter == null || parameterLine == null) {
 			return "0";
 		}
 		if (forCycle == null) {
 			forCycle = new HashSet<Integer>();
 			forCycle.add(parameter.getBSC_Parameter_ID());
 		}
-		if (parameter.getParameterLine(period).isFormula()) {
-			MFormula formula = parameter.getParameterLine(period).getFormula();
+		if (parameterLine.isFormula()) {
+			MFormula formula = parameterLine.getFormula();
 			HashMap<String,Object> args = new  HashMap<String,Object>();
-			
-			Map<String,MVariable> variable = parameter.getParameterLine(period).getVariables();
+				
+			Map<String,MVariable> variable = parameterLine.getVariables();
 			for(String key: variable.keySet()) {
 				MVariable var = variable.get(key);
 				MParameter param = new MParameter(Env.getCtx(),var.getBSC_Parameter_ID(),null);
@@ -226,26 +241,29 @@ public class MParameter extends X_BSC_Parameter {
 //					ADialog.info(25, null, "MParameter: detected cycle in "+parameter.getName()+"; ID - "+parameter.getBSC_Parameter_ID()+". "+param.getName()+" ID - "+param.getBSC_Parameter_ID()+" parameter exists");
 					throw new Exception("MParameter: detected cycle in "+parameter.getName()+"; ID - "+parameter.getBSC_Parameter_ID()+". "+param.getName()+" ID - "+param.getBSC_Parameter_ID()+" parameter exists");
 				}
-				String value = runCalc(param, period, forCycle,sqlParam);
+				String value = runCalc(param, BSC_Period_ID, forCycle,sqlParam);
 				forCycle.remove(param.getBSC_Parameter_ID());
-				if (param != null && param.getParameterLine(period) != null) {
-					param.getParameterLine(period).setValue(value);
+				if (param != null && parameterLine != null) {
+					parameterLine.setValue(value);
 				} else {
 					if (param == null) {
 //						ADialog.info(25, null, "");
 						throw new Exception(" Variable not set: ("+ var.getBSC_Variable_ID() + ") "+var.getName());
 					} else if (param.getParameterLine(period) == null) {
-						throw new Exception(" Period not set for parameter: ("+ param.getBSC_Parameter_ID() + ") "+param.getName() + " - " + period.getName());
+						throw new Exception(" Period not set for parameter: ("+ param.getBSC_Parameter_ID() + ") "+param.getName() + " - " + (period != null ? period.getName(): "0"));
 					}
 				}
 				args.put(key, value);
 			}
 			result = MFormula.calc(formula.getFormula(), args);
-			// result = parameter.getParameterLine(period).calculate();
 		} else {
-			result = parameter.getParameterLine(period).getValue(sqlParam);
+			result = parameterLine.getValue(sqlParam);
 		}
 		return (result == null ? "0" : result);
+	}
+	
+	protected static String runCalc(MParameter parameter, MPeriod period, Set<Integer> forCycle, LinkedHashMap<String, Object> sqlParam) throws Exception {
+		return runCalc(parameter, period.getC_Period_ID(),forCycle,sqlParam);
 	}
 	
 	protected void addParameterLine(int c_Period_ID) {
@@ -286,7 +304,7 @@ public class MParameter extends X_BSC_Parameter {
                     +"      , max(periodno) as periodno \n"
                     +" from t1 \n"     
                     +" group by BSC_Parameter_ID \n"
-                    +" ), t3 ( \n"
+                    +" ), t3 as ( \n"
                     +" select t1.* \n" 
                     +" from t1 \n"
                     +" right join t2 \n" 
@@ -295,7 +313,7 @@ public class MParameter extends X_BSC_Parameter {
                     +" order by t1.BSC_ParameterLine_ID \n" 
                     +" ) \n"
                     +" select C_Period_ID from t3 \n"
-                    +" where BSC_Period_ID = ? \n";
+                    +" where BSC_Parameter_ID = ? \n";
 		
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;		
@@ -304,7 +322,7 @@ public class MParameter extends X_BSC_Parameter {
 			pstmt.setInt (1, getBSC_Parameter_ID());
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				result = rs.getInt(0);
+				result = rs.getInt(1);
 			}
 		} catch (SQLException e) {
 			log.log(Level.SEVERE, "product", e);
@@ -460,11 +478,15 @@ public class MParameter extends X_BSC_Parameter {
 	 */
 	public String getValue(MPeriod period, LinkedHashMap<String, Object> sqlParam) {
 		String result = "0";
-		setPeriod(period);
+		int C_Period_ID = 0;
+		if (period != null) {
+			C_Period_ID = period.getC_Period_ID();
+			setPeriod(period);
+		}
 		if (getParameterLine(period) != null) {
 			// result = getCurrentParameterLine().getValue();
 			try {
-				result = MParameter.runCalc(this, period, null, sqlParam);
+				result = MParameter.runCalc(this, C_Period_ID, null, sqlParam);
 				result = (result == null ? "0" : result);
 			} catch(Exception e) {
 				log.log(Level.SEVERE,"MParameter.getValue() - ",e);
@@ -544,5 +566,83 @@ public class MParameter extends X_BSC_Parameter {
 		if (prevParameterLine != null) {
 			prevParameterLine.copyNextPeriod(next_c_Period_ID);
 		}
+	}
+	
+	/** Set without_period.
+	@param without_period 
+	without_period
+	*/
+	@Override
+	public void setwithout_period (boolean without_period)
+	{
+		super.setwithout_period(without_period);
+		if (without_period) {
+			createZeroParameterLine();
+		} else {
+			disableZeroParameterLine();
+		}
+	}
+
+	/**
+	 * 
+	 */
+	private void disableZeroParameterLine() {
+		String sql = "UPDATE BSC_ParameterLine SET IsActive = 'N' WHERE BSC_Parameter_ID = "+getBSC_Parameter_ID() + " AND C_Period_ID = 0";
+		DB.executeUpdateEx(sql, get_TrxName());
+	}
+
+	/**
+	 * 
+	 */
+	private void createZeroParameterLine() {
+		int C_Period_ID = getMaxPeriodInLine();
+		MParameterLine oldLine = getParameterLine(new MPeriod(Env.getCtx(),C_Period_ID, get_TrxName()));
+		String sql = "UPDATE BSC_ParameterLine SET IsActive = 'N' WHERE BSC_Parameter_ID = "+getBSC_Parameter_ID() + " AND C_Period_ID > 0";
+		DB.executeUpdateEx(sql, get_TrxName());
+		
+		if (getZeroParameterLine() == null) {
+			MParameterLine pLine = new MParameterLine(Env.getCtx(),0,get_TrxName());
+			pLine.saveEx(get_TrxName());
+			if (oldLine != null) {
+				MParameterLine.copyLine(oldLine, pLine);
+			}
+			pLine.setBSC_Parameter_ID(getBSC_Parameter_ID());
+			pLine.set_ValueNoCheck("C_Period_ID", I_ZERO);
+			pLine.setIsActive(true);
+			if (pLine.save(get_TrxName())) {
+				// TODO Auto-generated method stub
+			}
+		} else {
+			getZeroParameterLine().setIsActive(true);
+			getZeroParameterLine().save();
+		}
+	}
+
+	public MParameterLine getZeroParameterLine() {
+		MParameterLine result = null;
+		if (iswithout_period()) {
+			if (currentParameterLine == null || currentParameterLine.getC_Period_ID() > 0) {
+				String sql = "SELECT * FROM BSC_ParameterLine WHERE BSC_Parameter_ID = ? AND C_Period_ID = 0";
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;		
+				try {
+					pstmt = DB.prepareStatement(sql,null);
+					pstmt.setInt (1, getBSC_Parameter_ID());
+					rs = pstmt.executeQuery();
+					if (rs.next()) {
+						result = new MParameterLine(Env.getCtx(), rs, get_TrxName());
+					}
+				} catch (SQLException e) {
+					log.log(Level.SEVERE, "product", e);
+				} finally {
+					DB.close(rs, pstmt);
+					rs = null; pstmt = null;
+				}
+				currentParameterLine = result;
+			} else {
+				result = currentParameterLine;
+			}
+		}
+		return result;
 	}
 }
