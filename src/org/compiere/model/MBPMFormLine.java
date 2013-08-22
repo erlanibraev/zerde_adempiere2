@@ -10,6 +10,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.compiere.apps.DialogAgreement;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.joda.time.DateTime;
@@ -117,6 +118,14 @@ public class MBPMFormLine extends X_BPM_FormLine {
 		
 		return retValue;
 		
+	}
+	
+	public static int maxLevelType()
+	{
+		String sql = "SELECT MAX(to_number(r.Value, '999')) From AD_Ref_List r INNER JOIN AD_Reference e ON e.AD_Reference_ID = r.AD_Reference_ID WHERE e.Name = 'bpm_ChargeTypeList'";
+		int value = DB.getSQLValue(null, sql);
+		
+		return value >= 0 ? value : 0;
 	}
 	
 }

@@ -3,6 +3,7 @@ package org.compiere.dsr;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import net.sf.jasperreports.engine.JRException;
 
@@ -17,9 +18,12 @@ import extend.org.compiere.utils.Util;
 
 public class DSR_ExcelImport 
 {
+	private static Logger log = Logger.getLogger("DSR_ExcelImport");
 	static CellStyle headerStyle = null;
 	static CellStyle commonStyle = null;
 	static CellStyle rowHeader = null;
+	
+	static int maxLevel = 0;
 	
 	public static void collectionImport(MAttachmentEntry entry, DSR_DataCollection collection) throws IOException, JRException
 	{
@@ -29,6 +33,8 @@ public class DSR_ExcelImport
 		headerStyle = DSR_ExcelStyles.getHeaderStyle(wb);
 		commonStyle = DSR_ExcelStyles.getCommonStyle(wb);
 		rowHeader = DSR_ExcelStyles.getRowHeader(wb);
+		
+		maxLevel = MBPMFormLine.maxLevelType();
 		
 		int rowCount = collection.size();
 		
@@ -63,14 +69,23 @@ public class DSR_ExcelImport
 			xlsCell = xlsRow.createCell(i + tempIndex);
 			if(MBPMFormLine.LEVELTYPE_Category.equals(dsrCell.Level_Type))
 			{
-				for(int j = 0; j < 4; j++)
+				int levelIndex = 0;
+				try
+				{
+					levelIndex = Integer.parseInt(dsrCell.Level_Type);
+				}
+				catch(Exception e)
+				{
+					log.severe("Unnable to parse int value from string. DSR_Cell.Level_Type." + e.toString());
+				}
+				for(int j = 0; j < maxLevel + 1; j++)
 				{
 					Cell innerCell = xlsRow.createCell(j + i);
 					innerCell.setCellStyle(headerStyle);
 				}
-				sheet.addMergedRegion(new CellRangeAddress(index, index, i, i + 3));
-				xlsRow.getCell(i).setCellValue(dsrCell.getValue().toString());
-				tempIndex += 3;
+				sheet.addMergedRegion(new CellRangeAddress(index, index, i + levelIndex, i + maxLevel));
+				xlsRow.getCell(i + levelIndex).setCellValue(dsrCell.getValue().toString());
+				tempIndex += maxLevel;
 			}
 			else
 			{
@@ -95,31 +110,32 @@ public class DSR_ExcelImport
 			
 			if(dsrCell.isRow)
 			{
-				for(int i = 0; i < 4; i++)
+				int levelIndex = maxLevel;
+				
+				try
+				{
+					levelIndex = Integer.parseInt(dsrCell.Level_Type);
+				}
+				catch(Exception e)
+				{
+					log.severe("Unnable to parse int value from string. DSR_Cell.Level_Type." + e.toString());
+				}
+				for(int i = 0; i < maxLevel + 1; i++)
 				{
 					Cell innerCell = xlsRow.createCell(j + i);
 					innerCell.setCellStyle(rowHeader);
 				}
-				if(MBPMFormLine.LEVELTYPE_Category.equals(dsrCell.Level_Type))
+				
+				if(levelIndex < maxLevel)
 				{
-					sheet.addMergedRegion(new CellRangeAddress(index, index, j, j + 3));
-					xlsRow.getCell(j).setCellValue(dsrCell.getValue().toString());
-				}
-				else if(MBPMFormLine.LEVELTYPE_Class.equals(dsrCell.Level_Type))
-				{
-					sheet.addMergedRegion(new CellRangeAddress(index, index, j + 1, j + 3));
-					xlsRow.getCell(j+1).setCellValue(dsrCell.getValue().toString());
-				}
-				else if(MBPMFormLine.LEVELTYPE_SubClass.equals(dsrCell.Level_Type))
-				{
-					sheet.addMergedRegion(new CellRangeAddress(index, index, j + 2, j + 3));
-					xlsRow.getCell(j+2).setCellValue(dsrCell.getValue().toString());
+					sheet.addMergedRegion(new CellRangeAddress(index, index, j + levelIndex, j + maxLevel));
+					xlsRow.getCell(j + levelIndex).setCellValue(dsrCell.getValue().toString());
 				}
 				else
 				{
 					xlsRow.getCell(j+3).setCellValue(dsrCell.getValue().toString());
 				}
-				tempIndex = 3;
+				tempIndex = maxLevel;
 			}
 			else
 			{
