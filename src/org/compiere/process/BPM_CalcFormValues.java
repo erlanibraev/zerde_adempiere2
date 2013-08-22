@@ -120,7 +120,10 @@ public class BPM_CalcFormValues extends SvrProcess {
 								}
 							}
 						}
-						result = parLine.calculate2(prs);
+						if(prs.size() != 0)
+							result = parLine.calculate2(prs);
+						else
+							result = parLine.calculate();
 					}else{
 						result = parLine.calculate(obj);
 					}
