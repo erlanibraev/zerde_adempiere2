@@ -17,14 +17,16 @@
 /** Generated Model - DO NOT CHANGE */
 package org.compiere.model;
 
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Model for BPM_FormLine
+/** Generated Model for BPM_Category
  *  @author Adempiere (generated) 
  *  @version Release 3.7.0LTS - $Id$ */
-public class X_BPM_FormLine extends PO implements I_BPM_FormLine, I_Persistent 
+public class X_BPM_Category extends PO implements I_BPM_Category, I_Persistent 
 {
 
 	/**
@@ -33,25 +35,23 @@ public class X_BPM_FormLine extends PO implements I_BPM_FormLine, I_Persistent
 	private static final long serialVersionUID = 20130822L;
 
     /** the default Constructor */
-    public X_BPM_FormLine(Properties ctx)
+    public X_BPM_Category(Properties ctx)
     { 
       super (ctx, null, null);
     } 
 
     /** Standard Constructor */
-    public X_BPM_FormLine (Properties ctx, int BPM_FormLine_ID, String trxName)
+    public X_BPM_Category (Properties ctx, int BPM_Category_ID, String trxName)
     {
-      super (ctx, BPM_FormLine_ID, trxName);
-      /** if (BPM_FormLine_ID == 0)
+      super (ctx, BPM_Category_ID, trxName);
+      /** if (BPM_Category_ID == 0)
         {
-			setBPM_Form_ID (0);
-			setBPM_FormLine_ID (0);
-			setName (null);
+			setBPM_Category_ID (0);
         } */
     }
 
     /** Load Constructor */
-    public X_BPM_FormLine (Properties ctx, ResultSet rs, String trxName)
+    public X_BPM_Category (Properties ctx, ResultSet rs, String trxName)
     {
       super (ctx, rs, trxName);
     }
@@ -73,24 +73,19 @@ public class X_BPM_FormLine extends PO implements I_BPM_FormLine, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_BPM_FormLine[")
+      StringBuffer sb = new StringBuffer ("X_BPM_Category[")
         .append(get_ID()).append("]");
       return sb.toString();
     }
-
-	public I_BPM_Category getBPM_Category() throws RuntimeException
-    {
-		return (I_BPM_Category)MTable.get(getCtx(), I_BPM_Category.Table_Name)
-			.getPO(getBPM_Category_ID(), get_TrxName());	}
 
 	/** Set BPM_Category ID.
 		@param BPM_Category_ID BPM_Category ID	  */
 	public void setBPM_Category_ID (int BPM_Category_ID)
 	{
 		if (BPM_Category_ID < 1) 
-			set_Value (COLUMNNAME_BPM_Category_ID, null);
+			set_ValueNoCheck (COLUMNNAME_BPM_Category_ID, null);
 		else 
-			set_Value (COLUMNNAME_BPM_Category_ID, Integer.valueOf(BPM_Category_ID));
+			set_ValueNoCheck (COLUMNNAME_BPM_Category_ID, Integer.valueOf(BPM_Category_ID));
 	}
 
 	/** Get BPM_Category ID.
@@ -98,88 +93,6 @@ public class X_BPM_FormLine extends PO implements I_BPM_FormLine, I_Persistent
 	public int getBPM_Category_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_BPM_Category_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public I_BPM_Form getBPM_Form() throws RuntimeException
-    {
-		return (I_BPM_Form)MTable.get(getCtx(), I_BPM_Form.Table_Name)
-			.getPO(getBPM_Form_ID(), get_TrxName());	}
-
-	/** Set BPM_Form ID.
-		@param BPM_Form_ID BPM_Form ID	  */
-	public void setBPM_Form_ID (int BPM_Form_ID)
-	{
-		if (BPM_Form_ID < 1) 
-			set_Value (COLUMNNAME_BPM_Form_ID, null);
-		else 
-			set_Value (COLUMNNAME_BPM_Form_ID, Integer.valueOf(BPM_Form_ID));
-	}
-
-	/** Get BPM_Form ID.
-		@return BPM_Form ID	  */
-	public int getBPM_Form_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_BPM_Form_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set BPM_FormLine ID.
-		@param BPM_FormLine_ID BPM_FormLine ID	  */
-	public void setBPM_FormLine_ID (int BPM_FormLine_ID)
-	{
-		if (BPM_FormLine_ID < 1) 
-			set_ValueNoCheck (COLUMNNAME_BPM_FormLine_ID, null);
-		else 
-			set_ValueNoCheck (COLUMNNAME_BPM_FormLine_ID, Integer.valueOf(BPM_FormLine_ID));
-	}
-
-	/** Get BPM_FormLine ID.
-		@return BPM_FormLine ID	  */
-	public int getBPM_FormLine_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_BPM_FormLine_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
-	public void setDescription (String Description)
-	{
-		set_Value (COLUMNNAME_Description, Description);
-	}
-
-	/** Get Description.
-		@return Optional short description of the record
-	  */
-	public String getDescription () 
-	{
-		return (String)get_Value(COLUMNNAME_Description);
-	}
-
-	/** Set Line.
-		@param LineNo 
-		Line No
-	  */
-	public void setLineNo (int LineNo)
-	{
-		set_Value (COLUMNNAME_LineNo, Integer.valueOf(LineNo));
-	}
-
-	/** Get Line.
-		@return Line No
-	  */
-	public int getLineNo () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_LineNo);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -209,4 +122,24 @@ public class X_BPM_FormLine extends PO implements I_BPM_FormLine, I_Persistent
     {
         return new KeyNamePair(get_ID(), getName());
     }
+
+	/** Set Value.
+		@param ValueNumber 
+		Numeric Value
+	  */
+	public void setValueNumber (BigDecimal ValueNumber)
+	{
+		set_Value (COLUMNNAME_ValueNumber, ValueNumber);
+	}
+
+	/** Get Value.
+		@return Numeric Value
+	  */
+	public BigDecimal getValueNumber () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_ValueNumber);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
 }

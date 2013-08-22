@@ -9,7 +9,6 @@ public class DSR_Cell
 	public boolean isHeader = false;
 	public boolean isRow = false;
 	
-	public String Level_Type = "";
 	public int LevelIndex = 0;
 	
 	public DSR_Cell(String columnName, String rowName, Object value)

@@ -20,17 +20,17 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for BPM_FormLine
+/** Generated Interface for BPM_Category
  *  @author Adempiere (generated) 
  *  @version Release 3.7.0LTS
  */
-public interface I_BPM_FormLine 
+public interface I_BPM_Category 
 {
 
-    /** TableName=BPM_FormLine */
-    public static final String Table_Name = "BPM_FormLine";
+    /** TableName=BPM_Category */
+    public static final String Table_Name = "BPM_Category";
 
-    /** AD_Table_ID=1000321 */
+    /** AD_Table_ID=1000327 */
     public static final int Table_ID = MTable.getTable_ID(Table_Name);
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
@@ -71,28 +71,6 @@ public interface I_BPM_FormLine
 	/** Get BPM_Category ID	  */
 	public int getBPM_Category_ID();
 
-	public I_BPM_Category getBPM_Category() throws RuntimeException;
-
-    /** Column name BPM_Form_ID */
-    public static final String COLUMNNAME_BPM_Form_ID = "BPM_Form_ID";
-
-	/** Set BPM_Form ID	  */
-	public void setBPM_Form_ID (int BPM_Form_ID);
-
-	/** Get BPM_Form ID	  */
-	public int getBPM_Form_ID();
-
-	public I_BPM_Form getBPM_Form() throws RuntimeException;
-
-    /** Column name BPM_FormLine_ID */
-    public static final String COLUMNNAME_BPM_FormLine_ID = "BPM_FormLine_ID";
-
-	/** Set BPM_FormLine ID	  */
-	public void setBPM_FormLine_ID (int BPM_FormLine_ID);
-
-	/** Get BPM_FormLine ID	  */
-	public int getBPM_FormLine_ID();
-
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
 
@@ -109,19 +87,6 @@ public interface I_BPM_FormLine
 	  */
 	public int getCreatedBy();
 
-    /** Column name Description */
-    public static final String COLUMNNAME_Description = "Description";
-
-	/** Set Description.
-	  * Optional short description of the record
-	  */
-	public void setDescription (String Description);
-
-	/** Get Description.
-	  * Optional short description of the record
-	  */
-	public String getDescription();
-
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
 
@@ -134,19 +99,6 @@ public interface I_BPM_FormLine
 	  * The record is active in the system
 	  */
 	public boolean isActive();
-
-    /** Column name LineNo */
-    public static final String COLUMNNAME_LineNo = "LineNo";
-
-	/** Set Line.
-	  * Line No
-	  */
-	public void setLineNo (int LineNo);
-
-	/** Get Line.
-	  * Line No
-	  */
-	public int getLineNo();
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";
@@ -176,4 +128,17 @@ public interface I_BPM_FormLine
 	  * User who updated this records
 	  */
 	public int getUpdatedBy();
+
+    /** Column name ValueNumber */
+    public static final String COLUMNNAME_ValueNumber = "ValueNumber";
+
+	/** Set Value.
+	  * Numeric Value
+	  */
+	public void setValueNumber (BigDecimal ValueNumber);
+
+	/** Get Value.
+	  * Numeric Value
+	  */
+	public BigDecimal getValueNumber();
 }

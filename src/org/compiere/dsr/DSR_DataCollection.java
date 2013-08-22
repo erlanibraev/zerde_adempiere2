@@ -9,11 +9,10 @@ package org.compiere.dsr;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import org.compiere.model.MBPMCategory;
 import org.compiere.model.MBPMForm;
 import org.compiere.model.MBPMFormColumn;
-import org.compiere.model.MBPMFormLine;
 import org.compiere.model.MBPMFormValues;
-import org.compiere.model.MBPMProject;
 import org.compiere.util.Env;
 
 public class DSR_DataCollection
@@ -97,14 +96,14 @@ public class DSR_DataCollection
 		
 		DSR_Cell nullCell = new DSR_Cell("", "", null);
 		nullCell.setHeader(true);
-		nullCell.Level_Type = MBPMFormLine.LEVELTYPE_Category;
+		nullCell.LevelIndex = MBPMCategory.minValue();
 		header.add(nullCell);
 		
 		for(MBPMFormColumn column : columns)
 		{
 			DSR_Cell cell = new DSR_Cell(column.getName(), "", null);
 			cell.setHeader(true);
-			
+			cell.LevelIndex = -1;
 			header.add(cell);
 		}
 	}

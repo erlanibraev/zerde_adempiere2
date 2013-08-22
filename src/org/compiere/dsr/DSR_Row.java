@@ -2,6 +2,7 @@ package org.compiere.dsr;
 
 import java.util.ArrayList;
 
+import org.compiere.model.MBPMCategory;
 import org.compiere.model.MBPMFormColumn;
 import org.compiere.model.MBPMFormLine;
 import org.compiere.model.MBPMFormValues;
@@ -39,7 +40,7 @@ public class DSR_Row
 		//The row's name
 		DSR_Cell lineCell = new DSR_Cell("", rowLine.getName(), null);
 		lineCell.setRow(true);
-		lineCell.Level_Type = rowLine.getLevelType();
+		lineCell.LevelIndex = MBPMCategory.value(rowLine.getBPM_Category_ID());
 		elementData.add(lineCell);
 		
 		for(MBPMFormValues line : lines)
