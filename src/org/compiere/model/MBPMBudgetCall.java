@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -82,7 +83,6 @@ public class MBPMBudgetCall extends X_BPM_BudgetCall {
 						line.setAmountUnit(new BigDecimal(0));
 						line.setC_Charge_ID(rs.getInt(I_BPM_BudgetCallLine.COLUMNNAME_C_Charge_ID.toLowerCase()));
 						line.setC_Period_ID(p.getC_Period_ID());
-						line.setmonth_ID(p.getC_Period_ID());
 						line.setC_UOM_ID(100); // TODO 100 = шт.
 						line.setPaymentMonth(X_BPM_BudgetCallLine.PAYMENTMONTH_Current);
 						line.setQuantity(0);
@@ -136,5 +136,20 @@ public class MBPMBudgetCall extends X_BPM_BudgetCall {
 		return list.toArray(new MPeriod[list.size()]);
 		
 	}  
+	
+	public static MBPMBudgetCallLine[] getLines(Properties ctx, int BPM_BudgetCall_ID, String trxName){
+		
+		List<MBPMBudgetCallLine> list = new Query(ctx, I_BPM_BudgetCallLine.Table_Name, "BPM_BudgetCall_ID=?", trxName)
+		.setParameters(BPM_BudgetCall_ID)
+		.setOnlyActiveRecords(true)
+		.list();
+		
+		MBPMBudgetCallLine[] retValue = new MBPMBudgetCallLine[list.size ()];
+		
+		list.toArray (retValue);
+		
+		return retValue;
+		
+	}
 
 }

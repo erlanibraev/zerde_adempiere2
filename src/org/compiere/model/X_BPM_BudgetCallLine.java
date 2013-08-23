@@ -32,7 +32,7 @@ public class X_BPM_BudgetCallLine extends PO implements I_BPM_BudgetCallLine, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130705L;
+	private static final long serialVersionUID = 20130823L;
 
     /** the default Constructor */
     public X_BPM_BudgetCallLine(Properties ctx)
@@ -54,8 +54,9 @@ public class X_BPM_BudgetCallLine extends PO implements I_BPM_BudgetCallLine, I_
 			setC_Charge_ID (0);
 			setC_Period_ID (0);
 			setC_UOM_ID (0);
-			setmonth_ID (0);
 			setPaymentMonth (null);
+			setProcessed (false);
+// N
 			setQuantity (0);
 			setRecord_ID (0);
         } */
@@ -281,31 +282,6 @@ public class X_BPM_BudgetCallLine extends PO implements I_BPM_BudgetCallLine, I_
 		return ii.intValue();
 	}
 
-	public org.compiere.model.I_C_Period getmonth() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Period)MTable.get(getCtx(), org.compiere.model.I_C_Period.Table_Name)
-			.getPO(getmonth_ID(), get_TrxName());	}
-
-	/** Set month.
-		@param month_ID month	  */
-	public void setmonth_ID (int month_ID)
-	{
-		if (month_ID < 1) 
-			set_Value (COLUMNNAME_month_ID, null);
-		else 
-			set_Value (COLUMNNAME_month_ID, Integer.valueOf(month_ID));
-	}
-
-	/** Get month.
-		@return month	  */
-	public int getmonth_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_month_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	/** PaymentMonth AD_Reference_ID=1000139 */
 	public static final int PAYMENTMONTH_AD_Reference_ID=1000139;
 	/** Current = CURRENT */
@@ -325,6 +301,30 @@ public class X_BPM_BudgetCallLine extends PO implements I_BPM_BudgetCallLine, I_
 	public String getPaymentMonth () 
 	{
 		return (String)get_Value(COLUMNNAME_PaymentMonth);
+	}
+
+	/** Set Processed.
+		@param Processed 
+		The document has been processed
+	  */
+	public void setProcessed (boolean Processed)
+	{
+		set_Value (COLUMNNAME_Processed, Boolean.valueOf(Processed));
+	}
+
+	/** Get Processed.
+		@return The document has been processed
+	  */
+	public boolean isProcessed () 
+	{
+		Object oo = get_Value(COLUMNNAME_Processed);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	/** Set Quantity.

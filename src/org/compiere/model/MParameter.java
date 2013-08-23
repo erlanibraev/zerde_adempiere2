@@ -626,7 +626,7 @@ public class MParameter extends X_BSC_Parameter {
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;		
 				try {
-					pstmt = DB.prepareStatement(sql,null);
+					pstmt = DB.prepareStatement(sql,get_TrxName());
 					pstmt.setInt (1, getBSC_Parameter_ID());
 					rs = pstmt.executeQuery();
 					if (rs.next()) {

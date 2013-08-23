@@ -62,6 +62,52 @@ public interface I_BPM_BudgetCall
 	  */
 	public int getAD_Org_ID();
 
+    /** Column name AD_Table_ID */
+    public static final String COLUMNNAME_AD_Table_ID = "AD_Table_ID";
+
+	/** Set Table.
+	  * Database Table information
+	  */
+	public void setAD_Table_ID (int AD_Table_ID);
+
+	/** Get Table.
+	  * Database Table information
+	  */
+	public int getAD_Table_ID();
+
+	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
+
+    /** Column name AGR_Dispatcher_ID */
+    public static final String COLUMNNAME_AGR_Dispatcher_ID = "AGR_Dispatcher_ID";
+
+	/** Set AGR_Dispatcher ID	  */
+	public void setAGR_Dispatcher_ID (int AGR_Dispatcher_ID);
+
+	/** Get AGR_Dispatcher ID	  */
+	public int getAGR_Dispatcher_ID();
+
+	public I_AGR_Dispatcher getAGR_Dispatcher() throws RuntimeException;
+
+    /** Column name AGR_Stage_ID */
+    public static final String COLUMNNAME_AGR_Stage_ID = "AGR_Stage_ID";
+
+	/** Set AGR_Stage ID	  */
+	public void setAGR_Stage_ID (int AGR_Stage_ID);
+
+	/** Get AGR_Stage ID	  */
+	public int getAGR_Stage_ID();
+
+	public I_AGR_Stage getAGR_Stage() throws RuntimeException;
+
+    /** Column name AGRApprove */
+    public static final String COLUMNNAME_AGRApprove = "AGRApprove";
+
+	/** Set AGRApprove	  */
+	public void setAGRApprove (String AGRApprove);
+
+	/** Get AGRApprove	  */
+	public String getAGRApprove();
+
     /** Column name BPM_ABP_ID */
     public static final String COLUMNNAME_BPM_ABP_ID = "BPM_ABP_ID";
 
@@ -81,6 +127,17 @@ public interface I_BPM_BudgetCall
 
 	/** Get BPM_BudgetCall ID	  */
 	public int getBPM_BudgetCall_ID();
+
+    /** Column name BPM_Project_ID */
+    public static final String COLUMNNAME_BPM_Project_ID = "BPM_Project_ID";
+
+	/** Set BPM_Project ID	  */
+	public void setBPM_Project_ID (int BPM_Project_ID);
+
+	/** Get BPM_Project ID	  */
+	public int getBPM_Project_ID();
+
+	public I_BPM_Project getBPM_Project() throws RuntimeException;
 
     /** Column name BPM_VersionBudgetLine_ID */
     public static final String COLUMNNAME_BPM_VersionBudgetLine_ID = "BPM_VersionBudgetLine_ID";
@@ -163,6 +220,19 @@ public interface I_BPM_BudgetCall
 	  */
 	public int getCreatedBy();
 
+    /** Column name DocStatus */
+    public static final String COLUMNNAME_DocStatus = "DocStatus";
+
+	/** Set Document Status.
+	  * The current status of the document
+	  */
+	public void setDocStatus (String DocStatus);
+
+	/** Get Document Status.
+	  * The current status of the document
+	  */
+	public String getDocStatus();
+
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
 
@@ -175,6 +245,19 @@ public interface I_BPM_BudgetCall
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name Processed */
+    public static final String COLUMNNAME_Processed = "Processed";
+
+	/** Set Processed.
+	  * The document has been processed
+	  */
+	public void setProcessed (boolean Processed);
+
+	/** Get Processed.
+	  * The document has been processed
+	  */
+	public boolean isProcessed();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

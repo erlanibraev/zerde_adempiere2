@@ -189,17 +189,6 @@ public interface I_BPM_BudgetCallLine
 	  */
 	public boolean isActive();
 
-    /** Column name month_ID */
-    public static final String COLUMNNAME_month_ID = "month_ID";
-
-	/** Set month	  */
-	public void setmonth_ID (int month_ID);
-
-	/** Get month	  */
-	public int getmonth_ID();
-
-	public org.compiere.model.I_C_Period getmonth() throws RuntimeException;
-
     /** Column name PaymentMonth */
     public static final String COLUMNNAME_PaymentMonth = "PaymentMonth";
 
@@ -208,6 +197,19 @@ public interface I_BPM_BudgetCallLine
 
 	/** Get PaymentMonth	  */
 	public String getPaymentMonth();
+
+    /** Column name Processed */
+    public static final String COLUMNNAME_Processed = "Processed";
+
+	/** Set Processed.
+	  * The document has been processed
+	  */
+	public void setProcessed (boolean Processed);
+
+	/** Get Processed.
+	  * The document has been processed
+	  */
+	public boolean isProcessed();
 
     /** Column name Quantity */
     public static final String COLUMNNAME_Quantity = "Quantity";

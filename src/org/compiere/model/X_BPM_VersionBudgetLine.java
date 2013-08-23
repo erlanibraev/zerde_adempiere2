@@ -29,7 +29,7 @@ public class X_BPM_VersionBudgetLine extends PO implements I_BPM_VersionBudgetLi
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130514L;
+	private static final long serialVersionUID = 20130823L;
 
     /** the default Constructor */
     public X_BPM_VersionBudgetLine(Properties ctx)
@@ -140,6 +140,8 @@ public class X_BPM_VersionBudgetLine extends PO implements I_BPM_VersionBudgetLi
 	public static final String BPM_VERSIONTYPE_Current = "CURRENT";
 	/** Correct = CORRECT */
 	public static final String BPM_VERSIONTYPE_Correct = "CORRECT";
+	/** NOT APPROVED = NOT APPROVED */
+	public static final String BPM_VERSIONTYPE_NOTAPPROVED = "NOT APPROVED";
 	/** Set BPM_VersionType.
 		@param BPM_VersionType BPM_VersionType	  */
 	public void setBPM_VersionType (String BPM_VersionType)

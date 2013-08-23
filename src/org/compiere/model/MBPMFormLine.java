@@ -73,7 +73,6 @@ public class MBPMFormLine extends X_BPM_FormLine {
 		
 
 		if(newRecord){
-			MPeriod period = MPeriod.findByCalendar(getCtx(), new Timestamp(new DateTime().getMillis()), form.getBPM_VersionBudget().getC_Calendar_ID(), null);
 			for(MBPMFormColumn column: listColumn){
 				
 				MBPMFormCell cell = new MBPMFormCell(getCtx(), 0, get_TrxName());
@@ -85,10 +84,10 @@ public class MBPMFormLine extends X_BPM_FormLine {
 					param.setModules(X_BSC_Parameter.MODULES_BPM);
 					param.setIsExports(true);
 					param.saveEx();
+					param.setwithout_period(true);
+					
 					// create Parameter line
-						MParameterLine paramLine = new MParameterLine(getCtx(), 0, get_TrxName());
-						paramLine.setC_Period_ID(period.getC_Period_ID());
-						paramLine.setBSC_Parameter_ID(param.getBSC_Parameter_ID());
+						MParameterLine paramLine = param.getZeroParameterLine();
 						paramLine.setIsFormula(true);
 						paramLine.setBSC_Formula_ID(MFormula.getFormulaValue_ID());
 						paramLine.saveEx();
