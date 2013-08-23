@@ -62,6 +62,21 @@ public interface I_AGR_Stage
 	  */
 	public int getAD_Org_ID();
 
+    /** Column name AD_Process_ID */
+    public static final String COLUMNNAME_AD_Process_ID = "AD_Process_ID";
+
+	/** Set Process.
+	  * Process or Report
+	  */
+	public void setAD_Process_ID (int AD_Process_ID);
+
+	/** Get Process.
+	  * Process or Report
+	  */
+	public int getAD_Process_ID();
+
+	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException;
+
     /** Column name AD_Ref_List_ID */
     public static final String COLUMNNAME_AD_Ref_List_ID = "AD_Ref_List_ID";
 
@@ -76,21 +91,6 @@ public interface I_AGR_Stage
 	public int getAD_Ref_List_ID();
 
 	public org.compiere.model.I_AD_Ref_List getAD_Ref_List() throws RuntimeException;
-
-    /** Column name AD_Reference_ID */
-    public static final String COLUMNNAME_AD_Reference_ID = "AD_Reference_ID";
-
-	/** Set Reference.
-	  * System Reference and Validation
-	  */
-	public void setAD_Reference_ID (int AD_Reference_ID);
-
-	/** Get Reference.
-	  * System Reference and Validation
-	  */
-	public int getAD_Reference_ID();
-
-	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException;
 
     /** Column name AGR_Agreement_ID */
     public static final String COLUMNNAME_AGR_Agreement_ID = "AGR_Agreement_ID";

@@ -81,6 +81,34 @@ public class X_AGR_Stage extends PO implements I_AGR_Stage, I_Persistent
       return sb.toString();
     }
 
+	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_Name)
+			.getPO(getAD_Process_ID(), get_TrxName());	}
+
+	/** Set Process.
+		@param AD_Process_ID 
+		Process or Report
+	  */
+	public void setAD_Process_ID (int AD_Process_ID)
+	{
+		if (AD_Process_ID < 1) 
+			set_Value (COLUMNNAME_AD_Process_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_Process_ID, Integer.valueOf(AD_Process_ID));
+	}
+
+	/** Get Process.
+		@return Process or Report
+	  */
+	public int getAD_Process_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Process_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	public org.compiere.model.I_AD_Ref_List getAD_Ref_List() throws RuntimeException
     {
 		return (org.compiere.model.I_AD_Ref_List)MTable.get(getCtx(), org.compiere.model.I_AD_Ref_List.Table_Name)
@@ -104,34 +132,6 @@ public class X_AGR_Stage extends PO implements I_AGR_Stage, I_Persistent
 	public int getAD_Ref_List_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Ref_List_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Reference)MTable.get(getCtx(), org.compiere.model.I_AD_Reference.Table_Name)
-			.getPO(getAD_Reference_ID(), get_TrxName());	}
-
-	/** Set Reference.
-		@param AD_Reference_ID 
-		System Reference and Validation
-	  */
-	public void setAD_Reference_ID (int AD_Reference_ID)
-	{
-		if (AD_Reference_ID < 1) 
-			set_Value (COLUMNNAME_AD_Reference_ID, null);
-		else 
-			set_Value (COLUMNNAME_AD_Reference_ID, Integer.valueOf(AD_Reference_ID));
-	}
-
-	/** Get Reference.
-		@return System Reference and Validation
-	  */
-	public int getAD_Reference_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Reference_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

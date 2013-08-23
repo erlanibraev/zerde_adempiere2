@@ -32,6 +32,7 @@ public class Agreement_Dispatcher
 	private int C_BPartner_ID = 0;
 	
 	public boolean STAGE_Approved = false;
+	public boolean isMoved = false;
 	
 	private final String columnDocStatus = "DocStatus";
 		
@@ -236,12 +237,17 @@ public class Agreement_Dispatcher
 			{
 				Log.log(Logger.ERROR, "Agreement List not saved");
 			}
+			else
+			{
+				quit(toStage);
+			}
 		}
 	}
 
 	private void quit(MAGRStage stage)
 	{
 		X_AD_Ref_List list = new X_AD_Ref_List(Env.getCtx(), stage.getAD_Ref_List_ID(), null);
+		isMoved = true;
 		document.set_ValueOfColumn(columnDocStatus, list.getValue());
 		document.saveEx();
 	}
