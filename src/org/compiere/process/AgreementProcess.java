@@ -25,9 +25,7 @@ public class AgreementProcess extends SvrProcess implements ASyncProcess
 	private Properties m_ctx;
 	/**	 */
 	private ProcessInfo pi;
-	
-	private String trx;
-	
+
 	private static Logger log = Logger.getLogger("AgreementProcess");
 	
 	@Override
@@ -35,7 +33,6 @@ public class AgreementProcess extends SvrProcess implements ASyncProcess
 	{		
 		m_ctx = Env.getCtx();
 		pi = getProcessInfo();
-		trx = get_TrxName();
 	}
 
 	@Override
@@ -106,7 +103,7 @@ public class AgreementProcess extends SvrProcess implements ASyncProcess
 		
 		dispatcher.startAgreement(approved, message);
 		
-		int AD_Process_ID = (new MAGRStage(m_ctx, AGR_Stage_ID, trx)).getAD_Process_ID();
+		int AD_Process_ID = (new MAGRStage(m_ctx, AGR_Stage_ID, get_TrxName())).getAD_Process_ID();
 		
 		if(AD_Process_ID > 0 && dispatcher.isMoved)
 		{

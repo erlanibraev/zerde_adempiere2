@@ -89,7 +89,7 @@ public class MAGRAgreement extends X_AGR_Agreement
   		{
   			ArrayList<MAGRNode> nodes = (ArrayList<MAGRNode>) MAGRNode.getOfAGR_StageList(getCtx(), stages.get(i).get_ID(), get_TrxName());
   			
-  			if(nodes.size() == 0)
+  			if(nodes.size() == 0 && !stages.get(i).getStageType().equals(MAGRStage.STAGETYPE_Final))
   			{
   				errorsList.add(stages.get(i).getName() + " has no any nodes");
   				return false;
@@ -103,7 +103,9 @@ public class MAGRAgreement extends X_AGR_Agreement
   	{
   		errorsList = new ArrayList<String>();
   		
-  		if(!stageCheck() || !stageOptionCheck() || !hasExit()) 
+  		if(!stageCheck() || 
+  				!stageOptionCheck() || 
+  				!hasExit()) 
   			return false;
   		
   		return true;
@@ -124,11 +126,13 @@ public class MAGRAgreement extends X_AGR_Agreement
   		}
   		else if(nodes.size() == 1)
   		{
-  			if(nodes.get(0).isBack() && stage.getStageType().equals(MAGRStage.STAGETYPE_Ordinary))
+  			if(nodes.get(0).isBack() && stage.getStageType().equals(MAGRStage.STAGETYPE_Final))
   				retValue = true;
   			else if(!nodes.get(0).isBack() && stage.getStageType().equals(MAGRStage.STAGETYPE_Initial))
   				retValue = true;
   		}
+  		else if(nodes.size() == 0)
+  			retValue = stage.getStageType().equals(MAGRStage.STAGETYPE_Final);
 
   		return retValue;
   	}

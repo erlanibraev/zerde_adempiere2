@@ -101,7 +101,9 @@ public class Agreement_Dispatcher
 	private void Dissaprove(MAGRStage stage,String message)
 	{
 		stage.Dissapprove(AD_Table_ID, Record_ID, C_BPartner_ID, message);
-		createNextStage(stage, true);
+		
+		if(stage.getStageType().equals(MAGRStage.STAGETYPE_Final) && stage.hasNodes())
+			createNextStage(stage, true);
 	}
 	//Approve document and check for possibility to move to the next stage
 	private boolean Approve(MAGRStage stage, String message)

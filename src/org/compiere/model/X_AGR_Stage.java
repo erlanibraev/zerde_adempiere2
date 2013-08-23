@@ -274,6 +274,8 @@ public class X_AGR_Stage extends PO implements I_AGR_Stage, I_Persistent
 	public static final String STAGETYPE_Initial = "IN";
 	/** Ordinary = OR */
 	public static final String STAGETYPE_Ordinary = "OR";
+	/** Final = FI */
+	public static final String STAGETYPE_Final = "FI";
 	/** Set StageType.
 		@param StageType 
 		Тип этапа

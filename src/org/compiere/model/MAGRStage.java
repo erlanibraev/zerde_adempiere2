@@ -71,6 +71,11 @@ public class MAGRStage extends X_AGR_Stage
 		return getTransitStage(false);
 	}
 	
+	public boolean hasNodes()
+	{
+		return MAGRNode.getOfTRM_Stage(getCtx(), this.get_ID(), get_TrxName()).length > 0;
+	}
+	
 	public static MAGRStage getFirstStage(Properties ctx, int AGR_Agreement_ID, String trxName)
 	{
 		List<MAGRStage> stages = new Query(ctx, I_AGR_Stage.Table_Name, "AGR_Agreement_ID=? AND StageType LIKE '" + X_AGR_Stage.STAGETYPE_Initial + "'", trxName)
@@ -175,9 +180,8 @@ public class MAGRStage extends X_AGR_Stage
 		boolean retValue = false;
 		ArrayList<MAGRNode> nodes = (ArrayList<MAGRNode>) MAGRNode.getOfAGR_StageList(getCtx(), get_ID(), get_TrxName());
 		
-		if(nodes.size() == 1 && nodes.get(0).isBack() && nodes.get(0).getAGR_NextStage_ID() > 0)
+		if(getStageType().equals(MAGRStage.STAGETYPE_Final))
 			retValue = true;
-
 		return retValue;
 	}
 }
