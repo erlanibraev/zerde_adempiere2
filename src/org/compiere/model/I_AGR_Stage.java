@@ -30,7 +30,7 @@ public interface I_AGR_Stage
     /** TableName=AGR_Stage */
     public static final String Table_Name = "AGR_Stage";
 
-    /** AD_Table_ID=1000248 */
+    /** AD_Table_ID=1000242 */
     public static final int Table_ID = MTable.getTable_ID(Table_Name);
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
@@ -76,6 +76,21 @@ public interface I_AGR_Stage
 	public int getAD_Ref_List_ID();
 
 	public org.compiere.model.I_AD_Ref_List getAD_Ref_List() throws RuntimeException;
+
+    /** Column name AD_Reference_ID */
+    public static final String COLUMNNAME_AD_Reference_ID = "AD_Reference_ID";
+
+	/** Set Reference.
+	  * System Reference and Validation
+	  */
+	public void setAD_Reference_ID (int AD_Reference_ID);
+
+	/** Get Reference.
+	  * System Reference and Validation
+	  */
+	public int getAD_Reference_ID();
+
+	public org.compiere.model.I_AD_Reference getAD_Reference() throws RuntimeException;
 
     /** Column name AGR_Agreement_ID */
     public static final String COLUMNNAME_AGR_Agreement_ID = "AGR_Agreement_ID";

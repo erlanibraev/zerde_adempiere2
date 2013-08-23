@@ -31,6 +31,8 @@ public class Agreement_Dispatcher
 	private int Record_ID = 0;
 	private int C_BPartner_ID = 0;
 	
+	public boolean STAGE_Approved = false;
+	
 	private final String columnDocStatus = "DocStatus";
 		
 	public Agreement_Dispatcher(PO document, int AD_Table_ID, int Record_ID)
@@ -47,7 +49,6 @@ public class Agreement_Dispatcher
 	//Start agreement process
 	public boolean startAgreement(boolean isApprove,String message)
 	{				
-		boolean isApproved = false;
 		//Get current AGR_Stage
 		//If AGR_Stage is null then new AGR_Stage will be started
 		currentStage = getCurrentStage();
@@ -84,12 +85,10 @@ public class Agreement_Dispatcher
 		}
 		else
 		{
-			isApproved = Approve(currentStage, message);
+			STAGE_Approved = Approve(currentStage, message);
 		}
 		
-		isApproved = isDocumentApproved();
-		
-		return isApproved;
+		return isDocumentApproved();
 	}
 	
 	private boolean isDocumentApproved()
@@ -220,7 +219,6 @@ public class Agreement_Dispatcher
 	private void FillAgreementList(MAGRStage toStage, MAGRStage fromStage)
 	{
 		ArrayList<Integer> signers = toStage.getSigners(AD_Table_ID, Record_ID);
-		ArrayList<Integer> currentSigners = fromStage.getSigners(AD_Table_ID, Record_ID);
 		//get current date&time
 		Timestamp stamp = new Timestamp(System.currentTimeMillis());
 
@@ -238,20 +236,6 @@ public class Agreement_Dispatcher
 			{
 				Log.log(Logger.ERROR, "Agreement List not saved");
 			}
-			
-			if(currentSigners.contains(signers.get(i)) && toStage.get_ID() != fromStage.get_ID())
-			{
-				toStage.Approve(AD_Table_ID, Record_ID, signers.get(i), "");
-				
-				if(toStage.isCanMove(AD_Table_ID, Record_ID))
-				{
-					createNextStage(toStage, false);
-				}
-				else if(toStage.isLastStage() && toStage.isAllApproved(AD_Table_ID, Record_ID))
-				{
-					quit(toStage);
-				}
-			}
 		}
 	}
 
@@ -261,5 +245,4 @@ public class Agreement_Dispatcher
 		document.set_ValueOfColumn(columnDocStatus, list.getValue());
 		document.saveEx();
 	}
-
 }
