@@ -5,11 +5,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-
-import org.compiere.apps.IProcessParameter;
-import org.compiere.apps.ProcessCtl;
-import org.compiere.apps.ProcessParameterPanel;
-import org.compiere.process.ProcessInfo;
 import org.compiere.util.Env;
 
 public class MAGRAgreement extends X_AGR_Agreement 
@@ -87,13 +82,13 @@ public class MAGRAgreement extends X_AGR_Agreement
   		
   		for(int i = 0; i < stages.size(); i++)
   		{
-  			ArrayList<MAGRNode> nodes = (ArrayList<MAGRNode>) MAGRNode.getOfAGR_StageList(getCtx(), stages.get(i).get_ID(), get_TrxName());
+  			//ArrayList<MAGRNode> nodes = (ArrayList<MAGRNode>) MAGRNode.getOfAGR_StageList(getCtx(), stages.get(i).get_ID(), get_TrxName());
   			
-  			if(nodes.size() == 0 && !stages.get(i).getStageType().equals(MAGRStage.STAGETYPE_Final))
+/*  			if(nodes.size() == 0 && !stages.get(i).getStageType().equals(MAGRStage.STAGETYPE_Final))
   			{
   				errorsList.add(stages.get(i).getName() + " has no any nodes");
   				return false;
-  			}
+  			}*/
   		}
   		
   		return true;
@@ -103,9 +98,9 @@ public class MAGRAgreement extends X_AGR_Agreement
   	{
   		errorsList = new ArrayList<String>();
   		
-  		if(!stageCheck() || 
+  		if(		!stageCheck() || 
   				!stageOptionCheck() || 
-  				!hasExit()) 
+  				!hasExit())
   			return false;
   		
   		return true;
@@ -113,9 +108,9 @@ public class MAGRAgreement extends X_AGR_Agreement
   	
   	public boolean hasNodes(MAGRStage stage)
   	{
-  		boolean retValue = false;
+  		boolean retValue = true;
   		
-  		ArrayList<MAGRNode> nodes = (ArrayList<MAGRNode>) MAGRNode.getOfAGR_StageList(getCtx(), stage.get_ID(), get_TrxName());
+/*  		ArrayList<MAGRNode> nodes = (ArrayList<MAGRNode>) MAGRNode.getOfAGR_StageList(getCtx(), stage.get_ID(), get_TrxName());
   		
   		if(nodes.size() == 2)
   		{
@@ -124,16 +119,11 @@ public class MAGRAgreement extends X_AGR_Agreement
   				retValue = true;
   			}
   		}
-  		else if(nodes.size() == 1)
-  		{
-  			if(nodes.get(0).isBack() && stage.getStageType().equals(MAGRStage.STAGETYPE_Final))
-  				retValue = true;
-  			else if(!nodes.get(0).isBack() && stage.getStageType().equals(MAGRStage.STAGETYPE_Initial))
-  				retValue = true;
-  		}
+  		else if(nodes.size() == 1 && stage.getStageType().equals(MAGRStage.STAGETYPE_Initial))
+  			retValue = true;
   		else if(nodes.size() == 0)
-  			retValue = stage.getStageType().equals(MAGRStage.STAGETYPE_Final);
-
+  			retValue = true;
+*/
   		return retValue;
   	}
   	

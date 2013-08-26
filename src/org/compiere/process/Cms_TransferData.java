@@ -58,7 +58,7 @@ public class Cms_TransferData extends SvrProcess
 	/**	 */
 	private ProcessInfo pi;
 	/** */
-	private String trx = get_TrxName();
+	private String trx = null;
 	
 	private String contractFile = "";
 	/** */
@@ -199,9 +199,9 @@ public class Cms_TransferData extends SvrProcess
 				
 		Agreement_Dispatcher dispatcher = new Agreement_Dispatcher(po, po.get_Table_ID(), po.get_ID());
 		
-		boolean valuetoRet = dispatcher.startAgreement(approved, message);		
+		dispatcher.startAgreement(approved, message);		
 		
-		return valuetoRet;
+		return dispatcher.STAGE_Approved;
 	}
 	
 	private String GetDocument() throws Exception 

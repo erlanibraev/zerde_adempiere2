@@ -92,7 +92,7 @@ public class Agreement_PrepareList
 			
 			stage = nextStage;
 			
-			if(stage.isLastStage())
+			if(stage.getStageType().equals(MAGRStage.STAGETYPE_Final))
 				break;
 		}
 	}

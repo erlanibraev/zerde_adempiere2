@@ -187,11 +187,24 @@ public class MAGRStage extends X_AGR_Stage
 	//Check if this stage is the last stage of agreement
 	public boolean isLastStage()
 	{
-		boolean retValue = false;
+		boolean retValue = true;
+		
+		if(getStageType().equals(STAGETYPE_Initial))
+		{
+			return false;
+		}
+		if(getStageType().equals(STAGETYPE_Final))
+		{
+			return true;
+		}
 		ArrayList<MAGRNode> nodes = (ArrayList<MAGRNode>) MAGRNode.getOfAGR_StageList(getCtx(), get_ID(), get_TrxName());
 		
-		if(getStageType().equals(MAGRStage.STAGETYPE_Final))
-			retValue = true;
+		for(MAGRNode node : nodes)
+		{
+			if(node.isBack())
+				retValue = false;
+		}
+		
 		return retValue;
 	}
 }
