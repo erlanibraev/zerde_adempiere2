@@ -29,20 +29,20 @@ import org.joda.time.DateTime;
  * @author V.Sokolov
  *
  */
-public class BPMActionsVversions extends SvrProcess {
+public class BPMActionsVersions extends SvrProcess {
 	
 	/** Current context		*/
-	private Properties m_ctx;
+	protected Properties m_ctx;
 	/**	Optional Transaction 	*/
-	private String	m_trxName = null;
+	protected String	m_trxName = null;
 	/** */
-	private String TableName = "";
+	protected String TableName = "";
 	/** */
-	private int RecordID = 0;
+	protected int RecordID = 0;
 	/** */
-	private MBPMProject project = null;
+	protected MBPMProject project = null;
 	/** */
-	private boolean IsApproved = false;
+	protected boolean IsApproved = false;
 
 	/* 
 	 */
@@ -84,7 +84,7 @@ public class BPMActionsVversions extends SvrProcess {
 		return Msg.translate(m_ctx, "Success");
 	}
 	
-	private void actionProject(MBPMProject project, boolean isApproved){
+	protected void actionProject(MBPMProject project, boolean isApproved){
 
 		DateTime sysDate = new DateTime();
 		X_BPM_VersionBudgetLine verLine = new X_BPM_VersionBudgetLine(getCtx(),0,get_TrxName());
@@ -101,10 +101,13 @@ public class BPMActionsVversions extends SvrProcess {
 		
 		MBPMBudgetCall[] call = getBudgetCallProject(project.getBPM_Project_ID());
 		for(MBPMBudgetCall c: call){
-			MBPMBudgetCall newCall = new MBPMBudgetCall(m_ctx, 0, m_trxName);
-			PO.copyValues(c, newCall);
-			newCall.setBPM_Project_ID(MBPMProject.TempProjectID);
-			newCall.saveEx();
+			
+			if(isApproved){
+				MBPMBudgetCall newCall = new MBPMBudgetCall(m_ctx, 0, m_trxName);
+				PO.copyValues(c, newCall);
+				newCall.setBPM_Project_ID(MBPMProject.TempProjectID);
+				newCall.saveEx();
+			}
 			
 			c.setBPM_VersionBudgetLine_ID(verLine.getBPM_VersionBudgetLine_ID());
 			c.setProcessed(true);
@@ -112,9 +115,12 @@ public class BPMActionsVversions extends SvrProcess {
 			
 			MBPMBudgetCallLine[] callLine = MBPMBudgetCall.getLines(m_ctx, c.getBPM_BudgetCall_ID(), m_trxName);
 			for(MBPMBudgetCallLine cl: callLine){
-				MBPMBudgetCallLine newCallLine = new MBPMBudgetCallLine(m_ctx, 0, m_trxName);
-				PO.copyValues(cl, newCallLine);
-				newCallLine.saveEx();
+				
+				if(isApproved){
+					MBPMBudgetCallLine newCallLine = new MBPMBudgetCallLine(m_ctx, 0, m_trxName);
+					PO.copyValues(cl, newCallLine);
+					newCallLine.saveEx();
+				}
 				
 				cl.setIsActive(false);
 				cl.setProcessed(true);

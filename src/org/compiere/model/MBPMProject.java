@@ -6,6 +6,7 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.List;
 import java.util.Properties;
+import org.adempiere.exceptions.AdempiereException;
 
 /**
  * @author V.Sokolov
@@ -35,18 +36,6 @@ public class MBPMProject extends X_BPM_Project{
 		super(ctx, BPM_Project_ID, trxName);
 	}
 	
-	private MBPMProject currentProject = null;
-	
-	/* 
-	 */
-	@Override
-	protected boolean beforeSave(boolean newRecord) {
-		
-		currentProject = getCurrentProject(getCtx(), getBPM_VersionBudget_ID(), get_TrxName());
-		
-		return true;
-	}
-	
 	/* 
 	 */
 	@Override
@@ -55,24 +44,14 @@ public class MBPMProject extends X_BPM_Project{
 		if(newRecord && success){
 			
 			MBPMForm[] formLine = getLineForm(getCtx(), getBPM_VersionBudget_ID(), get_TrxName());
+			if(formLine.length == 0)
+				throw new  AdempiereException("Отсутствуют настройки по формам");
+			
 			for(MBPMForm f: formLine){
 				MBPMProjectLine pLine = new MBPMProjectLine(getCtx(), 0, get_TrxName());
 				pLine.setBPM_Form_ID(f.getBPM_Form_ID());
 				pLine.setBPM_Project_ID(getBPM_Project_ID());
 				pLine.saveEx();
-			}
-			
-			if(currentProject != null){
-				currentProject.setProcessed(true);
-				currentProject.setIsActive(false);
-				currentProject.saveEx();
-				
-				MBPMProjectLine[] pLine = MBPMProject.getLines(getCtx(), currentProject.getBPM_Project_ID(), get_TrxName());
-				for(MBPMProjectLine p : pLine){
-					p.setProcessed(true);
-					p.setIsActive(false);
-					p.saveEx();
-				}
 			}
 		}
 		
@@ -90,7 +69,7 @@ public class MBPMProject extends X_BPM_Project{
 
 	public static MBPMProjectLine[] getLines(Properties ctx, int BPM_Project_ID, String trxName){
 		
-		List<MBPMProjectLine> list = new Query(ctx, I_BPM_ProjectLine.Table_Name, "BPM_Project_ID=?", trxName)
+		List<MBPMProjectLine> list = new Query(ctx, I_BPM_ProjectLine.Table_Name, I_BPM_ProjectLine.COLUMNNAME_BPM_Project_ID+"=?", trxName)
 		.setParameters(BPM_Project_ID)
 		.setOnlyActiveRecords(true)
 		.list();
@@ -105,7 +84,7 @@ public class MBPMProject extends X_BPM_Project{
 	
 	private MBPMForm[] getLineForm(Properties ctx, int BPM_VersionBudget_ID, String trxName){
 		
-		List<MBPMForm> list = new Query(ctx, I_BPM_Form.Table_Name, "BPM_VersionBudget_ID=?", trxName)
+		List<MBPMForm> list = new Query(ctx, I_BPM_Form.Table_Name, I_BPM_Form.COLUMNNAME_BPM_VersionBudget_ID+"=?", trxName)
 		.setParameters(BPM_VersionBudget_ID).setOnlyActiveRecords(true)
 		.setOnlyActiveRecords(true)
 		.list();
@@ -117,16 +96,5 @@ public class MBPMProject extends X_BPM_Project{
 		return retValue;
 		
 	}
-	
-	private MBPMProject getCurrentProject(Properties ctx, int BPM_VersionBudget_ID, String trxName){
-		
-		MBPMProject project = null;
-		
-		project = new Query(ctx, I_BPM_Project.Table_Name, "BPM_VersionBudget_ID=?", trxName)
-		.setParameters(BPM_VersionBudget_ID).setOnlyActiveRecords(true)
-		.setOnlyActiveRecords(true)
-		.first();
-		
-		return project;
-	}
+
 }

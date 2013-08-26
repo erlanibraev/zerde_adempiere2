@@ -4,16 +4,13 @@
 package org.compiere.model;
 
 import java.sql.ResultSet;
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
-
 import org.compiere.apps.DialogAgreement;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
-import org.joda.time.DateTime;
 
 /**
  * @author V.Sokolov
