@@ -102,8 +102,11 @@ public class Agreement_Dispatcher
 	{
 		stage.Dissapprove(AD_Table_ID, Record_ID, C_BPartner_ID, message);
 		
-		if(stage.getStageType().equals(MAGRStage.STAGETYPE_Final) && stage.hasNodes())
+		//if(stage.getStageType().equals(MAGRStage.STAGETYPE_Final) && stage.hasNodes())
+		if(stage.canMoveBack())
 			createNextStage(stage, true);
+		else
+			quit(stage, true);
 	}
 	//Approve document and check for possibility to move to the next stage
 	private boolean Approve(MAGRStage stage, String message)
@@ -116,7 +119,7 @@ public class Agreement_Dispatcher
 		}
 		else if(stage.isLastStage() && stage.isAllApproved(AD_Table_ID, Record_ID))
 		{
-			quit(stage);
+			quit(stage, false);
 			return true;
 		}
 		
@@ -205,7 +208,7 @@ public class Agreement_Dispatcher
 			//Exit from agreement
 			if(stage.get_ID() == currentStage.get_ID()) 
 			{
-				quit(currentStage);
+				quit(currentStage, isBack);
 				break;//continue;
 			}
 		}
@@ -241,14 +244,18 @@ public class Agreement_Dispatcher
 			}
 			else
 			{
-				quit(toStage);
+				quit(toStage, false);
 			}
 		}
 	}
 
-	private void quit(MAGRStage stage)
+	private void quit(MAGRStage stage, boolean isBack)
 	{
-		X_AD_Ref_List list = new X_AD_Ref_List(Env.getCtx(), stage.getAD_Ref_List_ID(), null);
+		X_AD_Ref_List list = null;
+		if(!isBack)
+			list = new X_AD_Ref_List(Env.getCtx(), stage.getAD_Ref_List_ID(), null);
+		else
+			list = new X_AD_Ref_List(Env.getCtx(), stage.getAD_Ref_List_ID2(), null);
 		isMoved = true;
 		document.set_ValueOfColumn(columnDocStatus, list.getValue());
 		document.saveEx();

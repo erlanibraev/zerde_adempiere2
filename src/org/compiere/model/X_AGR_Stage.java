@@ -30,7 +30,7 @@ public class X_AGR_Stage extends PO implements I_AGR_Stage, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130823L;
+	private static final long serialVersionUID = 20130826L;
 
     /** the default Constructor */
     public X_AGR_Stage(Properties ctx)
@@ -132,6 +132,31 @@ public class X_AGR_Stage extends PO implements I_AGR_Stage, I_Persistent
 	public int getAD_Ref_List_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Ref_List_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_AD_Ref_List getAD_Ref_List_() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_Ref_List)MTable.get(getCtx(), org.compiere.model.I_AD_Ref_List.Table_Name)
+			.getPO(getAD_Ref_List_ID2(), get_TrxName());	}
+
+	/** Set Reference List.
+		@param AD_Ref_List_ID2 
+		Reference List based on Table
+	  */
+	public void setAD_Ref_List_ID2 (int AD_Ref_List_ID2)
+	{
+		set_Value (COLUMNNAME_AD_Ref_List_ID2, Integer.valueOf(AD_Ref_List_ID2));
+	}
+
+	/** Get Reference List.
+		@return Reference List based on Table
+	  */
+	public int getAD_Ref_List_ID2 () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Ref_List_ID2);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

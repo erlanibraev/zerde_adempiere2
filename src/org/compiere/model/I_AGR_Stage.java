@@ -92,6 +92,21 @@ public interface I_AGR_Stage
 
 	public org.compiere.model.I_AD_Ref_List getAD_Ref_List() throws RuntimeException;
 
+    /** Column name AD_Ref_List_ID2 */
+    public static final String COLUMNNAME_AD_Ref_List_ID2 = "AD_Ref_List_ID2";
+
+	/** Set Reference List.
+	  * Reference List based on Table
+	  */
+	public void setAD_Ref_List_ID2 (int AD_Ref_List_ID2);
+
+	/** Get Reference List.
+	  * Reference List based on Table
+	  */
+	public int getAD_Ref_List_ID2();
+
+	public org.compiere.model.I_AD_Ref_List getAD_Ref_List_() throws RuntimeException;
+
     /** Column name AGR_Agreement_ID */
     public static final String COLUMNNAME_AGR_Agreement_ID = "AGR_Agreement_ID";
 

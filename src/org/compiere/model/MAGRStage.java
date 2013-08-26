@@ -174,6 +174,16 @@ public class MAGRStage extends X_AGR_Stage
 		}
 	}
 
+	public boolean canMoveForward()
+	{
+		return getTransitStage(false) != null;
+	}
+	
+	public boolean canMoveBack()
+	{
+		return getTransitStage(true) != null;
+	}
+	
 	//Check if this stage is the last stage of agreement
 	public boolean isLastStage()
 	{
