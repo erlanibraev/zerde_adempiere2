@@ -82,6 +82,7 @@ public class MBPMFormLine extends X_BPM_FormLine {
 					param.setIsExports(true);
 					param.saveEx();
 					param.setwithout_period(true);
+					param.saveEx();
 					
 					// create Parameter line
 						MParameterLine paramLine = param.getZeroParameterLine();
@@ -114,6 +115,21 @@ public class MBPMFormLine extends X_BPM_FormLine {
 		MBPMFormCell[] retValue = new MBPMFormCell[list.size ()];
 		
 		list.toArray (retValue);
+		
+		return retValue;
+		
+	}
+	
+	public static MBPMForm[] getLineForm(Properties ctx, int BPM_VersionBudget_ID, String trxName){
+		
+		List<MBPMForm> list = new Query(ctx, I_BPM_Form.Table_Name, I_BPM_Form.COLUMNNAME_BPM_VersionBudget_ID+"=?", trxName)
+		.setParameters(BPM_VersionBudget_ID).setOnlyActiveRecords(true)
+		.setOnlyActiveRecords(true)
+		.list();
+		
+		MBPMForm[] retValue = new MBPMForm[list.size ()];
+		
+		list.toArray(retValue);
 		
 		return retValue;
 		

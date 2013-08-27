@@ -108,7 +108,7 @@ public class AgreementProcess extends SvrProcess implements ASyncProcess
 		if(AD_Process_ID > 0 && mode > 0)
 		{
 			try {
-				callProcess(AD_Process_ID,po.get_ID(),table.getAD_Table_ID(),AGR_Stage_ID, mode == 1);
+				callProcess(AD_Process_ID,po.get_ID(),table.getAD_Table_ID(),AGR_Stage_ID, (mode == 1|| mode == 3));
 			}
 			catch(Exception ex) {
 				log.severe("Couldn't invoke process for this agreement stage. " + ex.toString());

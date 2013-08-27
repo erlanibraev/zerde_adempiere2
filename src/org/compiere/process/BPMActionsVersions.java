@@ -3,10 +3,6 @@
  */
 package org.compiere.process;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 import org.compiere.model.MBPMBudgetCall;
@@ -14,14 +10,9 @@ import org.compiere.model.MBPMBudgetCallLine;
 import org.compiere.model.MBPMProject;
 import org.compiere.model.MRefList;
 import org.compiere.model.MTable;
-import org.compiere.model.PO;
 import org.compiere.model.X_AGR_AgreementList;
-import org.compiere.model.X_BPM_BudgetCall;
 import org.compiere.model.X_BPM_Project;
 import org.compiere.model.X_BPM_VersionBudgetLine;
-import org.compiere.util.CLogger;
-import org.compiere.util.DB;
-import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.joda.time.DateTime;
 
@@ -99,73 +90,28 @@ public class BPMActionsVersions extends SvrProcess {
 		}
 		verLine.saveEx();
 		
-		MBPMBudgetCall[] call = getBudgetCallProject(project.getBPM_Project_ID());
+		MBPMBudgetCall[] call = MBPMBudgetCall.getBudgetCallProject(project.getBPM_Project_ID());
 		for(MBPMBudgetCall c: call){
-			
-			if(isApproved){
-				MBPMBudgetCall newCall = new MBPMBudgetCall(m_ctx, 0, m_trxName);
-				PO.copyValues(c, newCall);
-				newCall.setBPM_Project_ID(MBPMProject.TempProjectID);
-				newCall.saveEx();
-			}
-			
 			c.setBPM_VersionBudgetLine_ID(verLine.getBPM_VersionBudgetLine_ID());
 			c.setProcessed(true);
 			c.saveEx();
 			
 			MBPMBudgetCallLine[] callLine = MBPMBudgetCall.getLines(m_ctx, c.getBPM_BudgetCall_ID(), m_trxName);
 			for(MBPMBudgetCallLine cl: callLine){
-				
-				if(isApproved){
-					MBPMBudgetCallLine newCallLine = new MBPMBudgetCallLine(m_ctx, 0, m_trxName);
-					PO.copyValues(cl, newCallLine);
-					newCallLine.saveEx();
-				}
-				
-				cl.setIsActive(false);
 				cl.setProcessed(true);
 				cl.saveEx();
 			}
 		}
 		
+		MBPMProject[] pr = MBPMProject.getProjectVersion(m_ctx, project.getBPM_VersionBudget_ID(), m_trxName);
+		for(MBPMProject p: pr){
+			p.setisActual(false);
+			p.saveEx();
+		}
+		
 		project.setProcessed(true);
-		project.setIsActive(false);
+		project.setisActual(true);
 		project.saveEx();
-	}
-	
-	private MBPMBudgetCall[] getBudgetCallProject(int BPM_Project_ID){
-		
-		//
-	    PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		MBPMBudgetCall result = null;
-		
-		ArrayList<MBPMBudgetCall> list = new ArrayList<MBPMBudgetCall>();
-		
-		// 
-		String sql_ = "SELECT * FROM "+X_BPM_BudgetCall.Table_Name+" \n " +
-				" WHERE "+X_BPM_BudgetCall.COLUMNNAME_BPM_Project_ID+"="+BPM_Project_ID;
-		try
-		{
-			pstmt = DB.prepareStatement(sql_,null);
-			rs = pstmt.executeQuery();	
-			while(rs.next()){
-				result = new MBPMBudgetCall(Env.getCtx(), rs, null);
-				list.add(result);
-			}				
-		}
-		catch (SQLException e)
-		{
-			CLogger.get().log(Level.INFO, "product", e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
-		}	
-		
-		return list.toArray(new MBPMBudgetCall[list.size()]);
-		
 	}
 	
 }

@@ -7,6 +7,9 @@ import java.sql.ResultSet;
 import java.util.List;
 import java.util.Properties;
 import org.adempiere.exceptions.AdempiereException;
+import org.compiere.util.DB;
+
+import extend.org.compiere.utils.Util;
 
 /**
  * @author V.Sokolov
@@ -39,11 +42,23 @@ public class MBPMProject extends X_BPM_Project{
 	/* 
 	 */
 	@Override
+	protected boolean beforeSave(boolean newRecord) {
+		
+		String errmsg = "";
+		if(getAGR_Dispatcher_ID() == 0) errmsg = Util.requiredField(COLUMNNAME_AGR_Dispatcher_ID)+"\n";
+		Util.checkErrMsg(errmsg);
+		
+		return true;
+	}
+	
+	/* 
+	 */
+	@Override
 	protected boolean afterSave(boolean newRecord, boolean success) {
 		
 		if(newRecord && success){
 			
-			MBPMForm[] formLine = getLineForm(getCtx(), getBPM_VersionBudget_ID(), get_TrxName());
+			MBPMForm[] formLine = MBPMFormLine.getLineForm(getCtx(), getBPM_VersionBudget_ID(), get_TrxName());
 			if(formLine.length == 0)
 				throw new  AdempiereException("Отсутствуют настройки по формам");
 			
@@ -55,7 +70,52 @@ public class MBPMProject extends X_BPM_Project{
 			}
 		}
 		
+		if(newRecord){
+			copyBudgetCall(getBPM_Parent_ID());
+		}
+		
 		return true;
+	}
+	
+	/* 
+	 */
+	@Override
+	protected boolean afterDelete(boolean success) {
+	
+		// Delete records Budget Call
+		if(success && getBPM_Parent_ID() != 0){
+			
+			StringBuilder sql = new StringBuilder();
+			sql.append("DELETE FROM ");
+			sql.append(I_BPM_BudgetCall.Table_Name);
+			sql.append(" WHERE \n");
+			sql.append(I_BPM_BudgetCall.COLUMNNAME_BPM_Project_ID).append("=").append(getBPM_Project_ID());
+			
+			DB.executeUpdate(sql.toString(), get_TrxName());
+		}
+		
+		return true;
+	}
+	
+	private void copyBudgetCall(int BPM_Parent_ID){
+		
+		MBPMBudgetCall[] call = MBPMBudgetCall.getBudgetCallProject(BPM_Parent_ID); 
+		for(MBPMBudgetCall c: call){
+			MBPMBudgetCall newCall = new MBPMBudgetCall(getCtx(), 0, get_TrxName());
+			PO.copyValues(c, newCall);
+			newCall.setAGR_Dispatcher_ID(0);
+			newCall.setBPM_Project_ID(getBPM_Project_ID());
+			newCall.save();
+			
+			MBPMBudgetCallLine[] callLine = MBPMBudgetCall.getLines(getCtx(), c.getBPM_BudgetCall_ID(), get_TrxName());
+			for(MBPMBudgetCallLine cl: callLine){
+				MBPMBudgetCallLine newCallLine = new MBPMBudgetCallLine(getCtx(), 0, get_TrxName());
+				PO.copyValues(cl, newCallLine);
+				newCallLine.setBPM_BudgetCall_ID(newCall.getBPM_BudgetCall_ID());
+				newCallLine.saveEx();
+			}
+		}
+		
 	}
 
 	/**
@@ -82,14 +142,24 @@ public class MBPMProject extends X_BPM_Project{
 		
 	}
 	
-	private MBPMForm[] getLineForm(Properties ctx, int BPM_VersionBudget_ID, String trxName){
+	public static boolean isLineForm(Properties ctx, int BPM_Project_ID, int BPM_Form_ID, String trxName){
 		
-		List<MBPMForm> list = new Query(ctx, I_BPM_Form.Table_Name, I_BPM_Form.COLUMNNAME_BPM_VersionBudget_ID+"=?", trxName)
-		.setParameters(BPM_VersionBudget_ID).setOnlyActiveRecords(true)
+		List<MBPMProjectLine> line = new Query(ctx, I_BPM_ProjectLine.Table_Name, I_BPM_Project.COLUMNNAME_BPM_Project_ID+"=? AND "
+																				 +I_BPM_ProjectLine.COLUMNNAME_BPM_Form_ID+"=?", trxName)
+		.setParameters(BPM_Project_ID, BPM_Form_ID).list();
+		
+		return (line.size() != 0);
+	}
+	
+	public static MBPMProject[] getProjectVersion(Properties ctx, int BPM_VersionBudget_ID, String trxName){
+		
+		List<MBPMProject> list = new Query(ctx, I_BPM_Project.Table_Name, I_BPM_Project.COLUMNNAME_BPM_VersionBudget_ID+"=? AND "
+																		  +I_BPM_Project.COLUMNNAME_isActual+"=?", trxName)
+		.setParameters(BPM_VersionBudget_ID, "Y")
 		.setOnlyActiveRecords(true)
 		.list();
 		
-		MBPMForm[] retValue = new MBPMForm[list.size ()];
+		MBPMProject[] retValue = new MBPMProject[list.size ()];
 		
 		list.toArray(retValue);
 		

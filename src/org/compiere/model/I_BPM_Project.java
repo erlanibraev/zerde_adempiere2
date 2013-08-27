@@ -30,7 +30,7 @@ public interface I_BPM_Project
     /** TableName=BPM_Project */
     public static final String Table_Name = "BPM_Project";
 
-    /** AD_Table_ID=1000269 */
+    /** AD_Table_ID=1000325 */
     public static final int Table_ID = MTable.getTable_ID(Table_Name);
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
@@ -108,6 +108,17 @@ public interface I_BPM_Project
 	/** Get AGRApprove	  */
 	public String getAGRApprove();
 
+    /** Column name BPM_Parent_ID */
+    public static final String COLUMNNAME_BPM_Parent_ID = "BPM_Parent_ID";
+
+	/** Set BPM_Parent_ID	  */
+	public void setBPM_Parent_ID (int BPM_Parent_ID);
+
+	/** Get BPM_Parent_ID	  */
+	public int getBPM_Parent_ID();
+
+	public I_BPM_Project getBPM_Parent() throws RuntimeException;
+
     /** Column name BPM_Project_ID */
     public static final String COLUMNNAME_BPM_Project_ID = "BPM_Project_ID";
 
@@ -128,6 +139,19 @@ public interface I_BPM_Project
 
 	public I_BPM_VersionBudget getBPM_VersionBudget() throws RuntimeException;
 
+    /** Column name Counter */
+    public static final String COLUMNNAME_Counter = "Counter";
+
+	/** Set Counter.
+	  * Count Value
+	  */
+	public void setCounter (int Counter);
+
+	/** Get Counter.
+	  * Count Value
+	  */
+	public int getCounter();
+
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
 
@@ -143,6 +167,19 @@ public interface I_BPM_Project
 	  * User who created this records
 	  */
 	public int getCreatedBy();
+
+    /** Column name Description */
+    public static final String COLUMNNAME_Description = "Description";
+
+	/** Set Description.
+	  * Optional short description of the record
+	  */
+	public void setDescription (String Description);
+
+	/** Get Description.
+	  * Optional short description of the record
+	  */
+	public String getDescription();
 
     /** Column name DocStatus */
     public static final String COLUMNNAME_DocStatus = "DocStatus";
@@ -169,6 +206,24 @@ public interface I_BPM_Project
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name isActual */
+    public static final String COLUMNNAME_isActual = "isActual";
+
+	/** Set isActual	  */
+	public void setisActual (boolean isActual);
+
+	/** Get isActual	  */
+	public boolean isActual();
+
+    /** Column name isWork */
+    public static final String COLUMNNAME_isWork = "isWork";
+
+	/** Set isWork	  */
+	public void setisWork (boolean isWork);
+
+	/** Get isWork	  */
+	public boolean isWork();
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";

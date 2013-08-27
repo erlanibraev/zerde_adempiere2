@@ -30,7 +30,7 @@ public class X_BPM_Project extends PO implements I_BPM_Project, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130819L;
+	private static final long serialVersionUID = 20130827L;
 
     /** the default Constructor */
     public X_BPM_Project(Properties ctx)
@@ -46,6 +46,8 @@ public class X_BPM_Project extends PO implements I_BPM_Project, I_Persistent
         {
 			setBPM_Project_ID (0);
 			setBPM_VersionBudget_ID (0);
+			setisActual (false);
+// N
 			setName (null);
 			setProcessed (false);
 // N
@@ -174,6 +176,31 @@ public class X_BPM_Project extends PO implements I_BPM_Project, I_Persistent
 		return (String)get_Value(COLUMNNAME_AGRApprove);
 	}
 
+	public I_BPM_Project getBPM_Parent() throws RuntimeException
+    {
+		return (I_BPM_Project)MTable.get(getCtx(), I_BPM_Project.Table_Name)
+			.getPO(getBPM_Parent_ID(), get_TrxName());	}
+
+	/** Set BPM_Parent_ID.
+		@param BPM_Parent_ID BPM_Parent_ID	  */
+	public void setBPM_Parent_ID (int BPM_Parent_ID)
+	{
+		if (BPM_Parent_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_BPM_Parent_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_BPM_Parent_ID, Integer.valueOf(BPM_Parent_ID));
+	}
+
+	/** Get BPM_Parent_ID.
+		@return BPM_Parent_ID	  */
+	public int getBPM_Parent_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_BPM_Parent_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set BPM_Project ID.
 		@param BPM_Project_ID BPM_Project ID	  */
 	public void setBPM_Project_ID (int BPM_Project_ID)
@@ -219,14 +246,54 @@ public class X_BPM_Project extends PO implements I_BPM_Project, I_Persistent
 		return ii.intValue();
 	}
 
-	/** DocStatus AD_Reference_ID=1000151 */
-	public static final int DOCSTATUS_AD_Reference_ID=1000151;
+	/** Set Counter.
+		@param Counter 
+		Count Value
+	  */
+	public void setCounter (int Counter)
+	{
+		throw new IllegalArgumentException ("Counter is virtual column");	}
+
+	/** Get Counter.
+		@return Count Value
+	  */
+	public int getCounter () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_Counter);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set Description.
+		@param Description 
+		Optional short description of the record
+	  */
+	public void setDescription (String Description)
+	{
+		set_Value (COLUMNNAME_Description, Description);
+	}
+
+	/** Get Description.
+		@return Optional short description of the record
+	  */
+	public String getDescription () 
+	{
+		return (String)get_Value(COLUMNNAME_Description);
+	}
+
+	/** DocStatus AD_Reference_ID=1000174 */
+	public static final int DOCSTATUS_AD_Reference_ID=1000174;
 	/** Approved = AP */
 	public static final String DOCSTATUS_Approved = "AP";
 	/** Closed = CL */
 	public static final String DOCSTATUS_Closed = "CL";
 	/** Project = PR */
 	public static final String DOCSTATUS_Project = "PR";
+	/** On Approval = OA */
+	public static final String DOCSTATUS_OnApproval = "OA";
+	/** Correction = CR */
+	public static final String DOCSTATUS_Correction = "CR";
 	/** Set Document Status.
 		@param DocStatus 
 		The current status of the document
@@ -243,6 +310,48 @@ public class X_BPM_Project extends PO implements I_BPM_Project, I_Persistent
 	public String getDocStatus () 
 	{
 		return (String)get_Value(COLUMNNAME_DocStatus);
+	}
+
+	/** Set isActual.
+		@param isActual isActual	  */
+	public void setisActual (boolean isActual)
+	{
+		set_Value (COLUMNNAME_isActual, Boolean.valueOf(isActual));
+	}
+
+	/** Get isActual.
+		@return isActual	  */
+	public boolean isActual () 
+	{
+		Object oo = get_Value(COLUMNNAME_isActual);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set isWork.
+		@param isWork isWork	  */
+	public void setisWork (boolean isWork)
+	{
+		set_Value (COLUMNNAME_isWork, Boolean.valueOf(isWork));
+	}
+
+	/** Get isWork.
+		@return isWork	  */
+	public boolean isWork () 
+	{
+		Object oo = get_Value(COLUMNNAME_isWork);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	/** Set Name.

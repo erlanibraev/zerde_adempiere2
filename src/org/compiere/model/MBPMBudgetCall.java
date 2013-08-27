@@ -62,7 +62,7 @@ public class MBPMBudgetCall extends X_BPM_BudgetCall {
 		
 		super.afterSave(newRecord, success);
 		
-		if(newRecord){
+		if(newRecord && getAGR_Dispatcher_ID() != 0){
 			
 			MPeriod[] period = getPeriodBudget(getC_Year_ID());
 		
@@ -149,6 +149,41 @@ public class MBPMBudgetCall extends X_BPM_BudgetCall {
 		list.toArray (retValue);
 		
 		return retValue;
+		
+	}
+	
+	public static MBPMBudgetCall[] getBudgetCallProject(int BPM_Project_ID){
+		
+		//
+	    PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		MBPMBudgetCall result = null;
+		
+		ArrayList<MBPMBudgetCall> list = new ArrayList<MBPMBudgetCall>();
+		
+		// 
+		String sql_ = "SELECT * FROM "+X_BPM_BudgetCall.Table_Name+" \n " +
+				" WHERE "+X_BPM_BudgetCall.COLUMNNAME_BPM_Project_ID+"="+BPM_Project_ID;
+		try
+		{
+			pstmt = DB.prepareStatement(sql_,null);
+			rs = pstmt.executeQuery();	
+			while(rs.next()){
+				result = new MBPMBudgetCall(Env.getCtx(), rs, null);
+				list.add(result);
+			}				
+		}
+		catch (SQLException e)
+		{
+			CLogger.get().log(Level.INFO, "product", e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
+		}	
+		
+		return list.toArray(new MBPMBudgetCall[list.size()]);
 		
 	}
 
