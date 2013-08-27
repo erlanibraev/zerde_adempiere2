@@ -137,26 +137,26 @@ public class X_AGR_Stage extends PO implements I_AGR_Stage, I_Persistent
 		return ii.intValue();
 	}
 
-	public org.compiere.model.I_AD_Ref_List getAD_Ref_List_() throws RuntimeException
+	public org.compiere.model.I_AD_Ref_List getAD_Ref_List2() throws RuntimeException
     {
 		return (org.compiere.model.I_AD_Ref_List)MTable.get(getCtx(), org.compiere.model.I_AD_Ref_List.Table_Name)
-			.getPO(getAD_Ref_List_ID2(), get_TrxName());	}
+			.getPO(getAD_Ref_List2_ID(), get_TrxName());	}
 
-	/** Set Reference List.
-		@param AD_Ref_List_ID2 
-		Reference List based on Table
-	  */
-	public void setAD_Ref_List_ID2 (int AD_Ref_List_ID2)
+	/** Set AD_Ref_List2_ID.
+		@param AD_Ref_List2_ID AD_Ref_List2_ID	  */
+	public void setAD_Ref_List2_ID (int AD_Ref_List2_ID)
 	{
-		set_Value (COLUMNNAME_AD_Ref_List_ID2, Integer.valueOf(AD_Ref_List_ID2));
+		if (AD_Ref_List2_ID < 1) 
+			set_Value (COLUMNNAME_AD_Ref_List2_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_Ref_List2_ID, Integer.valueOf(AD_Ref_List2_ID));
 	}
 
-	/** Get Reference List.
-		@return Reference List based on Table
-	  */
-	public int getAD_Ref_List_ID2 () 
+	/** Get AD_Ref_List2_ID.
+		@return AD_Ref_List2_ID	  */
+	public int getAD_Ref_List2_ID () 
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Ref_List_ID2);
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Ref_List2_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

@@ -44,7 +44,7 @@ public class MAGRStage extends X_AGR_Stage
 	
 	private MAGRStage getTransitStage(boolean isBack)
 	{
-		MAGRNode[] nodes = MAGRNode.getOfTRM_Stage(getCtx(), get_ID(), get_TrxName());
+		MAGRNode[] nodes = MAGRNode.getOfAGR_Stage(getCtx(), get_ID(), isBack, get_TrxName());
 		
 		MAGRStage transitStage = null;
 		
@@ -73,7 +73,7 @@ public class MAGRStage extends X_AGR_Stage
 	
 	public boolean hasNodes()
 	{
-		return MAGRNode.getOfTRM_Stage(getCtx(), this.get_ID(), get_TrxName()).length > 0;
+		return MAGRNode.getOfAGR_Stage(getCtx(), this.get_ID(), true, get_TrxName()).length > 0;
 	}
 	
 	public static MAGRStage getFirstStage(Properties ctx, int AGR_Agreement_ID, String trxName)
@@ -107,7 +107,7 @@ public class MAGRStage extends X_AGR_Stage
 	}
 
 	//Check for approvement of agreement with all persons
-	public boolean isCanMove(int AD_Table_ID, int Record_ID)
+/*	public boolean isCanMove(int AD_Table_ID, int Record_ID)
 	{
 		if(getStageType().equals(X_AGR_Stage.STAGETYPE_Initial)) return true;
 		ArrayList<MAGRAgreementList> stageList = MAGRAgreementList.getOfStage(getCtx(), get_TrxName(), AD_Table_ID, Record_ID, get_ID());
@@ -124,6 +124,7 @@ public class MAGRStage extends X_AGR_Stage
 		
 		else return nodes.size() > 0;
 	}
+*/
 	
 	public boolean isAllApproved(int AD_Table_ID, int Record_ID)
 	{

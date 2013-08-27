@@ -1,19 +1,15 @@
 package org.compiere.agreement;
 
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-
 import org.apache.catalina.Logger;
 import org.compiere.apps.DialogAgreement;
-import org.compiere.model.MAGRAgreement;
 import org.compiere.model.MAGRAgreementList;
 import org.compiere.model.MAGRDispatcher;
 import org.compiere.model.MAGRNode;
 import org.compiere.model.MAGRStage;
 import org.compiere.model.PO;
 import org.compiere.model.X_AD_Ref_List;
-import org.compiere.model.X_AGR_Dispatcher;
 import org.compiere.model.X_AGR_Stage;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -21,7 +17,6 @@ import org.jfree.util.Log;
 
 public class Agreement_Dispatcher 
 {
-	private MAGRStage currentStage = null;
 	private PO document;
 	
 	private int AGR_Agreement_ID = 0;
@@ -30,10 +25,7 @@ public class Agreement_Dispatcher
 	private int AD_Table_ID = 0;
 	private int Record_ID = 0;
 	private int C_BPartner_ID = 0;
-	
-	public boolean STAGE_Approved = false;
-	public boolean isMoved = false;
-	
+		
 	private final String columnDocStatus = "DocStatus";
 		
 	public Agreement_Dispatcher(PO document, int AD_Table_ID, int Record_ID)
@@ -43,87 +35,113 @@ public class Agreement_Dispatcher
 		this.document = document;
 		
 		AGR_Stage_ID = document.get_ValueAsInt(X_AGR_Stage.COLUMNNAME_AGR_Stage_ID);
-		AGR_Agreement_ID = AGR_Agreement();
-		AD_User_ID = Env.getAD_User_ID(Env.getCtx());	
-		C_BPartner_ID = getBPartner();
+		AGR_Agreement_ID = MAGRDispatcher.AGR_Agreement_ID(document.get_ValueAsInt("AGR_Dispatcher_ID"));
+		AD_User_ID = Env.getAD_User_ID(Env.getCtx());
+		C_BPartner_ID =  getBPartner();
 	}
 	//Start agreement process
-	public boolean startAgreement(boolean isApprove,String message)
-	{				
-		//Get current AGR_Stage
-		//If AGR_Stage is null then new AGR_Stage will be started
-		currentStage = getCurrentStage();
+	public int startAgreement(boolean isAprove,String message)
+	{
+		MAGRStage currentStage = getCurrentStage();
+		
+		int returnValue = 0;
 		
 		//Check if current stage is a last stage of current agreement
 		if(currentStage.isLastStage() && currentStage.isAllApproved(AD_Table_ID, Record_ID))
 		{
 			DialogAgreement.dialogOK("Ошибка доступа", "Документ согласован", 0);
-			return false;
+			return returnValue;
 		}
 	
 		//Check if current user has access for current stage
 		if(!currentStage.isUserHasAccess(AD_User_ID, AD_Table_ID, Record_ID))
 		{
 			DialogAgreement.dialogOK("Ошибка доступа", "У вас нет доступа к данному этапу согласования", 0);
-			return false;
+			return returnValue;
 		}
-
-		//Check if current agreement is validate
-		try 
+		
+		boolean isStageApproved = false;
+		
+		if(isAprove)
 		{
-			if(!validation()) 
-				return false;
-		} 
-		catch (SQLException e) 
-		{
-			e.printStackTrace();
-		}			
-				
-		//If stage not approved
-		if(!isApprove)
-		{
-			Dissaprove(currentStage, message);
+			isStageApproved = aprove(currentStage, message);
+			returnValue = isStageApproved ? 1 : 0;
 		}
 		else
 		{
-			STAGE_Approved = Approve(currentStage, message);
+			isStageApproved = dissAprove(currentStage, message);
+			returnValue = isStageApproved ? 2 : 0;
 		}
 		
-		return isDocumentApproved();
+		if(isStageApproved)
+		{
+			quit(currentStage, !isAprove);
+			if(isAprove && currentStage.canMoveForward())
+			{
+				createNextStage(currentStage, !isAprove);
+			}
+			if(!isAprove && currentStage.canMoveBack())
+			{
+				createNextStage(currentStage, !isAprove);
+			}
+		}
+		return returnValue;
 	}
 	
-	private boolean isDocumentApproved()
+	private boolean aprove(MAGRStage stage, String message)
 	{
-		return DB.getSQLValue(null, "SELECT AGR_AgreementList_ID FROM AGR_AgreementList WHERE isApproved = 'N' AND Record_ID = " + Record_ID) <= 0;
+		stage.Approve(AD_Table_ID, Record_ID, C_BPartner_ID, message);
+		
+		if(stage.isAllApproved(AD_Table_ID, Record_ID))
+			return true;
+		
+		return false;
 	}
 	
-	//Dissaprove document and quit from agreement process
-	private void Dissaprove(MAGRStage stage,String message)
+	private boolean dissAprove(MAGRStage stage, String message)
 	{
 		stage.Dissapprove(AD_Table_ID, Record_ID, C_BPartner_ID, message);
 		
-		//if(stage.getStageType().equals(MAGRStage.STAGETYPE_Final) && stage.hasNodes())
-		if(stage.canMoveBack())
-			createNextStage(stage, true);
-		else
-			quit(stage, true);
+		return true;
 	}
-	//Approve document and check for possibility to move to the next stage
-	private boolean Approve(MAGRStage stage, String message)
-	{		
-		stage.Approve(AD_Table_ID, Record_ID, C_BPartner_ID, message);
+	
+	private void createNextStage(MAGRStage stage, boolean approved)
+	{
+		MAGRNode[] nodeArray = MAGRNode.getOfAGR_Stage(Env.getCtx(), stage.get_ID(), approved, null);
 		
-		if(stage.isCanMove(AD_Table_ID, Record_ID))
+		for(MAGRNode node : nodeArray)
 		{
-			createNextStage(stage, false);
-		}
-		else if(stage.isLastStage() && stage.isAllApproved(AD_Table_ID, Record_ID))
-		{
-			quit(stage, false);
-			return true;
+			MAGRStage nextStage = new MAGRStage(Env.getCtx(), node.getAGR_NextStage_ID(), null);
+			FillAgreementList(nextStage);
+			
+			document.set_ValueOfColumn(X_AGR_Stage.COLUMNNAME_AGR_Stage_ID, nextStage.get_ID());
+			document.saveEx();
 		}
 		
-		return false;
+		quit(stage, approved);
+	}
+	//Fill agreement list
+	private void FillAgreementList(MAGRStage toStage)
+	{
+		ArrayList<Integer> signers = toStage.getSigners(AD_Table_ID, Record_ID);
+		//get current date&time
+		Timestamp stamp = new Timestamp(System.currentTimeMillis());
+
+		for(Integer signer : signers)
+		{
+			MAGRAgreementList list = new MAGRAgreementList(Env.getCtx(), null, null);			
+			list.setAD_Table_ID(AD_Table_ID);
+			list.setRecord_ID(Record_ID);
+			list.setSigner_ID(signer);
+			list.setAGR_Stage_ID(toStage.get_ID());
+			list.setRecordCreated(stamp);
+			list.setRecordUpdated(stamp);
+			
+			if(!list.save())
+			{
+				Log.log(Logger.ERROR, "Agreement List not saved");
+			}
+		}
 	}
 	//Get C_BPartner_ID of current user (using AD_User_ID)
 	private int getBPartner()
@@ -132,28 +150,17 @@ public class Agreement_Dispatcher
 		
 		return DB.getSQLValue(null, sql);
 	}
-	//Get agreement for this type of document
-	private int AGR_Agreement()
+
+	private void quit(MAGRStage stage, boolean isBack)
 	{
-		int AGR_Dispatcher_ID = document.get_ValueAsInt(X_AGR_Dispatcher.COLUMNNAME_AGR_Dispatcher_ID);
-		int value = 0;
-		
-		if(AGR_Dispatcher_ID > 0)
-		{
-			MAGRDispatcher dispatcher = new MAGRDispatcher(Env.getCtx(), AGR_Dispatcher_ID, null);
-			
-			value = dispatcher.getAGR_Agreement_ID();
-		}
-		return value;
-	}
-	
-	private boolean validation() throws SQLException
-	{
-		MAGRAgreement agreement = new MAGRAgreement(Env.getCtx(), AGR_Agreement_ID, null);
-		
-		if(!agreement.checkAgreement()) return false;
-						
-		return true;		
+		X_AD_Ref_List list = null;
+		if(!isBack)
+			list = new X_AD_Ref_List(Env.getCtx(), stage.getAD_Ref_List_ID(), null);
+		else
+			list = new X_AD_Ref_List(Env.getCtx(), stage.getAD_Ref_List2_ID(), null);
+
+		document.set_ValueOfColumn(columnDocStatus, list.getValue());
+		document.saveEx();
 	}
 	//Get current stage of agreement
 	private MAGRStage getCurrentStage()
@@ -162,11 +169,11 @@ public class Agreement_Dispatcher
 		if(AGR_Stage_ID == 0 || !isHasRecordsInAgreementList())
 		{
 			stage = MAGRStage.getFirstStage(Env.getCtx(), AGR_Agreement_ID, null);
-			if(stage != null)// && stage.isUserHasAccess(AD_User_ID, AD_Table_ID, Record_ID))
+			if(stage != null)
 			{
 				Agreement_PrepareList prepareList = new Agreement_PrepareList(AGR_Agreement_ID, C_BPartner_ID, AD_Table_ID, Record_ID);
 				prepareList.FillAgreementList();
-				FillAgreementList(stage, stage);
+				FillAgreementList(stage);
 			}
 		}
 		else
@@ -180,84 +187,5 @@ public class Agreement_Dispatcher
 	private boolean isHasRecordsInAgreementList()
 	{
 		return DB.getSQLValue(null, "SELECT AGR_AgreementList_ID FROM AGR_AgreementList WHERE Record_ID = " + Record_ID) > -1;
-	}
-		
-	//Get next stage if stage is approved
-	private MAGRStage createNextStage(MAGRStage currentStage, boolean isBack)
-	{
-		MAGRNode[] nodeArray = MAGRNode.getOfTRM_Stage(Env.getCtx(), currentStage.get_ID(), null);
-		
-		for(int i = 0; i < nodeArray.length; i++)
-		{
-			//If document is not approved and current node is not back
-			//Following code will be escaped
-			if(!isBack && nodeArray[i].isBack()) continue;
-			if(isBack && !nodeArray[i].isBack()) continue;
-			
-			MAGRStage stage = new MAGRStage(Env.getCtx(), nodeArray[i].getAGR_NextStage_ID(), null);
-			
-			document.set_ValueOfColumn(X_AGR_Stage.COLUMNNAME_AGR_Stage_ID, stage.get_ID());
-			document.saveEx();
-			
-			//If document is not approved, agreement list will not be filled
-			if((currentStage.get_ID() != nodeArray[i].getAGR_NextStage_ID()) && isNotFilled(stage))
-			{
-				FillAgreementList(stage,currentStage);
-			}
-			
-			//Exit from agreement
-			if(stage.get_ID() == currentStage.get_ID()) 
-			{
-				quit(currentStage, isBack);
-				break;//continue;
-			}
-		}
-		return null;
-	}
-	
-	private boolean isNotFilled(MAGRStage stage)
-	{
-		ArrayList<MAGRAgreementList> lines = MAGRAgreementList.getOfStage(Env.getCtx(), null, AD_Table_ID, Record_ID, stage.get_ID());	
-		
-		return lines.size() == 0;
-	}	
-	//Fill agreement list
-	private void FillAgreementList(MAGRStage toStage, MAGRStage fromStage)
-	{
-		ArrayList<Integer> signers = toStage.getSigners(AD_Table_ID, Record_ID);
-		//get current date&time
-		Timestamp stamp = new Timestamp(System.currentTimeMillis());
-
-		for(int i = 0; i < signers.size(); i++)
-		{
-			MAGRAgreementList list = new MAGRAgreementList(Env.getCtx(), null, null);			
-			list.setAD_Table_ID(AD_Table_ID);
-			list.setRecord_ID(Record_ID);
-			list.setSigner_ID(signers.get(i));
-			list.setAGR_Stage_ID(toStage.get_ID());
-			list.setRecordCreated(stamp);
-			list.setRecordUpdated(stamp);
-			
-			if(!list.save())
-			{
-				Log.log(Logger.ERROR, "Agreement List not saved");
-			}
-			else
-			{
-				quit(toStage, false);
-			}
-		}
-	}
-
-	private void quit(MAGRStage stage, boolean isBack)
-	{
-		X_AD_Ref_List list = null;
-		if(!isBack)
-			list = new X_AD_Ref_List(Env.getCtx(), stage.getAD_Ref_List_ID(), null);
-		else
-			list = new X_AD_Ref_List(Env.getCtx(), stage.getAD_Ref_List_ID2(), null);
-		isMoved = true;
-		document.set_ValueOfColumn(columnDocStatus, list.getValue());
-		document.saveEx();
 	}
 }

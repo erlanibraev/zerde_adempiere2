@@ -101,14 +101,14 @@ public class AgreementProcess extends SvrProcess implements ASyncProcess
 				
 		Agreement_Dispatcher dispatcher = new Agreement_Dispatcher(po, po.get_Table_ID(), po.get_ID());
 		
-		dispatcher.startAgreement(approved, message);
+		int mode = dispatcher.startAgreement(approved, message);
 		
 		int AD_Process_ID = (new MAGRStage(m_ctx, AGR_Stage_ID, get_TrxName())).getAD_Process_ID();
 		
-		if(AD_Process_ID > 0 && dispatcher.isMoved)
+		if(AD_Process_ID > 0 && mode > 0)
 		{
 			try {
-				callProcess(AD_Process_ID,po.get_ID(),table.getAD_Table_ID(),AGR_Stage_ID, dispatcher.STAGE_Approved);
+				callProcess(AD_Process_ID,po.get_ID(),table.getAD_Table_ID(),AGR_Stage_ID, mode == 1);
 			}
 			catch(Exception ex) {
 				log.severe("Couldn't invoke process for this agreement stage. " + ex.toString());

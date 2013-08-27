@@ -32,10 +32,10 @@ public class MAGRNode extends X_AGR_Node
 		return list;
 	}
 	
-	public static MAGRNode[] getOfTRM_Stage(Properties ctx, int AGR_Stage_ID, String trxName)
+	public static MAGRNode[] getOfAGR_Stage(Properties ctx, int AGR_Stage_ID, boolean isBack, String trxName)
 	{
-		List<MAGRNode> list = new Query(ctx, I_AGR_Node.Table_Name, "AGR_Stage_ID=?", trxName)
-		.setParameters(AGR_Stage_ID)
+		List<MAGRNode> list = new Query(ctx, I_AGR_Node.Table_Name, "AGR_Stage_ID=? AND isBack=?", trxName)
+		.setParameters(AGR_Stage_ID, isBack)
 		.setOnlyActiveRecords(true)
 		.list();
 		
@@ -44,6 +44,7 @@ public class MAGRNode extends X_AGR_Node
 		return retValue;
 	}
 	
+	@SuppressWarnings("deprecation")
 	public static ArrayList<Integer> getNodes(Properties ctx, int AGR_Agreement_ID, String isBack, String trxName)
 	{
 		PreparedStatement pstmt = null;
