@@ -141,14 +141,15 @@ public class MParameterLine extends X_BSC_ParameterLine {
 			} catch(Exception e) {
 				log.log(Level.SEVERE,"MBSCParameterLine.calculate: ",e);
 			}
-		}
-		if (isImported() && getPFR_Calculation_ID() > 0) {
+		} else if (isImported() && getPFR_Calculation_ID() > 0) {
 			try {
 				Object obj = MPFRCalculation.getValueFromSQL(getPFR_Calculation_ID(), sqlParam);
 				result = (obj == null ? "0" : obj.toString());
 			} catch(Exception e) {
 				log.log(Level.SEVERE,"BSCParameterLine.calculate - ", e);
 			}
+		} else {
+			result = getValue();
 		}
 		return (result == null ? "0" : result);
 	}

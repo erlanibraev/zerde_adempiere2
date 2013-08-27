@@ -10,14 +10,19 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.apache.naming.factory.SendMailFactory;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.apps.ADialog;
 import org.compiere.process.DocAction;
 import org.compiere.process.BSCDocumentEngine;
+
+import extend.org.compiere.utils.Util;
 
 
 /**
@@ -188,9 +193,46 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 		String result = (STATUS_WaitingConfirmation.equals(getDocStatus())  ? STATUS_WaitingConfirmation : DocAction.STATUS_Invalid);
 		if (STATUS_NotApproved.equals(getDocStatus()) || STATUS_Drafted.equals(getDocStatus())) {
 			setDocStatus(STATUS_WaitingConfirmation);
-//			result = STATUS_Completed;
 			result = STATUS_WaitingConfirmation;
+			sendMailPrepare();
 		}
+		return result;
+	}
+
+	/**
+	 * 
+	 */
+	private void sendMailPrepare() {
+		StringBuffer message = new StringBuffer();
+		StringBuffer label = new StringBuffer();
+		int userToID = getUserID(getC_BPartner_ID());
+		int userFromID = getCreatedBy();
+		label.append("Ввод данных карты ССП за ")
+			 .append(getC_Period().getName())
+		     .append("(")
+		     .append(getC_BPartner().getName())
+		     .append(")");
+		message.append("Уважаемый(ая) ")
+		       .append(getC_BPartner().getName())
+		       .append(".\n")
+		       .append("Необходимо начать ввод данных по ССП за ")
+		       .append(getC_Period().getName());
+		try {
+			Util.sendMail(userToID, userFromID, label.toString(), message.toString(), false);
+		} catch(Exception e) {
+			log.log(Level.SEVERE,"MBSCCard.sendMailPrepare: ",e);
+		}
+	}
+
+	/**
+	 * @param c_BPartner_ID
+	 * @return
+	 */
+	private int getUserID(int c_BPartner_ID) {
+		int result = 0;
+		MUser[] user = MUser.getOfBPartner(getCtx(), getC_BPartner_ID(), get_TrxName());
+		if(user[0].getAD_User_ID() != 0 || user[0].getEMail() != null || user[0].getEMail().length() != 0)
+			result = user[0].getAD_User_ID();
 		return result;
 	}
 
@@ -201,7 +243,40 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 	public boolean approveIt() {
 		log.severe("BSC_Card: approveIt()");
 		setDocStatus(STATUS_Approved);
+		SendMailApprove();
 		return true;
+	}
+
+	/**
+	 * 
+	 */
+	private void SendMailApprove() {
+		StringBuffer message = new StringBuffer();
+		StringBuffer label = new StringBuffer();
+		int userFromID = Env.getAD_User_ID(Env.getCtx());; 
+		HashSet<Integer> userToID = new HashSet<Integer>();
+		userToID.add(new Integer(getCreatedBy()));
+		userToID.add(getUserID(getC_BPartner_ID()));
+		for(Integer item:getUserAtRole()) {
+			userToID.add(item);
+		}
+		label.append("Ввод данных карты ССП за ")
+			 .append(getC_Period().getName())
+		     .append("(")
+		     .append(getC_BPartner().getName())
+		     .append(")")
+		     ;
+		message.append("Данные по ССП за ")
+		       .append(getC_Period().getName())
+		       .append(" утверждены.\n\n")
+		       ;
+		try {
+			for(Integer item:userToID) {
+				Util.sendMail(item.intValue(), userFromID, label.toString(), message.toString(), false);
+			}
+		} catch(Exception e) {
+			log.log(Level.SEVERE,"MBSCCard.sendMailPrepare: ",e);
+		}
 	}
 
 	/* (non-Javadoc)
@@ -210,8 +285,40 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 	@Override
 	public boolean rejectIt() {
 		log.severe("BSC_Card: rejectIt()");
+		SendMailReject();
 		setDocStatus(STATUS_Drafted);
 		return true;
+	}
+
+	/**
+	 * 
+	 */
+	private void SendMailReject() {
+		StringBuffer message = new StringBuffer();
+		StringBuffer label = new StringBuffer();
+		int userFromID = Env.getAD_User_ID(Env.getCtx());; 
+		HashSet<Integer> userToID = new HashSet<Integer>();
+		userToID.add(new Integer(getCreatedBy()));
+		userToID.add(getUserID(getC_BPartner_ID()));
+		for(Integer item:getUserAtRole()) {
+			userToID.add(item);
+		}
+		label.append("Ввод данных карты ССП за ")
+			 .append(getC_Period().getName())
+		     .append("(")
+		     .append(getC_BPartner().getName())
+		     .append(")");
+		message.append("Данные по ССП за ")
+		       .append(getC_Period().getName())
+		       .append(" отклонены.\n\n")
+		       .append(getDescription());
+		try {
+			for(Integer item:userToID) {
+				Util.sendMail(item.intValue(), userFromID, label.toString(), message.toString(), false);
+			}
+		} catch(Exception e) {
+			log.log(Level.SEVERE,"MBSCCard.sendMailPrepare: ",e);
+		}
 	}
 
 	/* (non-Javadoc)
@@ -224,7 +331,61 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 		if (STATUS_WaitingConfirmation.equals(getDocStatus())) {
 			setDocStatus(STATUS_InProgress);
 			result = STATUS_InProgress;
+			SendMailComplete();
 		}
+		return result;
+	}
+
+	/**
+	 * 
+	 */
+	private void SendMailComplete() {
+		StringBuffer message = new StringBuffer();
+		StringBuffer label = new StringBuffer();
+		int userFromID = getUserID(getC_BPartner_ID());
+		HashSet<Integer> userToID = new HashSet<Integer>();
+		userToID.add(new Integer(getCreatedBy()));
+		for(Integer item:getUserAtRole()) {
+			userToID.add(item);
+		}
+		label.append("Ввод данных карты ССП за ")
+			 .append(getC_Period().getName())
+		     .append("(")
+		     .append(getC_BPartner().getName())
+		     .append(")");
+		message.append("Ввод данных по ССП за ")
+		       .append(getC_Period().getName())
+		       .append(" завершен.");
+		try {
+			for(Integer item:userToID) {
+				Util.sendMail(item.intValue(), userFromID, label.toString(), message.toString(), false);
+			}
+		} catch(Exception e) {
+			log.log(Level.SEVERE,"MBSCCard.sendMailPrepare: ",e);
+		}
+	}
+
+	/**
+	 * @return
+	 */
+	private List<Integer> getUserAtRole() {
+		ArrayList<Integer> result = new ArrayList<Integer>();
+		String sql = "SELECT AD_User_ID FROM AD_User_Roles WHERE AD_Role_ID IN (1000036)";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;		
+		try {
+			pstmt = DB.prepareStatement(sql,get_TrxName());
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				int item = rs.getInt(1); 
+				result.add(new Integer(item));
+			}
+		} catch (SQLException e) {
+			log.log(Level.SEVERE, "product", e);
+		} finally {
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
+		}	
 		return result;
 	}
 
@@ -277,7 +438,37 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 		if (m_processMsg != null)
 			return false;
 		setDocStatus(STATUS_Closed);
+		SendMailClose();
 		return true;
+	}
+
+	/**
+	 * 
+	 */
+	private void SendMailClose() {
+		StringBuffer message = new StringBuffer();
+		StringBuffer label = new StringBuffer();
+		int userFromID = getUserID(getC_BPartner_ID());
+		HashSet<Integer> userToID = new HashSet<Integer>();
+		userToID.add(new Integer(getCreatedBy()));
+		for(Integer item:getUserAtRole()) {
+			userToID.add(item);
+		}
+		label.append("Ввод данных карты ССП за ")
+			 .append(getC_Period().getName())
+		     .append("(")
+		     .append(getC_BPartner().getName())
+		     .append(")");
+		message.append("Ввод данных по ССП за ")
+		       .append(getC_Period().getName())
+		       .append(" не доступен (закрыт).");
+		try {
+			for(Integer item:userToID) {
+				Util.sendMail(item.intValue(), userFromID, label.toString(), message.toString(), false);
+			}
+		} catch(Exception e) {
+			log.log(Level.SEVERE,"MBSCCard.sendMailPrepare: ",e);
+		}
 	}
 
 	/* (non-Javadoc)
@@ -307,7 +498,37 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 		setDocStatus(STATUS_Drafted);
 		setProcessed(false);
 		setDocAction(DocAction.ACTION_None);
+		SendMailReactivate();
 		return true;
+	}
+
+	/**
+	 * 
+	 */
+	private void SendMailReactivate() {
+		StringBuffer message = new StringBuffer();
+		StringBuffer label = new StringBuffer();
+		int userFromID = getUserID(getC_BPartner_ID());
+		HashSet<Integer> userToID = new HashSet<Integer>();
+		userToID.add(new Integer(getCreatedBy()));
+		for(Integer item:getUserAtRole()) {
+			userToID.add(item);
+		}
+		label.append("Ввод данных карты ССП за ")
+			 .append(getC_Period().getName())
+		     .append("(")
+		     .append(getC_BPartner().getName())
+		     .append(")");
+		message.append("Ввод данных по ССП за ")
+		       .append(getC_Period().getName())
+		       .append(" открыт снова.");
+		try {
+			for(Integer item:userToID) {
+				Util.sendMail(item.intValue(), userFromID, label.toString(), message.toString(), false);
+			}
+		} catch(Exception e) {
+			log.log(Level.SEVERE,"MBSCCard.sendMailPrepare: ",e);
+		}
 	}
 
 	/* (non-Javadoc)

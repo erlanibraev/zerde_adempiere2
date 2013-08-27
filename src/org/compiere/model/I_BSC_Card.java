@@ -30,7 +30,7 @@ public interface I_BSC_Card
     /** TableName=BSC_Card */
     public static final String Table_Name = "BSC_Card";
 
-    /** AD_Table_ID=1000233 */
+    /** AD_Table_ID=1000221 */
     public static final int Table_ID = MTable.getTable_ID(Table_Name);
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
@@ -61,6 +61,15 @@ public interface I_BSC_Card
 	  * Organizational entity within client
 	  */
 	public int getAD_Org_ID();
+
+    /** Column name b_graph */
+    public static final String COLUMNNAME_b_graph = "b_graph";
+
+	/** Set b_graph	  */
+	public void setb_graph (String b_graph);
+
+	/** Get b_graph	  */
+	public String getb_graph();
 
     /** Column name BSC_Card_ID */
     public static final String COLUMNNAME_BSC_Card_ID = "BSC_Card_ID";
