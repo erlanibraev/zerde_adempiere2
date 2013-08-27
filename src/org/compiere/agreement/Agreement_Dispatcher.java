@@ -80,9 +80,13 @@ public class Agreement_Dispatcher
 			{
 				createNextStage(currentStage, !isAprove);
 			}
-			if(!isAprove && currentStage.canMoveBack())
+			else if(!isAprove && currentStage.canMoveBack())
 			{
 				createNextStage(currentStage, !isAprove);
+			}
+			else
+			{
+				returnValue = 3;
 			}
 		}
 		return returnValue;

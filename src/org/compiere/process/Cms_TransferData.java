@@ -201,7 +201,7 @@ public class Cms_TransferData extends SvrProcess
 		
 		int mode = dispatcher.startAgreement(approved, message);		
 		
-		return mode == 1;
+		return mode == 3;
 	}
 	
 	private String GetDocument() throws Exception 
