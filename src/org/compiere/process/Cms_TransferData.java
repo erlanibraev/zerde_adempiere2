@@ -199,9 +199,9 @@ public class Cms_TransferData extends SvrProcess
 				
 		Agreement_Dispatcher dispatcher = new Agreement_Dispatcher(po, po.get_Table_ID(), po.get_ID());
 		
-		dispatcher.startAgreement(approved, message);		
+		int mode = dispatcher.startAgreement(approved, message);		
 		
-		return dispatcher.STAGE_Approved;
+		return mode == 1;
 	}
 	
 	private String GetDocument() throws Exception 
