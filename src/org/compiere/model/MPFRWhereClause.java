@@ -98,7 +98,7 @@ public class MPFRWhereClause extends X_PFR_WhereClause
     			sql.append(clause.getOpenBracket()).append(" \n");
     		sql.append(clause.getColumnName()).append(" \n");
     		
-    		String chargeIN = (parameters.get(I_BPM_FormParameters.COLUMNNAME_C_Charge_ID) == null) ? "" : (String) parameters.get(I_BPM_FormParameters.COLUMNNAME_C_Charge_ID);
+    		String chargeIN = (parameters.get(clause.getColumnName()) == null) ? "" : (String) parameters.get(clause.getColumnName());
     		if(chargeIN.indexOf(",") != -1)
     			clause.setOperation(QueryDialog.OPERATORS[QueryDialog.IN_INDEX].getName());
     		
