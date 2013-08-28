@@ -35,10 +35,10 @@ public class BSCCardPanel extends JPanel {
 	private MBSCCard card = null;
 	private double[][] tableSize;
 	private TableLayout tableLayout = null;
-	private static String[] tableHeader = {"КПД","Вес %","План","Факт","Ед.Изм","Статус","Область","---"};
+	private static String[] tableHeader = {"КПД","Вес %","План","Факт","Ед.Изм","Область","---"};
 	private JLabel[][] label = null; 
-	private static int[] cellWidth = {200,100,100,100,100,100,100,200};
-	private static int[] cellHeight = {50,150};
+	private static int[] cellWidth = {200,80,80,80,80,80,120};
+	private static int[] cellHeight = {50,100};
 	private JPanel cardPanel = new JPanel();
 	private JPanel totalPanel = new JPanel();
 	
@@ -111,7 +111,7 @@ public class BSCCardPanel extends JPanel {
 					if ( i > 0) {
 						MBSCCardLine cardLine = card.getLines(false)[i-1]; 
 						double value = cardLine.getValueNumber().doubleValue();
-						if (j == 6) {
+						if (j == 5) {
 							Color c;
 							if (value < 0.5) c = Color.RED;
 							else if ( value < 1) c = Color.YELLOW;  
@@ -119,7 +119,7 @@ public class BSCCardPanel extends JPanel {
 							BSCPointPanel pp = new BSCPointPanel(c);
 							panel.add(pp);
 						}
-						if (j == 7) {
+						if (j == 6) {
 							BSCThermometer t = new BSCThermometer(value);
 							panel.add(t);
 						}

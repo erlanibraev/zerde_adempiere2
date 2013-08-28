@@ -30,7 +30,7 @@ public interface I_BSC_Dashboard
     /** TableName=BSC_Dashboard */
     public static final String Table_Name = "BSC_Dashboard";
 
-    /** AD_Table_ID=1000312 */
+    /** AD_Table_ID=1000318 */
     public static final int Table_ID = MTable.getTable_ID(Table_Name);
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
@@ -101,6 +101,17 @@ public interface I_BSC_Dashboard
 	  * User who created this records
 	  */
 	public int getCreatedBy();
+
+    /** Column name HR_Job_ID */
+    public static final String COLUMNNAME_HR_Job_ID = "HR_Job_ID";
+
+	/** Set Payroll Job	  */
+	public void setHR_Job_ID (int HR_Job_ID);
+
+	/** Get Payroll Job	  */
+	public int getHR_Job_ID();
+
+	public org.eevolution.model.I_HR_Job getHR_Job() throws RuntimeException;
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";

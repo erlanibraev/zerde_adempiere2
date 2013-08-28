@@ -17,6 +17,7 @@ import java.util.TreeMap;
 import layout.TableLayout;
 
 import org.adempiere.apps.graph.BSCPerspectivePanel.ValueComparator;
+import org.compiere.apps.ADialog;
 import org.compiere.apps.ConfirmPanel;
 import org.compiere.apps.form.FormFrame;
 import org.compiere.apps.form.FormPanel;
@@ -72,6 +73,13 @@ public class BSCViewDashboard extends CPanel implements FormPanel, ActionListene
 			period = new MPeriod(Env.getCtx(),knp.getKey(),null);
 			initCards();
 			initMainPanel();
+		} else {
+			for(BSCCardPanel panel: panels) {
+				if (e.getSource() == panel) {
+					int BSC_Card_ID = panel.getCard().getBSC_Card_ID();
+					ADialog.info(25, null, "BSC_Card_ID = "+ Integer.toString(BSC_Card_ID));
+				}
+			}
 		}
 	}
 

@@ -100,5 +100,21 @@ public class MBSCDashboard extends X_BSC_Dashboard {
 	public void setPeriod(MPeriod period) {
 		this.period = period;
 	}
-
+	
+	@Override 
+	protected boolean beforeSave(boolean newRecord) {
+		if(getC_BPartner_ID() > 0 && getHR_Job_ID() == 0) {
+			setHR_Job_ID(getHR_Job_ID_by_C_BPartner_ID(getC_BPartner_ID()));
+		}
+		return super.beforeSave(newRecord);
+	}
+	
+	public static int getHR_Job_ID_by_C_BPartner_ID(int C_BPartner_ID) {
+		int result = 0;
+		if (C_BPartner_ID > 0) {
+			String sql = "SELECT HR_Job_ID FROM HR_Employee WHERE AD_Client_ID = "+Integer.toString(Env.getAD_Client_ID(Env.getCtx()))+" IsActive = 'Y' AND C_BPartner_ID = ?";
+			result = DB.getSQLValue(null, sql,C_BPartner_ID);
+		}
+		return result;
+	}
 }
