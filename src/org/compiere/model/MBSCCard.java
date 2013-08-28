@@ -35,6 +35,27 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 	 */
 	private static final long serialVersionUID = -3366362516386767291L;
 	
+	/*
+	 * Константы ролей для работы с картами ССП
+	 * --------------------------------------------------------------
+	 */
+	private static int AD_Role_ID_Ввод_Карт_ССП = 1000035;
+	private static int AD_Role_ID_Редактирование_Карт_ССП = 1000036;
+	private static int AD_Role_ID_Директор_ДКУР = 1000039;
+	private static int AD_Role_ID_Директор_ДСПК = 1000037;
+	private static int AD_Role_ID_Менеджер_ДКУР = 1000040;
+	private static int AD_Role_ID_Менеджер_ДСПК = 1000038;
+	private static int[] allRoles = {AD_Role_ID_Редактирование_Карт_ССП
+		                            ,AD_Role_ID_Директор_ДКУР
+		                            ,AD_Role_ID_Директор_ДСПК
+		                            ,AD_Role_ID_Менеджер_ДКУР
+		                            ,AD_Role_ID_Менеджер_ДСПК};
+	private static int[] ДКУРRoles = {AD_Role_ID_Директор_ДКУР
+        							 ,AD_Role_ID_Менеджер_ДКУР};
+	private static int[] ДСПКRoles = {AD_Role_ID_Директор_ДСПК
+		 							 ,AD_Role_ID_Менеджер_ДСПК};
+	//---------------------------------------------------------------
+	
 	MPeriod period = null;
 
 	private ArrayList<MBSCCardLine> cardLine = new ArrayList<MBSCCardLine>(); 
@@ -215,10 +236,11 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 		message.append("Уважаемый(ая) ")
 		       .append(getC_BPartner().getName())
 		       .append(".\n")
-		       .append("Необходимо начать ввод данных по ССП за ")
+		       .append("Необходимо начать ввод данных для ССП за ")
 		       .append(getC_Period().getName());
 		try {
-			Util.sendMail(userToID, userFromID, label.toString(), message.toString(), false);
+			if (userToID > 0 && userFromID > 0)
+				Util.sendMail(userToID, userFromID, label.toString(), message.toString(), false);
 		} catch(Exception e) {
 			log.log(Level.SEVERE,"MBSCCard.sendMailPrepare: ",e);
 		}
@@ -257,7 +279,10 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 		HashSet<Integer> userToID = new HashSet<Integer>();
 		userToID.add(new Integer(getCreatedBy()));
 		userToID.add(getUserID(getC_BPartner_ID()));
-		for(Integer item:getUserAtRole()) {
+		
+		int[] roles = (isDSPKCard() ? ДСПКRoles : ДКУРRoles);
+		
+		for(Integer item:getUserAtRole(roles)) {
 			userToID.add(item);
 		}
 		label.append("Ввод данных карты ССП за ")
@@ -272,7 +297,8 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 		       ;
 		try {
 			for(Integer item:userToID) {
-				Util.sendMail(item.intValue(), userFromID, label.toString(), message.toString(), false);
+				if(item.intValue() > 0 && userFromID > 0)
+					Util.sendMail(item.intValue(), userFromID, label.toString(), message.toString(), false);
 			}
 		} catch(Exception e) {
 			log.log(Level.SEVERE,"MBSCCard.sendMailPrepare: ",e);
@@ -300,7 +326,8 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 		HashSet<Integer> userToID = new HashSet<Integer>();
 		userToID.add(new Integer(getCreatedBy()));
 		userToID.add(getUserID(getC_BPartner_ID()));
-		for(Integer item:getUserAtRole()) {
+		int[] roles = (isDSPKCard() ? ДСПКRoles : ДКУРRoles);
+		for(Integer item:getUserAtRole(roles)) {
 			userToID.add(item);
 		}
 		label.append("Ввод данных карты ССП за ")
@@ -345,7 +372,8 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 		int userFromID = getUserID(getC_BPartner_ID());
 		HashSet<Integer> userToID = new HashSet<Integer>();
 		userToID.add(new Integer(getCreatedBy()));
-		for(Integer item:getUserAtRole()) {
+		int[] roles = (isDSPKCard() ? ДСПКRoles : ДКУРRoles);
+		for(Integer item:getUserAtRole(roles)) {
 			userToID.add(item);
 		}
 		label.append("Ввод данных карты ССП за ")
@@ -368,9 +396,13 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 	/**
 	 * @return
 	 */
-	private List<Integer> getUserAtRole() {
+	private List<Integer> getUserAtRole(int[] roles) {
 		ArrayList<Integer> result = new ArrayList<Integer>();
-		String sql = "SELECT AD_User_ID FROM AD_User_Roles WHERE AD_Role_ID IN (1000036)";
+		String roles_id = "0";
+		for(int AD_Role_ID:roles) {
+			roles_id += ","+AD_Role_ID;
+		}
+		String sql = "SELECT AD_User_ID FROM AD_User_Roles WHERE AD_Role_ID IN ("+roles_id+")";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;		
 		try {
@@ -451,7 +483,9 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 		int userFromID = getUserID(getC_BPartner_ID());
 		HashSet<Integer> userToID = new HashSet<Integer>();
 		userToID.add(new Integer(getCreatedBy()));
-		for(Integer item:getUserAtRole()) {
+		int[] roles = (isDSPKCard() ? ДСПКRoles : ДКУРRoles);
+		
+		for(Integer item:getUserAtRole(roles)) {
 			userToID.add(item);
 		}
 		label.append("Ввод данных карты ССП за ")
@@ -511,7 +545,9 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 		int userFromID = getUserID(getC_BPartner_ID());
 		HashSet<Integer> userToID = new HashSet<Integer>();
 		userToID.add(new Integer(getCreatedBy()));
-		for(Integer item:getUserAtRole()) {
+		int[] roles = (isDSPKCard() ? ДСПКRoles : ДКУРRoles);
+		
+		for(Integer item:getUserAtRole(roles)) {
 			userToID.add(item);
 		}
 		label.append("Ввод данных карты ССП за ")
@@ -670,6 +706,13 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 			setName(getCardName());
 		}
 		boolean b1 = createParameter() != null;
+		if(getC_Period_ID() > 0) {
+			setDateFrom(getC_Period().getStartDate());
+			setDateTo(getC_Period().getEndDate());
+		}
+		if(getDateAcct() == null) {
+			setDateAcct(getC_Period().getEndDate());
+		}
 		return super.beforeSave(newRecord) && b && b1;
 	}
 	
@@ -707,10 +750,40 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 	 * @param c_Period_ID
 	 */
 	public void closePeriod(int c_Period_ID) {
-		// TODO Auto-generated method stub
-		setDocStatus(DOCSTATUS_Закрыт);
-		setDocAction(DOCACTION_НЕТ);
-		setPosted(true);
-		save();
+		if (c_Period_ID == getC_Period_ID()) {
+			setDocStatus(DOCSTATUS_Закрыт);
+			setDocAction(DOCACTION_НЕТ);
+			setPosted(true);
+			save();
+		}
+	}
+	
+//	private static String mainBoss = "Председатель правления";
+	public boolean isMainCard() {
+		boolean result = false;
+		String sql = "SELECT C_BPartner_ID FROM BSC_Dashboard WHERE AD_Cleint_ID = "+Env.getAD_Client_ID(getCtx())+" AND IsActive = 'Y' AND NumberOfRuns IN (SELECT MIN(NumberOfRuns) FROM BSC_Dashboard WHERE IsActive = 'Y')"; 
+		int C_BPartner_ID = DB.getSQLValue(get_TrxName(), sql);
+		result = getC_BPartner_ID() == C_BPartner_ID;
+		return result;
+	}
+	
+	public boolean isDSPKCard() {
+		boolean result = false;
+		String sql = "SELECT C_BPartner_ID FROM BSC_Dashboard WHERE AD_Cleint_ID = "+Env.getAD_Client_ID(getCtx())+" AND IsActive = 'Y'";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;		
+		try {
+			pstmt = DB.prepareStatement(sql,null);
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				result = result || (rs.getInt(1) == getC_BPartner_ID());
+			}
+		} catch (SQLException e) {
+			log.log(Level.SEVERE, "product", e);
+		} finally {
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
+		}	
+		return result;
 	}
 }
