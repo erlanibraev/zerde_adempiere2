@@ -112,7 +112,7 @@ public class DSR_ExcelImport
 				}
 				else
 				{
-					xlsRow.getCell(j+3).setCellValue(dsrCell.getValue().toString());
+					xlsRow.getCell(j + maxLevel).setCellValue(dsrCell.getValue().toString());
 				}
 				tempIndex = maxLevel;
 			}
