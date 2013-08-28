@@ -112,7 +112,7 @@ public class MBSCDashboard extends X_BSC_Dashboard {
 	public static int getHR_Job_ID_by_C_BPartner_ID(int C_BPartner_ID) {
 		int result = 0;
 		if (C_BPartner_ID > 0) {
-			String sql = "SELECT HR_Job_ID FROM HR_Employee WHERE AD_Client_ID = "+Integer.toString(Env.getAD_Client_ID(Env.getCtx()))+" IsActive = 'Y' AND C_BPartner_ID = ?";
+			String sql = "SELECT HR_Job_ID FROM HR_Employee WHERE AD_Client_ID = "+Integer.toString(Env.getAD_Client_ID(Env.getCtx()))+" AND IsActive = 'Y' AND C_BPartner_ID = ?";
 			result = DB.getSQLValue(null, sql,C_BPartner_ID);
 		}
 		return result;
