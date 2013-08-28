@@ -84,9 +84,14 @@ public class BPMActionsVersions extends SvrProcess {
 		if(isApproved){
 			verLine.setBPM_VersionType(X_BPM_VersionBudgetLine.BPM_VERSIONTYPE_Approved);
 			verLine.setBPM_Version("V-"+sysDate.getDayOfMonth()+"."+sysDate.getMonthOfYear()+"."+sysDate.getYear()+" -> "+ MRefList.getListName(m_ctx, X_BPM_VersionBudgetLine.BPM_VERSIONTYPE_AD_Reference_ID, X_BPM_VersionBudgetLine.BPM_VERSIONTYPE_Approved));
+			
+			setIsActualProject(project.getBPM_VersionBudget_ID(), false);
+			project.setisActual(true);
 		}else{
 			verLine.setBPM_VersionType(X_BPM_VersionBudgetLine.BPM_VERSIONTYPE_NOTAPPROVED);
 			verLine.setBPM_Version("V-"+sysDate.getDayOfMonth()+"."+sysDate.getMonthOfYear()+"."+sysDate.getYear()+" -> "+ MRefList.getListName(m_ctx, X_BPM_VersionBudgetLine.BPM_VERSIONTYPE_AD_Reference_ID, X_BPM_VersionBudgetLine.BPM_VERSIONTYPE_NOTAPPROVED));
+			
+			project.setisWork(false);
 		}
 		verLine.saveEx();
 		
@@ -110,8 +115,16 @@ public class BPMActionsVersions extends SvrProcess {
 		}
 		
 		project.setProcessed(true);
-		project.setisActual(true);
 		project.saveEx();
+	}
+	
+	private void setIsActualProject(int BPM_VersionBudget_ID, boolean actual){
+		
+		MBPMProject[] pr = MBPMProject.getProjectVersion(m_ctx, BPM_VersionBudget_ID, m_trxName);
+		for(MBPMProject p: pr){
+			p.setisActual(actual);
+			p.saveEx();
+		}
 	}
 	
 }

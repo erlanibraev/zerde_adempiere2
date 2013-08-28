@@ -30,7 +30,7 @@ public class X_BPM_BudgetCall extends PO implements I_BPM_BudgetCall, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130823L;
+	private static final long serialVersionUID = 20130828L;
 
     /** the default Constructor */
     public X_BPM_BudgetCall(Properties ctx)
@@ -125,9 +125,9 @@ public class X_BPM_BudgetCall extends PO implements I_BPM_BudgetCall, I_Persiste
 	public void setAGR_Dispatcher_ID (int AGR_Dispatcher_ID)
 	{
 		if (AGR_Dispatcher_ID < 1) 
-			set_Value (COLUMNNAME_AGR_Dispatcher_ID, null);
+			set_ValueNoCheck (COLUMNNAME_AGR_Dispatcher_ID, null);
 		else 
-			set_Value (COLUMNNAME_AGR_Dispatcher_ID, Integer.valueOf(AGR_Dispatcher_ID));
+			set_ValueNoCheck (COLUMNNAME_AGR_Dispatcher_ID, Integer.valueOf(AGR_Dispatcher_ID));
 	}
 
 	/** Get AGR_Dispatcher ID.
@@ -219,6 +219,31 @@ public class X_BPM_BudgetCall extends PO implements I_BPM_BudgetCall, I_Persiste
 	public int getBPM_BudgetCall_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_BPM_BudgetCall_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public I_BPM_Project getBPM_Parent() throws RuntimeException
+    {
+		return (I_BPM_Project)MTable.get(getCtx(), I_BPM_Project.Table_Name)
+			.getPO(getBPM_Parent_ID(), get_TrxName());	}
+
+	/** Set BPM_Parent_ID.
+		@param BPM_Parent_ID BPM_Parent_ID	  */
+	public void setBPM_Parent_ID (int BPM_Parent_ID)
+	{
+		if (BPM_Parent_ID < 1) 
+			set_Value (COLUMNNAME_BPM_Parent_ID, null);
+		else 
+			set_Value (COLUMNNAME_BPM_Parent_ID, Integer.valueOf(BPM_Parent_ID));
+	}
+
+	/** Get BPM_Parent_ID.
+		@return BPM_Parent_ID	  */
+	public int getBPM_Parent_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_BPM_Parent_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

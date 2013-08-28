@@ -62,7 +62,7 @@ public class MBPMBudgetCall extends X_BPM_BudgetCall {
 		
 		super.afterSave(newRecord, success);
 		
-		if(newRecord && getAGR_Dispatcher_ID() != 0){
+		if(newRecord && getBPM_Parent_ID() == 0){
 			
 			MPeriod[] period = getPeriodBudget(getC_Year_ID());
 		

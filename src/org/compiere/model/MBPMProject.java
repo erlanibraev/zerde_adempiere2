@@ -48,6 +48,13 @@ public class MBPMProject extends X_BPM_Project{
 		if(getAGR_Dispatcher_ID() == 0) errmsg = Util.requiredField(COLUMNNAME_AGR_Dispatcher_ID)+"\n";
 		Util.checkErrMsg(errmsg);
 		
+		if(newRecord && isWork()){
+			MBPMProject[] pr = getProjectVersion(getCtx(), getBPM_VersionBudget_ID(), get_TrxName());
+			if(pr.length != 0 && getBPM_Parent_ID() == 0)
+				errmsg = Util.requiredField(COLUMNNAME_BPM_Parent_ID)+"\n";
+			Util.checkErrMsg(errmsg);		
+		}
+		
 		return true;
 	}
 	
@@ -103,8 +110,11 @@ public class MBPMProject extends X_BPM_Project{
 		for(MBPMBudgetCall c: call){
 			MBPMBudgetCall newCall = new MBPMBudgetCall(getCtx(), 0, get_TrxName());
 			PO.copyValues(c, newCall);
-			newCall.setAGR_Dispatcher_ID(0);
+			newCall.setBPM_Parent_ID(BPM_Parent_ID);
 			newCall.setBPM_Project_ID(getBPM_Project_ID());
+			newCall.setBPM_VersionBudgetLine_ID(MBPMVersionBudget.getCurrentVersion());
+			newCall.setProcessed(false);
+			newCall.setIsActive(true);
 			newCall.save();
 			
 			MBPMBudgetCallLine[] callLine = MBPMBudgetCall.getLines(getCtx(), c.getBPM_BudgetCall_ID(), get_TrxName());
@@ -112,6 +122,8 @@ public class MBPMProject extends X_BPM_Project{
 				MBPMBudgetCallLine newCallLine = new MBPMBudgetCallLine(getCtx(), 0, get_TrxName());
 				PO.copyValues(cl, newCallLine);
 				newCallLine.setBPM_BudgetCall_ID(newCall.getBPM_BudgetCall_ID());
+				newCallLine.setProcessed(false);
+				newCallLine.setIsActive(true);
 				newCallLine.saveEx();
 			}
 		}

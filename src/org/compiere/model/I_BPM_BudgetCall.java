@@ -128,6 +128,17 @@ public interface I_BPM_BudgetCall
 	/** Get BPM_BudgetCall ID	  */
 	public int getBPM_BudgetCall_ID();
 
+    /** Column name BPM_Parent_ID */
+    public static final String COLUMNNAME_BPM_Parent_ID = "BPM_Parent_ID";
+
+	/** Set BPM_Parent_ID	  */
+	public void setBPM_Parent_ID (int BPM_Parent_ID);
+
+	/** Get BPM_Parent_ID	  */
+	public int getBPM_Parent_ID();
+
+	public I_BPM_Project getBPM_Parent() throws RuntimeException;
+
     /** Column name BPM_Project_ID */
     public static final String COLUMNNAME_BPM_Project_ID = "BPM_Project_ID";
 
