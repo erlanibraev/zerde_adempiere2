@@ -5,28 +5,41 @@ package org.adempiere.apps.graph;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 
 import layout.TableLayout;
 
+import org.compiere.apps.ADialog;
+import org.compiere.apps.AEnv;
+import org.compiere.apps.AWindow;
 import org.compiere.model.MBSCCard;
 import org.compiere.model.MBSCCardLine;
+import org.compiere.model.MQuery;
 import org.compiere.model.MRefList;
 import org.compiere.swing.CLabel;
 import org.compiere.swing.CPanel;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.ValueNamePair;
+import org.eclipse.core.internal.resources.AliasManager.AddToCollectionDoit;
 
 /**
  * @author Y.Ibrayev
  *
  */
-public class BSCCardPanel extends JPanel {
+public class BSCCardPanel extends JPanel implements MouseListener, ActionListener {
 
 	/**
 	 * 
@@ -37,17 +50,23 @@ public class BSCCardPanel extends JPanel {
 	private TableLayout tableLayout = null;
 	private static String[] tableHeader = {"КПД","Вес %","План","Факт","Ед.Изм","Область","---"};
 	private JLabel[][] label = null; 
-	private static int[] cellWidth = {200,80,80,80,80,80,120};
+	private static int[] cellWidth = {300,80,80,80,80,80,120};
 	private static int[] cellHeight = {50,100};
 	private JPanel cardPanel = new JPanel();
 	private JPanel totalPanel = new JPanel();
+	private CPanel[] panels = null;
 	
 	public BSCCardPanel(MBSCCard card) {
 		super();
 		Border border = BorderFactory.createLineBorder(Color.BLACK) ;
 		setBorder(border);
-		
+		addMouseListener(this);
 		setCard(card);
+	}
+
+	public void init() {
+		removeAll();
+		
 		initLayout();
 
 		setSize(getAllDimension());
@@ -56,8 +75,11 @@ public class BSCCardPanel extends JPanel {
 		setMinimumSize(getAllDimension());
 		
 		makePane();
+		
+		validate();
+		repaint();
+		updateUI();
 	}
-	
 	/**
 	 * 
 	 */
@@ -75,7 +97,7 @@ public class BSCCardPanel extends JPanel {
 	 * 
 	 */
 	private void viewTotal() {
-		totalPanel.add(new CLabel((card == null ? "" : card.getName())));
+		totalPanel.add(new CLabel((card == null ? "" : "<html>"+card.getName()+"</html>")));
 		double value = (card == null ? 0 : card.getValueNumber().doubleValue() / 100);
 		
 		Color c;
@@ -102,12 +124,13 @@ public class BSCCardPanel extends JPanel {
 	 */
 	private void viewCard() {
 		initLabel();
-		if (label != null) { 
+		if (label != null) {
+			panels = new CPanel[label.length];
 			for(int i=0; i < label.length; i++) {
 				for(int j = 0; j < tableHeader.length; j++) {
-					CPanel panel = new CPanel();
+					panels[i] = new CPanel();
 					if (label[i][j] != null) {
-						panel.add(label[i][j]);
+						panels[i].add(label[i][j]);
 					}
 					if ( i > 0) {
 						MBSCCardLine cardLine = card.getLines(false)[i-1]; 
@@ -118,17 +141,17 @@ public class BSCCardPanel extends JPanel {
 							else if ( value < 1) c = Color.YELLOW;  
 							else c = Color.GREEN;
 							BSCPointPanel pp = new BSCPointPanel(c);
-							panel.add(pp);
+							panels[i].add(pp);
 						}
 						if (j == 6) {
 							BSCThermometer t = new BSCThermometer(value);
-							panel.add(t);
+							panels[i].add(t);
 						}
 					}
 					String pos = Integer.toString((j)) +"," 
 				               + Integer.toString((i));
-					panel.setBorder(getBorder());
-					cardPanel.add(panel,pos);
+					panels[i].setBorder(getBorder());
+					cardPanel.add(panels[i],pos);
 				}
 			}
 		}
@@ -185,6 +208,7 @@ public class BSCCardPanel extends JPanel {
 	}
 	public void setCard(MBSCCard card) {
 		this.card = card;
+		init();
 	}
 	
 	/**
@@ -211,5 +235,123 @@ public class BSCCardPanel extends JPanel {
 				tableSize[1][i] = ( i == 0 ? cellHeight[0] : cellHeight[1]);
 			}
 		}
+	}
+
+	/* (non-Javadoc)
+	 * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
+	 */
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		if(isTitle(e)) {
+			openCardWindow(0);
+		} else if (label != null) {
+			for(int i = 1; i < label.length; i++) {
+				if (isLabel(i, e) && i > 0) {
+					int BSC_CardLine_ID = card.getLines(false)[i-1].getBSC_CardLine_ID();
+					openCardWindow(BSC_CardLine_ID);
+				}
+			}
+		}
+		
+	}
+
+	/**
+	 * @param i
+	 * @return
+	 */
+	private boolean isLabel(int i,MouseEvent e) {
+		int y = panels[i].getY();
+		int height = panels[i].getHeight();
+		
+		System.out.print("Y = ");System.out.print(y);System.out.println("");
+		System.out.print("Height = ");System.out.print(height);System.out.println("");
+		System.out.print("mouseY = ");System.out.print(e.getY());System.out.println("");
+		
+		boolean result = y < e.getY() && e.getY() < y + height;
+		return result;
+	}
+
+	/**
+	 * 
+	 */
+	private void openCardWindow(int BSC_CardLine_ID) {
+		System.out.print("BSC_CardLine_ID = ");System.out.print(BSC_CardLine_ID);System.out.println("");
+		
+		AWindow myWindow = new AWindow(getGraphicsConfiguration());
+		int AD_Window_ID = 1000104;
+		MQuery query = new MQuery(MBSCCard.Table_ID);
+		query.addRestriction("BSC_Card_ID", MQuery.EQUAL, card.getBSC_Card_ID());
+		if (BSC_CardLine_ID > 0) {
+			query.setZoomTableName(MBSCCardLine.Table_Name);
+			query.setZoomColumnName(MBSCCardLine.COLUMNNAME_BSC_CardLine_ID);
+			query.setZoomValue(BSC_CardLine_ID);
+		}
+		if (myWindow.initWindow(AD_Window_ID, query)) {
+			AEnv.addToWindowManager(myWindow);
+			myWindow.pack();
+			myWindow.setVisible(true);
+			myWindow.toFront();
+		};
+		
+	}
+
+	/**
+	 * @param e
+	 * @return
+	 */
+	private boolean isTitle(MouseEvent e) {
+		int y = 0;
+		int height = totalPanel.getHeight();
+/*		
+		System.out.print("Y = ");System.out.print(y);System.out.println("");
+		System.out.print("Height = ");System.out.print(height);System.out.println("");
+		System.out.print("mouseY = ");System.out.print(e.getY());System.out.println("");
+*/		
+		boolean result = (y < e.getY() && e.getY() < y + height);
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
+	 */
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
+	 */
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see java.awt.event.MouseListener#mouseEntered(java.awt.event.MouseEvent)
+	 */
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
+	 */
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
 	}
 }

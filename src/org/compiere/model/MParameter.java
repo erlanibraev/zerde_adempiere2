@@ -66,10 +66,12 @@ public class MParameter extends X_BSC_Parameter {
 	
 	public MParameterLine getParameterLine(MPeriod period) {
 		MParameterLine result = null;
-		for(MParameterLine line:getParameterLine()) {
-			if(line.getC_Period_ID() ==period.getC_Period_ID()) {
-				result = line;
-				break;
+		if(period != null) {
+			for(MParameterLine line:getParameterLine()) {
+				if(line.getC_Period_ID() ==period.getC_Period_ID()) {
+					result = line;
+					break;
+				}
 			}
 		}
 		return result;
@@ -220,6 +222,9 @@ public class MParameter extends X_BSC_Parameter {
 			parameterLine = parameter.getParameterLine(period);
 		} else if (parameter.iswithout_period()) {
 			parameterLine = parameter.getZeroParameterLine(); 
+		} else {
+			period = new MPeriod(Env.getCtx(),parameter.getMaxPeriodInLine(), parameter.get_TrxName());
+			parameterLine = parameter.getParameterLine(period);
 		}
 		if (parameter == null || parameterLine == null) {
 			return "0";
@@ -484,7 +489,6 @@ public class MParameter extends X_BSC_Parameter {
 			setPeriod(period);
 		}
 		if (getParameterLine(period) != null) {
-			// result = getCurrentParameterLine().getValue();
 			try {
 				result = MParameter.runCalc(this, C_Period_ID, null, sqlParam);
 				result = (result == null ? "0" : result);

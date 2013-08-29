@@ -29,7 +29,7 @@ public class X_BSC_Dashboard extends PO implements I_BSC_Dashboard, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130828L;
+	private static final long serialVersionUID = 20130829L;
 
     /** the default Constructor */
     public X_BSC_Dashboard(Properties ctx)
