@@ -238,6 +238,9 @@ public class BPM_CalcFormValues extends SvrProcess {
 			type = par.getParameterType();
 		}
 		
+		if(BPM_Project_ID != MBPMProject.TempProjectID && BPM_Project_ID != 0)
+			param.put(I_BPM_Project.COLUMNNAME_BPM_Project_ID, String.valueOf(BPM_Project_ID));
+		
 		return param;
 		
 	}
