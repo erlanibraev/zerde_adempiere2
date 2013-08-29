@@ -49,6 +49,7 @@ public class MBPMFormParameters extends X_BPM_FormParameters {
 		List<MBPMFormParameters> list = new Query(ctx, I_BPM_FormParameters.Table_Name, "BPM_FormCell_ID=?", trxName)
 		.setParameters(BPM_FormCell_ID)
 		.setOnlyActiveRecords(true)
+		.setOrderBy(MBPMFormParameters.COLUMNNAME_ParameterType)
 		.list();
 		
 		MBPMFormParameters[] retValue = new MBPMFormParameters[list.size ()];

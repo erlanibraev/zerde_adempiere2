@@ -110,7 +110,7 @@ public class MPFRWhereClause extends X_PFR_WhereClause
     			if(chargeIN.indexOf(",") == -1)
     				subSql = MPFRCalculation.getSQLValue(Integer.parseInt(value1), parameters);
     			else
-    				subSql = (String) parameters.get(I_BPM_FormParameters.COLUMNNAME_C_Charge_ID);
+    				subSql = (String) parameters.get(column.getColumnName());
     			
     			sql.append(dateRequiredOpen)
 	    		.append(quotesRequired);

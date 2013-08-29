@@ -29,7 +29,7 @@ public class X_BPM_FormParameters extends PO implements I_BPM_FormParameters, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130828L;
+	private static final long serialVersionUID = 20130829L;
 
     /** the default Constructor */
     public X_BPM_FormParameters(Properties ctx)
@@ -45,7 +45,6 @@ public class X_BPM_FormParameters extends PO implements I_BPM_FormParameters, I_
         {
 			setBPM_FormCell_ID (0);
 			setBPM_FormParameters_ID (0);
-			setC_Charge_ID (0);
         } */
     }
 
@@ -122,6 +121,31 @@ public class X_BPM_FormParameters extends PO implements I_BPM_FormParameters, I_
 		return ii.intValue();
 	}
 
+	public I_BPM_Project getBPM_Project() throws RuntimeException
+    {
+		return (I_BPM_Project)MTable.get(getCtx(), I_BPM_Project.Table_Name)
+			.getPO(getBPM_Project_ID(), get_TrxName());	}
+
+	/** Set BPM_Project ID.
+		@param BPM_Project_ID BPM_Project ID	  */
+	public void setBPM_Project_ID (int BPM_Project_ID)
+	{
+		if (BPM_Project_ID < 1) 
+			set_Value (COLUMNNAME_BPM_Project_ID, null);
+		else 
+			set_Value (COLUMNNAME_BPM_Project_ID, Integer.valueOf(BPM_Project_ID));
+	}
+
+	/** Get BPM_Project ID.
+		@return BPM_Project ID	  */
+	public int getBPM_Project_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_BPM_Project_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException
     {
 		return (org.compiere.model.I_C_Charge)MTable.get(getCtx(), org.compiere.model.I_C_Charge.Table_Name)
@@ -176,5 +200,31 @@ public class X_BPM_FormParameters extends PO implements I_BPM_FormParameters, I_
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** ParameterType AD_Reference_ID=1000180 */
+	public static final int PARAMETERTYPE_AD_Reference_ID=1000180;
+	/** Charge = C_Charge_ID */
+	public static final String PARAMETERTYPE_Charge = "C_Charge_ID";
+	/** Period = C_Period_ID */
+	public static final String PARAMETERTYPE_Period = "C_Period_ID";
+	/** Project = BPM_Project_ID */
+	public static final String PARAMETERTYPE_Project = "BPM_Project_ID";
+	/** Set ParameterType.
+		@param ParameterType 
+		Тип параметра
+	  */
+	public void setParameterType (String ParameterType)
+	{
+
+		set_Value (COLUMNNAME_ParameterType, ParameterType);
+	}
+
+	/** Get ParameterType.
+		@return Тип параметра
+	  */
+	public String getParameterType () 
+	{
+		return (String)get_Value(COLUMNNAME_ParameterType);
 	}
 }

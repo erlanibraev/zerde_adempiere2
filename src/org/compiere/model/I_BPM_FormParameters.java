@@ -82,6 +82,17 @@ public interface I_BPM_FormParameters
 	/** Get BPM_FormParameters ID	  */
 	public int getBPM_FormParameters_ID();
 
+    /** Column name BPM_Project_ID */
+    public static final String COLUMNNAME_BPM_Project_ID = "BPM_Project_ID";
+
+	/** Set BPM_Project ID	  */
+	public void setBPM_Project_ID (int BPM_Project_ID);
+
+	/** Get BPM_Project ID	  */
+	public int getBPM_Project_ID();
+
+	public I_BPM_Project getBPM_Project() throws RuntimeException;
+
     /** Column name C_Charge_ID */
     public static final String COLUMNNAME_C_Charge_ID = "C_Charge_ID";
 
@@ -140,6 +151,19 @@ public interface I_BPM_FormParameters
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name ParameterType */
+    public static final String COLUMNNAME_ParameterType = "ParameterType";
+
+	/** Set ParameterType.
+	  * Тип параметра
+	  */
+	public void setParameterType (String ParameterType);
+
+	/** Get ParameterType.
+	  * Тип параметра
+	  */
+	public String getParameterType();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

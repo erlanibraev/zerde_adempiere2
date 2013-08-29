@@ -208,36 +208,34 @@ public class BPM_CalcFormValues extends SvrProcess {
 		
 		MBPMFormParameters[] parameters = MBPMFormParameters.getLines(m_ctx, BPM_FormCell_ID, m_trxName);
 		LinkedHashMap<String, Object> param = new LinkedHashMap<String, Object>();
-		String inPeriod = "";
-		String inCharge = "";
 		
-		int nPeriod = 0;
-		int nCharge = 0;
-
+		String in = "";
+		int counter = 0;
+		boolean isChanged = false;
+		
+		String type = parameters.length > 0 ? parameters[0].getParameterType() : "";
+		
 		for(MBPMFormParameters par: parameters){
-			if(parameters.length > 1){
-				if(par.getC_Period_ID() > 0) {
-					if(nPeriod > 0) inPeriod += ",";
-					inPeriod += par.getC_Period_ID();					
-					nPeriod++;
-				}
-				if(par.getC_Charge_ID() > 0) {
-					if(nCharge > 0) inCharge += ",";					
-					inCharge += par.getC_Charge_ID();
-					nCharge++;
-				}	
-				if(par.getC_Charge_ID() > 0)
-					param.put(MBPMFormParameters.COLUMNNAME_C_Charge_ID, inCharge);
-				if(par.getC_Period_ID() > 0)
-					param.put(MBPMFormParameters.COLUMNNAME_C_Period_ID, inPeriod);
+			
+			isChanged = !type.equals(par.getParameterType());
+			
+			if(!isChanged)
+			{
+				if(counter > 0)
+					in += ", ";
+				
+				counter++;
 			}
 			else
 			{
-				if(par.getC_Charge_ID() > 0)
-					param.put(MBPMFormParameters.COLUMNNAME_C_Charge_ID, String.valueOf(par.getC_Charge_ID()));
-				if(par.getC_Period_ID() > 0)
-					param.put(MBPMFormParameters.COLUMNNAME_C_Period_ID, String.valueOf(par.getC_Period_ID()));
+				counter = 1;
+				in = "";
 			}
+			in += par.get_Value(par.getParameterType()).toString();
+			
+			param.put(par.getParameterType(), in);
+			
+			type = par.getParameterType();
 		}
 		
 		return param;
