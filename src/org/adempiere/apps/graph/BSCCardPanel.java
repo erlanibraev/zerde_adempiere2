@@ -33,7 +33,6 @@ import org.compiere.swing.CPanel;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.ValueNamePair;
-import org.eclipse.core.internal.resources.AliasManager.AddToCollectionDoit;
 
 /**
  * @author Y.Ibrayev
