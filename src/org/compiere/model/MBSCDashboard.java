@@ -23,6 +23,7 @@ public class MBSCDashboard extends X_BSC_Dashboard {
 	private static final long serialVersionUID = 2489998524305817971L;
 	private MBSCCard card = null;
 	private MPeriod period = null;
+	private static MBSCDashboard[] dashboards = null;
 
 	/**
 	 * @param ctx
@@ -53,16 +54,14 @@ public class MBSCDashboard extends X_BSC_Dashboard {
 	}
 	
 	public static MBSCDashboard[] getDashboard(int C_Period_ID) {
-		int AD_Client_ID = Env.getAD_Client_ID(Env.getCtx());
-		String WhereClause = "AD_Client_ID = ?";
-		List<MBSCDashboard> result = new Query(Env.getCtx(), MBSCDashboard.Table_Name, WhereClause, null).setParameters(AD_Client_ID).list();
-		for(int i=0; i < result.size(); i++)
-			result.get(i).setPeriod(new MPeriod(Env.getCtx(),C_Period_ID,null));
-		return (result != null ? result.toArray(new MBSCDashboard[result.size()]) :  null);
+		dashboards = getDashboards(false);
+		for(int i=0; i < dashboards.length; i++)
+			dashboards[i].setPeriod((C_Period_ID == 0 ? null : new MPeriod(Env.getCtx(),C_Period_ID,null)));
+		return dashboards;
 	}
 
 	public MBSCCard getCard() {
-		if (card == null && period != null) {
+		if ((card == null && period != null) || (card != null && period != null && card.getC_Period_ID() != period.getC_Period_ID())) {
 			int C_BPartner_ID = getC_BPartner_ID();
 			int C_Period_ID = getPeriod().getC_Period_ID();
 			int AD_Client_ID = Env.getAD_Client_ID(Env.getCtx());
@@ -116,5 +115,15 @@ public class MBSCDashboard extends X_BSC_Dashboard {
 			result = DB.getSQLValue(null, sql,C_BPartner_ID);
 		}
 		return result;
+	}
+	
+	public static MBSCDashboard[] getDashboards(boolean force) {
+		if (force || dashboards == null) {
+			int AD_Client_ID = Env.getAD_Client_ID(Env.getCtx());
+			String WhereClause = "AD_Client_ID = ?";
+			List<MBSCDashboard> list = new Query(Env.getCtx(), MBSCDashboard.Table_Name, WhereClause, null).setParameters(AD_Client_ID).list();
+			dashboards = (list == null ? null : list.toArray(new MBSCDashboard[list.size()]));
+		}
+		return dashboards;
 	}
 }

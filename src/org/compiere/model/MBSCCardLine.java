@@ -104,7 +104,7 @@ public class MBSCCardLine extends X_BSC_CardLine {
 				saveParameterOutValue();
 				result = new BigDecimal(getParameter_Out().getValue(getCard().getPeriod()));
 				setValueNumber(result);
-				saveParameterOutValue();
+//				saveParameterOutValue();
 			}
 		}
 		return result;
@@ -201,9 +201,9 @@ public class MBSCCardLine extends X_BSC_CardLine {
 	private Object getValue(String varName) throws Exception {
 		Object result = null;
 		if (varName.equalsIgnoreCase(CARDLINEVARIABLE_MAX)) {
-			result  = getValueMax().toString();
+			result  = getValueMax();
 		} else if (varName.equalsIgnoreCase(CARDLINEVARIABLE_MIN)) {
-			result = getValueMin().toString();
+			result = getValueMin();
 		} else if (varName.equalsIgnoreCase(CARDLINEVARIABLE_COEFFICIENT)) {
 			if (getCoefficient() != null) {
 				result = getCoefficient().calcCoefficient(getValue(),getValueMax(),getValueMin()).toString();
@@ -217,7 +217,7 @@ public class MBSCCardLine extends X_BSC_CardLine {
 				result = getValue();
 			}
 		} else if (varName.equalsIgnoreCase(CARDLINEVARIABLE_WEIGHT)) {
-			result = getWeight().toString();
+			result = getWeight();
 		} else if (varName.equalsIgnoreCase(CARDLINEVARIABLE_Q)) {
 			result  = getQ();
 		} else {
@@ -396,7 +396,8 @@ public class MBSCCardLine extends X_BSC_CardLine {
 				pLine.save();
 			}else {
 				try {
-					paramVar.setValue(getValue(key).toString(),card.getPeriod());
+					pLine.setValue(getValue(key).toString());
+					pLine.save();
 				} catch (Exception e) {
 					sLog.log(Level.SEVERE, "setVar", e);
 				}

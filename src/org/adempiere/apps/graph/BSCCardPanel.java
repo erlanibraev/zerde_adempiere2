@@ -62,6 +62,7 @@ public class BSCCardPanel extends JPanel {
 	 * 
 	 */
 	private void makePane() {
+		if (getCard() == null) return;
 		
 		viewTotal();
 		viewCard();
@@ -74,8 +75,8 @@ public class BSCCardPanel extends JPanel {
 	 * 
 	 */
 	private void viewTotal() {
-		totalPanel.add(new CLabel(card.getName()));
-		double value = card.getValueNumber().doubleValue() / 100;
+		totalPanel.add(new CLabel((card == null ? "" : card.getName())));
+		double value = (card == null ? 0 : card.getValueNumber().doubleValue() / 100);
 		
 		Color c;
 		if (value < 0.5) c = Color.RED;
@@ -91,7 +92,7 @@ public class BSCCardPanel extends JPanel {
 		for(int i:cellWidth) {
 			sizeX += i;
 		}
-		int sizeY = 50 + cellHeight[0] + cellHeight[1] * (card.getLines(false).length);
+		int sizeY = 50 + cellHeight[0] + cellHeight[1] * (card == null ? 1 : card.getLines(false).length);
 		Dimension result = new Dimension(sizeX,sizeY);
 		return result;
 	};
@@ -137,7 +138,7 @@ public class BSCCardPanel extends JPanel {
 	 * 
 	 */
 	private void initLabel() {
-		if (card.getLines(false) != null) {
+		if (card != null && card.getLines(false) != null) {
 			label = new JLabel[card.getLines(false).length + 1][tableHeader.length];
 			for(int i = 0; i < label[0].length; i++) {
 				label[0][i] = new JLabel(tableHeader[i]);
