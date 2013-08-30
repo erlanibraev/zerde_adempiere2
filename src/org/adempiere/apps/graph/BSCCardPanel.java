@@ -51,8 +51,8 @@ public class BSCCardPanel extends JPanel implements MouseListener, ActionListene
 	private JLabel[][] label = null; 
 	private static int[] cellWidth = {300,80,80,80,80,80,120};
 	private static int[] cellHeight = {50,100};
-	private JPanel cardPanel = new JPanel();
-	private JPanel totalPanel = new JPanel();
+	private JPanel cardPanel = null;
+	private JPanel totalPanel = null;
 	private CPanel[][] panels = null;
 	
 	public BSCCardPanel(MBSCCard card) {
@@ -64,8 +64,11 @@ public class BSCCardPanel extends JPanel implements MouseListener, ActionListene
 	}
 
 	public void init() {
-		totalPanel.removeAll();
-		cardPanel.removeAll();
+		
+		removeAll();
+		
+		totalPanel = new JPanel();
+		cardPanel = new JPanel();
 		
 		initLayout();
 
