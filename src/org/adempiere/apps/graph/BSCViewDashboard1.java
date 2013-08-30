@@ -4,6 +4,7 @@
 package org.adempiere.apps.graph;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
@@ -21,6 +22,7 @@ import layout.TableLayout;
 
 import org.adempiere.apps.graph.BSCViewDashboard.ValueComparator;
 import org.compiere.apps.ADialog;
+import org.compiere.apps.AEnv;
 import org.compiere.apps.ConfirmPanel;
 import org.compiere.apps.form.FormFrame;
 import org.compiere.apps.form.FormPanel;
@@ -30,6 +32,7 @@ import org.compiere.model.MBSCCard;
 import org.compiere.model.MBSCDashboard;
 import org.compiere.model.MPeriod;
 import org.compiere.model.MRole;
+import org.compiere.swing.CButton;
 import org.compiere.swing.CComboBox;
 import org.compiere.swing.CPanel;
 import org.compiere.swing.CScrollPane;
@@ -37,6 +40,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
+import org.compiere.process.BSCCardDiagram;
 
 /**
  * @author Y.Ibrayev
@@ -61,6 +65,7 @@ public class BSCViewDashboard1 extends CPanel  implements FormPanel, ActionListe
 	private ArrayList<MBSCDashboard> cards = new ArrayList<MBSCDashboard>(); 
 	private MPeriod period = null;
 	private int currentCard = -1;
+	private CButton diagramm = new CButton("Диаграмма");
 
 	/* (non-Javadoc)
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
@@ -73,6 +78,8 @@ public class BSCViewDashboard1 extends CPanel  implements FormPanel, ActionListe
 			KeyNamePair knp = (KeyNamePair) cbPeriod.getSelectedItem();
 			setPeriod(new MPeriod(Env.getCtx(),knp.getKey(),null));
 			reDrawPanel();
+		} else if (e.getSource() == diagramm){
+			viewDiagramm();
 		} else if (e.getSource() instanceof JButton){
 			for(int i = 0 ; i < getButtons().size(); i++) {
 				if (e.getSource() == getButtons().get(i)) {
@@ -80,6 +87,33 @@ public class BSCViewDashboard1 extends CPanel  implements FormPanel, ActionListe
 					reDrawPanel();
 				}
 			}
+		}
+	}
+
+	/**
+	 * 
+	 */
+	private void viewDiagramm() {
+		if (currentCard < 0) {
+			ADialog.info(25, this, "Виберите карту ССП");
+			return;
+		}
+		MBSCCard card = cards.get(currentCard).getCard();
+		if (card == null) {
+			ADialog.info(25, this, "Карта ССП не найден");
+			return;
+		}
+		FormFrame myWindow = new FormFrame(Env.getWindow(0).getGraphicsConfiguration());
+		if (myWindow.openForm(BSCCardDiagram.getBSCViewCardLine())) {
+			BSCViewCardLine view = (BSCViewCardLine) myWindow.getFormPanel();
+			if (card.getBSC_Card_ID() > 0) {
+				view.load(card.getBSC_Card_ID(),0);
+			}
+			AEnv.addToWindowManager(myWindow);
+			AEnv.showCenterScreen(myWindow);
+			myWindow.setVisible(true);
+			myWindow.setFocusableWindowState(true);
+			myWindow.toFront();
 		}
 	}
 
@@ -129,6 +163,15 @@ public class BSCViewDashboard1 extends CPanel  implements FormPanel, ActionListe
 
 	private void initLoadPanel() {
 		loadPanel.add(initCbPeriod());
+		loadPanel.add(initDiagramm());
+	}
+
+	/**
+	 * @return
+	 */
+	private Component initDiagramm() {
+		diagramm.addActionListener(this);
+		return diagramm;
 	}
 
 	private CComboBox initCbPeriod() {

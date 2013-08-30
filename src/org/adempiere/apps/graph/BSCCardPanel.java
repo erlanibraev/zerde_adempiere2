@@ -53,7 +53,7 @@ public class BSCCardPanel extends JPanel implements MouseListener, ActionListene
 	private static int[] cellHeight = {50,100};
 	private JPanel cardPanel = new JPanel();
 	private JPanel totalPanel = new JPanel();
-	private CPanel[] panels = null;
+	private CPanel[][] panels = null;
 	
 	public BSCCardPanel(MBSCCard card) {
 		super();
@@ -64,7 +64,8 @@ public class BSCCardPanel extends JPanel implements MouseListener, ActionListene
 	}
 
 	public void init() {
-		removeAll();
+		totalPanel.removeAll();
+		cardPanel.removeAll();
 		
 		initLayout();
 
@@ -124,12 +125,12 @@ public class BSCCardPanel extends JPanel implements MouseListener, ActionListene
 	private void viewCard() {
 		initLabel();
 		if (label != null) {
-			panels = new CPanel[label.length];
+			panels = new CPanel[label.length][tableHeader.length];
 			for(int i=0; i < label.length; i++) {
 				for(int j = 0; j < tableHeader.length; j++) {
-					panels[i] = new CPanel();
+					panels[i][j] = new CPanel();
 					if (label[i][j] != null) {
-						panels[i].add(label[i][j]);
+						panels[i][j].add(label[i][j]);
 					}
 					if ( i > 0) {
 						MBSCCardLine cardLine = card.getLines(false)[i-1]; 
@@ -140,17 +141,17 @@ public class BSCCardPanel extends JPanel implements MouseListener, ActionListene
 							else if ( value < 1) c = Color.YELLOW;  
 							else c = Color.GREEN;
 							BSCPointPanel pp = new BSCPointPanel(c);
-							panels[i].add(pp);
+							panels[i][j].add(pp);
 						}
 						if (j == 6) {
 							BSCThermometer t = new BSCThermometer(value);
-							panels[i].add(t);
+							panels[i][j].add(t);
 						}
 					}
 					String pos = Integer.toString((j)) +"," 
 				               + Integer.toString((i));
-					panels[i].setBorder(getBorder());
-					cardPanel.add(panels[i],pos);
+					panels[i][j].setBorder(getBorder());
+					cardPanel.add(panels[i][j],pos);
 				}
 			}
 		}
@@ -160,7 +161,7 @@ public class BSCCardPanel extends JPanel implements MouseListener, ActionListene
 	 * 
 	 */
 	private void initLabel() {
-		if (card != null && card.getLines(false) != null) {
+		if (card != null && card.getLines(true) != null) {
 			label = new JLabel[card.getLines(false).length + 1][tableHeader.length];
 			for(int i = 0; i < label[0].length; i++) {
 				label[0][i] = new JLabel(tableHeader[i]);
@@ -224,7 +225,7 @@ public class BSCCardPanel extends JPanel implements MouseListener, ActionListene
 	 */
 	private void initTableSize() {
 		if (card != null) {
-			int size = (card.getCardLine() == null ? 0 : card.getCardLine().size());
+			int size = (card.getCardLine() == null ? 0 : card.getCardLine().size()+1);
 			if (size+1 < tableHeader.length) {
 				size = tableHeader.length + 1;
 			}
@@ -259,8 +260,8 @@ public class BSCCardPanel extends JPanel implements MouseListener, ActionListene
 	 * @return
 	 */
 	private boolean isLabel(int i,MouseEvent e) {
-		int y = panels[i].getY();
-		int height = panels[i].getHeight();
+		int y = panels[i][0].getY();
+		int height = panels[i][0].getHeight();
 		
 		System.out.print("Y = ");System.out.print(y);System.out.println("");
 		System.out.print("Height = ");System.out.print(height);System.out.println("");

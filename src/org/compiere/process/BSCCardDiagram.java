@@ -13,6 +13,7 @@ import org.adempiere.apps.graph.BSCViewCardLine;
 import org.compiere.apps.AEnv;
 import org.compiere.apps.form.FormFrame;
 import org.compiere.model.MPeriod;
+import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 
@@ -24,6 +25,7 @@ public class BSCCardDiagram extends SvrProcess {
 
 	private BSCViewCardLine view = new BSCViewCardLine();
 	private int BSC_Card_ID = 0;
+	private static CLogger sLog = CLogger.getCLogger(BSCCardDiagram.class);
 	
 	/* (non-Javadoc)
 	 * @see org.compiere.process.SvrProcess#prepare()
@@ -48,15 +50,16 @@ public class BSCCardDiagram extends SvrProcess {
 			if (BSC_Card_ID > 0) {
 				view.load(BSC_Card_ID,0);
 			}
+			AEnv.addToWindowManager(myWindow);
 			AEnv.showCenterScreen(myWindow);
 			myWindow.setVisible(true);
 			myWindow.setFocusableWindowState(true);
-//			myWindow.setAlwaysOnTop(true);
+			myWindow.toFront();
 		}
 		return null;
 	}
 
-	private int getBSCViewCardLine() {
+	public static int getBSCViewCardLine() {
 		int result = 0;
 		String sql = "SELECT AD_Form_ID FROM AD_Form WHERE Name like 'BSC_ViewCardLine'";
 		PreparedStatement pstmt = null;
@@ -68,7 +71,7 @@ public class BSCCardDiagram extends SvrProcess {
 				result = rs.getInt(1);
 			}
 		} catch(SQLException e) {
-			log.log(Level.SEVERE, sql, e);		
+			sLog.log(Level.SEVERE, sql, e);		
 		} finally {
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
