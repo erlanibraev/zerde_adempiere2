@@ -56,4 +56,17 @@ public class MBPMFormColumn extends X_BPM_FormColumn {
 		return retValue;
 	}
 	
+	/* 
+	 */
+	@Override
+	protected boolean afterSave(boolean newRecord, boolean success) {
+		
+		if(newRecord){
+			MParameter param = MParameter.createParameter(getBPM_FormCode().getName()+" Column{"+getOrderColumn()+", "+getName()+"}", MFormula.getFormulaValue_ID());
+			setBSC_Parameter_ID(param.getBSC_Parameter_ID());
+		}
+		
+		return true;
+	}
+	
 }

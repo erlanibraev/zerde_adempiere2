@@ -150,6 +150,31 @@ public class X_BPM_FormLine extends PO implements I_BPM_FormLine, I_Persistent
 		return ii.intValue();
 	}
 
+	public I_BSC_Parameter getBSC_Parameter() throws RuntimeException
+    {
+		return (I_BSC_Parameter)MTable.get(getCtx(), I_BSC_Parameter.Table_Name)
+			.getPO(getBSC_Parameter_ID(), get_TrxName());	}
+
+	/** Set BSC_Parameter ID.
+		@param BSC_Parameter_ID BSC_Parameter ID	  */
+	public void setBSC_Parameter_ID (int BSC_Parameter_ID)
+	{
+		if (BSC_Parameter_ID < 1) 
+			set_Value (COLUMNNAME_BSC_Parameter_ID, null);
+		else 
+			set_Value (COLUMNNAME_BSC_Parameter_ID, Integer.valueOf(BSC_Parameter_ID));
+	}
+
+	/** Get BSC_Parameter ID.
+		@return BSC_Parameter ID	  */
+	public int getBSC_Parameter_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_BSC_Parameter_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set Description.
 		@param Description 
 		Optional short description of the record

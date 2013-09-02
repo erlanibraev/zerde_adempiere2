@@ -93,6 +93,17 @@ public interface I_BPM_FormLine
 	/** Get BPM_FormLine ID	  */
 	public int getBPM_FormLine_ID();
 
+    /** Column name BSC_Parameter_ID */
+    public static final String COLUMNNAME_BSC_Parameter_ID = "BSC_Parameter_ID";
+
+	/** Set BSC_Parameter ID	  */
+	public void setBSC_Parameter_ID (int BSC_Parameter_ID);
+
+	/** Get BSC_Parameter ID	  */
+	public int getBSC_Parameter_ID();
+
+	public I_BSC_Parameter getBSC_Parameter() throws RuntimeException;
+
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
 

@@ -70,6 +70,10 @@ public class MBPMFormLine extends X_BPM_FormLine {
 		
 
 		if(newRecord){
+			
+			MParameter param_ = MParameter.createParameter(form.getBPM_FormCode().getName()+" Line{"+getLineNo()+", "+getName()+"}", MFormula.getFormulaValue_ID());
+			setBSC_Parameter_ID(param_.getBSC_Parameter_ID());
+			
 			for(MBPMFormColumn column: listColumn){
 				
 				MBPMFormCell cell = new MBPMFormCell(getCtx(), 0, get_TrxName());
