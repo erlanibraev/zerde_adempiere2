@@ -30,7 +30,7 @@ public interface I_BPM_FormCell
     /** TableName=BPM_FormCell */
     public static final String Table_Name = "BPM_FormCell";
 
-    /** AD_Table_ID=1000266 */
+    /** AD_Table_ID=1000322 */
     public static final int Table_ID = MTable.getTable_ID(Table_Name);
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
@@ -141,6 +141,19 @@ public interface I_BPM_FormCell
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name isParameter */
+    public static final String COLUMNNAME_isParameter = "isParameter";
+
+	/** Set isParameter.
+	  * Параметр
+	  */
+	public void setisParameter (boolean isParameter);
+
+	/** Get isParameter.
+	  * Параметр
+	  */
+	public boolean isParameter();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

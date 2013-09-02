@@ -31,7 +31,7 @@ public class X_BPM_FormCell extends PO implements I_BPM_FormCell, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130813L;
+	private static final long serialVersionUID = 20130902L;
 
     /** the default Constructor */
     public X_BPM_FormCell(Properties ctx)
@@ -50,6 +50,8 @@ public class X_BPM_FormCell extends PO implements I_BPM_FormCell, I_Persistent
 			setBPM_FormLine_ID (0);
 			setCellValue (Env.ZERO);
 // 0
+			setisParameter (false);
+// N
         } */
     }
 
@@ -191,5 +193,29 @@ public class X_BPM_FormCell extends PO implements I_BPM_FormCell, I_Persistent
 		if (bd == null)
 			 return Env.ZERO;
 		return bd;
+	}
+
+	/** Set isParameter.
+		@param isParameter 
+		Параметр
+	  */
+	public void setisParameter (boolean isParameter)
+	{
+		set_Value (COLUMNNAME_isParameter, Boolean.valueOf(isParameter));
+	}
+
+	/** Get isParameter.
+		@return Параметр
+	  */
+	public boolean isParameter () 
+	{
+		Object oo = get_Value(COLUMNNAME_isParameter);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 }

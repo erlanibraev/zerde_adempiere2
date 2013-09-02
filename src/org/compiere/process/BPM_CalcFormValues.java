@@ -81,8 +81,18 @@ public class BPM_CalcFormValues extends SvrProcess {
 		
 		for(MBPMFormLine l: formLine){
 			
+			int BSC_Parameter_ID = 0;
+			
 			formCell = MBPMFormLine.getLines(m_ctx, l.getBPM_FormLine_ID(), m_trxName);
 			for(MBPMFormCell cell: formCell){
+				
+				BSC_Parameter_ID = cell.getBSC_Parameter_ID();
+				if(!cell.isParameter()) {
+					if(l.isParameter())
+						BSC_Parameter_ID = l.getBSC_Parameter_ID();
+					else if(cell.getBPM_FormColumn().isParameter())
+						BSC_Parameter_ID = cell.getBPM_FormColumn().getBSC_Parameter_ID();
+				}
 				
 				MBPMFormValues value = MBPMFormValues.getFormValueLine(l.getBPM_FormLine_ID(), cell.getBPM_FormColumn_ID(), form.getBPM_VersionBudget_ID(), BPM_Project_ID);
 				if(value == null)
@@ -100,7 +110,7 @@ public class BPM_CalcFormValues extends SvrProcess {
 					value.setCellValue(new BigDecimal(0));
 					value.setAlternateValue("");
 					
-					MParameterLine parLine = getLineParameter(cell.getBSC_Parameter_ID());
+					MParameterLine parLine = getLineParameter(BSC_Parameter_ID);
 					
 					//
 					String result = "0";
@@ -138,7 +148,6 @@ public class BPM_CalcFormValues extends SvrProcess {
 					value.saveEx();
 				}
 			}
-			
 		}
 		
 		// 

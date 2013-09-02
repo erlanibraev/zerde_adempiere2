@@ -465,11 +465,12 @@ public class MParameter extends X_BSC_Parameter {
 		return result;
 	}
 	
-	public static MParameter createParameter(String Name,int BSC_Formula_ID) {
+	public static MParameter createParameter(String Name,int BSC_Formula_ID, String modules) {
 		MParameter result = null;
 		try {
 			MParameter param = new MParameter(Env.getCtx(),0,null);
 			param.setName(Name);
+			param.setModules(modules);
 			if (param.save()) {
 				param.setwithout_period(true);
 				MParameterLine pl = param.getZeroParameterLine();
