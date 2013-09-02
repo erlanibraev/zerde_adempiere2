@@ -30,7 +30,7 @@ public class X_BPM_FormColumn extends PO implements I_BPM_FormColumn, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130806L;
+	private static final long serialVersionUID = 20130902L;
 
     /** the default Constructor */
     public X_BPM_FormColumn(Properties ctx)
@@ -46,6 +46,8 @@ public class X_BPM_FormColumn extends PO implements I_BPM_FormColumn, I_Persiste
         {
 			setBPM_FormCode_ID (0);
 			setBPM_FormColumn_ID (0);
+			setisParameter (false);
+// N
 			setName (null);
 			setOrderColumn (0);
 // @SQL=SELECT coalesce(MAX(OrderColumn),0)+10 AS DefaultValue FROM BPM_FormColumn WHERE BPM_FormCode_ID=@BPM_FormCode_ID@
@@ -123,6 +125,30 @@ public class X_BPM_FormColumn extends PO implements I_BPM_FormColumn, I_Persiste
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set isParameter.
+		@param isParameter 
+		Параметр
+	  */
+	public void setisParameter (boolean isParameter)
+	{
+		set_Value (COLUMNNAME_isParameter, Boolean.valueOf(isParameter));
+	}
+
+	/** Get isParameter.
+		@return Параметр
+	  */
+	public boolean isParameter () 
+	{
+		Object oo = get_Value(COLUMNNAME_isParameter);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	/** Set Name.

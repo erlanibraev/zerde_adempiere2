@@ -30,7 +30,7 @@ public class X_BPM_FormLine extends PO implements I_BPM_FormLine, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130822L;
+	private static final long serialVersionUID = 20130902L;
 
     /** the default Constructor */
     public X_BPM_FormLine(Properties ctx)
@@ -46,6 +46,8 @@ public class X_BPM_FormLine extends PO implements I_BPM_FormLine, I_Persistent
         {
 			setBPM_Form_ID (0);
 			setBPM_FormLine_ID (0);
+			setisParameter (false);
+// N
 			setName (null);
         } */
     }
@@ -163,6 +165,58 @@ public class X_BPM_FormLine extends PO implements I_BPM_FormLine, I_Persistent
 	public String getDescription () 
 	{
 		return (String)get_Value(COLUMNNAME_Description);
+	}
+
+	/** Set isParameter.
+		@param isParameter 
+		Параметр
+	  */
+	public void setisParameter (boolean isParameter)
+	{
+		set_Value (COLUMNNAME_isParameter, Boolean.valueOf(isParameter));
+	}
+
+	/** Get isParameter.
+		@return Параметр
+	  */
+	public boolean isParameter () 
+	{
+		Object oo = get_Value(COLUMNNAME_isParameter);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** LevelType AD_Reference_ID=1000128 */
+	public static final int LEVELTYPE_AD_Reference_ID=1000128;
+	/** Category = CATEGORY */
+	public static final String LEVELTYPE_Category = "CATEGORY";
+	/** Class = CLASS */
+	public static final String LEVELTYPE_Class = "CLASS";
+	/** Specificity = SPECIFICITY */
+	public static final String LEVELTYPE_Specificity = "SPECIFICITY";
+	/** SubClass = SUBCLASS */
+	public static final String LEVELTYPE_SubClass = "SUBCLASS";
+	/** Set LevelType.
+		@param LevelType 
+		Тип уровня
+	  */
+	public void setLevelType (String LevelType)
+	{
+
+		set_Value (COLUMNNAME_LevelType, LevelType);
+	}
+
+	/** Get LevelType.
+		@return Тип уровня
+	  */
+	public String getLevelType () 
+	{
+		return (String)get_Value(COLUMNNAME_LevelType);
 	}
 
 	/** Set Line.

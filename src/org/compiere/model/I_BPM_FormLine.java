@@ -135,6 +135,32 @@ public interface I_BPM_FormLine
 	  */
 	public boolean isActive();
 
+    /** Column name isParameter */
+    public static final String COLUMNNAME_isParameter = "isParameter";
+
+	/** Set isParameter.
+	  * Параметр
+	  */
+	public void setisParameter (boolean isParameter);
+
+	/** Get isParameter.
+	  * Параметр
+	  */
+	public boolean isParameter();
+
+    /** Column name LevelType */
+    public static final String COLUMNNAME_LevelType = "LevelType";
+
+	/** Set LevelType.
+	  * Тип уровня
+	  */
+	public void setLevelType (String LevelType);
+
+	/** Get LevelType.
+	  * Тип уровня
+	  */
+	public String getLevelType();
+
     /** Column name LineNo */
     public static final String COLUMNNAME_LineNo = "LineNo";
 
