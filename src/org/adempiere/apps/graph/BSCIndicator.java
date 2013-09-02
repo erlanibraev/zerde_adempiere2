@@ -173,7 +173,7 @@ public class BSCIndicator extends JPanel implements MouseListener, ActionListene
         }
         plot.setRange(new Range(0,rangeLo));
         plot.setDialBackgroundPaint(new Color(-13091716));//Color.GRAY);
-        plot.setUnits(getParameter().getName());
+        plot.setUnits("");
         plot.setDialShape(DialShape.CHORD);//CIRCLE);        
         //plot.setDialBackgroundPaint(new GradientPaint(0, 0, m_goal.getColor(), 0, 1000, Color.black));
         plot.setNeedlePaint(Color.white);  

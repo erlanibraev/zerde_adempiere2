@@ -455,8 +455,32 @@ public class MParameter extends X_BSC_Parameter {
 					param.delete(true);
 				}
 			}
-			param.loadParameterLine();
-			param.setPeriod(new MPeriod(Env.getCtx(),C_Period_ID,null));
+			if (result != null) {
+				result.loadParameterLine();
+				result.setPeriod(( C_Period_ID == 0? null : new MPeriod(Env.getCtx(),C_Period_ID,null)));
+			}
+		} catch(Exception e) {
+			sLog.log(Level.SEVERE, "createParameter: "+Name+" - ", e);
+		}
+		return result;
+	}
+	
+	public static MParameter createParameter(String Name,int BSC_Formula_ID) {
+		MParameter result = null;
+		try {
+			MParameter param = new MParameter(Env.getCtx(),0,null);
+			param.setName(Name);
+			param.setwithout_period(true);
+			if (param.save()) {
+				MParameterLine pl = param.getZeroParameterLine();
+				pl.setBSC_Formula_ID(BSC_Formula_ID);
+				if (pl.save()) {
+					pl.getVariables();
+					result = param;
+				} else {
+					param.delete(true);
+				}
+			}
 		} catch(Exception e) {
 			sLog.log(Level.SEVERE, "createParameter: "+Name+" - ", e);
 		}
