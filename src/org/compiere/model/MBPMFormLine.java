@@ -73,35 +73,46 @@ public class MBPMFormLine extends X_BPM_FormLine {
 			
 			MParameter param_ = MParameter.createParameter(form.getBPM_FormCode().getName()+" Line{"+getLineNo()+", "+getName()+"}", MFormula.getFormulaValue_ID());
 			setBSC_Parameter_ID(param_.getBSC_Parameter_ID());
-			
+			saveEx();
 			for(MBPMFormColumn column: listColumn){
 				
 				MBPMFormCell cell = new MBPMFormCell(getCtx(), 0, get_TrxName());
 				cell.setBPM_FormColumn_ID(column.getBPM_FormColumn_ID());
 				cell.setBPM_FormLine_ID(getBPM_FormLine_ID());
-				// create Parameter
-					MParameter param = new MParameter(getCtx(), 0, get_TrxName());
-					param.setName(form.getBPM_FormCode().getName()+" - L{"+getName()+"} C{"+column.getName()+"}");
-					param.setModules(X_BSC_Parameter.MODULES_BPM);
-					param.setIsExports(true);
-					param.saveEx();
-					param.setwithout_period(true);
-					param.saveEx();
-					
-					// create Parameter line
-						MParameterLine paramLine = param.getZeroParameterLine();
-						paramLine.setIsFormula(true);
-						paramLine.setBSC_Formula_ID(MFormula.getFormulaValue_ID());
-						paramLine.saveEx();
-						// Variables parameter line
-							Set<String> set = MFormula.getVariables(MFormula.getFormulaValue_ID());
-							for(String s: set){
-								MVariable variable = new MVariable(getCtx(), 0, get_TrxName());
-								variable.setBSC_ParameterLine_ID(paramLine.getBSC_ParameterLine_ID());
-								variable.setName(s);
-								variable.saveEx();
-							}
-				cell.setBSC_Parameter_ID(param.getBSC_Parameter_ID());
+				if(isParameter())
+				{
+					cell.setBSC_Parameter_ID(param_.getBSC_Parameter_ID());
+				}
+				else if(column.isParameter())
+				{
+					cell.setBSC_Parameter_ID(column.getBSC_Parameter_ID());
+				}
+				else
+				{
+						// create Parameter
+						MParameter param = new MParameter(getCtx(), 0, get_TrxName());
+						param.setName(form.getBPM_FormCode().getName()+" - L{"+getName()+"} C{"+column.getName()+"}");
+						param.setModules(X_BSC_Parameter.MODULES_BPM);
+						param.setIsExports(true);
+						param.saveEx();
+						param.setwithout_period(true);
+						param.saveEx();
+						
+						// create Parameter line
+							MParameterLine paramLine = param.getZeroParameterLine();
+							paramLine.setIsFormula(true);
+							paramLine.setBSC_Formula_ID(MFormula.getFormulaValue_ID());
+							paramLine.saveEx();
+							// Variables parameter line
+								Set<String> set = MFormula.getVariables(MFormula.getFormulaValue_ID());
+								for(String s: set){
+									MVariable variable = new MVariable(getCtx(), 0, get_TrxName());
+									variable.setBSC_ParameterLine_ID(paramLine.getBSC_ParameterLine_ID());
+									variable.setName(s);
+									variable.saveEx();
+								}
+					cell.setBSC_Parameter_ID(param.getBSC_Parameter_ID());
+				}
 				cell.saveEx();
 			}
 		}

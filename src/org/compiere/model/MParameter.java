@@ -470,13 +470,14 @@ public class MParameter extends X_BSC_Parameter {
 		try {
 			MParameter param = new MParameter(Env.getCtx(),0,null);
 			param.setName(Name);
-			param.setwithout_period(true);
 			if (param.save()) {
+				param.setwithout_period(true);
 				MParameterLine pl = param.getZeroParameterLine();
 				pl.setBSC_Formula_ID(BSC_Formula_ID);
 				if (pl.save()) {
 					pl.getVariables();
 					result = param;
+					param.save();
 				} else {
 					param.delete(true);
 				}
