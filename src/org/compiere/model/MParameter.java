@@ -147,9 +147,7 @@ public class MParameter extends X_BSC_Parameter {
 	public BigDecimal getValueNumber() {
 		BigDecimal result = new BigDecimal(0);
 		if (getCurrentParameterLine() != null) {
-			if (getCurrentParameterLine().getValue() != null && StringUtils.isNumeric(getCurrentParameterLine().getValue()))
-				result = new BigDecimal((getCurrentParameterLine().getValue() == null ? "0" : getCurrentParameterLine().getValue()));
-			else if (getCurrentParameterLine().getValue() != null 
+			if (getCurrentParameterLine().getValue() != null 
 				  && (getCurrentParameterLine().getValue().equals("ДА") 
 				  ||  getCurrentParameterLine().getValue().equals("да")
 				  ||  getCurrentParameterLine().getValue().equals("Да")
@@ -159,7 +157,9 @@ public class MParameter extends X_BSC_Parameter {
 				  ||  getCurrentParameterLine().getValue().equals("В Срок")
 				  )){
 				result = new BigDecimal(100);//TODO Изменить на более адекватное
-			} else {
+			} else if (getCurrentParameterLine().getValue() != null)
+				result = new BigDecimal((getCurrentParameterLine().getValue() == null ? "0" : getCurrentParameterLine().getValue()));
+			else {
 				result = new BigDecimal(0);//TODO Изменить на более адекватное
 			}
 		}
