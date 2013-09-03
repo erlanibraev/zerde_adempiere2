@@ -7,6 +7,8 @@ import java.sql.ResultSet;
 import java.util.List;
 import java.util.Properties;
 
+import org.compiere.util.Env;
+
 
 /**
  * @author V.Sokolov
@@ -68,5 +70,8 @@ public class MBPMFormCell extends X_BPM_FormCell {
 		
 	}
 
+	public static int getColumn(int BPM_FormCell_ID) {
+		return new MBPMFormCell(Env.getCtx(), BPM_FormCell_ID, null).getBPM_FormColumn_ID();
+	}
 
 }

@@ -66,8 +66,6 @@ public class MBPMFormLine extends X_BPM_FormLine {
 	
 	@Override
 	protected boolean afterSave(boolean newRecord, boolean success) {
-		
-
 		if(newRecord){
 			
 			MParameter param_ = MParameter.createParameter(form.getBPM_FormCode().getName()+" Line{"+getLineNo()+", "+getName()+"}", MFormula.getFormulaValue_ID(), X_BSC_Parameter.MODULES_BPM);

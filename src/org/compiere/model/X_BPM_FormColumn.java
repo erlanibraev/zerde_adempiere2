@@ -30,7 +30,7 @@ public class X_BPM_FormColumn extends PO implements I_BPM_FormColumn, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130902L;
+	private static final long serialVersionUID = 20130903L;
 
     /** the default Constructor */
     public X_BPM_FormColumn(Properties ctx)
