@@ -12,6 +12,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
+
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
@@ -112,24 +114,36 @@ public class QueryDialog extends CDialog implements ActionListener, ChangeListen
 	
 	/** Index LineNo = 0			*/
 	public static final int		INDEX_LINENO = 0;
+	public static final String	KEY_LINENO = "INDEX_LINENO";
 	/** Index AndOr = 1				*/
 	public static final int		INDEX_ANDOR = 1;
+	public static final String	KEY_ANDOR = "INDEX_ANDOR";
 	/** Index LeftBracket = 2		*/
 	public static final int		INDEX_LEFTBRACKET = 2;
+	public static final String	KEY_LEFTBRACKET = "INDEX_LEFTBRACKET";
 	/** Index ColumnName = 3		*/
 	public static final int		INDEX_COLUMNNAME = 3;
+	public static final String	KEY_COLUMNNAME = "INDEX_COLUMNNAME";
 	/** Index Operator = 4			*/
 	public static final int		INDEX_OPERATOR = 4;
+	public static final String	KEY_OPERATOR = "INDEX_OPERATOR";
 	/** Index Value = 5				*/
 	public static final int		INDEX_VALUE = 5;
+	public static final String	KEY_VALUE = "INDEX_VALUE";
 	/** Index Value2 = 6			*/
 	public static final int		INDEX_VALUE2 = 6;
+	public static final String	KEY_VALUE2 = "INDEX_VALUE2";
 	/** Index RightBracket = 7		*/
 	public static final int		INDEX_RIGHTBRACKET = 7;
+	public static final String	KEY_RIGHTBRACKET = "INDEX_RIGHTBRACKET";
 	/** Index Line ID = 8	 		*/
 	public static final int		INDEX_LINEID = 8;
+	public static final String	KEY_LINEID = "INDEX_LINEID";
 	/** Index Check static = 9		*/
 	public static final int		INDEX_STATIC = 9;
+	public static final String	KEY_STATIC = "INDEX_STATIC";
+	
+	LinkedHashMap<String, Integer> map = new LinkedHashMap<String, Integer>();
 	
 	/** IN	*/
 	public static final String	IN = " IN ";
@@ -280,6 +294,17 @@ public class QueryDialog extends CDialog implements ActionListener, ChangeListen
 			}
 		});
 		
+		map.put(KEY_LINENO, INDEX_LINENO);
+		map.put(KEY_ANDOR, INDEX_ANDOR);
+		map.put(KEY_COLUMNNAME, INDEX_COLUMNNAME);
+		map.put(KEY_LEFTBRACKET, INDEX_LEFTBRACKET);
+		map.put(KEY_LINEID, INDEX_LINEID);
+		map.put(KEY_OPERATOR, INDEX_OPERATOR);
+		map.put(KEY_RIGHTBRACKET, INDEX_RIGHTBRACKET);
+		map.put(KEY_STATIC, INDEX_STATIC);
+		map.put(KEY_VALUE, INDEX_VALUE);
+		map.put(KEY_VALUE2, INDEX_VALUE2);
+		
 		initFindAdvanced();
 	}
 	
@@ -378,6 +403,8 @@ public class QueryDialog extends CDialog implements ActionListener, ChangeListen
 		tc.setCellEditor(dce);
 		tc.setHeaderValue(Msg.translate(Env.getCtx(), X_PFR_Calculation.COLUMNNAME_AD_Column_ID));
 		
+		
+		
 		// 0 = LineNo
 		VString vs = new VString(Msg.translate(Env.getCtx(), "Line"), true, true, true, 120, 120, "", "");
 		vs.setName (Msg.translate(Env.getCtx(), "Line"));
@@ -413,18 +440,18 @@ public class QueryDialog extends CDialog implements ActionListener, ChangeListen
 
 		// 	4 = QueryValue
 		tc = advancedTable.getColumnModel().getColumn(INDEX_VALUE);
-		QueryValueEditor fve = new QueryValueEditor(this, false);		
+		QueryValueEditor fve = new QueryValueEditor(this, false, map);		
 		tc.setCellEditor(fve);
 		tc.setPreferredWidth(120);
-		tc.setCellRenderer(new ProxyRenderer(new QueryDialogValueRenderer(this, false)));
+		tc.setCellRenderer(new ProxyRenderer(new QueryDialogValueRenderer(this, false, map)));
 		tc.setHeaderValue(Msg.getMsg(Env.getCtx(), "QueryValue"));
 
 		// 	5 = QueryValue2
 		tc = advancedTable.getColumnModel().getColumn(INDEX_VALUE2);
 		tc.setPreferredWidth(120);
-		fve = new QueryValueEditor(this, true);
+		fve = new QueryValueEditor(this, true, map);
 		tc.setCellEditor(fve);
-		tc.setCellRenderer(new ProxyRenderer(new QueryDialogValueRenderer(this, false)));
+		tc.setCellRenderer(new ProxyRenderer(new QueryDialogValueRenderer(this, false, map)));
 		tc.setHeaderValue(Msg.getMsg(Env.getCtx(), "QueryValue2"));
 		
 		// 6 = Right Bracket

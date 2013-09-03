@@ -43,9 +43,11 @@ public class X_BPM_Parameters extends PO implements I_BPM_Parameters, I_Persiste
       super (ctx, BPM_Parameters_ID, trxName);
       /** if (BPM_Parameters_ID == 0)
         {
+			setAD_Column_ID (0);
 			setAD_Table_ID (0);
 			setBPM_Parameters_ID (0);
 			setColumnName (null);
+			setOperation (null);
 			setRecord_ID (0);
 			setValue1 (null);
         } */
@@ -78,6 +80,34 @@ public class X_BPM_Parameters extends PO implements I_BPM_Parameters, I_Persiste
         .append(get_ID()).append("]");
       return sb.toString();
     }
+
+	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_Name)
+			.getPO(getAD_Column_ID(), get_TrxName());	}
+
+	/** Set Column.
+		@param AD_Column_ID 
+		Column in the table
+	  */
+	public void setAD_Column_ID (int AD_Column_ID)
+	{
+		if (AD_Column_ID < 1) 
+			set_Value (COLUMNNAME_AD_Column_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_Column_ID, Integer.valueOf(AD_Column_ID));
+	}
+
+	/** Get Column.
+		@return Column in the table
+	  */
+	public int getAD_Column_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Column_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
     {
@@ -142,6 +172,23 @@ public class X_BPM_Parameters extends PO implements I_BPM_Parameters, I_Persiste
 	public String getColumnName () 
 	{
 		return (String)get_Value(COLUMNNAME_ColumnName);
+	}
+
+	/** Set Operation.
+		@param Operation 
+		Compare Operation
+	  */
+	public void setOperation (String Operation)
+	{
+		set_Value (COLUMNNAME_Operation, Operation);
+	}
+
+	/** Get Operation.
+		@return Compare Operation
+	  */
+	public String getOperation () 
+	{
+		return (String)get_Value(COLUMNNAME_Operation);
 	}
 
 	/** Set Record ID.

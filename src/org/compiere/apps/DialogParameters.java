@@ -12,7 +12,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
-
+import java.util.LinkedHashMap;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
@@ -29,16 +29,23 @@ import javax.swing.event.TableColumnModelEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 import org.compiere.apps.search.Find;
 import org.compiere.apps.search.FindCellEditor;
+import org.compiere.grid.ed.VString;
 import org.compiere.model.DataStatusEvent;
 import org.compiere.model.DataStatusListener;
+import org.compiere.model.I_BPM_Parameters;
+import org.compiere.model.MBPMParameters;
 import org.compiere.model.MColumn;
 import org.compiere.model.MQuery;
 import org.compiere.model.MTable;
+import org.compiere.model.X_BPM_Parameters;
 import org.compiere.model.X_PFR_Calculation;
 import org.compiere.pfr.QueriInterface;
+import org.compiere.pfr.QueryDialog;
 import org.compiere.pfr.QueryDialogValueRenderer;
 import org.compiere.pfr.QueryValueEditor;
 import org.compiere.swing.CButton;
@@ -47,6 +54,8 @@ import org.compiere.swing.CDialog;
 import org.compiere.swing.CPanel;
 import org.compiere.swing.CTable;
 import org.compiere.util.CLogger;
+import org.compiere.util.DB;
+import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.ValueNamePair;
@@ -61,14 +70,28 @@ public class DialogParameters extends CDialog implements ActionListener,
 	
 	private MColumn[] tableColumns;
 	
-	/** Index ColumnName = 3		*/
+	/** Index ColumnName = 0		*/
 	public static final int		INDEX_COLUMNNAME = 0;
-	/** Index Operator = 4			*/
+	public static final String	KEY_COLUMNNAME = QueryDialog.KEY_COLUMNNAME;
+	/** Index Operator = 1			*/
 	public static final int		INDEX_OPERATOR = 1;
-	/** Index Value = 5				*/
+	public static final String	KEY_OPERATOR = QueryDialog.KEY_OPERATOR;
+	/** Index Value = 2				*/
 	public static final int		INDEX_VALUE = 2;
-	/** Index Value2 = 6			*/
+	public static final String	KEY_VALUE = QueryDialog.KEY_VALUE;
+	/** Index Value2 = 3			*/
 	public static final int		INDEX_VALUE2 = 3;
+	public static final String	KEY_VALUE2 = QueryDialog.KEY_VALUE2;
+	/** Index Line ID = 4	 		*/
+	public static final int		INDEX_LINEID = 4;
+	public static final String	KEY_LINEID = "INDEX_LINEID";
+	
+	/** IN	*/
+	public static final String	IN = " IN ";
+	/** IN - 8		*/
+	public static final int		IN_INDEX = 9;
+	
+	LinkedHashMap<String, Integer> map = new LinkedHashMap<String, Integer>();
 	
 	private static CLogger log = CLogger.getCLogger(Find.class);
 	private ValueNamePair[] columnValueNamePairs;
@@ -103,6 +126,7 @@ public class DialogParameters extends CDialog implements ActionListener,
 		new ValueNamePair (MQuery.LESS,				" < "),
 		new ValueNamePair (MQuery.LESS_EQUAL,		" <= "),
 		new ValueNamePair (MQuery.BETWEEN,			" >-< "),	//	8
+		new ValueNamePair (IN,						" IN ")		// 	9
 	};
 	
 	private class ProxyRenderer implements TableCellRenderer
@@ -156,10 +180,7 @@ public class DialogParameters extends CDialog implements ActionListener,
 				//  Create Editor
 				editable = getTargetMField(columnName) != null;
 			}
-			
-			if (row == 0 )
-				editable = false;
-			
+						
 			return editable;
 		}
 		
@@ -187,6 +208,7 @@ public class DialogParameters extends CDialog implements ActionListener,
 		this.Record_ID = Record_ID;
 		
 		init();
+		loadLines();
 		
 		AEnv.showCenterWindow(frame, this);		
 	}
@@ -245,6 +267,12 @@ public class DialogParameters extends CDialog implements ActionListener,
 			}
 		});
 		
+		map.put(KEY_COLUMNNAME, INDEX_COLUMNNAME);
+		map.put(KEY_OPERATOR, INDEX_OPERATOR);
+		map.put(KEY_VALUE, INDEX_VALUE);
+		map.put(KEY_VALUE2, INDEX_VALUE2);
+		map.put(KEY_LINEID, INDEX_LINEID);
+		
 		initFindAdvanced();
 	}
 	
@@ -254,7 +282,7 @@ public class DialogParameters extends CDialog implements ActionListener,
 	private void initFindAdvanced()
 	{
 		log.config("");
-		advancedTable.setModel(new DefaultTableModel(0, 4));
+		advancedTable.setModel(new DefaultTableModel(0, 5));
 		advancedTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		advancedTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		advancedTable.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
@@ -353,34 +381,32 @@ public class DialogParameters extends CDialog implements ActionListener,
 
 		// 	2 = QueryValue
 		tc = advancedTable.getColumnModel().getColumn(INDEX_VALUE);
-		QueryValueEditor fve = new QueryValueEditor(this, false);		
+		QueryValueEditor fve = new QueryValueEditor(this, false, map);		
 		tc.setCellEditor(fve);
 		tc.setPreferredWidth(120);
-		tc.setCellRenderer(new ProxyRenderer(new QueryDialogValueRenderer(this, false)));
+		tc.setCellRenderer(new ProxyRenderer(new QueryDialogValueRenderer(this, false, map)));
 		tc.setHeaderValue(Msg.getMsg(Env.getCtx(), "QueryValue"));
 
 		// 	3 = QueryValue2
 		tc = advancedTable.getColumnModel().getColumn(INDEX_VALUE2);
 		tc.setPreferredWidth(120);
-		fve = new QueryValueEditor(this, true);
+		fve = new QueryValueEditor(this, true, map);
 		tc.setCellEditor(fve);
-		tc.setCellRenderer(new ProxyRenderer(new QueryDialogValueRenderer(this, false)));
+		tc.setCellRenderer(new ProxyRenderer(new QueryDialogValueRenderer(this, false, map)));
 		tc.setHeaderValue(Msg.getMsg(Env.getCtx(), "QueryValue2"));
+		
+		// 4 = Line ID
+		VString vs = new VString(Msg.translate(Env.getCtx(), "LineID"), true, true, true, 0, 0, "", "");  
+		vs.setName(Msg.translate(Env.getCtx(), "LineID"));
+		tc = advancedTable.getColumnModel().getColumn(INDEX_LINEID);	
+		dce = new FindCellEditor(vs);
+		tc.setCellEditor(dce);
+		tc.setPreferredWidth(120);
+		tc.setHeaderValue(Msg.translate(Env.getCtx(), "LineID"));
 				
 		//user query
 //		refreshUserQueries();		
 	}
-	
-	/**
-	 *	New record
-	 */
-	private void cmd_new()
-	{
-		advancedTable.stopEditor(true);
-		DefaultTableModel model = (DefaultTableModel)advancedTable.getModel();
-		model.addRow(new Object[] {"", null, "", ""});		
-		advancedTable.requestFocusInWindow();
-	}	//	cmd_new
 	
 	/**************************************************************************
 	 *	Action Listener
@@ -396,15 +422,304 @@ public class DialogParameters extends CDialog implements ActionListener,
 			cmd_ok();
 		else if (e.getSource() == bNew)
 			cmd_new();
-/*		else if (e.getSource() == bSave)
+		else if (e.getSource() == bSave)
 			cmd_save();
 		else if (e.getSource() == bDelete)
 			cmd_delete(true);
 		else if(e.getSource() == bIgnore)
 			cmd_ignore();
 		else if (e.getSource() == bRefresh)
-			cmd_refresh(false);*/
+			cmd_refresh(false);
 	}	//	actionPerformed
+	
+	/**
+	 *	New record
+	 */
+	private void cmd_new()
+	{
+		advancedTable.stopEditor(true);
+		DefaultTableModel model = (DefaultTableModel)advancedTable.getModel();
+		model.addRow(new Object[] {null, OPERATORS[MQuery.EQUAL_INDEX], "", "", ""});		
+		advancedTable.requestFocusInWindow();
+	}	//	cmd_new
+	
+	/**
+	 *	Save (Advanced)
+	 */
+	private boolean cmd_save()
+	{
+		advancedTable.stopEditor(true);
+		MBPMParameters param = null;
+		Object column = null;
+		String value = "";
+		StringBuilder errorLog = new StringBuilder();
+		StringBuilder totalLog = new StringBuilder();
+		int AD_Reference_ID = 0;
+		boolean hasError = false;
+		
+		for (int row = 0; row < advancedTable.getRowCount(); row++)
+		{
+			column = advancedTable.getValueAt(row, INDEX_LINEID);
+		
+			value = column instanceof ValueNamePair ? 
+				((ValueNamePair)column).getValue() : column.toString();
+		
+			if(value != null && !value.isEmpty())
+				param = new MBPMParameters(Env.getCtx(), Integer.parseInt(value), null);
+			else
+				param = new MBPMParameters(Env.getCtx(), 0, null);
+			
+			// Column ColumnName
+			column = advancedTable.getValueAt(row, INDEX_COLUMNNAME);	
+			
+			if(column != null && !column.toString().isEmpty())
+			{
+				value = column instanceof ValueNamePair ? 
+						((ValueNamePair)column).getValue() : column.toString();
+				
+				if(value != null)
+				{				
+					param.setAD_Column_ID(MColumn.getColumn_ID(MTable.getTableName(Env.getCtx(), AD_Table_ID), value));
+					param.setColumnName(value);
+				}
+			}
+			else
+			{
+				hasError = true;
+				errorLog.append(valueCheck(INDEX_COLUMNNAME, "required"));
+			}
+			
+			// Column Operator
+			column = advancedTable.getValueAt(row, INDEX_OPERATOR);	
+			
+			if(column != null && !column.toString().isEmpty())
+			{
+				value = column instanceof ValueNamePair ? 
+						((ValueNamePair)column).getValue() : column.toString();
+				
+				if(value != null)
+				{
+					param.setOperation(value);
+				}
+			}
+			else
+			{
+				hasError = true;
+				errorLog.append(valueCheck(INDEX_OPERATOR, "required"));
+			}
+			
+			//Value2 
+			//if Operator = 'BETWEEN'
+			if(value.equals(MQuery.BETWEEN))
+			{
+				// Column
+				column = advancedTable.getValueAt(row, INDEX_VALUE2);
+
+				if(column != null && !column.toString().isEmpty())
+				{
+					value = column instanceof ValueNamePair ? 
+							((ValueNamePair)column).getValue() : column.toString();
+					
+					if(value != null)
+					{	
+						param.setValue2(value);
+					}
+				}
+				else 
+				{
+					hasError = true;
+					errorLog.append(valueCheck(INDEX_VALUE2, "required"));
+				}
+			}
+			// Column Value
+			column = advancedTable.getValueAt(row, INDEX_VALUE);
+			
+			if(column != null && !column.toString().isEmpty())
+			{
+				value = column instanceof ValueNamePair ? 
+						((ValueNamePair)column).getValue() : column.toString();
+						
+				if(value != null)
+				{
+					AD_Reference_ID = MColumn.get(Env.getCtx(), param.getAD_Column_ID()).getAD_Reference_ID();
+					
+					if(AD_Reference_ID == DisplayType.YesNo)
+					{
+						value = (value.equals("true") || value.equals("Y")) ? "Y" : "N";
+					}
+					
+					param.setValue1(value);
+				}
+			}
+			else
+			{
+				hasError = true;
+				errorLog.append(valueCheck(INDEX_VALUE, "required"));
+			}
+			
+			if(!hasError)
+			{
+				param.setAD_Table_ID(AD_Table_ID);
+				param.setRecord_ID(Record_ID);
+				param.saveEx();
+				
+				advancedTable.setValueAt(param.get_ID(), row, INDEX_LINEID);
+			}
+			else
+			{
+				totalLog.append(errorLog).append("\n");
+			}
+			
+			errorLog.setLength(0);
+			hasError = false;
+		}
+		
+		if(totalLog.length() == 0)
+		{
+			cmd_cancel();
+			return true;
+		}
+		else
+		{
+			DialogAgreement.dialogOK(Msg.translate(Env.getCtx(), "Error"), totalLog.toString(), 0);
+			return false;
+		}
+	}
+	
+	/**
+	 *	Delete
+	 */
+	private void cmd_delete(boolean db)
+	{		
+		advancedTable.stopEditor(false);
+		DefaultTableModel model = (DefaultTableModel)advancedTable.getModel();
+		int row = advancedTable.getSelectedRow();
+		int deleteRows = 1;
+		
+		if(db)
+		{			
+			StringBuilder sql = new StringBuilder();
+			sql.append("DELETE FROM ");
+			sql.append(X_BPM_Parameters.Table_Name);
+			
+			String indexValue = advancedTable.getValueAt(row, INDEX_LINEID).toString();
+			
+			if(AD_Table_ID > 0 && Record_ID > 0)
+			{
+				sql.append(" WHERE ").append(I_BPM_Parameters.COLUMNNAME_AD_Table_ID).append(" = ").append(AD_Table_ID);
+				sql.append(" AND ").append(I_BPM_Parameters.COLUMNNAME_Record_ID).append(" = ").append(Record_ID);
+				
+				if(indexValue != null && !indexValue.isEmpty())
+					sql.append(" AND ").append(I_BPM_Parameters.COLUMNNAME_BPM_Parameters_ID).append(" = ").append(indexValue);
+			}
+			
+			if(indexValue != null && !indexValue.isEmpty())
+			{
+				deleteRows = DB.executeUpdate(sql.toString(), null);
+			}
+		}
+		
+		if (row >= 0 && deleteRows > 0)
+			model.removeRow(row);
+		cmd_refresh(true);
+		advancedTable.requestFocusInWindow();
+		
+	}	//	cmd_delete
+	
+	/**
+	 *	Refresh
+	 */
+	private void cmd_refresh(boolean del)
+	{
+		advancedTable.stopEditor(false);
+		
+		if(!del){
+			DefaultTableModel model = (DefaultTableModel)advancedTable.getModel();
+			int rowCount = advancedTable.getRowCount()-1;
+			for(int i = rowCount; i >= 0; i--){
+				model.removeRow(i);
+			}
+			
+			loadLines();
+		}
+		
+		setStatusDB (advancedTable.getRowCount());
+		statusBar.setStatusLine(Msg.translate(Env.getCtx(), "Success"));
+	}	//	cmd_refresh
+	
+	/**
+	 *	Ignore
+	 */
+	private void cmd_ignore()
+	{
+		int row = advancedTable.getSelectedRow();
+		if(row == -1){
+			DialogAgreement.dialogOK(Msg.translate(Env.getCtx(), "Error"), "Row not selected", 0);
+			return;
+		}
+		
+		String indexValue = advancedTable.getValueAt(row, INDEX_LINEID).toString();
+		
+		if(indexValue != null && !indexValue.isEmpty())
+		{
+			MBPMParameters param = new MBPMParameters(Env.getCtx(), Integer.parseInt(indexValue), null);
+			
+			DefaultTableModel model = (DefaultTableModel)advancedTable.getModel();
+			
+			String columnName = param.getColumnName();
+			String header = Msg.translate(Env.getCtx(), columnName);
+			
+			String op = OPERATORS[0].getValue();
+			for(ValueNamePair oper : OPERATORS){
+				if(oper.getValue().equals(param.getOperation()))
+					op = oper.getName();
+			}
+			
+			model.setValueAt(new ValueNamePair(columnName, header), row, INDEX_COLUMNNAME);
+			model.setValueAt(new ValueNamePair(param.getOperation(), op), row, INDEX_OPERATOR);
+			model.setValueAt(new ValueNamePair(param.getValue1(), param.getValue1()), row, INDEX_VALUE);
+			model.setValueAt(new ValueNamePair(param.getValue2(), param.getValue2()), row, INDEX_VALUE2);
+		}
+		else
+		{
+			cmd_delete(false);
+		}
+	}	//	cmd_ignore
+	
+	private int loadLines()
+	{
+		MBPMParameters[] params = MBPMParameters.getLinesWhere(Env.getCtx(), AD_Table_ID, Record_ID, null);
+		
+		advancedTable.stopEditor(true);
+		DefaultTableModel model = (DefaultTableModel)advancedTable.getModel();
+		int n = 0;
+		for(MBPMParameters p : params)
+		{
+			String op = OPERATORS[0].getValue();
+			for(ValueNamePair oper : OPERATORS){
+				if(oper.getValue().equals(p.getOperation()))
+					op = oper.getName();
+			}
+			
+			String columnName = p.getColumnName();
+			String header = Msg.translate(Env.getCtx(), columnName);
+			if (header == null || header.length() == 0)
+					continue;
+			
+			model.addRow(new Object[] { 
+							new ValueNamePair(columnName, header), 
+							new ValueNamePair(p.getOperation(), op), 
+							new ValueNamePair(p.getValue1(), p.getValue1()), 
+							new ValueNamePair(p.getValue2(), p.getValue2()),
+							p.getBPM_Parameters_ID()
+						});
+			n++;
+		}
+		
+		sortByIndex(INDEX_LINEID);
+		
+		return n;
+	}
 	
 	public MColumn getTargetMField (String columnName)
 	{
@@ -434,13 +749,39 @@ public class DialogParameters extends CDialog implements ActionListener,
 	 */
 	private void cmd_ok()
 	{
-//		if(cmd_save())
+		if(cmd_save())
 		{
 			advancedTable.stopEditor(false);
 			log.info("");
 			dispose();
 		}
 	}	//	cmd_ok
+	
+	private String valueCheck(int column, String message)
+	 {
+	  StringBuilder errors = new StringBuilder();
+	  return errors.append(Msg.translate(Env.getCtx(), "Field").toLowerCase()).append(" \"").append(advancedTable.getColumnModel().getColumn(column).getHeaderValue()).append("\" ")
+				.append(Msg.translate(Env.getCtx(), message)).append("\n").toString();
+	 }
+	
+	/**
+	 *	Display current count
+	 *  @param currentCount String representation of current/total
+	 */
+	private void setStatusDB (int count)
+	{
+		statusBar.setStatusDB("#"+count);
+	}	//	setDtatusDB
+	
+	private void sortByIndex(int index)
+	{
+		TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(advancedTable.getModel());
+		sorter.toggleSortOrder(index);
+		sorter.sort();
+		advancedTable.setRowSorter(sorter);
+	
+		advancedTable.requestFocusInWindow();
+	}
 	
 	@Override
 	public void dataStatusChanged(DataStatusEvent e) {

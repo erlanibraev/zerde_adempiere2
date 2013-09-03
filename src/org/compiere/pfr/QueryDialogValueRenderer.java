@@ -3,6 +3,7 @@ package org.compiere.pfr;
 import java.awt.Component;
 import java.awt.Insets;
 import java.sql.Date;
+import java.util.LinkedHashMap;
 import java.util.logging.Level;
 
 import javax.swing.JCheckBox;
@@ -22,13 +23,16 @@ public class QueryDialogValueRenderer extends DefaultTableCellRenderer
 {
 	private static final long serialVersionUID = -4331238353480434965L;
 
-	public QueryDialogValueRenderer (QueriInterface queryDialog, boolean valueTo)
+	public QueryDialogValueRenderer (QueriInterface queryDialog, boolean valueTo, LinkedHashMap<String, Integer> map)
 	{
 		super();
 		this.queryDialog = queryDialog;
+		this.map = map;
 		m_valueToColumn = valueTo;
 	}	//	FindValueRenderer
 
+	/* */
+	LinkedHashMap<String, Integer> map = new LinkedHashMap<String, Integer>();
 	/** Find Window             */
 	private QueriInterface			queryDialog;
 	/** Value 2(to)             */
@@ -75,7 +79,7 @@ public class QueryDialogValueRenderer extends DefaultTableCellRenderer
 	//	log.config( "FindValueRenderer.getTableCellRendererComponent", "r=" + row + ", c=" + col );
 		//	Column
 		m_columnName = null;
-		Object column = table.getModel().getValueAt(row, QueryDialog.INDEX_COLUMNNAME);
+		Object column = table.getModel().getValueAt(row, map.get(QueryDialog.KEY_COLUMNNAME));
 		if (column != null) {
 			if (column instanceof ValueNamePair)
 				m_columnName = ((ValueNamePair)column).getValue();
@@ -85,7 +89,7 @@ public class QueryDialogValueRenderer extends DefaultTableCellRenderer
 
 		//	Between - enables valueToColumn
 		m_between = false;
-		Object betweenValue = table.getModel().getValueAt(row, QueryDialog.INDEX_OPERATOR);
+		Object betweenValue = table.getModel().getValueAt(row, map.get(QueryDialog.KEY_OPERATOR));
 		if (m_valueToColumn && betweenValue != null 
 			&& betweenValue.equals(QueryDialog.OPERATORS[MQuery.BETWEEN_INDEX]))
 			m_between = true;

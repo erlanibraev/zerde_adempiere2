@@ -2,6 +2,7 @@ package org.compiere.pfr;
 
 import java.awt.Component;
 import java.util.EventObject;
+import java.util.LinkedHashMap;
 
 import javax.swing.AbstractCellEditor;
 import javax.swing.JTable;
@@ -25,6 +26,8 @@ public class QueryValueEditor extends AbstractCellEditor implements TableCellEdi
 	private static final long serialVersionUID = -8162019498692286688L;
 	/** Find Window             */
 	private QueriInterface 			queryDialog;
+	/* */
+	LinkedHashMap<String, Integer> map = new LinkedHashMap<String, Integer>();
 	/** Value 2(to)             */
 	private boolean         m_valueToColumn;
 	/**	Between selected		*/
@@ -34,10 +37,11 @@ public class QueryValueEditor extends AbstractCellEditor implements TableCellEdi
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(FindValueEditor.class);
 	
-	public QueryValueEditor (QueriInterface queryDialog, boolean valueTo)
+	public QueryValueEditor (QueriInterface queryDialog, boolean valueTo,  LinkedHashMap<String, Integer> map)
 	{
 		super();
 		this.queryDialog = queryDialog;
+		this.map = map;
 		m_valueToColumn = valueTo;
 	}
 	
@@ -72,7 +76,7 @@ public class QueryValueEditor extends AbstractCellEditor implements TableCellEdi
 	public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int col) 
 	{
 		m_between = false;
-		Object betweenValue = table.getModel().getValueAt(row, QueryDialog.INDEX_OPERATOR);
+		Object betweenValue = table.getModel().getValueAt(row, map.get(QueryDialog.KEY_OPERATOR));
 		if (m_valueToColumn &&  betweenValue != null 
 			&& betweenValue.equals(QueryDialog.OPERATORS[MQuery.BETWEEN_INDEX]))
 			m_between = true;
@@ -83,7 +87,7 @@ public class QueryValueEditor extends AbstractCellEditor implements TableCellEdi
 		if ( enabled )
 		{
 		String columnName = null;
-		Object column = table.getModel().getValueAt(row, QueryDialog.INDEX_COLUMNNAME);
+		Object column = table.getModel().getValueAt(row, map.get(QueryDialog.KEY_COLUMNNAME));
 		if (column != null)
 			columnName = ((ValueNamePair)column).getValue();
 
