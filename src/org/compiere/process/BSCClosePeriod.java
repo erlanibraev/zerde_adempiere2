@@ -156,10 +156,9 @@ public class BSCClosePeriod extends SvrProcess {
 			return false;
 		}
 
-		ADialog dialog = new ADialog();
 		boolean isWork = true;
 		if (isBSCClosedPeriod(getC_Period_ID())) {
-			if(!dialog.ask(25, null, "Процесс \"Закрытие периода ССП и КПИ.\" уже был успешно завершен. Вы хотите запустить данный процесс повторно?")) {
+			if(!ADialog.ask(25, null, "Процесс \"Закрытие периода ССП и КПИ.\" уже был успешно завершен. Вы хотите запустить данный процесс повторно?")) {
 				isWork = false;
 				result = true;
 			}
@@ -175,7 +174,7 @@ public class BSCClosePeriod extends SvrProcess {
 					result = false;
 				}
 			} else {
-				dialog.error(30, null, "Нет следующего периода! Создайте следующий период перед запуском процесса");
+				ADialog.error(30, null, "Нет следующего периода! Создайте следующий период перед запуском процесса");
 				result  = false;
 			}
 		}

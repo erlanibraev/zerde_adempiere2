@@ -237,7 +237,7 @@ public class BSCViewDashboard1 extends CPanel  implements FormPanel, ActionListe
 		
 		for(MBSCDashboard item: dbmap.keySet()) {
 			cards.add(item);
-			JButton button = new JButton("<html>" + item.getHR_Job().getName() + "<br>("+item.getC_BPartner().getName()+")</html>");
+			JButton button = new JButton("<html>" + (item.getHR_Job_ID() > 0 ? item.getHR_Job().getName() : "---") + "<br>("+item.getC_BPartner().getName()+")</html>");
 			buttons.add(button);
 		}
 	}

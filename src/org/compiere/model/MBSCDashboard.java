@@ -120,7 +120,7 @@ public class MBSCDashboard extends X_BSC_Dashboard {
 	public static MBSCDashboard[] getDashboards(boolean force) {
 		if (force || dashboards == null) {
 			int AD_Client_ID = Env.getAD_Client_ID(Env.getCtx());
-			String WhereClause = "AD_Client_ID = ?";
+			String WhereClause = "IsActive = 'Y' AND AD_Client_ID = ?";
 			List<MBSCDashboard> list = new Query(Env.getCtx(), MBSCDashboard.Table_Name, WhereClause, null).setParameters(AD_Client_ID).list();
 			dashboards = (list == null ? null : list.toArray(new MBSCDashboard[list.size()]));
 		}
