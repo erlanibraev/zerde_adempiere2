@@ -17,6 +17,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
 
+import org.apache.commons.lang.StringUtils;
 import org.compiere.apps.ADialog;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -146,7 +147,21 @@ public class MParameter extends X_BSC_Parameter {
 	public BigDecimal getValueNumber() {
 		BigDecimal result = new BigDecimal(0);
 		if (getCurrentParameterLine() != null) {
-			result = new BigDecimal((getCurrentParameterLine().getValue() == null ? "0" : getCurrentParameterLine().getValue())); 
+			if (getCurrentParameterLine().getValue() != null && StringUtils.isNumeric(getCurrentParameterLine().getValue()))
+				result = new BigDecimal((getCurrentParameterLine().getValue() == null ? "0" : getCurrentParameterLine().getValue()));
+			else if (getCurrentParameterLine().getValue() != null 
+				  && (getCurrentParameterLine().getValue().equals("ДА") 
+				  ||  getCurrentParameterLine().getValue().equals("да")
+				  ||  getCurrentParameterLine().getValue().equals("Да")
+				  ||  getCurrentParameterLine().getValue().equals("В СРОК")
+				  ||  getCurrentParameterLine().getValue().equals("в срок")
+				  ||  getCurrentParameterLine().getValue().equals("В срок")
+				  ||  getCurrentParameterLine().getValue().equals("В Срок")
+				  )){
+				result = new BigDecimal(100);//TODO Изменить на более адекватное
+			} else {
+				result = new BigDecimal(0);//TODO Изменить на более адекватное
+			}
 		}
 		return result;
 	}

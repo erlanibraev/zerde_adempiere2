@@ -64,8 +64,8 @@ public class BSCIndicator extends JPanel implements MouseListener, ActionListene
 	private static double s_width100 = 150;
 	private static Color colorOK = Color.magenta;
 	private static Color colorNotOK = Color.lightGray;
-	public static Dimension indicatordimension = new Dimension(170,120);
-	public static Dimension paneldimension = new Dimension(180, 150);
+	public static Dimension indicatordimension = new Dimension(185,150);
+	public static Dimension paneldimension = new Dimension(190, 165);
 	private ChartPanel chartPanel;
 	private JPopupMenu popupMenu = new JPopupMenu();
 	private CMenuItem mRefresh = new CMenuItem(Msg.getMsg(Env.getCtx(), "Refresh"), Env.getImageIcon("Refresh16.gif"));
