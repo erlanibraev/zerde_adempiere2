@@ -45,6 +45,7 @@ public class X_BPM_Parameters extends PO implements I_BPM_Parameters, I_Persiste
         {
 			setAD_Column_ID (0);
 			setAD_Table_ID (0);
+			setAD_Table2_ID (0);
 			setBPM_Parameters_ID (0);
 			setColumnName (null);
 			setOperation (null);
@@ -132,6 +133,34 @@ public class X_BPM_Parameters extends PO implements I_BPM_Parameters, I_Persiste
 	public int getAD_Table_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Table_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_AD_Table getAD_Table2() throws RuntimeException
+    {
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
+			.getPO(getAD_Table2_ID(), get_TrxName());	}
+
+	/** Set Table.
+		@param AD_Table2_ID 
+		Database Table information
+	  */
+	public void setAD_Table2_ID (int AD_Table2_ID)
+	{
+		if (AD_Table2_ID < 1) 
+			set_Value (COLUMNNAME_AD_Table2_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_Table2_ID, Integer.valueOf(AD_Table2_ID));
+	}
+
+	/** Get Table.
+		@return Database Table information
+	  */
+	public int getAD_Table2_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Table2_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

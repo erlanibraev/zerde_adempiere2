@@ -13,6 +13,7 @@ import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
@@ -29,19 +30,18 @@ import javax.swing.event.TableColumnModelEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
-import javax.swing.table.TableModel;
-import javax.swing.table.TableRowSorter;
-
 import org.compiere.apps.search.Find;
 import org.compiere.apps.search.FindCellEditor;
 import org.compiere.grid.ed.VString;
 import org.compiere.model.DataStatusEvent;
 import org.compiere.model.DataStatusListener;
+import org.compiere.model.I_AD_Table;
 import org.compiere.model.I_BPM_Parameters;
 import org.compiere.model.MBPMParameters;
 import org.compiere.model.MColumn;
 import org.compiere.model.MQuery;
 import org.compiere.model.MTable;
+import org.compiere.model.Query;
 import org.compiere.model.X_BPM_Parameters;
 import org.compiere.model.X_PFR_Calculation;
 import org.compiere.pfr.QueriInterface;
@@ -70,20 +70,23 @@ public class DialogParameters extends CDialog implements ActionListener,
 	
 	private MColumn[] tableColumns;
 	
-	/** Index ColumnName = 0		*/
-	public static final int		INDEX_COLUMNNAME = 0;
+	/** Index Table Name = 0		*/
+	public static final int		INDEX_TABLE = 0;
+	public static final String	KEY_TABLE = "INDEX_TABLE";
+	/** Index ColumnName = 1		*/
+	public static final int		INDEX_COLUMNNAME = 1;
 	public static final String	KEY_COLUMNNAME = QueryDialog.KEY_COLUMNNAME;
-	/** Index Operator = 1			*/
-	public static final int		INDEX_OPERATOR = 1;
+	/** Index Operator = 2			*/
+	public static final int		INDEX_OPERATOR = 2;
 	public static final String	KEY_OPERATOR = QueryDialog.KEY_OPERATOR;
-	/** Index Value = 2				*/
-	public static final int		INDEX_VALUE = 2;
+	/** Index Value = 3				*/
+	public static final int		INDEX_VALUE = 3;
 	public static final String	KEY_VALUE = QueryDialog.KEY_VALUE;
-	/** Index Value2 = 3			*/
-	public static final int		INDEX_VALUE2 = 3;
+	/** Index Value2 = 4			*/
+	public static final int		INDEX_VALUE2 = 4;
 	public static final String	KEY_VALUE2 = QueryDialog.KEY_VALUE2;
-	/** Index Line ID = 4	 		*/
-	public static final int		INDEX_LINEID = 4;
+	/** Index Line ID = 5	 		*/
+	public static final int		INDEX_LINEID = 5;
 	public static final String	KEY_LINEID = "INDEX_LINEID";
 	
 	/** IN	*/
@@ -95,9 +98,11 @@ public class DialogParameters extends CDialog implements ActionListener,
 	
 	private static CLogger log = CLogger.getCLogger(Find.class);
 	private ValueNamePair[] columnValueNamePairs;
+	private ValueNamePair[] tableNamePairs;
 	
 	private CPanel advancedPanel = new CPanel();
 	public CComboBox 	columns = null;
+	public CComboBox 	tables = null;
 	public CComboBox 	operators = null;
 	
 	private CPanel southPanel = new CPanel();
@@ -163,7 +168,8 @@ public class DialogParameters extends CDialog implements ActionListener,
 		public boolean isCellEditable(int row, int column)
 		{
 			boolean editable = ( column == INDEX_COLUMNNAME
-					|| column == INDEX_OPERATOR);
+					|| column == INDEX_OPERATOR
+					|| column == INDEX_TABLE);
 			if (!editable && row >= 0)
 			{
 				String columnName = null;
@@ -282,7 +288,7 @@ public class DialogParameters extends CDialog implements ActionListener,
 	private void initFindAdvanced()
 	{
 		log.config("");
-		advancedTable.setModel(new DefaultTableModel(0, 5));
+		advancedTable.setModel(new DefaultTableModel(0, 6));
 		advancedTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		advancedTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		advancedTable.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
@@ -322,34 +328,82 @@ public class DialogParameters extends CDialog implements ActionListener,
         };
         advancedTable.getActionMap().put(im.get(shiftTab), shiftTabActionWrapper);
 
-		MTable table = new MTable(Env.getCtx(), AD_Table_ID, null);
-		tableColumns =  table.getColumns(true);
-		
-//    	0 = Columns
-		ArrayList<ValueNamePair> items = new ArrayList<ValueNamePair>();
-		for (int c = 0; c < tableColumns.length; c++)
+        // 0 = Tables
+        MTable[] tablesList = getTables();
+        ArrayList<ValueNamePair> it = new ArrayList<ValueNamePair>();
+		for (int c = 0; c < tablesList.length; c++)
 		{
-			MColumn column = tableColumns[c];
-			String columnName = column.getColumnName();
-			String header = columnName;
+			MTable table = tablesList[c];
+			String tableName = table.getTableName();
+			String header = table.getName();
 			
-			header = Msg.translate(Env.getCtx(), columnName);
 			if (header == null || header.length() == 0)
 					continue;
-			if (column.isKey())
-				header += (" (ID)");
-			ValueNamePair pp = new ValueNamePair(columnName, header);
-			items.add(pp);
+			ValueNamePair pp = new ValueNamePair(tableName, header);
+			it.add(pp);
 		}
-		columnValueNamePairs = new ValueNamePair[items.size()];
-		items.toArray(columnValueNamePairs);
-		Arrays.sort(columnValueNamePairs);		//	sort alpha
-		columns = new CComboBox(columnValueNamePairs);
-		columns.addActionListener(this);
+		tableNamePairs = new ValueNamePair[it.size()];
+		it.toArray(tableNamePairs);
+		Arrays.sort(tableNamePairs);		//	sort alpha
+		tables = new CComboBox(tableNamePairs);
+		tables.addActionListener(this);
 		
-		TableColumn tc = advancedTable.getColumnModel().getColumn(INDEX_COLUMNNAME);
+		TableColumn tc = advancedTable.getColumnModel().getColumn(INDEX_TABLE);
 		tc.setPreferredWidth(120);
-		FindCellEditor dce = new FindCellEditor(columns); 
+		FindCellEditor dce = new FindCellEditor(tables); 
+
+		dce.addCellEditorListener(new CellEditorListener()
+		{
+			public void editingCanceled(ChangeEvent ce)
+			{
+			}
+		 
+			public void editingStopped(ChangeEvent ce)
+			{
+				int col = advancedTable.getSelectedColumn();
+				int row = advancedTable.getSelectedRow();
+				if (col == INDEX_TABLE && row >= 0)
+				{
+					columnValueNamePairs = loadColumns(MTable.getTable_ID(String.valueOf(advancedTable.getValueAt(row, col))));
+					columns = new CComboBox(columnValueNamePairs);
+					columns.addActionListener(DialogParameters.this);
+					
+					TableColumn tc = advancedTable.getColumnModel().getColumn(INDEX_COLUMNNAME);
+					tc.setPreferredWidth(120);
+					FindCellEditor dce = new FindCellEditor(columns); 
+
+					dce.addCellEditorListener(new CellEditorListener()
+					{
+						public void editingCanceled(ChangeEvent ce)
+						{
+						}
+					 
+						public void editingStopped(ChangeEvent ce)
+						{
+							int col = advancedTable.getSelectedColumn();
+							int row = advancedTable.getSelectedRow();
+							if (col == INDEX_COLUMNNAME && row >= 0)
+							{
+								advancedTable.setValueAt(null, row, INDEX_VALUE);
+								advancedTable.setValueAt(null, row, INDEX_VALUE2);
+							}
+						}
+					});
+					tc.setCellEditor(dce);
+					tc.setHeaderValue(Msg.translate(Env.getCtx(), X_PFR_Calculation.COLUMNNAME_AD_Column_ID));
+				}
+			}
+		});
+		tc.setCellEditor(dce);
+		tc.setHeaderValue(Msg.translate(Env.getCtx(), X_BPM_Parameters.COLUMNNAME_AD_Table2_ID));
+		
+		columnValueNamePairs = loadColumns(AD_Table_ID);
+		columns = new CComboBox(columnValueNamePairs);
+		columns.addActionListener(DialogParameters.this);
+		
+		tc = advancedTable.getColumnModel().getColumn(INDEX_COLUMNNAME);
+		tc.setPreferredWidth(120);
+		dce = new FindCellEditor(columns); 
 
 		dce.addCellEditorListener(new CellEditorListener()
 		{
@@ -408,6 +462,34 @@ public class DialogParameters extends CDialog implements ActionListener,
 //		refreshUserQueries();		
 	}
 	
+	private ValueNamePair[] loadColumns(int AD_Table_ID){
+		
+		ValueNamePair[] columnValueNamePairs;
+		MTable table = new MTable(Env.getCtx(), AD_Table_ID, null);
+		tableColumns =  table.getColumns(true);
+		
+		ArrayList<ValueNamePair> items = new ArrayList<ValueNamePair>();
+		for (int c = 0; c < tableColumns.length; c++)
+		{
+			MColumn column = tableColumns[c];
+			String columnName = column.getColumnName();
+			String header = columnName;
+			
+			header = Msg.translate(Env.getCtx(), columnName);
+			if (header == null || header.length() == 0)
+					continue;
+			if (column.isKey())
+				header += (" (ID)");
+			ValueNamePair pp = new ValueNamePair(columnName, header);
+			items.add(pp);
+		}
+		columnValueNamePairs = new ValueNamePair[items.size()];
+		items.toArray(columnValueNamePairs);
+		Arrays.sort(columnValueNamePairs);		//	sort alpha
+
+		return columnValueNamePairs;
+	}
+	
 	/**************************************************************************
 	 *	Action Listener
 	 *  @param e ActionEvent
@@ -439,7 +521,7 @@ public class DialogParameters extends CDialog implements ActionListener,
 	{
 		advancedTable.stopEditor(true);
 		DefaultTableModel model = (DefaultTableModel)advancedTable.getModel();
-		model.addRow(new Object[] {null, OPERATORS[MQuery.EQUAL_INDEX], "", "", ""});		
+		model.addRow(new Object[] {null, null, OPERATORS[MQuery.EQUAL_INDEX], "", "", ""});		
 		advancedTable.requestFocusInWindow();
 	}	//	cmd_new
 	
@@ -452,6 +534,7 @@ public class DialogParameters extends CDialog implements ActionListener,
 		MBPMParameters param = null;
 		Object column = null;
 		String value = "";
+		String valueTable = "";
 		StringBuilder errorLog = new StringBuilder();
 		StringBuilder totalLog = new StringBuilder();
 		int AD_Reference_ID = 0;
@@ -469,6 +552,25 @@ public class DialogParameters extends CDialog implements ActionListener,
 			else
 				param = new MBPMParameters(Env.getCtx(), 0, null);
 			
+			// Table Name
+			column = advancedTable.getValueAt(row, INDEX_TABLE);	
+			
+			if(column != null && !column.toString().isEmpty())
+			{
+				valueTable = column instanceof ValueNamePair ? 
+						((ValueNamePair)column).getValue() : column.toString();
+				
+				if(valueTable != null)
+				{			
+					param.setAD_Table2_ID(MTable.getTable_ID(valueTable));
+				}
+			}
+			else
+			{
+				hasError = true;
+				errorLog.append(valueCheck(INDEX_TABLE, "required"));
+			}
+			
 			// Column ColumnName
 			column = advancedTable.getValueAt(row, INDEX_COLUMNNAME);	
 			
@@ -479,7 +581,7 @@ public class DialogParameters extends CDialog implements ActionListener,
 				
 				if(value != null)
 				{				
-					param.setAD_Column_ID(MColumn.getColumn_ID(MTable.getTableName(Env.getCtx(), AD_Table_ID), value));
+					param.setAD_Column_ID(MColumn.getColumn_ID(MTable.getTableName(Env.getCtx(), MTable.getTable_ID(valueTable)), value));
 					param.setColumnName(value);
 				}
 			}
@@ -706,7 +808,13 @@ public class DialogParameters extends CDialog implements ActionListener,
 			if (header == null || header.length() == 0)
 					continue;
 			
+			String tableName = MTable.getTableName(Env.getCtx(), p.getAD_Table2_ID());
+			String headerTable = Msg.translate(Env.getCtx(), tableName);
+			if (headerTable == null || headerTable.length() == 0)
+					continue;
+			
 			model.addRow(new Object[] { 
+							new ValueNamePair(tableName, headerTable),
 							new ValueNamePair(columnName, header), 
 							new ValueNamePair(p.getOperation(), op), 
 							new ValueNamePair(p.getValue1(), p.getValue1()), 
@@ -716,22 +824,7 @@ public class DialogParameters extends CDialog implements ActionListener,
 			n++;
 		}
 		
-		sortByIndex(INDEX_LINEID);
-		
 		return n;
-	}
-	
-	public MColumn getTargetMField (String columnName)
-	{
-		if (columnName == null)
-			return null;
-		for (int c = 0; c < tableColumns.length; c++)
-		{
-			MColumn tableColumn = tableColumns[c];
-			if (columnName.equals(tableColumn.getColumnName()))
-				return tableColumn;
-		}
-		return null;
 	}
 	
 	/**
@@ -757,6 +850,19 @@ public class DialogParameters extends CDialog implements ActionListener,
 		}
 	}	//	cmd_ok
 	
+	public MColumn getTargetMField (String columnName)
+	{
+		if (columnName == null)
+			return null;
+		for (int c = 0; c < tableColumns.length; c++)
+		{
+			MColumn tableColumn = tableColumns[c];
+			if (columnName.equals(tableColumn.getColumnName()))
+				return tableColumn;
+		}
+		return null;
+	}
+	
 	private String valueCheck(int column, String message)
 	 {
 	  StringBuilder errors = new StringBuilder();
@@ -773,14 +879,16 @@ public class DialogParameters extends CDialog implements ActionListener,
 		statusBar.setStatusDB("#"+count);
 	}	//	setDtatusDB
 	
-	private void sortByIndex(int index)
+	private MTable[] getTables()
 	{
-		TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(advancedTable.getModel());
-		sorter.toggleSortOrder(index);
-		sorter.sort();
-		advancedTable.setRowSorter(sorter);
-	
-		advancedTable.requestFocusInWindow();
+		List<MTable> list = new Query(Env.getCtx(), I_AD_Table.Table_Name, "", null)
+		.setOrderBy(I_AD_Table.COLUMNNAME_TableName)
+		.setOnlyActiveRecords(true)
+		.list();
+		
+		MTable[] retValue = new MTable[list.size ()];
+		list.toArray (retValue);
+		return retValue;
 	}
 	
 	@Override

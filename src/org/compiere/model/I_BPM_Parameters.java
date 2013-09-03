@@ -92,6 +92,21 @@ public interface I_BPM_Parameters
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
 
+    /** Column name AD_Table2_ID */
+    public static final String COLUMNNAME_AD_Table2_ID = "AD_Table2_ID";
+
+	/** Set Table.
+	  * Database Table information
+	  */
+	public void setAD_Table2_ID (int AD_Table2_ID);
+
+	/** Get Table.
+	  * Database Table information
+	  */
+	public int getAD_Table2_ID();
+
+	public org.compiere.model.I_AD_Table getAD_Table2() throws RuntimeException;
+
     /** Column name BPM_Parameters_ID */
     public static final String COLUMNNAME_BPM_Parameters_ID = "BPM_Parameters_ID";
 
