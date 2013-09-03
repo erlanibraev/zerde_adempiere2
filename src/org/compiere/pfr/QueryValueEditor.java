@@ -24,7 +24,7 @@ public class QueryValueEditor extends AbstractCellEditor implements TableCellEdi
 {
 	private static final long serialVersionUID = -8162019498692286688L;
 	/** Find Window             */
-	private QueryDialog 			queryDialog;
+	private QueriInterface 			queryDialog;
 	/** Value 2(to)             */
 	private boolean         m_valueToColumn;
 	/**	Between selected		*/
@@ -34,7 +34,7 @@ public class QueryValueEditor extends AbstractCellEditor implements TableCellEdi
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(FindValueEditor.class);
 	
-	public QueryValueEditor (QueryDialog queryDialog, boolean valueTo)
+	public QueryValueEditor (QueriInterface queryDialog, boolean valueTo)
 	{
 		super();
 		this.queryDialog = queryDialog;

@@ -22,7 +22,7 @@ public class QueryDialogValueRenderer extends DefaultTableCellRenderer
 {
 	private static final long serialVersionUID = -4331238353480434965L;
 
-	public QueryDialogValueRenderer (QueryDialog queryDialog, boolean valueTo)
+	public QueryDialogValueRenderer (QueriInterface queryDialog, boolean valueTo)
 	{
 		super();
 		this.queryDialog = queryDialog;
@@ -30,7 +30,7 @@ public class QueryDialogValueRenderer extends DefaultTableCellRenderer
 	}	//	FindValueRenderer
 
 	/** Find Window             */
-	private QueryDialog			queryDialog;
+	private QueriInterface			queryDialog;
 	/** Value 2(to)             */
 	private boolean         m_valueToColumn;
 	/**	Between selected		*/

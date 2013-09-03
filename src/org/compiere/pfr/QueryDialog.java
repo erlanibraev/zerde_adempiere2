@@ -59,7 +59,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.ValueNamePair;
 
-public class QueryDialog extends CDialog implements ActionListener, ChangeListener, DataStatusListener 
+public class QueryDialog extends CDialog implements ActionListener, ChangeListener, DataStatusListener, QueriInterface
 {
 	public QueryDialog(Frame frame, int AD_Table_ID, int PFR_Calculation_ID)
 	{

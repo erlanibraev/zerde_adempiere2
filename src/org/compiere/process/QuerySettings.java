@@ -3,6 +3,7 @@ package org.compiere.process;
 import org.compiere.model.MPFRCalculation;
 import org.compiere.pfr.QueryDialog;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 
 public class QuerySettings extends SvrProcess 
 {
@@ -19,9 +20,9 @@ public class QuerySettings extends SvrProcess
 	@Override
 	protected String doIt() throws Exception 
 	{
-		QueryDialog dialog = new QueryDialog(Env.getFrame(Env.getWindow(0).getParent()), AD_Table_ID, getRecord_ID());
+		new QueryDialog(Env.getFrame(Env.getWindow(0).getParent()), AD_Table_ID, getRecord_ID());
 		
-		return null;
+		return Msg.translate(getCtx(), "Success");
 	}
 
 }
