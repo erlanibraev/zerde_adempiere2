@@ -5,6 +5,7 @@ package org.adempiere.apps.graph;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -49,6 +50,8 @@ public class BSCViewBarChart extends CPanel  implements FormPanel, ActionListene
 	 */
 	private static final long serialVersionUID = 3212565035042794285L;
 	private static CLogger log = CLogger.getCLogger (BSCView.class);
+	public static Dimension dimension = new Dimension(900,700);
+
 	private int m_WindowNo = 0;
 	private FormFrame m_frame;
 	private ConfirmPanel confirmPanel = new ConfirmPanel();
@@ -69,7 +72,6 @@ public class BSCViewBarChart extends CPanel  implements FormPanel, ActionListene
 		m_frame = frame;
 		
 		prepare();
-		
 		try {
 			initLoadPanel();
 			initMainPanel();
@@ -89,7 +91,7 @@ public class BSCViewBarChart extends CPanel  implements FormPanel, ActionListene
 	 * 
 	 */
 	private void initMainPanel() {
-		// TODO Auto-generated method stub
+		mainPanel.setPreferredSize(BSCBarChart.indicatordimension);
 		mainPanel.add(barChart);
 	}
 
@@ -102,8 +104,8 @@ public class BSCViewBarChart extends CPanel  implements FormPanel, ActionListene
 
 	private VLookup initlParameter() {
 		int AD_Column_ID = MColumn.getColumn_ID("BSC_Parameter", "BSC_Parameter_ID") ;
-		MLookup lookupAsset = MLookupFactory.get (Env.getCtx(), m_WindowNo, 0, AD_Column_ID, DisplayType.Search);
-		lParameter = new VLookup("BSC_Parameter_ID", true, false, true, lookupAsset);
+		MLookup lookup = MLookupFactory.get (Env.getCtx(), m_WindowNo, 0, AD_Column_ID, DisplayType.Search);
+		lParameter = new VLookup("BSC_Parameter_ID", true, false, true, lookup);
 		lParameter.addVetoableChangeListener(this);
 		lParameter.addActionListener(this);
 		return lParameter;
@@ -148,8 +150,21 @@ public class BSCViewBarChart extends CPanel  implements FormPanel, ActionListene
 		// TODO Auto-generated method stub
 		Integer BSC_Parameter_ID = (Integer) evt.getNewValue();
 		if (BSC_Parameter_ID.intValue() > 0) {
-			barChart.setBSC_Parameter_ID(BSC_Parameter_ID.intValue());
+			setBSC_Parameter_ID(BSC_Parameter_ID.intValue());
 		}
 	}
 
+	public void setBSC_Parameter_ID(int BSC_Parameter_ID) {
+		barChart.setBSC_Parameter_ID(BSC_Parameter_ID);
+		lParameter.setValue(new Integer(BSC_Parameter_ID));
+	}
+	
+	public int getBSC_Parameter_ID() {
+		int BSC_Parameter_ID = 0;
+		Integer bpid = (Integer) lParameter.getValue();
+		if (bpid != null) {
+			BSC_Parameter_ID = bpid.intValue();
+		}
+		return BSC_Parameter_ID;
+	}
 }
