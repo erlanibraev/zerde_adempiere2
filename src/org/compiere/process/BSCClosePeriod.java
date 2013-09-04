@@ -259,7 +259,7 @@ public class BSCClosePeriod extends SvrProcess {
 			int C_Calendar_ID = getPeriod().getC_Calendar_ID();
 			int C_Year_ID = getPeriod().getC_Year_ID();
 			
-			int next_CPeriod_ID = getNextPeriod(C_Year_ID,currentNo+1);
+			int next_CPeriod_ID = getNextPeriod(C_Year_ID,currentNo);
 			
 			if (next_CPeriod_ID <= 0) {
 				C_Year_ID  = getNextYear(C_Calendar_ID, C_Year_ID);

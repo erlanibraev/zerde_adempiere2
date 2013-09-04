@@ -731,7 +731,12 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 		copyValues(this, newCard);
 		newCard.setC_Period_ID(C_Period_ID);
 		newCard.set_ValueNoCheck (MBSCCard.COLUMNNAME_BSC_Card_ID, I_ZERO);	// new
-		
+		newCard.setName(null);
+		newCard.setDocumentNo(null);
+		newCard.setDocStatus(DOCSTATUS_Сформирован);
+		newCard.setDocAction(DOCACTION_Проверен);
+		newCard.setProcessed(false);
+		newCard.setProcessing(false);
 		newCard.getParameter().createNewLine(getC_Period_ID(),C_Period_ID);
 		
 		if (newCard.save()) {
@@ -754,6 +759,8 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 			setDocStatus(DOCSTATUS_Закрыт);
 			setDocAction(DOCACTION_НЕТ);
 			setPosted(true);
+			setProcessed(true);
+			setProcessedOn(new BigDecimal(Math.random()));
 			save();
 		}
 	}
