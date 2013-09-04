@@ -790,7 +790,7 @@ public class DialogParameters extends CDialog implements ActionListener,
 	
 	private int loadLines()
 	{
-		MBPMParameters[] params = MBPMParameters.getLinesWhere(Env.getCtx(), AD_Table_ID, Record_ID, null);
+		MBPMParameters[] params = MBPMParameters.getLines(Env.getCtx(), AD_Table_ID, Record_ID, null);
 		
 		advancedTable.stopEditor(true);
 		DefaultTableModel model = (DefaultTableModel)advancedTable.getModel();

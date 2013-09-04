@@ -12,7 +12,7 @@ public class ProcessBPMParams extends SvrProcess {
 	protected void prepare() {
 		
 		AD_Table_ID = getProcessInfo().getTable_ID();
-		
+		getTable_ID();
 	}
 
 	@Override

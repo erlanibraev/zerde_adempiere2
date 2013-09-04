@@ -44,10 +44,11 @@ public class MBPMParameters extends X_BPM_Parameters {
 	}
 	
 	
-	public static MBPMParameters[] getLinesWhere(Properties ctx, int AD_Table_ID, int Record_ID, String trxName)
+	public static MBPMParameters[] getLines(Properties ctx, int AD_Table_ID, int Record_ID, String trxName)
 	{
 		List<MBPMParameters> list = new Query(ctx, I_BPM_Parameters.Table_Name, "AD_Table_ID=? AND Record_ID=?", trxName)
 		.setParameters(AD_Table_ID, Record_ID)
+		.setOrderBy(I_BPM_Parameters.COLUMNNAME_ColumnName)
 		.setOnlyActiveRecords(true)
 		.list();
 		

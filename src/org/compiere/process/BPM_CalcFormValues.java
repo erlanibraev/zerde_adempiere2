@@ -15,17 +15,18 @@ import org.compiere.apps.ProcessCtl;
 import org.compiere.apps.ProcessParameterPanel;
 import org.compiere.model.I_BPM_Form;
 import org.compiere.model.I_BPM_Project;
-import org.compiere.model.MBPMCategory;
-import org.compiere.model.MBPMColumnParameters;
 import org.compiere.model.MBPMForm;
 import org.compiere.model.MBPMFormCell;
-import org.compiere.model.MBPMFormColumn;
 import org.compiere.model.MBPMFormLine;
-import org.compiere.model.MBPMFormParameters;
 import org.compiere.model.MBPMFormValues;
+import org.compiere.model.MBPMParameters;
 import org.compiere.model.MBPMProject;
 import org.compiere.model.MParameterLine;
+import org.compiere.model.MTable;
 import org.compiere.model.MVariable;
+import org.compiere.model.X_BPM_FormCell;
+import org.compiere.model.X_BPM_FormColumn;
+import org.compiere.model.X_BPM_FormLine;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -91,10 +92,12 @@ public class BPM_CalcFormValues extends SvrProcess {
 				
 				BSC_Parameter_ID = cell.getBSC_Parameter_ID();
 				if(!cell.isParameter()) {
-					if(l.isParameter())
+					if(l.isParameter()) {
 						BSC_Parameter_ID = l.getBSC_Parameter_ID();
-					else if(cell.getBPM_FormColumn().isParameter())
+					}
+					else if(cell.getBPM_FormColumn().isParameter()) {
 						BSC_Parameter_ID = cell.getBPM_FormColumn().getBSC_Parameter_ID();
+					}
 				}
 				
 				MBPMFormValues value = MBPMFormValues.getFormValueLine(l.getBPM_FormLine_ID(), cell.getBPM_FormColumn_ID(), form.getBPM_VersionBudget_ID(), BPM_Project_ID);
@@ -108,8 +111,10 @@ public class BPM_CalcFormValues extends SvrProcess {
 				
 				if(cell.getCellValue().doubleValue() == 0){
 					
-					LinkedHashMap<String, Object> obj = getParameters(cell.getBPM_FormCell_ID());
-					
+					LinkedHashMap<String, Object> obj = new LinkedHashMap<String, Object>();
+					getParameters(MTable.getTable_ID(X_BPM_FormColumn.Table_Name), cell.getBPM_FormColumn_ID(), obj);
+					getParameters(MTable.getTable_ID(X_BPM_FormLine.Table_Name), cell.getBPM_FormLine_ID(), obj);
+					getParameters(MTable.getTable_ID(X_BPM_FormCell.Table_Name), cell.get_ID(), obj);
 					value.setCellValue(new BigDecimal(0));
 					value.setAlternateValue("");
 					
@@ -125,7 +130,11 @@ public class BPM_CalcFormValues extends SvrProcess {
 							if(var.getBSC_Parameter_ID() > 0) {
 								MBPMFormCell[] fCell = MBPMFormCell.getLinesParameter(m_ctx, var.getBSC_Parameter_ID(), m_trxName);
 								for(MBPMFormCell ce: fCell){
-									obj = getParameters(ce.getBPM_FormCell_ID());
+									obj = new LinkedHashMap<String, Object>();
+									getParameters(MTable.getTable_ID(X_BPM_FormColumn.Table_Name), ce.getBPM_FormColumn_ID(), obj);
+									getParameters(MTable.getTable_ID(X_BPM_FormLine.Table_Name), ce.getBPM_FormLine_ID(), obj);
+									getParameters(MTable.getTable_ID(X_BPM_FormCell.Table_Name), ce.get_ID(), obj);
+									//obj = getParameters(AD_Table_ID, Record_ID);
 									prs.put(var.getName(), obj);
 								}
 							}
@@ -216,18 +225,19 @@ public class BPM_CalcFormValues extends SvrProcess {
 		return Msg.translate(m_ctx, "Success");
 	}
 	
-	private LinkedHashMap<String, Object> columnParameters(int BPM_FormColumn_ID, LinkedHashMap<String, Object> params) {
-		MBPMColumnParameters[] parameters = MBPMColumnParameters.getLines(m_ctx, BPM_FormColumn_ID, m_trxName);
+	private LinkedHashMap<String, Object> getParameters(int AD_Table_ID, int Record_ID, LinkedHashMap<String, Object> param){
+		
+		MBPMParameters[] parameters = MBPMParameters.getLines(m_ctx, AD_Table_ID, Record_ID, m_trxName);
 		
 		String in = "";
 		int counter = 0;
 		boolean isChanged = false;
 		
-		String type = parameters.length > 0 ? parameters[0].getParameterType() : "";
+		String type = parameters.length > 0 ? parameters[0].getColumnName() : "";
 		
-		for(MBPMColumnParameters par: parameters){
+		for(MBPMParameters par: parameters){
 			
-			isChanged = !type.equals(par.getParameterType());
+			isChanged = !type.equals(par.getColumnName());
 			
 			if(!isChanged)
 			{
@@ -241,59 +251,15 @@ public class BPM_CalcFormValues extends SvrProcess {
 				counter = 1;
 				in = "";
 			}
-			in += par.get_Value(par.getParameterType()).toString();
+			in += par.getValue1();
 			
-			params.put(par.getParameterType(), in);
+			param.put(par.getColumnName(), in);
 			
-			type = par.getParameterType();
-		}
-		
-		return params;		
-	}
-	
-	private LinkedHashMap<String, Object> getParameters(int BPM_FormCell_ID){		
-		MBPMFormParameters[] parameters = MBPMFormParameters.getLines(m_ctx, BPM_FormCell_ID, m_trxName);
-		LinkedHashMap<String, Object> param = new LinkedHashMap<String, Object>();
-		
-		MBPMFormCell cell = new MBPMFormCell(getCtx(), BPM_FormCell_ID, get_TrxName());
-		MBPMFormColumn column = new MBPMFormColumn(getCtx(), cell.getBPM_FormColumn_ID(), get_TrxName());
-		
-		String in = "";
-		int counter = 0;
-		boolean isChanged = false;
-		
-		String type = parameters.length > 0 ? parameters[0].getParameterType() : "";
-		
-		for(MBPMFormParameters par: parameters){
-			
-			isChanged = !type.equals(par.getParameterType());
-			
-			if(!isChanged)
-			{
-				if(counter > 0)
-					in += ", ";
-				
-				counter++;
-			}
-			else
-			{
-				counter = 1;
-				in = "";
-			}
-			in += par.get_Value(par.getParameterType()).toString();
-			
-			param.put(par.getParameterType(), in);
-			
-			type = par.getParameterType();
+			type = par.getColumnName();
 		}
 		
 		if(BPM_Project_ID != MBPMProject.TempProjectID && BPM_Project_ID != 0)
 			param.put(I_BPM_Project.COLUMNNAME_BPM_Project_ID, String.valueOf(BPM_Project_ID));
-		
-		if(cell.isParameter())
-			return param;
-		if(column.isParameter())
-			return columnParameters(MBPMFormCell.getColumn(BPM_FormCell_ID), param);
 		
 		return param;
 	}
