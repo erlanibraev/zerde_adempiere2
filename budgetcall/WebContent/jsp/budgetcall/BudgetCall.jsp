@@ -25,7 +25,7 @@
 <table class="cursorHover more" width="100%" border="1" style="margin-top:20px;" bordercolor="#663300" cellspacing="2">
   <tr class="trLightBlue">
     <th scope="col">Код</th>
-    <th scope="col">Наименование спецификифики (статьи)</th>
+    <th scope="col">Наименование специфики (статьи)</th>
     <%
     	int j = 0;
 	    for(MPeriod p: period){
@@ -36,7 +36,7 @@
 	    	j++;
 	    }
     %>
-    <th scope="col">Всего по статье</th>
+    <th scope="col">Всего по Статье / Заявке</th>
   </tr>
   
   <!--  -->	
@@ -110,13 +110,15 @@
     	<th>Всего за период</th>
     <%
     	int t = 0;
+    	BigDecimal totalCall = new BigDecimal(0);
 	    for(MPeriod p: period){
+	    	totalCall = totalCall.add(sumMonth[t].setScale(2, RoundingMode.HALF_UP));
 	    	%>
 	    	 <th>&nbsp;<%= String.valueOf(sumMonth[t].setScale(2, RoundingMode.HALF_UP)) %></th>
 	    	<%	  
 	    	t++;
 	    }
     %>
-    	<th>&nbsp;</th>
+    	<th>&nbsp;<font size="+1"><%= totalCall.setScale(2, RoundingMode.HALF_UP) %></font></th>
   	</tr>
 </table>

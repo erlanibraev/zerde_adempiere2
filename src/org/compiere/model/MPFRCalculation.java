@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -151,7 +152,16 @@ public class MPFRCalculation extends X_PFR_Calculation
     	StringBuilder sqlGroupBy = new StringBuilder();
     	StringBuilder sqlOrderBy = new StringBuilder();
     	
-    	MPFRCalculation calculation = new MPFRCalculation(Env.getCtx(), PFR_Calculation_ID, null);
+    	MPFRCalculation calculation = null;
+    	
+    	try{
+    		calculation = new MPFRCalculation(Env.getCtx(), PFR_Calculation_ID, null);
+    	}catch(Exception e){ 
+    		calculation = null; 
+    	}
+    	
+    	if(calculation == null)
+    		throw new AdempiereException("Неверные настройки запроса");
     	
     	// -->> Generate 'SELECT PART' OF SQL
     	

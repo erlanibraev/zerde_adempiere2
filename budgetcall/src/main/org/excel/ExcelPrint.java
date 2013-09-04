@@ -228,11 +228,16 @@ public class ExcelPrint extends Budget {
 		}
 		
 		int colC = col+2;
+		BigDecimal totalCall = new BigDecimal(0);
 		for(int t = 0; t < period.length; t++){
+			totalCall = totalCall.add(sumMonth[t].setScale(2, RoundingMode.HALF_UP));
 			number = new Number(colC, rowC, sumMonth[t].setScale(2, RoundingMode.HALF_UP).doubleValue(), borderStyleCenter);
 			sheet.addCell(number);
 			colC++;
 		}
+		// Total budget Call
+		number = new Number(colC, rowC, totalCall.setScale(2, RoundingMode.HALF_UP).doubleValue(), borderStyleCenter);
+		sheet.addCell(number);
 		
 		copy.write();
 		copy.close();
