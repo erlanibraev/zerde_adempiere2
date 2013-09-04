@@ -30,7 +30,7 @@ public class X_BPM_FormLine extends PO implements I_BPM_FormLine, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130902L;
+	private static final long serialVersionUID = 20130904L;
 
     /** the default Constructor */
     public X_BPM_FormLine(Properties ctx)
@@ -49,6 +49,8 @@ public class X_BPM_FormLine extends PO implements I_BPM_FormLine, I_Persistent
 			setisParameter (false);
 // N
 			setName (null);
+			setParamDlg (null);
+// N
         } */
     }
 
@@ -216,34 +218,6 @@ public class X_BPM_FormLine extends PO implements I_BPM_FormLine, I_Persistent
 		return false;
 	}
 
-	/** LevelType AD_Reference_ID=1000128 */
-	public static final int LEVELTYPE_AD_Reference_ID=1000128;
-	/** Category = CATEGORY */
-	public static final String LEVELTYPE_Category = "CATEGORY";
-	/** Class = CLASS */
-	public static final String LEVELTYPE_Class = "CLASS";
-	/** Specificity = SPECIFICITY */
-	public static final String LEVELTYPE_Specificity = "SPECIFICITY";
-	/** SubClass = SUBCLASS */
-	public static final String LEVELTYPE_SubClass = "SUBCLASS";
-	/** Set LevelType.
-		@param LevelType 
-		Тип уровня
-	  */
-	public void setLevelType (String LevelType)
-	{
-
-		set_Value (COLUMNNAME_LevelType, LevelType);
-	}
-
-	/** Get LevelType.
-		@return Тип уровня
-	  */
-	public String getLevelType () 
-	{
-		return (String)get_Value(COLUMNNAME_LevelType);
-	}
-
 	/** Set Line.
 		@param LineNo 
 		Line No
@@ -288,4 +262,21 @@ public class X_BPM_FormLine extends PO implements I_BPM_FormLine, I_Persistent
     {
         return new KeyNamePair(get_ID(), getName());
     }
+
+	/** Set ParamDlg.
+		@param ParamDlg 
+		Настройка параметров
+	  */
+	public void setParamDlg (String ParamDlg)
+	{
+		set_Value (COLUMNNAME_ParamDlg, ParamDlg);
+	}
+
+	/** Get ParamDlg.
+		@return Настройка параметров
+	  */
+	public String getParamDlg () 
+	{
+		return (String)get_Value(COLUMNNAME_ParamDlg);
+	}
 }

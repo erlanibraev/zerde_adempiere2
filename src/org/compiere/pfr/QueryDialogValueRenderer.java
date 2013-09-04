@@ -4,18 +4,13 @@ import java.awt.Component;
 import java.awt.Insets;
 import java.sql.Date;
 import java.util.LinkedHashMap;
-import java.util.logging.Level;
-
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
-
 import org.adempiere.plaf.AdempierePLAF;
-import org.compiere.apps.search.FindValueRenderer;
 import org.compiere.model.MColumn;
 import org.compiere.model.MQuery;
-import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.ValueNamePair;
 
@@ -44,8 +39,6 @@ public class QueryDialogValueRenderer extends DefaultTableCellRenderer
 	private volatile String	m_columnName = null;
 	/** CheckBox                */
 	private JCheckBox       m_check = null;
-	/**	Logger			*/
-	private static CLogger log = CLogger.getCLogger(FindValueRenderer.class);
 
 	/**
 	 * 	Get Check Box
@@ -76,7 +69,6 @@ public class QueryDialogValueRenderer extends DefaultTableCellRenderer
 	public Component getTableCellRendererComponent(JTable table, Object value,
 		boolean isSelected, boolean hasFocus, int row, int col)
 	{
-	//	log.config( "FindValueRenderer.getTableCellRendererComponent", "r=" + row + ", c=" + col );
 		//	Column
 		m_columnName = null;
 		Object column = table.getModel().getValueAt(row, map.get(QueryDialog.KEY_COLUMNNAME));
@@ -100,8 +92,6 @@ public class QueryDialogValueRenderer extends DefaultTableCellRenderer
 			setBackground(AdempierePLAF.getFieldBackground_Normal());
 		else
 			setBackground(AdempierePLAF.getFieldBackground_Inactive());
-
-	//	log.config( "FindValueRenderer.getTableCellRendererComponent - (" + value + ") - Enabled=" + enabled);
 
 		Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
 		if (value == null || (m_valueToColumn && !m_between))
@@ -152,9 +142,7 @@ public class QueryDialogValueRenderer extends DefaultTableCellRenderer
 		MColumn field = getMField();
 		if (field != null)
 			displayType = field.getAD_Reference_ID();
-		else
-			log.log(Level.SEVERE, "FindValueRenderer.setValue (" + value + ") ColumnName=" + m_columnName + " No Target Column");
-
+	
 		setHorizontalAlignment(JLabel.LEFT);
 		//	Number
 		if (DisplayType.isNumeric(displayType))
@@ -190,20 +178,13 @@ public class QueryDialogValueRenderer extends DefaultTableCellRenderer
 		//	Row ID
 		else if (displayType == DisplayType.RowID)
 			retValue = "";
-		//	Lookup
-		/*else if (DisplayType.isLookup(displayType) && field != null)
-		{
-			Lookup lookup = field.getLookup();
-			if (lookup != null)
-				retValue = lookup.getDisplay(value);
-		}*/
 		//	other
 		else
 		{
 			super.setValue(value);
 			return;
 		}
-	//	log.config( "FindValueRenderer.setValue (" + retValue + ") - DT=" + displayType);
+
 		super.setValue(retValue);
 	}	//	setValue
 

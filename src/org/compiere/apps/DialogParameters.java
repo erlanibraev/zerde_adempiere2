@@ -893,13 +893,11 @@ public class DialogParameters extends CDialog implements ActionListener,
 	
 	@Override
 	public void dataStatusChanged(DataStatusEvent e) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void stateChanged(ChangeEvent e) {
-		// TODO Auto-generated method stub
 
 	}
 

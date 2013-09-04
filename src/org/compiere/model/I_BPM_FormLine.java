@@ -159,19 +159,6 @@ public interface I_BPM_FormLine
 	  */
 	public boolean isParameter();
 
-    /** Column name LevelType */
-    public static final String COLUMNNAME_LevelType = "LevelType";
-
-	/** Set LevelType.
-	  * Тип уровня
-	  */
-	public void setLevelType (String LevelType);
-
-	/** Get LevelType.
-	  * Тип уровня
-	  */
-	public String getLevelType();
-
     /** Column name LineNo */
     public static final String COLUMNNAME_LineNo = "LineNo";
 
@@ -197,6 +184,19 @@ public interface I_BPM_FormLine
 	  * Alphanumeric identifier of the entity
 	  */
 	public String getName();
+
+    /** Column name ParamDlg */
+    public static final String COLUMNNAME_ParamDlg = "ParamDlg";
+
+	/** Set ParamDlg.
+	  * Настройка параметров
+	  */
+	public void setParamDlg (String ParamDlg);
+
+	/** Get ParamDlg.
+	  * Настройка параметров
+	  */
+	public String getParamDlg();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

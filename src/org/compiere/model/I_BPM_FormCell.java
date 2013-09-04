@@ -155,6 +155,19 @@ public interface I_BPM_FormCell
 	  */
 	public boolean isParameter();
 
+    /** Column name ParamDlg */
+    public static final String COLUMNNAME_ParamDlg = "ParamDlg";
+
+	/** Set ParamDlg.
+	  * Настройка параметров
+	  */
+	public void setParamDlg (String ParamDlg);
+
+	/** Get ParamDlg.
+	  * Настройка параметров
+	  */
+	public String getParamDlg();
+
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
 
