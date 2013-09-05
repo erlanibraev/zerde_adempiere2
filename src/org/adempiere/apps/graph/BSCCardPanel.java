@@ -12,6 +12,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -24,6 +28,7 @@ import layout.TableLayout;
 import org.compiere.apps.ADialog;
 import org.compiere.apps.AEnv;
 import org.compiere.apps.AWindow;
+import org.compiere.apps.form.FormFrame;
 import org.compiere.model.MBSCCard;
 import org.compiere.model.MBSCCardLine;
 import org.compiere.model.MQuery;
@@ -252,6 +257,10 @@ public class BSCCardPanel extends JPanel implements MouseListener, ActionListene
 				if (isLabel(i, e) && i > 0) {
 					int BSC_CardLine_ID = card.getLines(false)[i-1].getBSC_CardLine_ID();
 					openCardWindow(BSC_CardLine_ID);
+				} else if (isGraph(i, e) && i > 0) {
+					int BSC_Card_ID = card.getBSC_Card_ID();
+					int BSC_CardLine_ID = card.getLines(false)[i-1].getBSC_CardLine_ID();
+					openBarChartWindow(BSC_Card_ID, BSC_CardLine_ID);
 				}
 			}
 		}
@@ -265,12 +274,20 @@ public class BSCCardPanel extends JPanel implements MouseListener, ActionListene
 	private boolean isLabel(int i,MouseEvent e) {
 		int y = panels[i][0].getY();
 		int height = panels[i][0].getHeight();
-		
-		System.out.print("Y = ");System.out.print(y);System.out.println("");
-		System.out.print("Height = ");System.out.print(height);System.out.println("");
-		System.out.print("mouseY = ");System.out.print(e.getY());System.out.println("");
-		
-		boolean result = y < e.getY() && e.getY() < y + height;
+		int x = panels[i][5].getX();
+		boolean result = y < e.getY() && e.getY() < y + height && e.getX() < x;
+		return result;
+	}
+
+	/**
+	 * @param i
+	 * @return
+	 */
+	private boolean isGraph(int i,MouseEvent e) {
+		int y = panels[i][0].getY();
+		int height = panels[i][0].getHeight();
+		int x = panels[i][5].getX();
+		boolean result = y < e.getY() && e.getY() < y + height && x < e.getX();
 		return result;
 	}
 
@@ -281,7 +298,7 @@ public class BSCCardPanel extends JPanel implements MouseListener, ActionListene
 		System.out.print("BSC_CardLine_ID = ");System.out.print(BSC_CardLine_ID);System.out.println("");
 		
 		AWindow myWindow = new AWindow(getGraphicsConfiguration());
-		int AD_Window_ID = 1000104;
+		int AD_Window_ID = getBSC_CardWindow_ID();
 		MQuery query = new MQuery(MBSCCard.Table_ID);
 		query.addRestriction("BSC_Card_ID", MQuery.EQUAL, card.getBSC_Card_ID());
 		if (BSC_CardLine_ID > 0) {
@@ -297,7 +314,45 @@ public class BSCCardPanel extends JPanel implements MouseListener, ActionListene
 		};
 		
 	}
+	
+	private int getBSC_CardWindow_ID() {
+		int result = 0;
+		String sql = "SELECT * FROM A_Window WHERE Name like 'BSC_Card'";
+		result = DB.getSQLValue(null, sql);
+		if (result <= 0) { //TODO Убрать!
+			result = 1000104;
+		}
+		return result;
+	}
 
+	private void openBarChartWindow(int BSC_Card_ID, int BSC_CardLine_ID) {
+		if(BSC_Card_ID > 0) {
+			FormFrame myWindow = new FormFrame(Env.getWindow(0).getGraphicsConfiguration());
+			if (myWindow.openForm(getBSCViewBarChart())) {
+				BSCViewBarChart view = (BSCViewBarChart) myWindow.getFormPanel();
+				view.setBSC_Card_ID(BSC_Card_ID);
+				if (BSC_CardLine_ID > 0) {
+					MBSCCardLine cl = new MBSCCardLine(Env.getCtx(),BSC_CardLine_ID,null);
+					if (cl != null) {
+						view.setBSC_Parameter_ID(cl.getBSC_Parameter_Out_ID());
+					}
+				}
+				AEnv.addToWindowManager(myWindow);
+				AEnv.showCenterScreen(myWindow);
+				myWindow.setVisible(true);
+				myWindow.setFocusableWindowState(true);
+				myWindow.toFront();
+			}			
+		}
+	}
+
+	public static int getBSCViewBarChart() {
+		int result = 0;
+		String sql = "SELECT AD_Form_ID FROM AD_Form WHERE Name like 'BSCViewBarChart'";
+		result = DB.getSQLValue(null, sql);
+		return result;
+	}	
+	
 	/**
 	 * @param e
 	 * @return

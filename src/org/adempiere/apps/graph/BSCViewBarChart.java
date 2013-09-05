@@ -24,11 +24,13 @@ import org.compiere.apps.search.InfoBSCParameter;
 import org.compiere.grid.ed.AutoCompletion;
 import org.compiere.grid.ed.VComboBox;
 import org.compiere.grid.ed.VLookup;
+import org.compiere.model.MBSCCard;
 import org.compiere.model.MColumn;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MParameter;
 import org.compiere.model.MRole;
+import org.compiere.swing.CComboBox;
 import org.compiere.swing.CField;
 import org.compiere.swing.CFieldEditor;
 import org.compiere.swing.CPanel;
@@ -38,6 +40,7 @@ import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
+import org.compiere.util.Language;
 
 /**
  * @author Y.Ibrayev
@@ -60,7 +63,11 @@ public class BSCViewBarChart extends CPanel  implements FormPanel, ActionListene
 	private CPanel loadPanel = new CPanel(new FlowLayout(FlowLayout.LEADING));
 	private BSCBarChart barChart = new BSCBarChart(null);
 	private VLookup lParameter = new VLookup("BSC_Parameter_ID", true, true, true, null);
+	private VLookup lCard = new VLookup("BSC_Card_ID",false,true,true,null);
+	private VComboBox cbParameter = null;
 	
+	private int BSC_Card_ID = 0;
+	private MBSCCard card = null;
 
 	/* (non-Javadoc)
 	 * @see org.compiere.apps.form.FormPanel#init(int, org.compiere.apps.form.FormFrame)
@@ -91,15 +98,38 @@ public class BSCViewBarChart extends CPanel  implements FormPanel, ActionListene
 	 * 
 	 */
 	private void initMainPanel() {
-		mainPanel.setPreferredSize(BSCBarChart.indicatordimension);
-		mainPanel.add(barChart);
+		Dimension mySize = new Dimension(BSCBarChart.indicatordimension.width+5, BSCBarChart.indicatordimension.height+10);
+		mainPanel.setPreferredSize(mySize);
+		mainPanel.add(initBarChart());
+	}
+	
+	private BSCBarChart initBarChart() {
+		if(card != null) {
+			if(getBSC_Parameter_ID() > 0) {
+				barChart.setBSC_Parameter_ID(getBSC_Parameter_ID());
+			} else if (getCard().getBSC_Parameter_ID() > 0) {
+				setBSC_Parameter_ID(getCard().getBSC_Parameter_ID());
+			}
+		}
+		return barChart;
 	}
 
 	/**
 	 * 
 	 */
 	private void initLoadPanel() {
-		loadPanel.add(initlParameter());
+		loadPanel.add(initCard());
+//		loadPanel.add(initlParameter());
+		loadPanel.add(initCbParameter());
+	}
+
+	private Component initCard() {
+		int AD_Column_ID = MColumn.getColumn_ID("BSC_Card", "BSC_Card_ID") ;
+		MLookup lookup = MLookupFactory.get (Env.getCtx(), m_WindowNo, 0, AD_Column_ID, DisplayType.Search);
+		lCard = new VLookup("BSC_Card_ID", true, false, true, lookup);
+		lCard.addVetoableChangeListener(this);
+		lCard.addActionListener(this);
+		return lCard;
 	}
 
 	private VLookup initlParameter() {
@@ -109,6 +139,25 @@ public class BSCViewBarChart extends CPanel  implements FormPanel, ActionListene
 		lParameter.addVetoableChangeListener(this);
 		lParameter.addActionListener(this);
 		return lParameter;
+	}
+	
+	private VComboBox initCbParameter(){
+		cbParameter = new VComboBox(getKeyNamePair());
+		cbParameter.addActionListener(this);
+		AutoCompletion.enable(cbParameter);
+		return cbParameter;
+	}
+	
+	private KeyNamePair[] getKeyNamePair() {
+		String WhereClause = "";
+		if(getCard() != null) {
+			WhereClause = "WHERE BSC_Parameter_ID in (SELECT BSC_Parameter_Out_ID FROM BSC_CardLine WHERE BSC_Card_ID = "+getCard().getBSC_Card_ID()+")";
+		}
+		String sql = MRole.getDefault().addAccessSQL(
+				"SELECT BSC_Parameter_ID, Name FROM BSC_Parameter "+WhereClause+" ORDER BY 2",
+				"BSC_Parameter", MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);	//	all
+		KeyNamePair[] result = DB.getKeyNamePairs(sql, true);
+		return result;
 	}
 
 	private void prepare() {
@@ -122,10 +171,23 @@ public class BSCViewBarChart extends CPanel  implements FormPanel, ActionListene
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().equals(ConfirmPanel.A_OK))
 			dispose();
-		else if (e.getSource() == lParameter) {
-			int BSC_Parameter_ID = (Integer)lParameter.getValue();
-			barChart.setBSC_Parameter_ID(BSC_Parameter_ID);
+		else if (e.getSource() == cbParameter) {
+			int BSC_Parameter_ID = (cbParameter.getValue()==null ? 0 : (Integer)cbParameter.getValue());
+			initBarChart();
+		} else if (e.getSource() == lCard) {
+			setBSC_Card_ID((Integer)lCard.getValue());
+			createFilter();
+			initBarChart();
 		}
+	}
+
+	private void createFilter() {
+		// TODO Auto-generated method stub
+		loadPanel.remove(cbParameter);
+		loadPanel.add(initCbParameter());
+		loadPanel.validate();
+		loadPanel.repaint();
+		loadPanel.updateUI();	
 	}
 
 	/* (non-Javadoc)
@@ -148,23 +210,62 @@ public class BSCViewBarChart extends CPanel  implements FormPanel, ActionListene
 	@Override
 	public void vetoableChange(PropertyChangeEvent evt)	throws PropertyVetoException {
 		// TODO Auto-generated method stub
-		Integer BSC_Parameter_ID = (Integer) evt.getNewValue();
-		if (BSC_Parameter_ID.intValue() > 0) {
-			setBSC_Parameter_ID(BSC_Parameter_ID.intValue());
+		
+		if(evt.getSource() == lParameter) {
+			Integer BSC_Parameter_ID = (Integer) evt.getNewValue();
+			if (BSC_Parameter_ID.intValue() > 0) {
+				setBSC_Parameter_ID(BSC_Parameter_ID.intValue());
+			}
+		} else if (evt.getSource() == lCard) {
+			Integer BSC_Card_ID = (Integer) evt.getNewValue();
+			if (BSC_Card_ID.intValue() > 0) {
+				setBSC_Card_ID(BSC_Card_ID.intValue());
+				initBarChart();
+			}
 		}
 	}
 
 	public void setBSC_Parameter_ID(int BSC_Parameter_ID) {
+		cbParameter.setValue(new Integer(BSC_Parameter_ID));
 		barChart.setBSC_Parameter_ID(BSC_Parameter_ID);
-		lParameter.setValue(new Integer(BSC_Parameter_ID));
 	}
 	
 	public int getBSC_Parameter_ID() {
 		int BSC_Parameter_ID = 0;
-		Integer bpid = (Integer) lParameter.getValue();
+		Integer bpid = (Integer) cbParameter.getValue();
 		if (bpid != null) {
 			BSC_Parameter_ID = bpid.intValue();
 		}
 		return BSC_Parameter_ID;
+	}
+
+	public int getBSC_Card_ID() {
+		return BSC_Card_ID;
+	}
+
+	public void setBSC_Card_ID(int bSC_Card_ID) {
+		BSC_Card_ID = bSC_Card_ID;
+		if (BSC_Card_ID > 0 && (card == null || card.getBSC_Card_ID() != BSC_Card_ID)) {
+			setCard(new MBSCCard(Env.getCtx(),BSC_Card_ID,null));
+			createFilter();
+			lCard.setValue(new Integer(BSC_Card_ID));
+			initBarChart();
+		}
+	}
+
+
+	public MBSCCard getCard() {
+		return card;
+	}
+
+	public void setCard(MBSCCard card) {
+		this.card = card;
+		if(card != null) {
+			if (card.getBSC_Card_ID() != BSC_Card_ID) {
+				BSC_Card_ID = card.getBSC_Card_ID();
+			}
+		} else {
+			BSC_Card_ID = 0;
+		}
 	}
 }

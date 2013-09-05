@@ -34,9 +34,13 @@ public class BSCBarChart extends CPanel {
 	public static Dimension indicatordimension = new Dimension(800,600);
 	protected DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 	/** X Axis Label			*/
-	protected String		m_X_AxisLabel = "Период";
+	protected static String		m_X_AxisLabel = "Период";
 	/** Y Axis Label			*/
-	protected String		m_Y_AxisLabel = "Значение";
+	protected static String		m_Y_AxisLabel = "Значение (%)";
+	
+	protected static String plan = "План";
+	protected static String fact = "Факт";
+	
 	
 	public BSCBarChart(MParameter _parameter) {
 		super();
@@ -112,10 +116,11 @@ public class BSCBarChart extends CPanel {
 	private void loadData() {
 		dataset = new DefaultCategoryDataset();
 		for (int i = 0; i < getParameter().getParameterLine().size(); i++){
-			String series = m_X_AxisLabel;
+//			String series = m_X_AxisLabel;
 			MParameterLine line = getParameter().getParameterLine().get(i);
 			BigDecimal value = new BigDecimal(line.getValue());
-			dataset.addValue(value.doubleValue(), series, line.getPeriod().getName());
+			dataset.addValue(value.doubleValue(), fact, line.getPeriod().getName());
+			dataset.addValue(1, plan, line.getPeriod().getName());
 		}
 	}
 }
