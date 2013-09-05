@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -103,6 +104,50 @@ public class BudgetCall extends Budget {
 		return "select round(sum(t.amount),2)::text as amount from bpm_budgetcallLine t \n"+
 				"where t.bpm_budgetCall_id=? and t.c_charge_id=? and t.c_period_id=? \n"+
 				"group by t.bpm_budgetCall_id, t.c_charge_id";
+	}
+	
+	public double getPeriodAmount(int callID, int chargeID, int periodID, LinkedHashMap<Integer, String> quarter, int keyQuarter){
+		
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		StringBuilder sql_ = new StringBuilder();
+		sql_.append("select round(sum(t.amount),2)::text as amount from bpm_budgetcallLine t \n");
+		sql_.append("where t.bpm_budgetCall_id=? and t.c_charge_id=? \n");
+		if(!quarter.containsKey(keyQuarter))
+			sql_.append("and t.c_period_id=? \n");
+		else
+			sql_.append("and t.c_period_id in ("+quarter.get(keyQuarter)+") \n");
+		sql_.append("group by t.bpm_budgetCall_id, t.c_charge_id");
+		
+		try
+		{
+			pstmt = DB.prepareStatement (sql_.toString(), null);
+			pstmt.setInt(1, callID);
+			pstmt.setInt(2, chargeID);
+			if(keyQuarter == 0)
+				pstmt.setInt(3, periodID);
+			rs = pstmt.executeQuery();
+			if(rs.next()){
+				return rs.getDouble(1);
+			}
+		}
+		catch (SQLException e)
+		{
+			CLogger.get().log(Level.INFO, "product", e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
+		}	
+		
+		return 0;
+	}
+	
+	public boolean isQuarter(int month){
+		
+		return (month % 3 == 0) ? true : false;
 	}
 
 }
