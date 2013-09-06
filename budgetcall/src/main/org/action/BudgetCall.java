@@ -114,10 +114,12 @@ public class BudgetCall extends Budget {
 		StringBuilder sql_ = new StringBuilder();
 		sql_.append("select round(sum(t.amount),2)::text as amount from bpm_budgetcallLine t \n");
 		sql_.append("where t.bpm_budgetCall_id=? and t.c_charge_id=? \n");
+		
 		if(!quarter.containsKey(keyQuarter))
 			sql_.append("and t.c_period_id=? \n");
 		else
 			sql_.append("and t.c_period_id in ("+quarter.get(keyQuarter)+") \n");
+		
 		sql_.append("group by t.bpm_budgetCall_id, t.c_charge_id");
 		
 		try

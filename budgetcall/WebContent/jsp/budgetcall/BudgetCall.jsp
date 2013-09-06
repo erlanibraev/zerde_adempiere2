@@ -12,7 +12,7 @@
 <%
 	BudgetCall bc = (BudgetCall) session.getAttribute("budgetcall"); 
 	MPeriod[] period = Utils.getPeriod(bc.getCallID());
-	BigDecimal[] sumMonth = new BigDecimal[period.length+4]; // count Quarter
+	BigDecimal[] sumMonth = new BigDecimal[period.length+4]; // 4 = count Quarter
 	//
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
@@ -25,7 +25,7 @@
 <table class="cursorHover more" width="100%" border="1" style="margin-top:20px;" bordercolor="#663300" cellspacing="2">
   <tr class="trLightBlue">
     <th scope="col">Код</th>
-    <th scope="col">Наименование специфики (статьи)</th>
+    <th scope="col" width="250px">Наименование специфики (статьи)</th>
     <%
     	int j = 0;
     	int mo = 1;
@@ -41,7 +41,7 @@
 	    		String qS = String.valueOf(mo/3);
 	    		%>
 	    		<th scope="col" width="90px"><%= p.getName().substring(0, p.getName().indexOf("-")) %></th>
-	    		<th scope="col" width="90px"><%= qS %> квартал</th>
+	    		<th class="tdQuarter" scope="col" width="90px"><%= qS %> квартал</th>
 	    		<%
 	    	}
 	    	j++;
@@ -115,17 +115,12 @@
 						if(periodAmt != 0){
 							sumMonth[jj] = sumMonth[jj].add(new BigDecimal(periodAmt));
 						%>							
-							<td><a href="<s:url action='chargeAmount' >
-								<s:param name="callID"><%= bc.getCallID() %></s:param>
-								<s:param name="chargeID"><%= code.getChargeID() %></s:param>
-								<s:param name="periodID"><%= p.getC_Period_ID() %></s:param>
-								<s:param name="processID"><s:property value="processID" /></s:param>
-								</s:url>"><%= String.valueOf(periodAmt) %></a></td>
+							<td class="tdQuarter"><font size="2" style="font-weight: bold;"><%= String.valueOf(periodAmt) %></font></td>
 						<%
 							}
 							else{
 						%>
-							<td class="tdWheat">&nbsp;</td>
+							<td class="tdQuarter">&nbsp;</td>
 						<%
 						}
 				}
@@ -147,16 +142,18 @@
     	<th>Всего за период</th>
     <%
     	BigDecimal totalCall = new BigDecimal(0);
-    	int t_ = 1;
+    	String classQuarter = "";
 	    for(int t = 0; t < sumMonth.length; t++){
-	    	if((t_ % 4) == 0 && t_ != 1)
+	    	if(((t+1) % 4) == 0 && t != 0){
 	    		totalCall = totalCall.add(sumMonth[t].setScale(2, RoundingMode.HALF_UP));
+	    		classQuarter = "class=\"tdQuarter\"";
+	    	}else
+	    		classQuarter = "";
 	    	%>
-	    	 <th>&nbsp;<%= String.valueOf(sumMonth[t].setScale(2, RoundingMode.HALF_UP)) %></th>
+	    	 <th <%= classQuarter %>>&nbsp;<%= String.valueOf(sumMonth[t].setScale(2, RoundingMode.HALF_UP)) %></th>
 	    	<%	  
-	    	t_++;
 	    }
     %>
-    	<th>&nbsp;<font size="+1"><%= totalCall.setScale(2, RoundingMode.HALF_UP) %></font></th>
+    	<th>&nbsp;<font size="3"><%= totalCall.setScale(2, RoundingMode.HALF_UP) %></font></th>
   	</tr>
 </table>

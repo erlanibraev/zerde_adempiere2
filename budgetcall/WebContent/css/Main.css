@@ -56,6 +56,13 @@
 		padding-right: 20px;
 	}
 	
+	.tdQuarter {
+		background: #8AA9CA;
+		padding-left: 20px;
+		padding-right: 20px;
+	}
+	
+
 	.tdWheat {
 		background: url("../images/grid.png");
 	}

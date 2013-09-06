@@ -6,10 +6,8 @@ package main.org.excel;
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.sql.*;
+import java.util.LinkedHashMap;
 import java.util.Properties;
-import java.util.logging.Level;
-
 import jxl.Workbook;
 import jxl.format.Alignment;
 import jxl.format.Border;
@@ -38,7 +36,6 @@ import org.compiere.apps.ADialog;
 import org.compiere.model.*;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.*;
-
 import extend.org.compiere.hrm.ExcelCell;
 import extend.org.compiere.utils.Util;
 
@@ -136,6 +133,13 @@ public class ExcelPrint extends Budget {
 		borderStyleRight.setAlignment(Alignment.RIGHT);
 		borderStyleRight.setVerticalAlignment(VerticalAlignment.CENTRE);
 		borderStyleRight.setWrap(true);
+		// text align RIGHT Color Gray
+		WritableCellFormat borderStyleRightColor = new WritableCellFormat(font10, NumberFormats.THOUSANDS_FLOAT);
+		borderStyleRightColor.setBorder(Border.ALL, BorderLineStyle.THIN, Colour.BLACK);
+		borderStyleRightColor.setAlignment(Alignment.RIGHT);
+		borderStyleRightColor.setVerticalAlignment(VerticalAlignment.CENTRE);
+		borderStyleRightColor.setWrap(true);
+		borderStyleRightColor.setBackground(Colour.GRAY_25);
 		// Standart style cell
 		WritableCellFormat borderStyle = new WritableCellFormat(NumberFormats.THOUSANDS_FLOAT);
 		borderStyle.setBorder(Border.ALL, BorderLineStyle.THIN, Colour.BLACK);
@@ -148,15 +152,25 @@ public class ExcelPrint extends Budget {
 		borderStyleCenter.setAlignment(Alignment.CENTRE);
 		borderStyleCenter.setVerticalAlignment(VerticalAlignment.CENTRE);
 		borderStyleCenter.setWrap(true);
+		// text align CENTER and font Bold Color Gray
+		WritableCellFormat borderStyleCenterColor = new WritableCellFormat(font10, NumberFormats.THOUSANDS_FLOAT);
+		borderStyleCenterColor.setBorder(Border.ALL, BorderLineStyle.THIN, Colour.BLACK);
+		borderStyleCenterColor.setAlignment(Alignment.CENTRE);
+		borderStyleCenterColor.setVerticalAlignment(VerticalAlignment.CENTRE);
+		borderStyleCenterColor.setWrap(true);
+		borderStyleCenterColor.setBackground(Colour.GRAY_25);
 		
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		BigDecimal[] sumMonth = new BigDecimal[period.length];
-		for(int b = 0; b < period.length; b++){ // array initialization
-			sumMonth[b] = new BigDecimal(0);
+		BigDecimal[] sumMonth = new BigDecimal[period.length+4]; // 4 = count Quarter
+		
+		int bb = 0;
+		for(int b = 1; b <= period.length; b++){ // array initialization
+			sumMonth[bb] = new BigDecimal(0);
+			if(isQuarter(b+1)){
+				bb++;
+				sumMonth[bb] = new BigDecimal(0);
+			}
+			bb++;
 		}
-		
-		
 		 
 		ExcelCell cellProper =  Util.getCellStart(tableBook,">>");
 		printProperty(sheet, cellProper);
@@ -185,41 +199,62 @@ public class ExcelPrint extends Budget {
 			BigDecimal total = new BigDecimal(0);
 			int i = 0;
 			int c = col+2;
+			int quarter = 1;
+			int quarter_ = 0;
+			int jj = 0;
+			String q = "";
+			int n = 1;
+			LinkedHashMap<Integer, String> quar = new LinkedHashMap<Integer, String>();
 			for(MPeriod p: period){
 				
-				try
-				{
-					pstmt = DB.prepareStatement (bc.getSql(), null);
-					pstmt.setInt(1, callID);
-					pstmt.setInt(2, ch.getChargeID());
-					pstmt.setInt(3, p.getC_Period_ID());
-					rs = pstmt.executeQuery();
-					while (rs.next ())
-					{
-						if(rs.getDouble(1) != 0){
-							sumMonth[i] = sumMonth[i].add(new BigDecimal(rs.getDouble(1))); 
-							total = total.add(new BigDecimal(rs.getDouble(1)));
-							
-							// charge amount per month
-							number = new Number(c, row, rs.getDouble(1), borderStyle); 
-						}else{
-							number = new Number(c, row, 0, borderStyle);
-						}
-						sheet.addCell(number);
+				if(n == 1){
+					q = "";
+					q += p.getC_Period_ID();
+				}
+				else
+					q += "," + p.getC_Period_ID();
+				
+				double periodAmt = bc.getPeriodAmount(callID, ch.getChargeID(), p.getC_Period_ID(), quar, 0);
+				if(periodAmt != 0){
+					sumMonth[jj] = sumMonth[jj].add(new BigDecimal(periodAmt)); 
+					total = total.add(new BigDecimal(periodAmt));
+					
+					// charge amount per month
+					number = new Number(c, row, periodAmt, borderStyle); 
+				}else{
+					number = new Number(c, row, 0, borderStyle);
+				}
+				sheet.addCell(number);
+				
+				if(isQuarter(quarter)){
+					jj++;
+					quar.put(quarter, q);
+					quarter_ = quarter;
+					n = 0;
+				}else
+					quarter_ = 0;
+				
+				if(isQuarter(quarter)){
+					c++;
+					periodAmt = bc.getPeriodAmount(callID, ch.getChargeID(), p.getC_Period_ID(), quar, quarter_);
+					if(periodAmt != 0){
+						sumMonth[jj] = sumMonth[jj].add(new BigDecimal(periodAmt));
+						number = new Number(c, row, periodAmt, borderStyleCenterColor); 
 					}
+					else{
+						number = new Number(c, row, 0, borderStyleCenterColor);	
+					}
+					sheet.addCell(number);
 				}
-				catch (SQLException e)
-				{
-					CLogger.get().log(Level.INFO, bc.getSql(), e);
-				} finally {
-					DB.close(rs, pstmt);
-					rs = null; pstmt = null;
-				}
+				
 				i++;
+				quarter++;
+				n++;
+				jj++;
 				c++;
 			}		
 			
-			number = new Number((col+2+period.length), row, total.setScale(2, RoundingMode.HALF_UP).doubleValue(), borderStyleRight);
+			number = new Number(c, row, total.setScale(2, RoundingMode.HALF_UP).doubleValue(), borderStyleRight);
 			sheet.addCell(number);
 			
 			row++;
@@ -229,9 +264,13 @@ public class ExcelPrint extends Budget {
 		
 		int colC = col+2;
 		BigDecimal totalCall = new BigDecimal(0);
-		for(int t = 0; t < period.length; t++){
-			totalCall = totalCall.add(sumMonth[t].setScale(2, RoundingMode.HALF_UP));
-			number = new Number(colC, rowC, sumMonth[t].setScale(2, RoundingMode.HALF_UP).doubleValue(), borderStyleCenter);
+		for(int t = 0; t < sumMonth.length; t++){
+			if(((t+1) % 4) == 0 && t != 0){
+				totalCall = totalCall.add(sumMonth[t].setScale(2, RoundingMode.HALF_UP));
+				number = new Number(colC, rowC, sumMonth[t].setScale(2, RoundingMode.HALF_UP).doubleValue(), borderStyleCenterColor);
+			}else{
+				number = new Number(colC, rowC, sumMonth[t].setScale(2, RoundingMode.HALF_UP).doubleValue(), borderStyleCenter);
+			}
 			sheet.addCell(number);
 			colC++;
 		}
@@ -490,6 +529,11 @@ public class ExcelPrint extends Budget {
 			
 		}
 		
+	}
+	
+	public boolean isQuarter(int month){
+		
+		return (month % 3 == 0) ? true : false;
 	}
 
 }
