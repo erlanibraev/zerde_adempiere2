@@ -46,6 +46,8 @@ public class MPFRWhereClause extends X_PFR_WhereClause
      */
     public static String getWhereClause(int PFR_Calculation_ID, LinkedHashMap<String, Object> parameters)
     {
+    	boolean isBetween = false;
+    	
     	StringBuilder sql = new StringBuilder();
     	MPFRWhereClause[] clauses = MPFRCalculation.getLinesWhere(Env.getCtx(), PFR_Calculation_ID, null);
     	
@@ -59,14 +61,21 @@ public class MPFRWhereClause extends X_PFR_WhereClause
     	MColumn column = null;
     	
     	String value1 = "";
+    	String value2 = "";
     	
     	for(MPFRWhereClause clause : clauses)
     	{
     		
     		column = new MColumn(Env.getCtx(), clause.getAD_Column_ID(), null);
-    		
-    		if(parameters.get(clause.getColumnName()) != null && !clause.isStatic())
-    			value1 = parameters.get(clause.getColumnName()).toString();
+    		value2 = clause.getValue2();
+    		if(parameters.get(clause.getColumnName()) != null && !clause.isStatic()) {
+    			String[] args = parameters.get(clause.getColumnName()).toString().split("AND");
+    			
+    			if(args.length > 0)
+    				value1 = args[0].trim();
+    			if(args.length > 1)
+    				value2 = args[1].trim();
+    		}
     		else
     			value1 = clause.getValue1();
     		
@@ -127,11 +136,11 @@ public class MPFRWhereClause extends X_PFR_WhereClause
 	    		sql.append(quotesRequired)
 	    		.append(dateRequiredClose)
 	    		.append(" \n");
-    		if(clause.getValue2() != null && !clause.getValue2().isEmpty())
+    		if(value2 != null && !value2.isEmpty())
     			sql.append(" AND ")
 	    			.append(dateRequiredOpen)
 	    			.append(quotesRequired)
-	    			.append(clause.getValue2())
+	    			.append(value2)
 	    			.append(quotesRequired)
 	    			.append(dateRequiredClose)
 	    			.append(" \n");

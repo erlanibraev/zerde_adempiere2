@@ -30,6 +30,8 @@ import javax.swing.event.TableColumnModelEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
+
+import org.apache.commons.collections.map.HashedMap;
 import org.compiere.apps.search.Find;
 import org.compiere.apps.search.FindCellEditor;
 import org.compiere.grid.ed.VString;
@@ -281,7 +283,7 @@ public class DialogParameters extends CDialog implements ActionListener,
 		
 		initFindAdvanced();
 	}
-	
+	LinkedHashMap<Integer, String> keys = new LinkedHashMap<Integer, String>();
 	/**
 	 *  Init Find GridController
 	 */
@@ -348,10 +350,11 @@ public class DialogParameters extends CDialog implements ActionListener,
 		tables = new CComboBox(tableNamePairs);
 		tables.addActionListener(this);
 		
+		
+		
 		TableColumn tc = advancedTable.getColumnModel().getColumn(INDEX_TABLE);
 		tc.setPreferredWidth(120);
-		FindCellEditor dce = new FindCellEditor(tables); 
-
+		FindCellEditor dce = new FindCellEditor(tables);
 		dce.addCellEditorListener(new CellEditorListener()
 		{
 			public void editingCanceled(ChangeEvent ce)
@@ -362,8 +365,12 @@ public class DialogParameters extends CDialog implements ActionListener,
 			{
 				int col = advancedTable.getSelectedColumn();
 				int row = advancedTable.getSelectedRow();
+				
 				if (col == INDEX_TABLE && row >= 0)
 				{
+					keys.put(row, advancedTable.getSelectedValue().toString());
+					System.out.println(keys);					
+					
 					columnValueNamePairs = loadColumns(MTable.getTable_ID(String.valueOf(advancedTable.getValueAt(row, col))));
 					columns = new CComboBox(columnValueNamePairs);
 					columns.addActionListener(DialogParameters.this);

@@ -30,7 +30,7 @@ public class X_BPM_FormColumn extends PO implements I_BPM_FormColumn, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130903L;
+	private static final long serialVersionUID = 20130906L;
 
     /** the default Constructor */
     public X_BPM_FormColumn(Properties ctx)
@@ -44,6 +44,8 @@ public class X_BPM_FormColumn extends PO implements I_BPM_FormColumn, I_Persiste
       super (ctx, BPM_FormColumn_ID, trxName);
       /** if (BPM_FormColumn_ID == 0)
         {
+			setBPM_DataType (null);
+// S
 			setBPM_FormCode_ID (0);
 			setBPM_FormColumn_ID (0);
 			setisParameter (false);
@@ -51,6 +53,8 @@ public class X_BPM_FormColumn extends PO implements I_BPM_FormColumn, I_Persiste
 			setName (null);
 			setOrderColumn (0);
 // @SQL=SELECT coalesce(MAX(OrderColumn),0)+10 AS DefaultValue FROM BPM_FormColumn WHERE BPM_FormCode_ID=@BPM_FormCode_ID@
+			setParamDlg (null);
+// N
         } */
     }
 
@@ -81,6 +85,32 @@ public class X_BPM_FormColumn extends PO implements I_BPM_FormColumn, I_Persiste
         .append(get_ID()).append("]");
       return sb.toString();
     }
+
+	/** BPM_DataType AD_Reference_ID=1000181 */
+	public static final int BPM_DATATYPE_AD_Reference_ID=1000181;
+	/** String = S */
+	public static final String BPM_DATATYPE_String = "S";
+	/** Date = D */
+	public static final String BPM_DATATYPE_Date = "D";
+	/** Amount = A */
+	public static final String BPM_DATATYPE_Amount = "A";
+	/** Set BPM_DataType.
+		@param BPM_DataType 
+		Тип данных
+	  */
+	public void setBPM_DataType (String BPM_DataType)
+	{
+
+		set_Value (COLUMNNAME_BPM_DataType, BPM_DataType);
+	}
+
+	/** Get BPM_DataType.
+		@return Тип данных
+	  */
+	public String getBPM_DataType () 
+	{
+		return (String)get_Value(COLUMNNAME_BPM_DataType);
+	}
 
 	public I_BPM_FormCode getBPM_FormCode() throws RuntimeException
     {
@@ -216,5 +246,22 @@ public class X_BPM_FormColumn extends PO implements I_BPM_FormColumn, I_Persiste
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set ParamDlg.
+		@param ParamDlg 
+		Настройка параметров
+	  */
+	public void setParamDlg (String ParamDlg)
+	{
+		set_Value (COLUMNNAME_ParamDlg, ParamDlg);
+	}
+
+	/** Get ParamDlg.
+		@return Настройка параметров
+	  */
+	public String getParamDlg () 
+	{
+		return (String)get_Value(COLUMNNAME_ParamDlg);
 	}
 }

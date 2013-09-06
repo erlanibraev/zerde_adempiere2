@@ -62,6 +62,19 @@ public interface I_BPM_FormColumn
 	  */
 	public int getAD_Org_ID();
 
+    /** Column name BPM_DataType */
+    public static final String COLUMNNAME_BPM_DataType = "BPM_DataType";
+
+	/** Set BPM_DataType.
+	  * Тип данных
+	  */
+	public void setBPM_DataType (String BPM_DataType);
+
+	/** Get BPM_DataType.
+	  * Тип данных
+	  */
+	public String getBPM_DataType();
+
     /** Column name BPM_FormCode_ID */
     public static final String COLUMNNAME_BPM_FormCode_ID = "BPM_FormCode_ID";
 
@@ -156,6 +169,19 @@ public interface I_BPM_FormColumn
 
 	/** Get OrderColumn	  */
 	public int getOrderColumn();
+
+    /** Column name ParamDlg */
+    public static final String COLUMNNAME_ParamDlg = "ParamDlg";
+
+	/** Set ParamDlg.
+	  * Настройка параметров
+	  */
+	public void setParamDlg (String ParamDlg);
+
+	/** Get ParamDlg.
+	  * Настройка параметров
+	  */
+	public String getParamDlg();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

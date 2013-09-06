@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
+
+import org.compiere.apps.DialogParameters;
 import org.compiere.apps.IProcessParameter;
 import org.compiere.apps.ProcessCtl;
 import org.compiere.apps.ProcessParameterPanel;
@@ -27,6 +29,7 @@ import org.compiere.model.MVariable;
 import org.compiere.model.X_BPM_FormCell;
 import org.compiere.model.X_BPM_FormColumn;
 import org.compiere.model.X_BPM_FormLine;
+import org.compiere.pfr.QueryDialog;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -252,6 +255,9 @@ public class BPM_CalcFormValues extends SvrProcess {
 				in = "";
 			}
 			in += par.getValue1();
+			
+			if(par.getOperation().trim().toLowerCase().equals("between") && par.getValue2() != null && !par.getValue2().isEmpty())
+				in += " AND ".concat(par.getValue2());
 			
 			param.put(par.getColumnName(), in);
 			
