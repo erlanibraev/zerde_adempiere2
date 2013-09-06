@@ -317,7 +317,7 @@ public class BSCCardPanel extends JPanel implements MouseListener, ActionListene
 	
 	private int getBSC_CardWindow_ID() {
 		int result = 0;
-		String sql = "SELECT * FROM A_Window WHERE Name like 'BSC_Card'";
+		String sql = "SELECT * FROM AD_Window WHERE Name like 'BSC_Card'";
 		result = DB.getSQLValue(null, sql);
 		return result;
 	}

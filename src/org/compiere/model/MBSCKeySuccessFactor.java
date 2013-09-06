@@ -26,6 +26,7 @@ public class MBSCKeySuccessFactor extends X_BSC_KeySuccessFactor {
 	 */
 	private static final long serialVersionUID = 3373207423111841579L;
 	private static CLogger log = CLogger.getCLogger (MBSCPerspective.class);
+	private List<MParameter> parameters = null;
 
 	/**
 	 * @param ctx
@@ -56,6 +57,24 @@ public class MBSCKeySuccessFactor extends X_BSC_KeySuccessFactor {
 		// TODO Auto-generated constructor stub
 	}
 	
+	public List<MParameter> getParameters() {
+		return parameters;
+	}
+
+	public void setParameters(List<MParameter> parameters) {
+		this.parameters = parameters;
+	}
+	
+	public List initParameters() {
+		String whereClause = "BSC_Parameter_ID in (SELECT BSC_Parameter_ID FROM BSC_KeySuccessFactorLine WHERE BSC_KeySuccessFactor_ID = ?)";
+		List<MParameter> result = new Query(Env.getCtx(),MParameter.Table_Name,whereClause,get_TrxName())
+		                             .setParameters(getBSC_KeySuccessFactor_ID())
+		                             .list();
+		parameters = result;
+		return result;
+	}
+
+//---------------------------------------------------------------------------------------
 	public static List<MBSCKeySuccessFactor> load(int BSC_Perspective_ID) {
 		List<MBSCKeySuccessFactor> result = new ArrayList<MBSCKeySuccessFactor>();
 		int AD_Org_ID = Env.getAD_Org_ID(Env.getCtx());

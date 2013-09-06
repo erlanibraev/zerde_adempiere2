@@ -41,6 +41,7 @@ import org.compiere.model.MBSCKeySuccessFactor;
 import org.compiere.model.MBSCKeySuccessFactorLink;
 import org.compiere.model.MBSCPerspective;
 import org.compiere.model.MBSCStrategicMap;
+import org.compiere.model.MParameter;
 import org.compiere.model.Query;
 import org.compiere.swing.CLabel;
 import org.compiere.util.CLogger;
@@ -68,8 +69,10 @@ public class BSCPerspectivePanel extends JPanel implements MouseListener, MouseM
 	
 	private HashMap<MBSCPerspective,List<MBSCKeySuccessFactor>> strategicMap = new HashMap<MBSCPerspective,List<MBSCKeySuccessFactor>>();
 	private int[][] links; 
+	private int[][] parameterLinks;
 	private HashMap<MBSCPerspective,JPanel> label = new HashMap<MBSCPerspective,JPanel>();
 	private HashMap<Integer, Rectangle> coords = new HashMap<Integer, Rectangle>();
+	private HashMap<Integer,Rectangle> parameterCoords = new HashMap<Integer, Rectangle>();
 	
 	private ValueComparator bvc =  new ValueComparator(strategicMap);
 	private TreeMap<MBSCPerspective,List<MBSCKeySuccessFactor>> sortedStrategicMap = new TreeMap<MBSCPerspective,List<MBSCKeySuccessFactor>>(bvc); 
@@ -88,6 +91,8 @@ public class BSCPerspectivePanel extends JPanel implements MouseListener, MouseM
 	private Rectangle ksfTo = new Rectangle();
 	
 	private boolean isDelete = false;
+	
+	private HashMap<Integer,List<MParameter>> parameters = new HashMap<Integer,List<MParameter>>(); 
 	
 	public BSCPerspectivePanel() throws Exception {
 		super();
@@ -180,17 +185,30 @@ public class BSCPerspectivePanel extends JPanel implements MouseListener, MouseM
 		if (strategicMap.size() > 0) {
 			strategicMap.clear();
 		}
+		if (parameters.size() > 0) {
+			parameters.clear();
+		}
 		List<MBSCPerspective> perspectives = getPerspectives();
 		if (perspectives != null) {
 			for(MBSCPerspective perspective: perspectives) {
 				List<MBSCKeySuccessFactor> keySuccessFactors = getKeySuccessFactors(perspective);
 				strategicMap.put(perspective, keySuccessFactors);
+				initParameters(keySuccessFactors);
 			}
 		}
 		sortedStrategicMap.putAll(strategicMap);
 	}
 	
 	
+	private void initParameters(List<MBSCKeySuccessFactor> keySuccessFactors) {
+		if (keySuccessFactors != null) {
+			for(MBSCKeySuccessFactor factor: keySuccessFactors) {
+				parameters.put(factor.getBSC_KeySuccessFactor_ID(), factor.initParameters());
+			}
+		}
+		
+	}
+
 	/**
 	 * @param perspective
 	 * @return
@@ -562,7 +580,7 @@ public class BSCPerspectivePanel extends JPanel implements MouseListener, MouseM
     	paintLinks(g);
     	paintKeySuccessFactors(g);
     	if (drawLink && linkKSFFrom > 0) {
-    		g.setColor(Color.GREEN);
+    		g.setColor(Color.RED);
     		g.drawLine(ksfFrom.x + ksfFrom.width /2 , ksfFrom.y + ksfFrom.height /2, ksfTo.x, ksfTo.y);
     	}
     }
@@ -599,7 +617,7 @@ public class BSCPerspectivePanel extends JPanel implements MouseListener, MouseM
 				Rectangle from = coords.get(fromKSF);
 				Rectangle to = coords.get(toKSF);
 				if (from != null && to != null) {
-					g.setColor(Color.RED);
+					g.setColor(Color.GREEN);
 					g.drawLine(from.x + from.width /2, from.y + from.height / 2, to.x + to.width / 2, to.y + to.height /2);
 				}
 			}
