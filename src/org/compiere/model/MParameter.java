@@ -552,6 +552,7 @@ public class MParameter extends X_BSC_Parameter {
 			pLine = createParameterLine(this,period.getC_Period_ID());
 		}
 		pLine.setValue(value);
+		pLine.save();
 	}
 
 	/**

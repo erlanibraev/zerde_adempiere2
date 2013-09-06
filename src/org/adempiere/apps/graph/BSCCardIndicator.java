@@ -204,7 +204,7 @@ public class BSCCardIndicator extends JPanel implements MouseListener, ActionLis
 		JFreeChart chart = null;
 
 		m_line = s_width100;
-		double var = 100;// TODO
+		double var = (getCard().getValueNumber() != null ? getCard().getValueNumber().doubleValue() : 0)  ;// TODO
 		DefaultValueDataset data = new DefaultValueDataset(var);
 		MeterPlot plot = new MeterPlot(data);
 		

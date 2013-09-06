@@ -162,7 +162,13 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 	private MParameter createParameter() {
 		MParameter param = getParameter();
 		if (param == null) { 
-			param = MParameter.createParameter(getName(), getDescription(), getC_BPartner_ID(), getC_Period_ID());
+			String name = "Карта ССП";
+			if(getC_BPartner_ID() > 0) {
+				MBPartner bp = new MBPartner(Env.getCtx(),getC_BPartner_ID(),get_TrxName());
+				name += " для " + getPosition();
+				name += " (" + bp.getName()+ ")";
+			}			
+			param = MParameter.createParameter(name, getDescription(), getC_BPartner_ID(), getC_Period_ID());
 			param.setPeriod(getPeriod());
 			setParameter(param);
 		}
@@ -649,8 +655,7 @@ public class MBSCCard extends X_BSC_Card implements DocAction {
 	@Override
 	public void setValueNumber (BigDecimal ValueNumber)	{
 		super.setValueNumber(ValueNumber);
-		getParameter().setPeriod(getPeriod());
-		getParameter().setValueNumber(ValueNumber);
+		getParameter().setValue(ValueNumber.toString(), getPeriod());
 		getParameter().save();
 	}
 

@@ -36,6 +36,7 @@ public class MBSCKeySuccessFactor extends X_BSC_KeySuccessFactor {
 	public MBSCKeySuccessFactor(Properties ctx, int BSC_KeySuccessFactor_ID,
 			String trxName) {
 		super(ctx, BSC_KeySuccessFactor_ID, trxName);
+		parameters = initParameters();
 		// TODO Auto-generated constructor stub
 	}
 
@@ -46,6 +47,7 @@ public class MBSCKeySuccessFactor extends X_BSC_KeySuccessFactor {
 	 */
 	public MBSCKeySuccessFactor(Properties ctx, ResultSet rs, String trxName) {
 		super(ctx, rs, trxName);
+		parameters = initParameters();
 		// TODO Auto-generated constructor stub
 	}
 

@@ -198,7 +198,7 @@ public class BSCCardLineIndicator extends JPanel implements MouseListener, Actio
 
 		m_line = s_width100;
 //		double var = (getCardLine().getValueMax() != null && getCardLine().getValueMax().floatValue() > 0 ? 100 * getCardLine().getValueNumber().floatValue() / getCardLine().getValueMax().floatValue() : getCardLine().getValueNumber().floatValue());// TODO
-		double var = getCardLine().getValueNumber().floatValue() * 100; 
+		double var = getCardLine().getValueNumber().doubleValue() * 100; 
 		DefaultValueDataset data = new DefaultValueDataset(var);
 		MeterPlot plot = new MeterPlot(data);
 		

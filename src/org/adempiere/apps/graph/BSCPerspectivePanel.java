@@ -145,6 +145,22 @@ public class BSCPerspectivePanel extends JPanel implements MouseListener, MouseM
 					coords.get(ksf.getBSC_KeySuccessFactor_ID()).height = height;
 					coords.get(ksf.getBSC_KeySuccessFactor_ID()).width = width;
 				}
+				for(MParameter p:ksf.getParameters()) {
+					if(parameterCoords.get(p.getBSC_Parameter_ID()) == null) {
+						FontMetrics metric = g.getFontMetrics();
+						width = metric.stringWidth(p.getName()) + borderSize * 2;
+						height = metric.getHeight() + borderSize * 2;
+						parameterCoords.put(p.getBSC_Parameter_ID(), new Rectangle(x,y,width,height));
+						x += width;
+						y += borderSize + lbl.getHeight() / list.size();
+					} else {
+						FontMetrics metric = g.getFontMetrics();
+						width = metric.stringWidth(p.getName()) + borderSize * 2;
+						height = metric.getHeight() + borderSize * 2;
+						coords.get(p.getBSC_Parameter_ID()).height = height;
+						coords.get(p.getBSC_Parameter_ID()).width = width;
+					}
+				}
 			}
 		}
 	}

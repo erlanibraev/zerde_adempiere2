@@ -103,7 +103,7 @@ public class BSCBarChart extends CPanel {
 				m_Y_AxisLabel,                  // range axis label
 				dataset,                  // data
 				PlotOrientation.VERTICAL, // orientation
-				false,                     // include legend
+				true,                     // include legend
 				true,                     // tooltips?
 				true                     // URLs?
 		);
@@ -116,11 +116,10 @@ public class BSCBarChart extends CPanel {
 	private void loadData() {
 		dataset = new DefaultCategoryDataset();
 		for (int i = 0; i < getParameter().getParameterLine().size(); i++){
-//			String series = m_X_AxisLabel;
 			MParameterLine line = getParameter().getParameterLine().get(i);
 			BigDecimal value = new BigDecimal(line.getValue());
 			dataset.addValue(value.doubleValue(), fact, line.getPeriod().getName());
-			dataset.addValue(1, plan, line.getPeriod().getName());
+			dataset.addValue((value.doubleValue() > 2 ? 100 : 1), plan, line.getPeriod().getName());
 		}
 	}
 }

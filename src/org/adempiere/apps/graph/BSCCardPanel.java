@@ -52,13 +52,14 @@ public class BSCCardPanel extends JPanel implements MouseListener, ActionListene
 	private MBSCCard card = null;
 	private double[][] tableSize;
 	private TableLayout tableLayout = null;
-	private static String[] tableHeader = {"КПД","Вес %","План","Факт","Ед.Изм","Область","---"};
+	private static String[] tableHeader = {"КПД","Вес %","План","Факт","Ед.Изм","Статус","Область"};
 	private JLabel[][] label = null; 
 	private static int[] cellWidth = {300,80,80,80,80,80,120};
 	private static int[] cellHeight = {50,100};
 	private JPanel cardPanel = null;
 	private JPanel totalPanel = null;
 	private CPanel[][] panels = null;
+	private BSCThermometer titleThermometer = null;
 	
 	public BSCCardPanel(MBSCCard card) {
 		super();
@@ -105,7 +106,7 @@ public class BSCCardPanel extends JPanel implements MouseListener, ActionListene
 	 * 
 	 */
 	private void viewTotal() {
-		totalPanel.add(new CLabel((card == null ? "" : "<html>"+card.getName()+"</html>")));
+		totalPanel.add(new JLabel((card == null ? "" : "<html>"+card.getName()+"</html>")));
 		double value = (card == null ? 0 : card.getValueNumber().doubleValue() / 100);
 		
 		Color c;
@@ -114,7 +115,8 @@ public class BSCCardPanel extends JPanel implements MouseListener, ActionListene
 		else c = Color.GREEN;
 		
 		totalPanel.add(new BSCPointPanel(c));
-		totalPanel.add(new BSCThermometer(value));
+		titleThermometer = new BSCThermometer(value); 
+		totalPanel.add(titleThermometer);
 	}
 
 	public Dimension getAllDimension() {
@@ -252,6 +254,9 @@ public class BSCCardPanel extends JPanel implements MouseListener, ActionListene
 	public void mouseClicked(MouseEvent e) {
 		if(isTitle(e)) {
 			openCardWindow(0);
+		} else if (isTitleThermometer(e) && card != null) {
+			openBarChartWindow(card.getBSC_Card_ID(),0);
+			
 		} else if (label != null) {
 			for(int i = 1; i < label.length; i++) {
 				if (isLabel(i, e) && i > 0) {
@@ -355,14 +360,24 @@ public class BSCCardPanel extends JPanel implements MouseListener, ActionListene
 	 * @return
 	 */
 	private boolean isTitle(MouseEvent e) {
-		int y = 0;
+		int y = totalPanel.getY();
+		int x = titleThermometer.getX() - 10;
 		int height = totalPanel.getHeight();
-/*		
-		System.out.print("Y = ");System.out.print(y);System.out.println("");
-		System.out.print("Height = ");System.out.print(height);System.out.println("");
-		System.out.print("mouseY = ");System.out.print(e.getY());System.out.println("");
-*/		
-		boolean result = (y < e.getY() && e.getY() < y + height);
+		
+		boolean result = (y < e.getY() && e.getY() < y + height && e.getX() < x);
+		return result;
+	}
+
+	/**
+	 * @param e
+	 * @return
+	 */
+	private boolean isTitleThermometer(MouseEvent e) {
+		int y = totalPanel.getY();
+		int x = titleThermometer.getX() - 10;
+		int height = totalPanel.getHeight();
+		
+		boolean result = (y < e.getY() && e.getY() < y + height && x < e.getX());
 		return result;
 	}
 

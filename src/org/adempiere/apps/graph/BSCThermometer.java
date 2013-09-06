@@ -20,7 +20,7 @@ public class BSCThermometer extends JPanel {
 	 */
 	private static final long serialVersionUID = 214267677220361355L;
 	private double value = 0;
-	private static Dimension dimension = new Dimension(100,20);
+	public static Dimension dimension = new Dimension(100,20);
 	
 	public BSCThermometer(double value) {
 		super();
