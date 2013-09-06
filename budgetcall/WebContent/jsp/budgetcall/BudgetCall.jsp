@@ -57,7 +57,7 @@
 		DecimalFormatSymbols dfs1 = new DecimalFormatSymbols();
 		dfs1.setDecimalSeparator('.');
 		dfs1.setGroupingSeparator(',');
-		DecimalFormat myFormatter1 = new DecimalFormat("###,###.00", dfs1);
+		DecimalFormat myFormatter1 = new DecimalFormat("###,##0.00", dfs1);
 		for(ChargeCode code: bc.getChargeCode()){
 	%>
 			<tr>

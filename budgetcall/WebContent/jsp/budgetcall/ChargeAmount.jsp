@@ -16,7 +16,7 @@
  	DecimalFormatSymbols dfs2 = new DecimalFormatSymbols();
  	dfs2.setDecimalSeparator('.');
  	dfs2.setGroupingSeparator(',');
-	DecimalFormat myFormatter2 = new DecimalFormat("###,###.00", dfs2);
+	DecimalFormat myFormatter2 = new DecimalFormat("###,##0.00", dfs2);
  %>
 
 <html>
