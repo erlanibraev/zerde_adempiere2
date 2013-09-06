@@ -319,9 +319,6 @@ public class BSCCardPanel extends JPanel implements MouseListener, ActionListene
 		int result = 0;
 		String sql = "SELECT * FROM A_Window WHERE Name like 'BSC_Card'";
 		result = DB.getSQLValue(null, sql);
-		if (result <= 0) { //TODO Убрать!
-			result = 1000104;
-		}
 		return result;
 	}
 
