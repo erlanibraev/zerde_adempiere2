@@ -32,6 +32,8 @@ public class BudgetCall extends Budget {
 	/**	Logger							*/
 	protected CLogger			log = CLogger.getCLogger (getClass());
 	ChargeCode[] chargeCode;
+	LinkedHashMap<Integer, String> combo = new LinkedHashMap<Integer, String>(); 
+	String jsonCombo = "#{}";
 	
 
 	public ChargeCode[] getChargeCode() {
@@ -42,6 +44,34 @@ public class BudgetCall extends Budget {
 		this.chargeCode = chargeCode;
 	}
 
+	public LinkedHashMap<Integer, String> getCombo() {
+		return combo;
+	}
+
+	public void setCombo(LinkedHashMap<Integer, String> combo) {
+		
+		this.combo = combo;
+	}
+
+	public String getJsonCombo() {
+		return jsonCombo;
+	}
+
+	public void setJsonCombo(LinkedHashMap<Integer, String> combo) {
+		
+		int i = 0;
+		for(Integer c: combo.keySet()){
+			if(i == 0){
+				jsonCombo +="#{"+i+":"+combo.get(c);
+			}
+			else{
+				jsonCombo +=","+i+":"+combo.get(c);
+			}
+			i++;
+		}
+		jsonCombo += "}";
+	}
+
 	@Override
 	public String execute() throws Exception {
 		
@@ -49,6 +79,12 @@ public class BudgetCall extends Budget {
 		
 		setChargeCode(getValues(callID));
 		setPage(Utils.TEMPLATE_FIRST);
+		
+		combo.put(111, "111");
+		combo.put(222, "222");
+		combo.put(333, "333");
+		setCombo(combo);
+		setJsonCombo(combo);
 		
 		session.put("budgetcall", this);
 		

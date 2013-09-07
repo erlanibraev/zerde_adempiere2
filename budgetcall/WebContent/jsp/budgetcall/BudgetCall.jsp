@@ -22,6 +22,17 @@
 		
 <%@ include file="/jsp/budgetcall/PropertyBudgetCall.jsp" %>
 
+<s:set var="comboList"><%= bc.getJsonCombo() %></s:set>
+
+		<s:combobox
+			   label="My Favourite Color"
+			   name="myCombo"
+			   list="%{#comboList}"
+			   headerKey="-1"
+			   headerValue="--- Please Select ---"
+			   emptyOption="false"
+			   value="222" />
+
 <table class="cursorHover more" width="100%" border="1" style="margin-top:20px;" bordercolor="#663300" cellspacing="2">
   <tr class="trLightBlue">
     <th scope="col">Код</th>
