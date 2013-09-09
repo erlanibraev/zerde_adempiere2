@@ -27,6 +27,7 @@ public class MBSCKeySuccessFactor extends X_BSC_KeySuccessFactor {
 	private static final long serialVersionUID = 3373207423111841579L;
 	private static CLogger log = CLogger.getCLogger (MBSCPerspective.class);
 	private List<MParameter> parameters = null;
+	private List<MBSCKeySuccessFactorLine> lines = null;
 
 	/**
 	 * @param ctx
@@ -73,6 +74,36 @@ public class MBSCKeySuccessFactor extends X_BSC_KeySuccessFactor {
 		                             .setParameters(getBSC_KeySuccessFactor_ID())
 		                             .list();
 		parameters = result;
+		return result;
+	}
+	
+	public List<MBSCKeySuccessFactorLine> getLines() {
+		return getLines(false);
+	}
+	
+	public List<MBSCKeySuccessFactorLine> getLines(boolean force) {
+		if (force || lines == null) {
+			lines = getLines(null);
+		}
+		return lines;
+	}
+	
+	public List<MBSCKeySuccessFactorLine> getLines(String whereClause) {
+		String endWhereClause = (whereClause != null ? whereClause + " AND " : "") +"BSC_KeySuccessFactor_ID = ? AND IsActive = 'Y'";
+		lines = new Query(Env.getCtx(),MBSCKeySuccessFactorLine.Table_Name,endWhereClause,get_TrxName())
+        .setParameters(getBSC_KeySuccessFactor_ID())
+        .list();
+		return lines;
+	}
+	
+	public MBSCKeySuccessFactorLine getLine(int BSC_KeySuccessFactorLine_ID) {
+		MBSCKeySuccessFactorLine result = null;
+		for(MBSCKeySuccessFactorLine item:getLines()) {
+			if(item.getBSC_KeySuccessFactorLine_ID() == BSC_KeySuccessFactorLine_ID) {
+				result = item;
+				break;
+			}
+		}
 		return result;
 	}
 

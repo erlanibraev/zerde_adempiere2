@@ -38,6 +38,7 @@ import layout.TableLayout;
 import org.compiere.apps.ADialog;
 import org.compiere.apps.ConfirmPanel;
 import org.compiere.model.MBSCKeySuccessFactor;
+import org.compiere.model.MBSCKeySuccessFactorLine;
 import org.compiere.model.MBSCKeySuccessFactorLink;
 import org.compiere.model.MBSCPerspective;
 import org.compiere.model.MBSCStrategicMap;
@@ -69,7 +70,6 @@ public class BSCPerspectivePanel extends JPanel implements MouseListener, MouseM
 	
 	private HashMap<MBSCPerspective,List<MBSCKeySuccessFactor>> strategicMap = new HashMap<MBSCPerspective,List<MBSCKeySuccessFactor>>();
 	private int[][] links; 
-	private int[][] parameterLinks;
 	private HashMap<MBSCPerspective,JPanel> label = new HashMap<MBSCPerspective,JPanel>();
 	private HashMap<Integer, Rectangle> coords = new HashMap<Integer, Rectangle>();
 	private HashMap<Integer,Rectangle> parameterCoords = new HashMap<Integer, Rectangle>();
@@ -81,6 +81,7 @@ public class BSCPerspectivePanel extends JPanel implements MouseListener, MouseM
 	private TableLayout tableLayout = null;
 	
 	private int dragKSF = 0;
+	private int dragParameter = 0;
 	private Point dragP = new Point(0,0);
 	private JPanel dragPanel = null;
 	
@@ -91,8 +92,6 @@ public class BSCPerspectivePanel extends JPanel implements MouseListener, MouseM
 	private Rectangle ksfTo = new Rectangle();
 	
 	private boolean isDelete = false;
-	
-	private HashMap<Integer,List<MParameter>> parameters = new HashMap<Integer,List<MParameter>>(); 
 	
 	public BSCPerspectivePanel() throws Exception {
 		super();
@@ -145,20 +144,22 @@ public class BSCPerspectivePanel extends JPanel implements MouseListener, MouseM
 					coords.get(ksf.getBSC_KeySuccessFactor_ID()).height = height;
 					coords.get(ksf.getBSC_KeySuccessFactor_ID()).width = width;
 				}
-				for(MParameter p:ksf.getParameters()) {
-					if(parameterCoords.get(p.getBSC_Parameter_ID()) == null) {
+				for(MBSCKeySuccessFactorLine p:ksf.getLines()) {
+					if(parameterCoords.get(p.getBSC_KeySuccessFactorLine_ID()) == null) {
 						FontMetrics metric = g.getFontMetrics();
-						width = metric.stringWidth(p.getName()) + borderSize * 2;
+						String name = (p.getParameter() != null ?  p.getParameter().getName() : "");
+						width = metric.stringWidth(name) + borderSize * 2;
 						height = metric.getHeight() + borderSize * 2;
-						parameterCoords.put(p.getBSC_Parameter_ID(), new Rectangle(x,y,width,height));
+						parameterCoords.put(p.getBSC_KeySuccessFactorLine_ID(), new Rectangle(x,y,width,height));
 						x += width;
 						y += borderSize + lbl.getHeight() / list.size();
 					} else {
 						FontMetrics metric = g.getFontMetrics();
-						width = metric.stringWidth(p.getName()) + borderSize * 2;
+						String name = (p.getParameter() != null ?  p.getParameter().getName() : "");
+						width = metric.stringWidth(name) + borderSize * 2;
 						height = metric.getHeight() + borderSize * 2;
-						coords.get(p.getBSC_Parameter_ID()).height = height;
-						coords.get(p.getBSC_Parameter_ID()).width = width;
+						parameterCoords.get(p.getBSC_KeySuccessFactorLine_ID()).height = height;
+						parameterCoords.get(p.getBSC_KeySuccessFactorLine_ID()).width = width;
 					}
 				}
 			}
@@ -201,9 +202,6 @@ public class BSCPerspectivePanel extends JPanel implements MouseListener, MouseM
 		if (strategicMap.size() > 0) {
 			strategicMap.clear();
 		}
-		if (parameters.size() > 0) {
-			parameters.clear();
-		}
 		List<MBSCPerspective> perspectives = getPerspectives();
 		if (perspectives != null) {
 			for(MBSCPerspective perspective: perspectives) {
@@ -219,10 +217,9 @@ public class BSCPerspectivePanel extends JPanel implements MouseListener, MouseM
 	private void initParameters(List<MBSCKeySuccessFactor> keySuccessFactors) {
 		if (keySuccessFactors != null) {
 			for(MBSCKeySuccessFactor factor: keySuccessFactors) {
-				parameters.put(factor.getBSC_KeySuccessFactor_ID(), factor.initParameters());
+				factor.initParameters();
 			}
 		}
-		
 	}
 
 	/**
@@ -486,6 +483,18 @@ public class BSCPerspectivePanel extends JPanel implements MouseListener, MouseM
 						}
 					}
 				}
+			} else {
+				dragParameter = getDragParameter(e.getX(),e.getY());
+				if (dragParameter > 0) {
+					for(MBSCPerspective p : sortedStrategicMap.keySet()) {
+						for(MBSCKeySuccessFactor ksf : sortedStrategicMap.get(p)) {
+							MBSCKeySuccessFactorLine ksfl = ksf.getLine(dragParameter);
+							if(ksfl != null) {
+								dragPanel = label.get(p);
+							}
+						}
+					}
+				}
 			}
 		}
 	}
@@ -496,6 +505,20 @@ public class BSCPerspectivePanel extends JPanel implements MouseListener, MouseM
 			Rectangle r = coords.get(BSC_KeySuccessFactor_ID);
 			if (r.x < x && x < r.x + r.width && r.y < y && y < r.y + r.height) {
 				result = BSC_KeySuccessFactor_ID;
+				dragP.x = x - r.x;
+				dragP.y = y - r.y;
+				break;
+			}
+		}
+		return result;
+	}
+
+	private int getDragParameter(int x, int y) {
+		int result = 0;
+		for(int BSC_KeySuccessFactorLine_ID: parameterCoords.keySet()) {
+			Rectangle r = parameterCoords.get(BSC_KeySuccessFactorLine_ID);
+			if (r.x < x && x < r.x + r.width && r.y < y && y < r.y + r.height) {
+				result = BSC_KeySuccessFactorLine_ID;
 				dragP.x = x - r.x;
 				dragP.y = y - r.y;
 				break;
@@ -523,6 +546,7 @@ public class BSCPerspectivePanel extends JPanel implements MouseListener, MouseM
 			
 		} else {
 			dragKSF = 0;
+			dragParameter = 0;
 			dragPanel = null;
 		}
 	}
@@ -666,15 +690,40 @@ public class BSCPerspectivePanel extends JPanel implements MouseListener, MouseM
 		int width = r.width;
 		int height =  r.height;
 		
+		for(MBSCKeySuccessFactorLine ksfl: ksf.getLines()) {
+			drawParameter(g, r,ksfl);
+		}
 		g.setColor(Color.CYAN);
 		g.fillOval(x, y, width, height);
 		g.setColor(Color.BLACK);
 		g.drawString(ksf.getName(), x+10, y+25);
 		g.drawOval(x, y, width, height);
 		
+
 		return;
 	}
 	
+	private void drawParameter(Graphics g, Rectangle r, MBSCKeySuccessFactorLine ksfl) {
+		if (ksfl == null) {
+			return;
+		}
+		Rectangle r1 = parameterCoords.get(ksfl.getBSC_KeySuccessFactorLine_ID());
+		int x = r1.x;
+		int y = r1.y;
+		int width = r1.width;
+		int height = r1.height;
+		String name = (ksfl.getParameter() != null ? ksfl.getParameter().getName() : "");
+		g.setColor(Color.BLUE);
+		g.drawLine(r.x + r.width /2, r.y+r.height /2, x + width / 2, y+height /2);
+		g.setColor(Color.PINK);
+		g.fillRect(x, y, width, height);
+		g.setColor(Color.BLACK);
+		g.drawString(name, x+10, y+25);
+		g.drawRect(x, y, width, height);
+		
+		return;
+	}
+
 	class ValueComparator implements Comparator<MBSCPerspective> {
 
 	    Map<MBSCPerspective, List<MBSCKeySuccessFactor>> base;
@@ -721,6 +770,21 @@ public class BSCPerspectivePanel extends JPanel implements MouseListener, MouseM
 						repaint();
 					}
 				}
+			} else if (dragParameter > 0) {
+				int newX = e.getX() - dragP.x;
+				int newY = e.getY() - dragP.y;
+				
+				if(dragPanel != null) {
+					int dpX = dragPanel.getX() + dragPanel.getWidth(); 
+					int dpY = dragPanel.getY() ;
+					int dpWidth = getWidth() - dpX;
+					int dpHeight = dragPanel.getHeight() - borderSize * 2;
+					if ( dpX < newX && newX < dpX + dpWidth && dpY < newY && newY < dpY + dpHeight) {
+						parameterCoords.get(dragParameter).x = newX;
+						parameterCoords.get(dragParameter).y = newY;
+						repaint();
+					}
+				}
 			}
 		}
 	}
@@ -759,6 +823,20 @@ public class BSCPerspectivePanel extends JPanel implements MouseListener, MouseM
 		for(MBSCKeySuccessFactorLink item : MBSCKeySuccessFactorLink.getKeySuccessFactorLink(null)) {
 			if (!haveLink(item.getBSC_KeySuccessFactor_ID(), item.getBSC_KeySuccessFactor_Link_ID())) {
 				item.delete(true);
+			}
+		}
+		
+		for(MBSCPerspective key:sortedStrategicMap.keySet()) {
+			List<MBSCKeySuccessFactor> list = strategicMap.get(key);
+			for(MBSCKeySuccessFactor ksf: list) {
+				for(MBSCKeySuccessFactorLine ksfl:ksf.getLines()) {
+					if(parameterCoords.get(ksfl.getBSC_KeySuccessFactorLine_ID()) != null) {
+						Rectangle r = parameterCoords.get(ksfl.getBSC_KeySuccessFactorLine_ID());
+						ksfl.setXPosition(r.x);
+						ksfl.setYPosition(r.y);
+						result = result && ksfl.save();
+					}
+				}
 			}
 		}
 		return result;
@@ -817,6 +895,12 @@ public class BSCPerspectivePanel extends JPanel implements MouseListener, MouseM
 						coords.get(ksf.getBSC_KeySuccessFactor_ID()).setBounds(sm.getRectangle());
 					} else {
 						coords.put(ksf.getBSC_KeySuccessFactor_ID(),sm.getRectangle());
+					}
+				}
+				for(MBSCKeySuccessFactorLine ksfl:ksf.getLines()) {
+					if(ksfl.getXPosition() > 0 && ksfl.getYPosition() > 0) {
+						Rectangle r = new Rectangle(ksfl.getXPosition(),ksfl.getYPosition(),1,1);
+						parameterCoords.put(ksfl.getBSC_KeySuccessFactorLine_ID(), r);
 					}
 				}
 			}
