@@ -5,13 +5,18 @@
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
-<%@ page import="main.org.action.ChargeAmount,main.org.model.Amount" %>
+<%@ page import="main.org.action.ChargeAmount, main.org.model.Amount, java.text.*" %>
  
 <%
  	ChargeAmount chargeTotal = (ChargeAmount) session.getAttribute("chargeamount");
  	Amount[] amt = chargeTotal.getAmt();
  	MCharge cha = new MCharge(Env.getCtx(), chargeTotal.getChargeID(), null);
  	MPeriod year = new MPeriod(Env.getCtx(), chargeTotal.getPeriodID(), null);
+ 	
+ 	DecimalFormatSymbols dfs2 = new DecimalFormatSymbols();
+ 	dfs2.setDecimalSeparator('.');
+ 	dfs2.setGroupingSeparator(',');
+	DecimalFormat myFormatter2 = new DecimalFormat("###,###.00", dfs2);
  %>
 
 <html>
@@ -81,7 +86,7 @@
 					<s:param name="processID"><s:property value="processID" /></s:param>
 					</s:url>"><%= a.getName() %></a></b>
 				</td>
-				<td><%= a.getAmount() %></td>
+				<td><%= myFormatter2.format(Double.valueOf(a.getAmount())) %></td>
 			</tr>
 		<%
 		k++;
@@ -90,7 +95,7 @@
 		<tr class="trLightBlue">
 			<th scope="col">&nbsp;</th>
 		    <th scope="col">Всего</th>
-		    <th scope="col"><%= chargeTotal.getsAmount() %></th>
+		    <th scope="col"><%= myFormatter2.format(Double.valueOf(chargeTotal.getsAmount())) %></th>
 		</tr>
 	</table>
 	<%@ include file="/jsp/budgetcall/Footer.jsp" %>

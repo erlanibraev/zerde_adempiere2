@@ -7,7 +7,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
 <%@ page import="main.org.model.*, org.compiere.model.*, java.sql.*, org.compiere.util.*, java.util.*, java.math.BigDecimal" %>
-<%@ page import="java.util.logging.*, org.adempiere.exceptions.DBException, main.org.action.BudgetCall" %>
+<%@ page import="java.util.logging.*, org.adempiere.exceptions.DBException, main.org.action.BudgetCall, java.text.*" %>
 
 <%
 	BudgetCall bc = (BudgetCall) session.getAttribute("budgetcall"); 
@@ -54,7 +54,10 @@
   <!--  -->	
 	<%
 		String sql_ = bc.getSql();
-	    
+		DecimalFormatSymbols dfs1 = new DecimalFormatSymbols();
+		dfs1.setDecimalSeparator('.');
+		dfs1.setGroupingSeparator(',');
+		DecimalFormat myFormatter1 = new DecimalFormat("###,###.00", dfs1);
 		for(ChargeCode code: bc.getChargeCode()){
 	%>
 			<tr>
@@ -93,7 +96,7 @@
 						<s:param name="chargeID"><%= code.getChargeID() %></s:param>
 						<s:param name="periodID"><%= p.getC_Period_ID() %></s:param>
 						<s:param name="processID"><s:property value="processID" /></s:param>
-						</s:url>"><%= String.valueOf(periodAmt) %></a></td>
+						</s:url>"><%= myFormatter1.format(periodAmt) %></a></td>
 				<%
 					}
 					else{
@@ -115,7 +118,7 @@
 						if(periodAmt != 0){
 							sumMonth[jj] = sumMonth[jj].add(new BigDecimal(periodAmt));
 						%>							
-							<td class="tdQuarter"><font size="2" style="font-weight: bold;"><%= String.valueOf(periodAmt) %></font></td>
+							<td class="tdQuarter"><font size="2" style="font-weight: bold;"><%= myFormatter1.format(periodAmt) %></font></td>
 						<%
 							}
 							else{
@@ -131,7 +134,7 @@
 				jj++;
 			}
 	%>
-				<td>&nbsp;<b><font color="073560"><%= String.valueOf(total.setScale(2, RoundingMode.HALF_UP)) %></font></b></td>
+				<td>&nbsp;<b><font color="073560"><%= myFormatter1.format(total.setScale(2, RoundingMode.HALF_UP)) %></font></b></td>
 				</tr>
 	<%
 		}
@@ -150,10 +153,10 @@
 	    	}else
 	    		classQuarter = "";
 	    	%>
-	    	 <th <%= classQuarter %>>&nbsp;<%= String.valueOf(sumMonth[t].setScale(2, RoundingMode.HALF_UP)) %></th>
+	    	 <th <%= classQuarter %>>&nbsp;<%= myFormatter1.format(sumMonth[t].setScale(2, RoundingMode.HALF_UP)) %></th>
 	    	<%	  
 	    }
     %>
-    	<th>&nbsp;<font size="3"><%= totalCall.setScale(2, RoundingMode.HALF_UP) %></font></th>
+    	<th>&nbsp;<font size="3"><%= myFormatter1.format(totalCall.setScale(2, RoundingMode.HALF_UP)) %></font></th>
   	</tr>
 </table>
