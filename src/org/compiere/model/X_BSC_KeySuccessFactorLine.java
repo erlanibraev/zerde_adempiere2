@@ -29,7 +29,7 @@ public class X_BSC_KeySuccessFactorLine extends PO implements I_BSC_KeySuccessFa
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20130513L;
+	private static final long serialVersionUID = 20130908L;
 
     /** the default Constructor */
     public X_BSC_KeySuccessFactorLine(Properties ctx)
@@ -54,7 +54,7 @@ public class X_BSC_KeySuccessFactorLine extends PO implements I_BSC_KeySuccessFa
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 3 - Client - Org 
       */
     protected int get_AccessLevel()
     {
@@ -140,6 +140,46 @@ public class X_BSC_KeySuccessFactorLine extends PO implements I_BSC_KeySuccessFa
 	public int getBSC_Parameter_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_BSC_Parameter_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set X Position.
+		@param XPosition 
+		Absolute X (horizontal) position in 1/72 of an inch
+	  */
+	public void setXPosition (int XPosition)
+	{
+		set_Value (COLUMNNAME_XPosition, Integer.valueOf(XPosition));
+	}
+
+	/** Get X Position.
+		@return Absolute X (horizontal) position in 1/72 of an inch
+	  */
+	public int getXPosition () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_XPosition);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set Y Position.
+		@param YPosition 
+		Absolute Y (vertical) position in 1/72 of an inch
+	  */
+	public void setYPosition (int YPosition)
+	{
+		set_Value (COLUMNNAME_YPosition, Integer.valueOf(YPosition));
+	}
+
+	/** Get Y Position.
+		@return Absolute Y (vertical) position in 1/72 of an inch
+	  */
+	public int getYPosition () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_YPosition);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

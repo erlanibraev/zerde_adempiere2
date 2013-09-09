@@ -30,14 +30,14 @@ public interface I_BSC_KeySuccessFactorLine
     /** TableName=BSC_KeySuccessFactorLine */
     public static final String Table_Name = "BSC_KeySuccessFactorLine";
 
-    /** AD_Table_ID=1000242 */
+    /** AD_Table_ID=1000239 */
     public static final int Table_ID = MTable.getTable_ID(Table_Name);
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
-    /** AccessLevel = 4 - System 
+    /** AccessLevel = 3 - Client - Org 
      */
-    BigDecimal accessLevel = BigDecimal.valueOf(4);
+    BigDecimal accessLevel = BigDecimal.valueOf(3);
 
     /** Load Meta Data */
 
@@ -137,4 +137,30 @@ public interface I_BSC_KeySuccessFactorLine
 	  * User who updated this records
 	  */
 	public int getUpdatedBy();
+
+    /** Column name XPosition */
+    public static final String COLUMNNAME_XPosition = "XPosition";
+
+	/** Set X Position.
+	  * Absolute X (horizontal) position in 1/72 of an inch
+	  */
+	public void setXPosition (int XPosition);
+
+	/** Get X Position.
+	  * Absolute X (horizontal) position in 1/72 of an inch
+	  */
+	public int getXPosition();
+
+    /** Column name YPosition */
+    public static final String COLUMNNAME_YPosition = "YPosition";
+
+	/** Set Y Position.
+	  * Absolute Y (vertical) position in 1/72 of an inch
+	  */
+	public void setYPosition (int YPosition);
+
+	/** Get Y Position.
+	  * Absolute Y (vertical) position in 1/72 of an inch
+	  */
+	public int getYPosition();
 }
